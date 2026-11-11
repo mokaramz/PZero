@@ -1,0 +1,210 @@
+@import "./tokens.css";
+@import "./theme-dark.css";
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  background: var(--bg);
+}
+
+body {
+  min-height: 100vh;
+  color: var(--ink);
+  font: 14px/1.5 var(--font-ui);
+  font-variant-numeric: tabular-nums;
+  -webkit-font-smoothing: antialiased;
+  background: var(--bg); /* flat parchment: no colour washes */
+}
+
+::selection {
+  background: rgba(43, 92, 158, 0.16);
+}
+
+a {
+  color: var(--blue);
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+h1,
+h2,
+h3 {
+  font-weight: 500; /* hierarchy from size and family, not weight */
+  letter-spacing: -0.01em;
+}
+
+:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+
+input,
+select,
+textarea {
+  font: 13px var(--font-ui);
+  color: var(--ink);
+  background: var(--paper);
+  border: 1px solid var(--hair-2);
+  border-radius: var(--r-sm);
+  padding: 6px 10px;
+}
+textarea {
+  width: 100%;
+  resize: vertical;
+  line-height: 1.45;
+}
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(43, 92, 158, 0.12);
+}
+label {
+  font-size: 12px;
+  color: var(--mut);
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+th {
+  text-align: left;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--mut);
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--hair-2);
+}
+td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--hair);
+  vertical-align: top;
+  font-size: 13px;
+}
+
+pre,
+code {
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  background: var(--well);
+  border-radius: var(--r-sm);
+  padding: 10px 12px;
+}
+
+/* utilities (keep this list short — prefer component CSS modules) */
+.muted {
+  color: var(--mut);
+}
+.faint {
+  color: var(--faint);
+}
+.small {
+  font-size: 12px;
+}
+.row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.grow {
+  flex: 1;
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* ---------------------------------------------------------------- motion primitives (global, reused by features)
+   Each answers a question — what is new, what opened, where did I land — and then stops. Never looping. */
+@keyframes pz-enter {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+@keyframes pz-fade {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes pz-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+/* a new signal / row arriving while the page is open: brief fade + slight rise into place */
+/* fill-mode "backwards": nothing lingers once an animation ends — a finished transform / opacity would otherwise keep a
+   stacking context and trap drawers rendered inside the page beneath the rail */
+.pz-enter {
+  animation: pz-enter var(--dur-slow) var(--ease-out) backwards;
+}
+/* opened content (disclosures): fade + 4px settle */
+.pz-reveal {
+  animation: pz-enter var(--dur-slow) var(--ease-out) backwards;
+}
+/* route change: the new page fades in — orientation, not theatre */
+.pz-page {
+  animation: pz-fade var(--dur) var(--ease-out) backwards;
+}
+/* the signature convergence trace / relationship path / sparkline: lines draw once (staggered by an inline delay) */
+.pz-trace {
+  animation: pz-draw var(--dur-trace) var(--ease-out) both;
+}
+/* the convergence target appears as the lines arrive */
+.pz-fade-late {
+  animation: pz-fade var(--dur) var(--ease-out) 380ms backwards;
+}
+/* a real arrival while the page is open: enter once, show a navy edge briefly, then settle (no pulse, no loop) */
+@keyframes pz-arrive-edge {
+  from {
+    box-shadow: inset 3px 0 0 var(--navy);
+  }
+}
+.pz-arrive {
+  animation:
+    pz-enter var(--dur-slow) var(--ease-out) backwards,
+    pz-arrive-edge 900ms var(--ease-out) backwards;
+}
+/* a line that draws itself once (stroke-dasharray / dashoffset set inline from its length) */
+.pz-draw {
+  animation: pz-draw var(--dur-draw) var(--ease-out) 120ms both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* keep state changes, drop movement: everything lands in its final state at once */
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
+  }
+}

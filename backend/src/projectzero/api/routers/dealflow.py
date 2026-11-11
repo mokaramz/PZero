@@ -1,5 +1,6 @@
 """Deal Flow endpoints — thin: parse, run the blocking store call in the threadpool (sync ``def`` routes), shape.
 
+* ``GET  /api/deal-flow/inbox``                      the whole Deal Flow in the old ``/api/inbox`` shape (review 009)
 * ``GET  /api/deal-flow/candidates``                 list: ``status`` / ``origin`` (repeatable), ``q``, ``limit``,
                                                      ``cursor``
 * ``GET  /api/deal-flow/candidates/{id}``            detail; ``?ns=scout_intake|native_scout`` resolves an old id
@@ -20,6 +21,7 @@ from pydantic import BaseModel, Field
 
 from projectzero.core.db import transaction
 from projectzero.dealflow.candidates import DealFlowStore, DecisionError, ListQuery, validate_operator_status
+from projectzero.dealflow.inbox_view import inbox_view
 
 router = APIRouter(prefix="/api/deal-flow", tags=["deal-flow"])
 
@@ -30,6 +32,14 @@ def _error(exc: DecisionError) -> JSONResponse:
 
 def _ok(body: dict[str, Any]) -> JSONResponse:
     return JSONResponse(jsonable_encoder({"ok": True, **body}))
+
+
+@router.get("/inbox")
+def get_inbox(request: Request) -> JSONResponse:
+    """The page ranks the whole pool on the client, so it reads it at once (the old ``GET /api/inbox``)."""
+    settings = request.app.state.settings
+    with transaction(settings.db_url) as conn:
+        return JSONResponse(jsonable_encoder(inbox_view(conn, settings.schema)))
 
 
 @router.get("/candidates")

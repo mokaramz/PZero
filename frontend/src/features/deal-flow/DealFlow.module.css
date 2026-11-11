@@ -1,0 +1,962 @@
+/* ---------------- shared bits */
+.okText {
+  color: var(--green);
+}
+.failText,
+.redText {
+  color: var(--red);
+}
+.amberText {
+  color: var(--amber);
+}
+.amberStrong {
+  color: var(--amber);
+  font-weight: 600;
+}
+.redStrong {
+  color: var(--red);
+  font-weight: 600;
+}
+.mono,
+.num {
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+.mt8 {
+  margin-top: 8px;
+}
+.hd {
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--mut);
+  margin-bottom: 4px;
+}
+.link {
+  font: inherit;
+  font-weight: 600;
+  color: var(--navy);
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: var(--hair-2);
+  text-underline-offset: 2px;
+}
+.link:hover:not(:disabled) {
+  color: var(--blue);
+}
+.link:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.linkGreen {
+  color: var(--green);
+}
+
+/* ---------------- workspace bar */
+.wsBar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: -6px 0 12px;
+}
+.wsSegs {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  padding: 3px;
+  background: var(--well);
+  border: 1px solid var(--hair);
+  border-radius: var(--r-md);
+}
+.wsSeg {
+  font: 500 12px var(--font-ui);
+  color: var(--ink-2);
+  padding: 7px 16px;
+  border: 0;
+  border-radius: var(--r-sm);
+  background: transparent;
+  cursor: pointer;
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+}
+.wsSeg b {
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+.wsSeg:hover {
+  color: var(--blue);
+}
+.wsOn {
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: var(--sh-1), 0 1px 3px rgba(31, 27, 22, 0.1);
+}
+.wsUnk {
+  color: var(--mut);
+}
+.wsN {
+  font-size: 11.5px;
+  color: var(--mut);
+}
+.wsLabel {
+  font-size: 12.5px;
+  color: var(--mut);
+  flex: 1;
+  min-width: 240px;
+}
+.wsLabel b {
+  color: var(--ink-2);
+  font-weight: 600;
+}
+
+/* ---------------- find bar + scan status */
+.findbar {
+  margin-bottom: 14px;
+}
+.findRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.batchLabel {
+  font-size: 13px;
+  color: var(--ink-2);
+  margin-left: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.numInput {
+  width: 52px;
+}
+.days {
+  padding: 7px 10px;
+}
+.findSt {
+  margin-top: 10px;
+  font-size: 12px;
+  color: var(--mut);
+}
+.findSt b {
+  color: var(--ink-2);
+}
+.history > summary {
+  cursor: pointer;
+  color: var(--blue);
+  font-size: 12.5px;
+  font-weight: 500;
+  width: max-content;
+  max-width: 100%;
+}
+
+/* ---------------- candidates panel */
+.candPanel > div:last-child {
+  padding: 0;
+}
+.candTitle {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  align-items: baseline;
+}
+.candTitle small {
+  font-size: 11.5px;
+  font-weight: 400;
+}
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--hair);
+}
+/* filter groups under "More filters": Pipeline · Machine — same filters, clear hierarchy */
+.fGroup {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: center;
+}
+.fLabel {
+  font: 500 10.5px var(--font-ui);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--faint);
+  margin-right: 4px;
+}
+.fGroup + .fGroup {
+  margin-left: 8px;
+  padding-left: 12px;
+  border-left: 1px solid var(--hair);
+}
+.filters select {
+  padding: 5px 8px;
+  font-size: 12.5px;
+}
+.naSub {
+  display: inline-flex;
+  gap: 6px;
+  padding-left: 8px;
+  border-left: 1px solid var(--hair-2);
+}
+.dfGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(380px, 1.25fr);
+  align-items: start;
+}
+/* Layer 2: the selected candidate's inspector (its own scroll; the list keeps its place) */
+.inspector {
+  position: sticky;
+  top: 0;
+}
+/* with a selection, unrelated rows recede slightly — no blur, nothing modal; hover brings a row back */
+.dfGrid[data-has-selection] .cand:not(.candSel) {
+  opacity: 0.8;
+  transition: opacity var(--dur) var(--ease-out);
+}
+.dfGrid[data-has-selection] .cand:not(.candSel):hover,
+.dfGrid[data-has-selection] .cand:not(.candSel):focus-visible {
+  opacity: 1;
+}
+/* L1 list well (bone) with individual paper rows — a list/card hybrid for fast triage */
+.list {
+  border-right: 1px solid var(--hair);
+  max-height: calc(100vh - 200px);
+  min-height: 320px;
+  overflow: auto;
+  background: var(--bone);
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.cand {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 12px;
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  background: var(--paper);
+  border: 1px solid var(--hair);
+  border-radius: var(--r-md);
+  box-shadow: var(--sh-card);
+  padding: 10px 14px 10px 14px;
+  cursor: pointer;
+  cursor: pointer;
+}
+.cand:hover {
+  border-color: var(--hair-2);
+  background: var(--paper-2);
+}
+/* selected: steel tint + steel edge + blue name — unmistakable, not loud */
+.candSel,
+.candSel:hover {
+  background: var(--navy-soft);
+  border-color: var(--navy);
+  box-shadow: inset 3px 0 0 var(--navy), var(--sh-card);
+}
+.candSel .candName {
+  color: var(--navy);
+}
+.candFresh {
+  animation: fresh 1.5s var(--ease);
+}
+@keyframes fresh {
+  from {
+    background: var(--amber-soft);
+  }
+}
+.candDecided {
+  background: transparent;
+  box-shadow: none;
+}
+.candDecided .candName {
+  color: var(--mut);
+}
+/* the row body: name + one quiet score · one-line signal · stage / source (mockup 2 list item) */
+.candBody {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+  flex: 1;
+}
+.candL1 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.candName {
+  font-weight: 500;
+  font-size: 15px;
+  letter-spacing: -0.005em;
+  overflow-wrap: anywhere;
+}
+.score {
+  font: 500 11px var(--font-mono);
+  color: var(--slate);
+  background: var(--slate-soft);
+  border-radius: var(--r-sm);
+  padding: 2px 6px;
+  white-space: nowrap;
+}
+.candL2 {
+  font-size: 11.5px;
+  color: var(--faint);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.tier {
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--slate);
+}
+.tierPre {
+  color: var(--green);
+}
+.candL3 {
+  font-size: 13px;
+  color: var(--ink-2);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.more {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+}
+.listNote {
+  padding: 10px 14px;
+  font-size: 12.5px;
+  color: var(--mut);
+}
+.emptyRow {
+  padding: 26px 16px;
+  color: var(--mut);
+  font-size: 13px;
+}
+
+/* ---------------- detail */
+.detail,
+.detailEmpty {
+  position: sticky;
+  top: 0;
+  padding: 14px 16px 18px;
+  max-height: calc(100vh - 200px);
+  overflow: auto;
+  min-width: 0;
+}
+.detailEmpty {
+  text-align: center;
+  color: var(--faint);
+  padding-top: 40px;
+}
+.dname {
+  font: 400 28px/1.15 var(--font-serif); /* the company name anchors the decision view */
+  letter-spacing: -0.015em;
+  margin: 0;
+}
+/* the company anchor (mockup 2): monogram · name · what it is · one scan chip + geography */
+.dHead {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  margin-top: 4px;
+}
+.dHeadMain {
+  min-width: 0;
+  flex: 1;
+}
+.dChips {
+  display: flex;
+  align-items: center;
+  gap: 6px 12px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+.dGeo {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12.5px;
+  color: var(--mut);
+}
+.dsec {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--hair);
+  font-size: 13px;
+}
+.why {
+  background: var(--well);
+  border-radius: var(--r-sm);
+  padding: 8px 12px;
+  font-size: 12.5px;
+}
+.fbline {
+  margin-top: 6px;
+}
+.desc {
+  font-size: 13px;
+  line-height: 1.55;
+}
+.dec {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--hair-2);
+}
+.decLab {
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--mut);
+  margin-right: 4px;
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  margin: 6px 0 12px;
+  font-size: 13px;
+}
+
+/* ---------------- scan history */
+.history {
+  margin: 0 0 12px;
+}
+.tableWrap {
+  overflow-x: auto;
+  margin-top: 8px;
+}
+.histTbl td,
+.histTbl th {
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+/* ---------------- responsive: 1366 @150% ≈ 910 CSS px content */
+@media (max-width: 1180px) {
+  .dfGrid {
+    grid-template-columns: 1fr;
+  }
+  .list {
+    border-right: 0;
+    max-height: 420px;
+  }
+  .detail {
+    position: static;
+    max-height: none;
+    border-top: 1px solid var(--hair-2);
+  }
+}
+
+/* Operator Focus: one-line company description under the name */
+.oneLine {
+  font-size: 14px;
+  color: var(--ink-2);
+  margin-top: 4px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Operator Focus: the scan ledger folds into one line; candidate browsing dominates */
+.scanFold {
+  margin-top: 8px;
+}
+.scanSummary {
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  font-size: 13px;
+  color: var(--mut);
+}
+.scanSummary::-webkit-details-marker {
+  display: none;
+}
+.scanKicker {
+  font: 600 11px var(--font-ui);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.scanMore {
+  margin-left: auto;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.dMeta {
+  font-size: 11.5px;
+  color: var(--faint);
+  letter-spacing: 0.02em;
+}
+
+.cand {
+  transition: background-color var(--dur) var(--ease-out), border-color var(--dur) var(--ease-out),
+    box-shadow var(--dur) var(--ease-out);
+}
+
+/* ================================================================== Deal Flow — mockup match (Nov 2026)
+   Deal-Flow-scoped only (shared components are restyled through this page's own wrappers; no other page changes).
+   Warm editorial base + navy authority + forest / steel / sand semantics; cards only for real objects. */
+
+/* ---------------- header: date · Deal Flow · purpose | the real-data flow trace */
+.hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px 32px;
+  margin: 0 0 14px;
+}
+.heroText {
+  min-width: 0;
+}
+.heroDate {
+  font-size: 13px;
+  color: var(--ink-2);
+}
+.heroTitle {
+  margin: 2px 0 2px;
+  font: 600 36px/1.08 var(--font-display);
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+.heroSub {
+  margin: 0;
+  font-size: 14.5px;
+  color: var(--ink-2);
+}
+.trace {
+  margin: 0;
+  flex: 0 1 420px;
+  min-width: 0;
+}
+.trace svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.traceIn {
+  fill: none;
+  stroke: var(--stone);
+  stroke-width: 1.4;
+  stroke-linecap: round;
+}
+.traceLine {
+  fill: none;
+  stroke: var(--navy);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  opacity: 0.85;
+}
+.traceRing {
+  fill: var(--paper);
+  stroke: var(--green);
+  stroke-width: 1.8;
+}
+.traceFocus {
+  fill: var(--amber-soft);
+  stroke: var(--amber);
+  stroke-width: 1.4;
+}
+.traceGlyph {
+  fill: none;
+  stroke: var(--navy);
+  stroke-width: 1.4;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+.traceTarget {
+  fill: var(--green-soft);
+  stroke: var(--green);
+  stroke-width: 1.8;
+}
+.traceCore {
+  fill: var(--green);
+}
+.traceText {
+  font: 600 11.5px var(--font-ui);
+  fill: var(--ink);
+}
+.traceStage {
+  animation: traceIn var(--dur-slow) var(--ease-out) backwards;
+}
+@keyframes traceIn {
+  from {
+    opacity: 0;
+  }
+}
+
+/* ---------------- geography: separate quiet pills with count badges; the selection in navy (outline, never filled) */
+.wsBar {
+  margin: 0 0 14px;
+}
+.wsSegs {
+  gap: 6px;
+  padding: 0;
+  background: transparent;
+  border: 0;
+}
+.wsSeg {
+  padding: 6px 14px;
+  border: 1px solid var(--hair-2);
+  border-radius: var(--r-md);
+  background: var(--paper);
+  color: var(--ink);
+  transition: border-color var(--dur-fast) var(--ease-out), background var(--dur-fast) var(--ease-out);
+}
+.wsSeg:hover {
+  color: var(--ink);
+  border-color: var(--stone);
+}
+.wsOn,
+.wsOn:hover {
+  background: var(--navy-soft);
+  border-color: var(--navy);
+  color: var(--navy);
+  box-shadow: none;
+}
+.wsN {
+  font: 600 11px var(--font-ui);
+  color: var(--ink-2);
+  border: 1px solid var(--hair-2);
+  border-radius: 999px;
+  padding: 0 7px;
+  background: var(--paper);
+}
+.wsOn .wsN {
+  color: var(--navy);
+  border-color: var(--blue-line);
+}
+.wsLabel {
+  padding-left: 16px;
+  border-left: 1px solid var(--hair-2);
+  color: var(--ink-2);
+}
+.wsLabel b {
+  color: var(--navy);
+}
+
+/* ---------------- candidates panel: one paper surface, the filters as compact chips */
+.candPanel {
+  border-radius: var(--r-xl);
+  border-color: var(--hair-2);
+}
+.candPanel [data-testid="df-filters"] [aria-pressed="true"] {
+  background: var(--navy-soft);
+  border-color: var(--navy);
+  color: var(--navy);
+  font-weight: 600;
+}
+.candPanel [data-testid="df-filters"] [data-filter] {
+  font-weight: 600;
+  padding: 5px 12px;
+  border-color: var(--hair-2);
+  background: var(--paper);
+}
+.candPanel [data-testid="df-filters"] [data-filter][aria-pressed="true"] {
+  background: var(--navy-soft);
+  border-color: var(--navy);
+  color: var(--navy);
+}
+
+/* ---------------- the candidate list: ONE paper list of editorial rows (not floating cards) */
+.list {
+  background: var(--paper);
+  padding: 6px;
+  gap: 0;
+}
+.cand {
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--hair);
+  border-radius: 0;
+  box-shadow: none;
+  padding: 12px 12px 12px 14px;
+  gap: 14px;
+  transition: background var(--dur-fast) var(--ease-out);
+}
+.cand:hover {
+  background: var(--paper-2);
+  border-color: var(--hair);
+}
+.candSel,
+.candSel:hover {
+  background: var(--navy-soft);
+  border-radius: var(--r-md);
+  border-bottom-color: transparent;
+  box-shadow: inset 3px 0 0 var(--navy), 0 0 0 1px var(--blue-line);
+}
+/* the monogram: deliberate and editorial — warm paper, a hairline, serif initials */
+.cand [class*="monogram"] {
+  width: 46px !important;
+  height: 46px !important;
+  font-size: 17px !important;
+  background: var(--bone);
+  border-color: var(--hair-2);
+  color: var(--ink);
+  border-radius: var(--r-md);
+}
+.candSel [class*="monogram"] {
+  background: var(--paper);
+}
+.candName {
+  font-weight: 600;
+  font-size: 15.5px;
+}
+/* state pills: restrained, rounded, the word carries the meaning */
+.candL1 [class*="badge"] {
+  border-radius: 999px;
+  padding: 1px 8px;
+  font-size: 10.5px;
+}
+.score {
+  font: 600 11.5px var(--font-ui);
+  color: var(--ink-2);
+  background: var(--paper);
+  border: 1px solid var(--hair-2);
+  border-radius: 999px;
+  padding: 2px 9px;
+}
+.candSel .score {
+  border-color: var(--blue-line);
+  color: var(--navy);
+}
+.candL3 {
+  font-size: 13px;
+  color: var(--ink);
+}
+.candL2 {
+  font-size: 11.5px;
+  color: var(--mut);
+}
+.tier {
+  font-weight: 600;
+  color: var(--ink-2);
+}
+.tierPre {
+  color: var(--green);
+}
+
+/* ---------------- the selected company: header, highlights, the editorial PZ Review */
+.inspector {
+  background: var(--paper);
+}
+.dname {
+  font: 600 30px/1.12 var(--font-display);
+  letter-spacing: -0.02em;
+  color: var(--navy);
+}
+.dHead [class*="monogram"] {
+  width: 58px !important;
+  height: 58px !important;
+  font-size: 22px !important;
+  background: var(--bone);
+  border-color: var(--hair-2);
+  color: var(--ink);
+  border-radius: var(--r-md);
+}
+.dHighlights {
+  border-color: var(--hair-2);
+  border-radius: var(--r-lg);
+  background: var(--paper);
+}
+.dHighlights [class*="highlightIcon"] {
+  color: var(--ink-2);
+}
+.dHighlights dt {
+  color: var(--ink-2) !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.02em !important;
+  text-transform: none !important;
+  font-size: 12px !important;
+}
+.dHighlights dd {
+  font-weight: 600 !important;
+}
+
+/* ---------------- machine analysis: one quiet band, secondary to human review */
+.machineZone {
+  margin-top: 18px;
+  padding: 12px 18px;
+  background: var(--paper);
+  border: 1px solid var(--hair-2);
+  border-radius: var(--r-xl);
+  box-shadow: var(--sh-card);
+}
+.machineTitle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 8px;
+  font: italic 600 20px/1.2 var(--font-display);
+  color: var(--navy);
+}
+.machineIcon {
+  color: var(--ink-2);
+}
+.machineZone .findbar {
+  margin-bottom: 8px;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  padding: 0;
+}
+
+@media (max-width: 760px) {
+  .wsLabel {
+    padding-left: 0;
+    border-left: 0;
+  }
+  .trace {
+    flex-basis: 100%;
+  }
+}
+
+/* ================================================================== Deal Flow — jigsaw company cards (Nov 2026)
+   Every candidate is a piece (lib/piecePath): a right-edge tab that plugs into the detail panel. Cards only — the
+   header, filters and detail panel are unchanged. PZ tokens; no shadows, no gradients. The piece is an SVG painted
+   behind the button content, so the button itself stays a transparent, accessible <button aria-pressed>. */
+.list {
+  background: var(--bone);
+  padding: 12px 34px 14px 12px; /* room on the right for the tab (22px) plus the selected slide (8px) */
+  gap: 10px;
+}
+.cand,
+.cand:hover {
+  position: relative;
+  isolation: isolate;
+  align-items: center;
+  background: transparent;
+  border: 0;
+  border-radius: 10px;
+  box-shadow: none;
+  padding: 14px 16px 14px 14px;
+  min-height: 104px;
+  transition: transform 0.18s var(--ease-out);
+}
+.pieceSvg {
+  position: absolute;
+  z-index: -1;
+  overflow: visible;
+  pointer-events: none;
+}
+.pieceShape {
+  fill: var(--paper);
+  stroke: var(--stone);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+  transition: fill var(--dur-fast) var(--ease-out), stroke var(--dur-fast) var(--ease-out);
+}
+.cand:hover .pieceShape {
+  stroke: var(--blue-line);
+}
+.cand:focus-visible {
+  outline: 2px solid var(--navy);
+  outline-offset: 3px;
+}
+/* selected: the piece slides 8px toward the board, navy outline on the navy-tinted surface */
+.candSel,
+.candSel:hover {
+  background: transparent;
+  border-radius: 10px;
+  box-shadow: none;
+  transform: translateX(8px);
+  z-index: 1;
+}
+.candSel .pieceShape,
+.candSel:hover .pieceShape {
+  fill: var(--navy-soft);
+  stroke: var(--navy);
+  stroke-width: 1.5;
+}
+/* already decided: the piece is set down — quieter surface, the name recedes (existing rule) */
+.candDecided .pieceShape {
+  fill: var(--bone);
+}
+.candFresh {
+  animation: none;
+}
+.candFresh .pieceShape {
+  animation: freshPiece 1.5s var(--ease);
+}
+@keyframes freshPiece {
+  from {
+    fill: var(--amber-soft);
+  }
+}
+/* the mark: a small piece with a left blank and serif initials */
+.pieceMark {
+  flex: none;
+  display: block;
+}
+.pieceMarkShape {
+  fill: var(--bone);
+  stroke: var(--stone);
+  stroke-width: 1;
+}
+.pieceMarkText {
+  font-family: var(--font-serif);
+  font-size: 16px;
+  font-weight: 600;
+  fill: var(--ink);
+}
+.candSel .pieceMarkShape {
+  fill: var(--paper);
+  stroke: var(--navy);
+}
+.candSel .pieceMarkText {
+  fill: var(--navy);
+}
+@media (prefers-reduced-motion: reduce) {
+  .cand,
+  .candSel {
+    transition: none;
+  }
+  .candFresh .pieceShape {
+    animation: none;
+  }
+}
+
+/* ================================================================== not ported yet (review 009)
+   Entry points whose backend arrives with a later port stay in place, focusable and named, but do nothing. */
+.off[aria-disabled="true"],
+.off[aria-disabled="true"]:hover {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+  filter: none;
+}
+.history > summary[aria-disabled="true"] {
+  cursor: not-allowed;
+  opacity: 0.55;
+}

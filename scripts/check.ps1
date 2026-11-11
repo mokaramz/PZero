@@ -27,5 +27,13 @@ try {
     Step "schema: PGlite tests" { npm test --silent }
 } finally { Pop-Location }
 
+Push-Location (Join-Path $root "frontend")
+try {
+    if (-not (Test-Path "node_modules")) { npm ci --no-audit --no-fund | Out-Null }
+    Step "frontend: typecheck" { npm run typecheck --silent }
+    Step "frontend: oxlint" { npm run lint --silent }
+    Step "frontend: vitest" { npm run test --silent }
+} finally { Pop-Location }
+
 if ($failed.Count -gt 0) { Write-Host "GATE FAILED: $($failed -join ', ')" -ForegroundColor Red; exit 1 }
 Write-Host "ALL CHECKS PASSED" -ForegroundColor Green

@@ -1,0 +1,366 @@
+.app {
+  min-height: 100vh;
+}
+
+/* ---------------- left rail: its own scroll owner, always reachable */
+.rail {
+  position: fixed;
+  inset: 0 auto 0 0;
+  width: var(--rail-w);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px 12px;
+  background: var(--rail-bg);
+  border-right: 1px solid var(--hair);
+  overflow-y: auto;
+  z-index: 40;
+}
+.brand {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 4px 6px 6px;
+}
+.brandMark {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  color: var(--ink);
+}
+.brandName {
+  font: 500 12.5px/1.1 var(--font-ui);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.brandText {
+  min-width: 0;
+}
+.brandSub {
+  font: 11px/1.3 var(--font-ui);
+  color: var(--faint);
+  margin-top: 3px;
+}
+/* search lives in the header (mockup): a quiet field that opens the existing command palette */
+.search {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: min(420px, 46vw);
+  padding: 7px 10px 7px 12px;
+  font: 13px var(--font-ui);
+  color: var(--mut);
+  background: var(--paper);
+  border: 1px solid var(--hair-2);
+  border-radius: var(--r-md);
+  cursor: pointer;
+  text-align: left;
+}
+.search:hover {
+  border-color: var(--stone);
+}
+.searchText {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.search kbd {
+  font: 10.5px var(--font-ui);
+  color: var(--mut);
+  border: 1px solid var(--hair-2);
+  border-radius: 4px;
+  padding: 1px 5px;
+  background: var(--bone);
+}
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.sectionTitle {
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--faint);
+  padding: 12px 10px 4px;
+}
+.navItem {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 7px 10px;
+  border-radius: var(--r-md);
+  color: var(--ink-2);
+  font-size: 13.5px;
+  font-weight: 400;
+  text-decoration: none;
+}
+.navItem svg {
+  color: var(--faint);
+}
+.navItem:hover {
+  background: var(--well);
+  text-decoration: none;
+}
+/* selected: a strong but quiet deep-navy fill (the approved mockup's filled item, in the PZ palette) */
+.navItemOn,
+.navItemOn:hover {
+  color: var(--navy-ink);
+  font-weight: 500;
+  background: var(--navy);
+}
+.navItemOn svg {
+  color: var(--navy-ink);
+}
+.navLabel {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.collapse {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  margin-top: auto;
+  padding: 9px 10px 4px;
+  font: 12.5px var(--font-ui);
+  color: var(--faint);
+  background: none;
+  border: 0;
+  border-top: 1px solid var(--hair);
+  cursor: pointer;
+  text-align: left;
+}
+.collapse:hover {
+  color: var(--ink);
+}
+.operator {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--navy);
+  color: var(--navy-ink);
+  font: 500 11px var(--font-ui);
+  letter-spacing: 0.04em;
+}
+/* compact rail: icons with tooltips, more room for the workspace (desktop only) */
+@media (min-width: 901px) {
+  .compact {
+    --rail-w: 64px;
+  }
+  .compact .brandText,
+  .compact .navLabel,
+  .compact .sectionTitle {
+    display: none;
+  }
+  .compact .section + .section {
+    border-top: 1px solid var(--hair);
+    padding-top: 6px;
+  }
+  .compact .navItem,
+  .compact .collapse {
+    justify-content: center;
+    padding-left: 0;
+    padding-right: 0;
+  }
+  .compact .brand {
+    justify-content: center;
+    padding: 4px 0 6px;
+  }
+}
+
+/* ---------------- main column */
+.main {
+  margin-left: var(--rail-w);
+  min-width: 0;
+}
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  height: calc(var(--topbar-h) + 14px);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 22px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--hair);
+}
+.release {
+  font: 11px var(--font-mono);
+  color: var(--faint);
+}
+.who {
+  font-size: 12px;
+  color: var(--faint);
+}
+.menuBtn {
+  display: none;
+  background: none;
+  border: 0;
+  color: var(--ink);
+  cursor: pointer;
+}
+.content {
+  max-width: var(--content-max);
+  margin: 0 auto;
+  padding: 22px 32px calc(72px + var(--dock-h, 0px)); /* the bottom activity dock never covers content */
+}
+.scrim {
+  display: none;
+}
+
+/* ---------------- narrow / zoomed: rail becomes a drawer */
+@media (max-width: 900px) {
+  .rail {
+    transform: translateX(-100%);
+    transition: transform var(--motion) var(--ease);
+    background: var(--bg);
+  }
+  .railOpen {
+    transform: none;
+  }
+  .main {
+    margin-left: 0;
+  }
+  .menuBtn {
+    display: inline-flex;
+  }
+  .who {
+    display: none;
+  }
+  .search {
+    width: auto;
+    flex: 1;
+    min-width: 0;
+  }
+  .search kbd {
+    display: none;
+  }
+  .content {
+    padding: 16px 16px calc(60px + var(--dock-h, 0px));
+  }
+  .scrim {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 35;
+    background: rgba(20, 22, 26, 0.25);
+  }
+}
+
+/* rail collapse: width and the workspace margin ease together (desktop) */
+@media (min-width: 901px) {
+  .rail {
+    transition: width var(--dur-slow) var(--ease-out);
+  }
+  .main {
+    transition: margin-left var(--dur-slow) var(--ease-out);
+  }
+}
+.navItem {
+  transition: background-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
+}
+
+/* ---------------- focus mode (desktop): the rail and secondary chrome step aside; content keeps its own width */
+.focusBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font: 500 12px var(--font-ui);
+  color: var(--mut);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--r-md);
+  padding: 5px 9px;
+  cursor: pointer;
+  transition: color var(--dur-fast) var(--ease-out), background var(--dur-fast) var(--ease-out);
+}
+.focusBtn:hover {
+  color: var(--ink);
+  background: var(--well);
+}
+.focusOn {
+  color: var(--navy);
+  border-color: var(--hair-2);
+}
+@media (min-width: 901px) {
+  .focusMode {
+    --rail-w: 0px;
+  }
+  .focusMode .rail {
+    display: none;
+  }
+  .focusMode .who {
+    display: none;
+  }
+}
+@media (max-width: 900px) {
+  .focusBtn {
+    display: none;
+  }
+}
+
+/* ---------------- theme switch: sun · track · moon; navy marks "on" (dark) */
+.themeSwitch {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 6px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--r-md);
+  color: var(--mut);
+  cursor: pointer;
+}
+.themeSwitch:hover {
+  background: var(--well);
+  color: var(--ink);
+}
+.themeSwitch:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+.themeIcon {
+  flex: none;
+}
+.themeTrack {
+  position: relative;
+  width: 30px;
+  height: 16px;
+  border-radius: 999px;
+  background: var(--linen);
+  border: 1px solid var(--hair-2);
+  transition: background var(--dur) var(--ease-out), border-color var(--dur) var(--ease-out);
+}
+.themeThumb {
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--paper);
+  box-shadow: var(--sh-card);
+  transition: transform var(--dur) var(--ease-out);
+}
+.themeSwitch[aria-checked="true"] .themeTrack {
+  background: var(--navy);
+  border-color: var(--navy);
+}
+.themeSwitch[aria-checked="true"] .themeThumb {
+  transform: translateX(14px);
+  background: var(--navy-ink);
+}

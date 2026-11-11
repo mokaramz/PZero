@@ -1,0 +1,6049 @@
+{
+ "candidates": [
+  {
+   "decision": "new",
+   "description": "Industrial robots for SMEs in Munich.",
+   "discovery_tier": "announcement",
+   "geo": [
+    "DE"
+   ],
+   "id": "eu-plain",
+   "name": "Acme Robotics GmbH",
+   "sectors": [
+    "ai_sw"
+   ],
+   "source": "Oracle Feed",
+   "source_id": "oracle"
+  },
+  {
+   "decision": "new",
+   "description": "A spinout project from the robotics lab.",
+   "discovery_tier": "announcement",
+   "geo": [
+    "DE"
+   ],
+   "id": "uni",
+   "name": "Technical University of Munich",
+   "sectors": [
+    "ai_sw"
+   ],
+   "source": "Oracle Feed",
+   "source_id": "oracle"
+  },
+  {
+   "decision": "new",
+   "description": "Grant programme.",
+   "discovery_tier": "announcement",
+   "geo": [
+    "DE"
+   ],
+   "id": "gov",
+   "name": "Innovate UK",
+   "sectors": [
+    "ai_sw"
+   ],
+   "source": "Oracle Feed",
+   "source_id": "oracle"
+  },
+  {
+   "decision": "new",
+   "description": "UK innovation centre.",
+   "discovery_tier": "announcement",
+   "geo": [
+    "DE"
+   ],
+   "id": "catapult",
+   "name": "Digital Catapult",
+   "sectors": [
+    "ai_sw"
+   ],
+   "source": "Oracle Feed",
+   "source_id": "oracle"
+  },
+  {
+   "decision": "new",
+   "description": "Applied research.",
+   "discovery_tier": "announcement",
+   "geo": [
+    "DE"
+   ],
+   "id": "research",
+   "name": "Fraunhofer Institute for Laser Technology",
+   "sectors": [
+    "ai_sw"
+   ],
+   "source": "Oracle Feed",
+   "source_id": "oracle"
+  },
+  {
+   "decision": "new",
+   "description": "Engines.",
+   "discovery_tier": "announcement",
+   "geo": [
+    "DE"
+   ],
+   "id": "incumbent",
+   "name": "Rolls-Royce Holdings",
+   "sectors": [
+    "ai_sw"
+   ],
+   "source": "Oracle Feed",
+   "source_id": "oracle"
+  },
+  {
+   "decision": "new",
+   "description": "Listed widgets.",
+   "discovery_tier": "announcement",
+   "geo": [
+    "DE"
+   ],
+   "id": "plc",
+   "name": "Acme Widgets PLC",
+   "sectors": [
+    "ai_sw"
+   ],
+   "source": "Oracle Feed",
+   "source_id": "oracle"
+  },
+  {
+   "decision": "new",
+   "description": "Agents for US farmers in Iowa.",
+   "discovery_tier": "announcement",
+   "geo": [
+    "US"
+   ],
+   "id": "na-global",
+   "name": "Prairie AI Inc",
+   "sectors": [
+    "ai_sw"
+   ],
+   "source": "Oracle Feed",
+   "source_id": "oracle"
+  },
+  {
+   "decision": "new",
+   "description": "US startup with an office in Munich.",
+   "discovery_tier": "announcement",
+   "geo": [
+    "US"
+   ],
+   "id": "na-eu",
+   "name": "Harbor AI Inc",
+   "sectors": [
+    "ai_sw"
+   ],
+   "source": "Oracle Feed",
+   "source_id": "oracle"
+  },
+  {
+   "country": "Canada",
+   "decision": "new",
+   "description": "Built in Toronto.",
+   "discovery_tier": "announcement",
+   "geo": [],
+   "id": "na-country",
+   "name": "Maple Labs",
+   "sectors": [
+    "ai_sw"
+   ],
+   "source": "Oracle Feed",
+   "source_id": "oracle"
+  },
+  {
+   "decision": "new",
+   "description": "Software.",
+   "discovery_tier": "announcement",
+   "geo": [
+    "ZZ"
+   ],
+   "id": "override",
+   "name": "Zed Labs",
+   "sectors": [
+    "ai_sw"
+   ],
+   "source": "Oracle Feed",
+   "source_id": "oracle"
+  },
+  {
+   "decision": "new",
+   "description": "Pan-European.",
+   "discovery_tier": "announcement",
+   "geo": [],
+   "geo_scope": "region-eu",
+   "id": "region-eu",
+   "name": "Scope Co",
+   "sectors": [
+    "ai_sw"
+   ],
+   "source": "Oracle Feed",
+   "source_id": "oracle"
+  },
+  {
+   "decision": "new",
+   "description": "Software.",
+   "discovery_tier": "announcement",
+   "geo": "US",
+   "id": "geo-str",
+   "name": "String Geo",
+   "sectors": [
+    "ai_sw"
+   ],
+   "source": "Oracle Feed",
+   "source_id": "oracle"
+  },
+  {
+   "decision": "new",
+   "description": "RheoCarti awarded the EIC grant. The team builds cartilage implants.",
+   "discovery_tier": "announcement",
+   "geo": [
+    "DE"
+   ],
+   "id": "broken-date",
+   "name": "01.10.2026 17:08",
+   "sectors": [
+    "ai_sw"
+   ],
+   "source": "Oracle Feed",
+   "source_id": "oracle"
+  },
+  {
+   "decision": "new",
+   "description": "Startup Kontext raises €2M to secure AI agents.",
+   "discovery_tier": "announcement",
+   "geo": [
+    "DE"
+   ],
+   "id": "broken-unknown",
+   "name": "UNKNOWN",
+   "sectors": [
+    "ai_sw"
+   ],
+   "source": "Oracle Feed",
+   "source_id": "oracle"
+  },
+  {
+   "decision": "new",
+   "description": "Acme Labs builds C2 software.",
+   "discovery_tier": "announcement",
+   "geo": [
+    "DE"
+   ],
+   "id": "headline",
+   "name": "How Acme Labs is shaping the future of defence",
+   "sectors": [
+    "ai_sw"
+   ],
+   "source": "Oracle Feed",
+   "source_id": "oracle"
+  },
+  {
+   "decision": "new",
+   "description": "Security for AI agents.",
+   "discovery_tier": "announcement",
+   "geo": [
+    "DE"
+   ],
+   "id": "label-kontext",
+   "name": "KI-Security-Startup Kontext",
+   "sectors": [
+    "ai_sw"
+   ],
+   "source": "Oracle Feed",
+   "source_id": "oracle"
+  },
+  {
+   "decision": "new",
+   "description": "AI agents for freight forwarders.",
+   "discovery_tier": "announcement",
+   "geo": [
+    "DE"
+   ],
+   "id": "portfolio",
+   "name": "Nexcade",
+   "sectors": [
+    "ai_sw"
+   ],
+   "source": "Oracle Feed",
+   "source_id": "oracle"
+  },
+  {
+   "decision": "new",
+   "description": "Accounting automation.",
+   "discovery_tier": "announcement",
+   "geo": [
+    "DE"
+   ],
+   "id": "portfolio-reject",
+   "name": "Tabular GmbH",
+   "sectors": [
+    "ai_sw"
+   ],
+   "source": "Oracle Feed",
+   "source_id": "oracle"
+  },
+  {
+   "decision": "new",
+   "description": "Orbit Systems raised a seed round led by Project A Ventures.",
+   "discovery_tier": "announcement",
+   "geo": [
+    "DE"
+   ],
+   "id": "relationship",
+   "name": "Orbit Systems",
+   "sectors": [
+    "ai_sw"
+   ],
+   "source": "Oracle Feed",
+   "source_id": "oracle"
+  },
+  {
+   "decision": "new",
+   "description": "Project A: 5 lessons from building a fund.",
+   "discovery_tier": "announcement",
+   "geo": [
+    "DE"
+   ],
+   "id": "not-relationship",
+   "name": "Lesson Co",
+   "sectors": [
+    "ai_sw"
+   ],
+   "source": "Oracle Feed",
+   "source_id": "oracle"
+  },
+  {
+   "decision": "new",
+   "description": "Quoting and booking automation for freight forwarders and logistics agent.",
+   "discovery_tier": "announcement",
+   "geo": [
+    "DE"
+   ],
+   "id": "resembles",
+   "name": "Cargo Brain",
+   "sectors": [
+    "ai_sw"
+   ],
+   "source": "Oracle Feed",
+   "source_id": "oracle"
+  },
+  {
+   "decision": "new",
+   "description": "Robots.",
+   "discovery_tier": "announcement",
+   "geo": [
+    "DE"
+   ],
+   "id": "conviction",
+   "name": "Conflict Robotics",
+   "sectors": [
+    "ai_sw"
+   ],
+   "source": "Oracle Feed",
+   "source_id": "oracle"
+  },
+  {
+   "decision": "new",
+   "description": "Robots.",
+   "discovery_tier": "announcement",
+   "geo": [
+    "DE"
+   ],
+   "id": "conviction-clear",
+   "name": "Clear Robotics",
+   "sectors": [
+    "ai_sw"
+   ],
+   "source": "Oracle Feed",
+   "source_id": "oracle"
+  },
+  {
+   "decision": "new",
+   "description": "Found by a scout.",
+   "discovery_tier": "announcement",
+   "geo": [
+    "DE"
+   ],
+   "id": "intake",
+   "name": "Intake Labs",
+   "sectors": [
+    "ai_sw"
+   ],
+   "source": "Oracle Feed",
+   "source_id": "oracle"
+  },
+  {
+   "decision": "new",
+   "description": "Cookie banner.",
+   "discovery_tier": "announcement",
+   "geo": [
+    "DE"
+   ],
+   "id": "obvious",
+   "name": "Junk Page",
+   "sectors": [
+    "ai_sw"
+   ],
+   "source": "Oracle Feed",
+   "source_id": "oracle"
+  },
+  {
+   "decision": "new",
+   "description": "",
+   "discovery_tier": "announcement",
+   "geo": [
+    "DE"
+   ],
+   "id": "obvious-stage0",
+   "name": "05.10.2026 14:00",
+   "sectors": [
+    "ai_sw"
+   ],
+   "source": "Oracle Feed",
+   "source_id": "oracle"
+  },
+  {
+   "decision": "new",
+   "description": "The text changed after triage.",
+   "discovery_tier": "announcement",
+   "geo": [
+    "DE"
+   ],
+   "id": "stale",
+   "name": "Changed Co",
+   "sectors": [
+    "ai_sw"
+   ],
+   "source": "Oracle Feed",
+   "source_id": "oracle"
+  },
+  {
+   "decision": "new",
+   "description": "Triaged under v2.",
+   "discovery_tier": "announcement",
+   "geo": [
+    "DE"
+   ],
+   "id": "old-prompt",
+   "name": "Old Prompt Co",
+   "sectors": [
+    "ai_sw"
+   ],
+   "source": "Oracle Feed",
+   "source_id": "oracle"
+  },
+  {
+   "decision": "baseline",
+   "description": "Already known.",
+   "discovery_tier": "announcement",
+   "geo": [
+    "DE"
+   ],
+   "id": "baseline",
+   "name": "Baseline Co",
+   "sectors": [
+    "ai_sw"
+   ],
+   "source": "Oracle Feed",
+   "source_id": "oracle"
+  },
+  {
+   "decision": "research",
+   "description": "Operator reviewing.",
+   "discovery_tier": "announcement",
+   "geo": [
+    "DE"
+   ],
+   "id": "research-decided",
+   "name": "Decided Co",
+   "sectors": [
+    "ai_sw"
+   ],
+   "source": "Oracle Feed",
+   "source_id": "oracle"
+  },
+  {
+   "decision": "new",
+   "description": "Triage failed.",
+   "discovery_tier": "announcement",
+   "geo": [
+    "DE"
+   ],
+   "id": "error",
+   "name": "Error Co",
+   "sectors": [
+    "ai_sw"
+   ],
+   "source": "Oracle Feed",
+   "source_id": "oracle"
+  },
+  {
+   "decision": "new",
+   "description": "Needs a human.",
+   "discovery_tier": "announcement",
+   "geo": [
+    "DE"
+   ],
+   "id": "needs-human",
+   "name": "Human Co",
+   "sectors": [
+    "ai_sw"
+   ],
+   "source": "Oracle Feed",
+   "source_id": "oracle"
+  },
+  {
+   "decision": "new",
+   "description": "Never triaged.",
+   "discovery_tier": "announcement",
+   "geo": [
+    "DE"
+   ],
+   "id": "no-proposal",
+   "name": "Quiet Co",
+   "sectors": [
+    "ai_sw"
+   ],
+   "source": "Oracle Feed",
+   "source_id": "oracle"
+  },
+  {
+   "decision": "new",
+   "description": "Operator decided.",
+   "discovery_tier": "announcement",
+   "geo": [
+    "DE"
+   ],
+   "id": "verdict",
+   "name": "Verdict Co",
+   "sectors": [
+    "ai_sw"
+   ],
+   "source": "Oracle Feed",
+   "source_id": "oracle"
+  },
+  {
+   "also_seen": [
+    {
+     "source": "Feed 0"
+    },
+    {
+     "source": "Feed 1"
+    },
+    {
+     "source": "Feed 2"
+    },
+    {
+     "source": "Feed 3"
+    },
+    {
+     "source": "Feed 4"
+    },
+    {
+     "source": "Feed 5"
+    },
+    {
+     "source": "Feed 6"
+    },
+    "junk"
+   ],
+   "country": "DE",
+   "date_kind": "published",
+   "decision": "new",
+   "description": "Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. ",
+   "discovery_tier": "grant",
+   "geo": [
+    "DE"
+   ],
+   "id": "card",
+   "location": "Berlin",
+   "name": "Card Co",
+   "sectors": [],
+   "source": "Oracle Feed",
+   "source_date": "2026-10-01",
+   "source_id": "oracle",
+   "source_sectors": [
+    "robotics",
+    "defence"
+   ],
+   "source_url": "https://example.org/a"
+  },
+  {
+   "decision": "new",
+   "description": null,
+   "discovery_tier": null,
+   "geo": null,
+   "id": "card-none",
+   "name": "Card None",
+   "sectors": null,
+   "source": "Oracle Feed",
+   "source_id": "oracle"
+  },
+  {
+   "decision": "new",
+   "description": "Skipped by the view.",
+   "discovery_tier": "announcement",
+   "geo": [
+    "DE"
+   ],
+   "id": "",
+   "name": "No Id",
+   "sectors": [
+    "ai_sw"
+   ],
+   "source": "Oracle Feed",
+   "source_id": "oracle"
+  },
+  {
+   "decision": "new",
+   "description": "",
+   "discovery_tier": "announcement",
+   "geo": [
+    "DE"
+   ],
+   "id": "unit-0",
+   "name": "Thursday, November 5, 2026 ·",
+   "sectors": [
+    "ai_sw"
+   ],
+   "source": "Oracle Feed",
+   "source_id": "oracle"
+  },
+  {
+   "decision": "new",
+   "description": "A Swiss-German team.",
+   "discovery_tier": "announcement",
+   "geo": [
+    "DE"
+   ],
+   "id": "unit-1",
+   "name": "Swiss-German",
+   "sectors": [
+    "ai_sw"
+   ],
+   "source": "Oracle Feed",
+   "source_id": "oracle"
+  },
+  {
+   "decision": "new",
+   "description": "",
+   "discovery_tier": "announcement",
+   "geo": [
+    "DE"
+   ],
+   "id": "unit-2",
+   "name": "TechCrunch Disrupt Summit",
+   "sectors": [
+    "ai_sw"
+   ],
+   "source": "Oracle Feed",
+   "source_id": "oracle"
+  },
+  {
+   "decision": "new",
+   "description": "Long legal name.",
+   "discovery_tier": "announcement",
+   "geo": [
+    "DE"
+   ],
+   "id": "unit-3",
+   "name": "Foo Bar Baz Qux Quux GmbH raises",
+   "sectors": [
+    "ai_sw"
+   ],
+   "source": "Oracle Feed",
+   "source_id": "oracle"
+  },
+  {
+   "decision": "new",
+   "description": "",
+   "discovery_tier": "announcement",
+   "geo": [
+    "DE"
+   ],
+   "id": "unit-4",
+   "name": "Shell Energy Retail",
+   "sectors": [
+    "ai_sw"
+   ],
+   "source": "Oracle Feed",
+   "source_id": "oracle"
+  },
+  {
+   "decision": "new",
+   "description": "",
+   "discovery_tier": "announcement",
+   "geo": [
+    "DE"
+   ],
+   "id": "unit-5",
+   "name": "BP",
+   "sectors": [
+    "ai_sw"
+   ],
+   "source": "Oracle Feed",
+   "source_id": "oracle"
+  },
+  {
+   "decision": "new",
+   "description": "",
+   "discovery_tier": "announcement",
+   "geo": [
+    "DE"
+   ],
+   "id": "unit-6",
+   "name": "Imperial College London",
+   "sectors": [
+    "ai_sw"
+   ],
+   "source": "Oracle Feed",
+   "source_id": "oracle"
+  },
+  {
+   "decision": "new",
+   "description": "",
+   "discovery_tier": "announcement",
+   "geo": [
+    "DE"
+   ],
+   "id": "unit-7",
+   "name": "Exclusive: Gravity Gardens secures €3M",
+   "sectors": [
+    "ai_sw"
+   ],
+   "source": "Oracle Feed",
+   "source_id": "oracle"
+  },
+  {
+   "decision": "new",
+   "description": "",
+   "discovery_tier": "announcement",
+   "geo": [
+    "DE"
+   ],
+   "id": "unit-8",
+   "name": "Dutch AgTech Gravity Gardens secures €3M seed",
+   "sectors": [
+    "ai_sw"
+   ],
+   "source": "Oracle Feed",
+   "source_id": "oracle"
+  },
+  {
+   "decision": "new",
+   "description": "",
+   "discovery_tier": "announcement",
+   "geo": [
+    "DE"
+   ],
+   "id": "unit-9",
+   "name": "Berlin-based Foo raises €1M",
+   "sectors": [
+    "ai_sw"
+   ],
+   "source": "Oracle Feed",
+   "source_id": "oracle"
+  },
+  {
+   "decision": "new",
+   "description": "",
+   "discovery_tier": "announcement",
+   "geo": [
+    "DE"
+   ],
+   "id": "unit-10",
+   "name": "Sweden’s Einride lands $100M",
+   "sectors": [
+    "ai_sw"
+   ],
+   "source": "Oracle Feed",
+   "source_id": "oracle"
+  },
+  {
+   "decision": "new",
+   "description": "DeepPsy’s obtains CE mark. More text.",
+   "discovery_tier": "announcement",
+   "geo": [
+    "DE"
+   ],
+   "id": "unit-11",
+   "name": "UNKNOWN",
+   "sectors": [
+    "ai_sw"
+   ],
+   "source": "Oracle Feed",
+   "source_id": "oracle"
+  },
+  {
+   "decision": "new",
+   "description": "The defence technology company DOD Solution has raised a round.",
+   "discovery_tier": "announcement",
+   "geo": [
+    "DE"
+   ],
+   "id": "unit-12",
+   "name": "UNKNOWN",
+   "sectors": [
+    "ai_sw"
+   ],
+   "source": "Oracle Feed",
+   "source_id": "oracle"
+  },
+  {
+   "decision": "new",
+   "description": "Meet the AI Research Lab Grubel, based in Zurich.",
+   "discovery_tier": "announcement",
+   "geo": [
+    "DE"
+   ],
+   "id": "unit-13",
+   "name": "UNKNOWN",
+   "sectors": [
+    "ai_sw"
+   ],
+   "source": "Oracle Feed",
+   "source_id": "oracle"
+  },
+  {
+   "decision": "new",
+   "description": "Five startups win — Acme Wins Prize.",
+   "discovery_tier": "announcement",
+   "geo": [
+    "DE"
+   ],
+   "id": "unit-14",
+   "name": "UNKNOWN",
+   "sectors": [
+    "ai_sw"
+   ],
+   "source": "Oracle Feed",
+   "source_id": "oracle"
+  },
+  {
+   "decision": "new",
+   "description": "",
+   "discovery_tier": "announcement",
+   "geo": [
+    "DE"
+   ],
+   "id": "unit-15",
+   "name": "German Bionic raises €10M",
+   "sectors": [
+    "ai_sw"
+   ],
+   "source": "Oracle Feed",
+   "source_id": "oracle"
+  },
+  {
+   "decision": "new",
+   "description": "",
+   "discovery_tier": "announcement",
+   "geo": [
+    "DE"
+   ],
+   "id": "unit-16",
+   "name": "The Startup Fooly raises seed",
+   "sectors": [
+    "ai_sw"
+   ],
+   "source": "Oracle Feed",
+   "source_id": "oracle"
+  },
+  {
+   "decision": "new",
+   "description": "",
+   "discovery_tier": "announcement",
+   "geo": [
+    "DE"
+   ],
+   "id": "unit-17",
+   "name": "ACMEROBOTICSINTERNATIONAL",
+   "sectors": [
+    "ai_sw"
+   ],
+   "source": "Oracle Feed",
+   "source_id": "oracle"
+  },
+  {
+   "decision": "new",
+   "description": "project a 2 fund",
+   "discovery_tier": "announcement",
+   "geo": [
+    "DE"
+   ],
+   "id": "unit-18",
+   "name": "Project A 2",
+   "sectors": [
+    "ai_sw"
+   ],
+   "source": "Oracle Feed",
+   "source_id": "oracle"
+  },
+  {
+   "decision": "new",
+   "description": "y",
+   "discovery_tier": "announcement",
+   "geo": [
+    "DE"
+   ],
+   "id": "unit-19",
+   "name": "X",
+   "sectors": [
+    "ai_sw"
+   ],
+   "source": "Oracle Feed",
+   "source_id": "oracle"
+  },
+  {
+   "decision": "new",
+   "description": "",
+   "discovery_tier": "announcement",
+   "geo": [
+    "DE"
+   ],
+   "id": "unit-20",
+   "name": "",
+   "sectors": [
+    "ai_sw"
+   ],
+   "source": "Oracle Feed",
+   "source_id": "oracle"
+  },
+  {
+   "decision": "new",
+   "description": "",
+   "discovery_tier": "announcement",
+   "geo": [
+    "DE"
+   ],
+   "id": "unit-21",
+   "name": "Startup Kontext: AI security",
+   "sectors": [
+    "ai_sw"
+   ],
+   "source": "Oracle Feed",
+   "source_id": "oracle"
+  },
+  {
+   "decision": "new",
+   "description": "",
+   "discovery_tier": "announcement",
+   "geo": [
+    "DE"
+   ],
+   "id": "unit-22",
+   "name": "Fintech Mondu raises",
+   "sectors": [
+    "ai_sw"
+   ],
+   "source": "Oracle Feed",
+   "source_id": "oracle"
+  },
+  {
+   "decision": "new",
+   "description": "",
+   "discovery_tier": "announcement",
+   "geo": [
+    "DE"
+   ],
+   "id": "unit-23",
+   "name": "Robotics Spin-off Nimble from Munich wins award",
+   "sectors": [
+    "ai_sw"
+   ],
+   "source": "Oracle Feed",
+   "source_id": "oracle"
+  },
+  {
+   "decision": "new",
+   "description": "",
+   "discovery_tier": "announcement",
+   "geo": [
+    "DE"
+   ],
+   "id": "unit-24",
+   "name": "Acme Robotics and the Future Factory",
+   "sectors": [
+    "ai_sw"
+   ],
+   "source": "Oracle Feed",
+   "source_id": "oracle"
+  },
+  {
+   "decision": "new",
+   "description": "",
+   "discovery_tier": "announcement",
+   "geo": [
+    "DE"
+   ],
+   "id": "unit-25",
+   "name": "Acme Robotics for Future Factories",
+   "sectors": [
+    "ai_sw"
+   ],
+   "source": "Oracle Feed",
+   "source_id": "oracle"
+  },
+  {
+   "decision": "new",
+   "description": "",
+   "discovery_tier": "announcement",
+   "geo": [
+    "DE"
+   ],
+   "id": "unit-26",
+   "name": "ACME ROBOTICS",
+   "sectors": [
+    "ai_sw"
+   ],
+   "source": "Oracle Feed",
+   "source_id": "oracle"
+  },
+  {
+   "decision": "new",
+   "description": "",
+   "discovery_tier": "announcement",
+   "geo": [
+    "DE"
+   ],
+   "id": "unit-27",
+   "name": "ACMEROBOTICSX raises €2M",
+   "sectors": [
+    "ai_sw"
+   ],
+   "source": "Oracle Feed",
+   "source_id": "oracle"
+  },
+  {
+   "decision": "new",
+   "description": "",
+   "discovery_tier": "announcement",
+   "geo": [
+    "DE"
+   ],
+   "id": "unit-28",
+   "name": "ACMEROBOTICS raises €2M",
+   "sectors": [
+    "ai_sw"
+   ],
+   "source": "Oracle Feed",
+   "source_id": "oracle"
+  }
+ ],
+ "files": {
+  "inbox.json": "{\"candidates\": [{\"id\": \"eu-plain\", \"name\": \"Acme Robotics GmbH\", \"description\": \"Industrial robots for SMEs in Munich.\", \"source\": \"Oracle Feed\", \"source_id\": \"oracle\", \"discovery_tier\": \"announcement\", \"decision\": \"new\", \"geo\": [\"DE\"], \"sectors\": [\"ai_sw\"]}, {\"id\": \"uni\", \"name\": \"Technical University of Munich\", \"description\": \"A spinout project from the robotics lab.\", \"source\": \"Oracle Feed\", \"source_id\": \"oracle\", \"discovery_tier\": \"announcement\", \"decision\": \"new\", \"geo\": [\"DE\"], \"sectors\": [\"ai_sw\"]}, {\"id\": \"gov\", \"name\": \"Innovate UK\", \"description\": \"Grant programme.\", \"source\": \"Oracle Feed\", \"source_id\": \"oracle\", \"discovery_tier\": \"announcement\", \"decision\": \"new\", \"geo\": [\"DE\"], \"sectors\": [\"ai_sw\"]}, {\"id\": \"catapult\", \"name\": \"Digital Catapult\", \"description\": \"UK innovation centre.\", \"source\": \"Oracle Feed\", \"source_id\": \"oracle\", \"discovery_tier\": \"announcement\", \"decision\": \"new\", \"geo\": [\"DE\"], \"sectors\": [\"ai_sw\"]}, {\"id\": \"research\", \"name\": \"Fraunhofer Institute for Laser Technology\", \"description\": \"Applied research.\", \"source\": \"Oracle Feed\", \"source_id\": \"oracle\", \"discovery_tier\": \"announcement\", \"decision\": \"new\", \"geo\": [\"DE\"], \"sectors\": [\"ai_sw\"]}, {\"id\": \"incumbent\", \"name\": \"Rolls-Royce Holdings\", \"description\": \"Engines.\", \"source\": \"Oracle Feed\", \"source_id\": \"oracle\", \"discovery_tier\": \"announcement\", \"decision\": \"new\", \"geo\": [\"DE\"], \"sectors\": [\"ai_sw\"]}, {\"id\": \"plc\", \"name\": \"Acme Widgets PLC\", \"description\": \"Listed widgets.\", \"source\": \"Oracle Feed\", \"source_id\": \"oracle\", \"discovery_tier\": \"announcement\", \"decision\": \"new\", \"geo\": [\"DE\"], \"sectors\": [\"ai_sw\"]}, {\"id\": \"na-global\", \"name\": \"Prairie AI Inc\", \"description\": \"Agents for US farmers in Iowa.\", \"source\": \"Oracle Feed\", \"source_id\": \"oracle\", \"discovery_tier\": \"announcement\", \"decision\": \"new\", \"geo\": [\"US\"], \"sectors\": [\"ai_sw\"]}, {\"id\": \"na-eu\", \"name\": \"Harbor AI Inc\", \"description\": \"US startup with an office in Munich.\", \"source\": \"Oracle Feed\", \"source_id\": \"oracle\", \"discovery_tier\": \"announcement\", \"decision\": \"new\", \"geo\": [\"US\"], \"sectors\": [\"ai_sw\"]}, {\"id\": \"na-country\", \"name\": \"Maple Labs\", \"description\": \"Built in Toronto.\", \"source\": \"Oracle Feed\", \"source_id\": \"oracle\", \"discovery_tier\": \"announcement\", \"decision\": \"new\", \"geo\": [], \"sectors\": [\"ai_sw\"], \"country\": \"Canada\"}, {\"id\": \"override\", \"name\": \"Zed Labs\", \"description\": \"Software.\", \"source\": \"Oracle Feed\", \"source_id\": \"oracle\", \"discovery_tier\": \"announcement\", \"decision\": \"new\", \"geo\": [\"ZZ\"], \"sectors\": [\"ai_sw\"]}, {\"id\": \"region-eu\", \"name\": \"Scope Co\", \"description\": \"Pan-European.\", \"source\": \"Oracle Feed\", \"source_id\": \"oracle\", \"discovery_tier\": \"announcement\", \"decision\": \"new\", \"geo\": [], \"sectors\": [\"ai_sw\"], \"geo_scope\": \"region-eu\"}, {\"id\": \"geo-str\", \"name\": \"String Geo\", \"description\": \"Software.\", \"source\": \"Oracle Feed\", \"source_id\": \"oracle\", \"discovery_tier\": \"announcement\", \"decision\": \"new\", \"geo\": \"US\", \"sectors\": [\"ai_sw\"]}, {\"id\": \"broken-date\", \"name\": \"01.10.2026 17:08\", \"description\": \"RheoCarti awarded the EIC grant. The team builds cartilage implants.\", \"source\": \"Oracle Feed\", \"source_id\": \"oracle\", \"discovery_tier\": \"announcement\", \"decision\": \"new\", \"geo\": [\"DE\"], \"sectors\": [\"ai_sw\"]}, {\"id\": \"broken-unknown\", \"name\": \"UNKNOWN\", \"description\": \"Startup Kontext raises €2M to secure AI agents.\", \"source\": \"Oracle Feed\", \"source_id\": \"oracle\", \"discovery_tier\": \"announcement\", \"decision\": \"new\", \"geo\": [\"DE\"], \"sectors\": [\"ai_sw\"]}, {\"id\": \"headline\", \"name\": \"How Acme Labs is shaping the future of defence\", \"description\": \"Acme Labs builds C2 software.\", \"source\": \"Oracle Feed\", \"source_id\": \"oracle\", \"discovery_tier\": \"announcement\", \"decision\": \"new\", \"geo\": [\"DE\"], \"sectors\": [\"ai_sw\"]}, {\"id\": \"label-kontext\", \"name\": \"KI-Security-Startup Kontext\", \"description\": \"Security for AI agents.\", \"source\": \"Oracle Feed\", \"source_id\": \"oracle\", \"discovery_tier\": \"announcement\", \"decision\": \"new\", \"geo\": [\"DE\"], \"sectors\": [\"ai_sw\"]}, {\"id\": \"portfolio\", \"name\": \"Nexcade\", \"description\": \"AI agents for freight forwarders.\", \"source\": \"Oracle Feed\", \"source_id\": \"oracle\", \"discovery_tier\": \"announcement\", \"decision\": \"new\", \"geo\": [\"DE\"], \"sectors\": [\"ai_sw\"]}, {\"id\": \"portfolio-reject\", \"name\": \"Tabular GmbH\", \"description\": \"Accounting automation.\", \"source\": \"Oracle Feed\", \"source_id\": \"oracle\", \"discovery_tier\": \"announcement\", \"decision\": \"new\", \"geo\": [\"DE\"], \"sectors\": [\"ai_sw\"]}, {\"id\": \"relationship\", \"name\": \"Orbit Systems\", \"description\": \"Orbit Systems raised a seed round led by Project A Ventures.\", \"source\": \"Oracle Feed\", \"source_id\": \"oracle\", \"discovery_tier\": \"announcement\", \"decision\": \"new\", \"geo\": [\"DE\"], \"sectors\": [\"ai_sw\"]}, {\"id\": \"not-relationship\", \"name\": \"Lesson Co\", \"description\": \"Project A: 5 lessons from building a fund.\", \"source\": \"Oracle Feed\", \"source_id\": \"oracle\", \"discovery_tier\": \"announcement\", \"decision\": \"new\", \"geo\": [\"DE\"], \"sectors\": [\"ai_sw\"]}, {\"id\": \"resembles\", \"name\": \"Cargo Brain\", \"description\": \"Quoting and booking automation for freight forwarders and logistics agent.\", \"source\": \"Oracle Feed\", \"source_id\": \"oracle\", \"discovery_tier\": \"announcement\", \"decision\": \"new\", \"geo\": [\"DE\"], \"sectors\": [\"ai_sw\"]}, {\"id\": \"conviction\", \"name\": \"Conflict Robotics\", \"description\": \"Robots.\", \"source\": \"Oracle Feed\", \"source_id\": \"oracle\", \"discovery_tier\": \"announcement\", \"decision\": \"new\", \"geo\": [\"DE\"], \"sectors\": [\"ai_sw\"]}, {\"id\": \"conviction-clear\", \"name\": \"Clear Robotics\", \"description\": \"Robots.\", \"source\": \"Oracle Feed\", \"source_id\": \"oracle\", \"discovery_tier\": \"announcement\", \"decision\": \"new\", \"geo\": [\"DE\"], \"sectors\": [\"ai_sw\"]}, {\"id\": \"intake\", \"name\": \"Intake Labs\", \"description\": \"Found by a scout.\", \"source\": \"Oracle Feed\", \"source_id\": \"oracle\", \"discovery_tier\": \"announcement\", \"decision\": \"new\", \"geo\": [\"DE\"], \"sectors\": [\"ai_sw\"]}, {\"id\": \"obvious\", \"name\": \"Junk Page\", \"description\": \"Cookie banner.\", \"source\": \"Oracle Feed\", \"source_id\": \"oracle\", \"discovery_tier\": \"announcement\", \"decision\": \"new\", \"geo\": [\"DE\"], \"sectors\": [\"ai_sw\"]}, {\"id\": \"obvious-stage0\", \"name\": \"05.10.2026 14:00\", \"description\": \"\", \"source\": \"Oracle Feed\", \"source_id\": \"oracle\", \"discovery_tier\": \"announcement\", \"decision\": \"new\", \"geo\": [\"DE\"], \"sectors\": [\"ai_sw\"]}, {\"id\": \"stale\", \"name\": \"Changed Co\", \"description\": \"The text changed after triage.\", \"source\": \"Oracle Feed\", \"source_id\": \"oracle\", \"discovery_tier\": \"announcement\", \"decision\": \"new\", \"geo\": [\"DE\"], \"sectors\": [\"ai_sw\"]}, {\"id\": \"old-prompt\", \"name\": \"Old Prompt Co\", \"description\": \"Triaged under v2.\", \"source\": \"Oracle Feed\", \"source_id\": \"oracle\", \"discovery_tier\": \"announcement\", \"decision\": \"new\", \"geo\": [\"DE\"], \"sectors\": [\"ai_sw\"]}, {\"id\": \"baseline\", \"name\": \"Baseline Co\", \"description\": \"Already known.\", \"source\": \"Oracle Feed\", \"source_id\": \"oracle\", \"discovery_tier\": \"announcement\", \"decision\": \"baseline\", \"geo\": [\"DE\"], \"sectors\": [\"ai_sw\"]}, {\"id\": \"research-decided\", \"name\": \"Decided Co\", \"description\": \"Operator reviewing.\", \"source\": \"Oracle Feed\", \"source_id\": \"oracle\", \"discovery_tier\": \"announcement\", \"decision\": \"research\", \"geo\": [\"DE\"], \"sectors\": [\"ai_sw\"]}, {\"id\": \"error\", \"name\": \"Error Co\", \"description\": \"Triage failed.\", \"source\": \"Oracle Feed\", \"source_id\": \"oracle\", \"discovery_tier\": \"announcement\", \"decision\": \"new\", \"geo\": [\"DE\"], \"sectors\": [\"ai_sw\"]}, {\"id\": \"needs-human\", \"name\": \"Human Co\", \"description\": \"Needs a human.\", \"source\": \"Oracle Feed\", \"source_id\": \"oracle\", \"discovery_tier\": \"announcement\", \"decision\": \"new\", \"geo\": [\"DE\"], \"sectors\": [\"ai_sw\"]}, {\"id\": \"no-proposal\", \"name\": \"Quiet Co\", \"description\": \"Never triaged.\", \"source\": \"Oracle Feed\", \"source_id\": \"oracle\", \"discovery_tier\": \"announcement\", \"decision\": \"new\", \"geo\": [\"DE\"], \"sectors\": [\"ai_sw\"]}, {\"id\": \"verdict\", \"name\": \"Verdict Co\", \"description\": \"Operator decided.\", \"source\": \"Oracle Feed\", \"source_id\": \"oracle\", \"discovery_tier\": \"announcement\", \"decision\": \"new\", \"geo\": [\"DE\"], \"sectors\": [\"ai_sw\"]}, {\"id\": \"card\", \"name\": \"Card Co\", \"description\": \"Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. \", \"source\": \"Oracle Feed\", \"source_id\": \"oracle\", \"discovery_tier\": \"grant\", \"decision\": \"new\", \"geo\": [\"DE\"], \"sectors\": [], \"also_seen\": [{\"source\": \"Feed 0\"}, {\"source\": \"Feed 1\"}, {\"source\": \"Feed 2\"}, {\"source\": \"Feed 3\"}, {\"source\": \"Feed 4\"}, {\"source\": \"Feed 5\"}, {\"source\": \"Feed 6\"}, \"junk\"], \"source_url\": \"https://example.org/a\", \"source_date\": \"2026-10-01\", \"date_kind\": \"published\", \"location\": \"Berlin\", \"country\": \"DE\", \"source_sectors\": [\"robotics\", \"defence\"]}, {\"id\": \"card-none\", \"name\": \"Card None\", \"description\": null, \"source\": \"Oracle Feed\", \"source_id\": \"oracle\", \"discovery_tier\": null, \"decision\": \"new\", \"geo\": null, \"sectors\": null}, {\"id\": \"\", \"name\": \"No Id\", \"description\": \"Skipped by the view.\", \"source\": \"Oracle Feed\", \"source_id\": \"oracle\", \"discovery_tier\": \"announcement\", \"decision\": \"new\", \"geo\": [\"DE\"], \"sectors\": [\"ai_sw\"]}, \"not a record\"]}",
+  "queue_routing.json": "{\"routes\": {\"eu-plain\": {\"state\": \"NEEDS_OPERATOR\", \"priority\": 80, \"reason\": \"routed eu-plain\", \"priority_why\": [\"fresh\"], \"underlying\": null, \"resurfaced\": false, \"at\": \"2026-11-08T19:40:00\", \"evidence_fp\": \"abc\", \"proposal\": \"RESEARCH\"}, \"uni\": {\"state\": \"MACHINE_WATCH\", \"priority\": 10, \"reason\": \"routed uni\", \"priority_why\": [\"fresh\"], \"underlying\": null, \"resurfaced\": false, \"at\": \"2026-11-08T19:40:00\", \"evidence_fp\": \"abc\", \"proposal\": \"RESEARCH\"}, \"baseline\": {\"state\": \"NEEDS_OPERATOR\", \"priority\": 50, \"reason\": \"routed baseline\", \"priority_why\": [\"fresh\"], \"underlying\": null, \"resurfaced\": false, \"at\": \"2026-11-08T19:40:00\", \"evidence_fp\": \"abc\", \"proposal\": \"RESEARCH\"}, \"portfolio\": {\"state\": \"CONFLICT_GATED\", \"priority\": 90, \"reason\": \"routed portfolio\", \"priority_why\": [\"fresh\"], \"underlying\": null, \"resurfaced\": false, \"at\": \"2026-11-08T19:40:00\", \"evidence_fp\": \"abc\", \"proposal\": \"RESEARCH\"}, \"no-proposal\": {\"state\": \"BACKGROUND\", \"priority\": 1, \"reason\": \"routed no-proposal\", \"priority_why\": [\"fresh\"], \"underlying\": null, \"resurfaced\": false, \"at\": \"2026-11-08T19:40:00\", \"evidence_fp\": \"abc\", \"proposal\": \"RESEARCH\"}, \"ghost\": {\"state\": \"BACKGROUND\", \"priority\": 2, \"reason\": \"routed ghost\", \"priority_why\": [\"fresh\"], \"underlying\": null, \"resurfaced\": false, \"at\": \"2026-11-08T19:40:00\", \"evidence_fp\": \"abc\", \"proposal\": \"RESEARCH\"}}}",
+  "real_data.json": "{\"signals\": [{\"company\": \"Conflict Robotics\", \"conflict\": \"potential_conflict\", \"slug\": \"conflict-robotics\"}, {\"company\": \"Clear Robotics\", \"conflict\": \"none\"}, {\"company\": \"Conflict Robotics GmbH\", \"conflict\": \"unclear\"}, {\"company\": \"\"}, \"not a record\"]}",
+  "scout_intake.json": "{\"items\": {\"si-1\": {\"entity_name\": \"Intake Labs\", \"status\": \"REVIEWING\"}, \"si-2\": {\"entity_name\": \"Intake Labs Ltd\", \"status\": \"MONITOR\"}, \"si-3\": {\"entity_name\": \"Clear Robotics\", \"status\": \"NEW INTAKE\"}, \"si-4\": {\"status\": \"NEW INTAKE\"}}}",
+  "shadow_triage/acceptance.json": "{\"status\": \"ACCEPTED — shadow only\", \"holdout\": {\"n\": 100, \"false_rejects\": 0}, \"other\": 1}",
+  "shadow_triage/auto_runs.json": "{\"runs\": [{\"pending\": [{\"id\": \"old-run\", \"reason\": \"too old: outside the last five runs\"}], \"failed\": []}, {\"pending\": [], \"failed\": []}, {\"pending\": [], \"failed\": []}, {\"pending\": [{\"id\": \"no-proposal\", \"reason\": \"provider outage\"}, {\"id\": \"eu-plain\", \"reason\": \"has one\"}], \"failed\": [{\"id\": \"error\", \"reason\": \"schema error\"}]}, {\"pending\": [{\"id\": \"needs-human\", \"reason\": \"waiting\"}], \"failed\": []}, {\"pending\": [], \"failed\": [{\"id\": \"no-proposal\", \"reason\": \"failed again\"}]}]}",
+  "triage_decisions.jsonl": "{\"ts\": \"2026-10-31T17:20:00\", \"candidate_id\": \"verdict\", \"machine\": \"RESEARCH\", \"verdict\": \"REJECT\", \"mode\": \"override\", \"agreed\": false}\n{\"ts\": \"2026-10-31T17:21:00\", \"candidate_id\": \"verdict\", \"machine\": \"RESEARCH\", \"verdict\": \"RESEARCH\", \"mode\": \"accept\", \"agreed\": true}\nnot json\n[1, 2]\n\n{\"ts\": \"2026-10-31T17:22:00\", \"candidate_id\": \"gone\", \"machine\": \"REJECT\", \"verdict\": \"KEEP\", \"mode\": \"override\", \"agreed\": false}\r\n{\"ts\": \"2026-10-31T17:23:00\", \"candidate_id\": \"obvious\", \"machine\": \"REJECT\", \"verdict\": \"REJECT\", \"mode\": \"batch_accept\", \"agreed\": true}\r\n{\"ts\": \"2026-10-31T17:24:00\", \"candidate_id\": \"\", \"machine\": \"KEEP\", \"verdict\": \"KEEP\"}",
+  "triage_proposals.json": "{\"version\": 1, \"proposals\": {\"eu-plain\": {\"candidate_id\": \"eu-plain\", \"proposal\": \"RESEARCH\", \"status\": \"proposed\", \"prompt_version\": \"triage-v3\", \"input_sha\": \"972ea1c66f509b0c\", \"proposed_at\": \"2026-10-09T08:17:12\", \"model\": \"deepseek-ai/DeepSeek-V4-Flash\", \"stage\": \"stage1\", \"path\": \"cheap\", \"confidence\": \"medium\", \"reasons\": [\"grounded reason\"], \"missing\": [], \"flags\": [], \"capital_stage\": \"UNKNOWN\", \"themes\": [], \"sector\": \"robotics\", \"entity_type\": \"VENTURE\", \"run_id\": \"run-1\"}, \"uni\": {\"candidate_id\": \"uni\", \"proposal\": \"KEEP\", \"status\": \"proposed\", \"prompt_version\": \"triage-v3\", \"input_sha\": \"9bbdec86ce4ba415\", \"proposed_at\": \"2026-10-09T08:17:12\", \"model\": \"deepseek-ai/DeepSeek-V4-Flash\", \"stage\": \"stage1\", \"path\": \"cheap\", \"confidence\": \"medium\", \"reasons\": [\"grounded reason\"], \"missing\": [], \"flags\": [], \"capital_stage\": \"FIRST_INSTITUTIONAL\", \"themes\": [], \"sector\": \"robotics\", \"entity_type\": \"VENTURE\", \"run_id\": \"run-1\"}, \"gov\": {\"candidate_id\": \"gov\", \"proposal\": \"RESEARCH\", \"status\": \"proposed\", \"prompt_version\": \"triage-v3\", \"input_sha\": \"4aaf57649a9cf6c6\", \"proposed_at\": \"2026-10-09T08:17:12\", \"model\": \"deepseek-ai/DeepSeek-V4-Flash\", \"stage\": \"stage1\", \"path\": \"cheap\", \"confidence\": \"medium\", \"reasons\": [\"grounded reason\"], \"missing\": [], \"flags\": [], \"capital_stage\": \"UNKNOWN\", \"themes\": [], \"sector\": \"robotics\", \"entity_type\": \"VENTURE\", \"run_id\": \"run-1\"}, \"catapult\": {\"candidate_id\": \"catapult\", \"proposal\": \"RESEARCH\", \"status\": \"proposed\", \"prompt_version\": \"triage-v3\", \"input_sha\": \"fe09921b3ef175ef\", \"proposed_at\": \"2026-10-09T08:17:12\", \"model\": \"deepseek-ai/DeepSeek-V4-Flash\", \"stage\": \"stage1\", \"path\": \"cheap\", \"confidence\": \"medium\", \"reasons\": [\"grounded reason\"], \"missing\": [], \"flags\": [], \"capital_stage\": \"UNKNOWN\", \"themes\": [], \"sector\": \"robotics\", \"entity_type\": \"VENTURE\", \"run_id\": \"run-1\"}, \"research\": {\"candidate_id\": \"research\", \"proposal\": \"RESEARCH\", \"status\": \"proposed\", \"prompt_version\": \"triage-v3\", \"input_sha\": \"e09502b4310feaca\", \"proposed_at\": \"2026-10-09T08:17:12\", \"model\": \"deepseek-ai/DeepSeek-V4-Flash\", \"stage\": \"stage1\", \"path\": \"cheap\", \"confidence\": \"medium\", \"reasons\": [\"grounded reason\"], \"missing\": [], \"flags\": [], \"capital_stage\": \"UNKNOWN\", \"themes\": [], \"sector\": \"robotics\", \"entity_type\": \"VENTURE\", \"run_id\": \"run-1\"}, \"incumbent\": {\"candidate_id\": \"incumbent\", \"proposal\": \"RESEARCH\", \"status\": \"proposed\", \"prompt_version\": \"triage-v3\", \"input_sha\": \"459c9c0410bb5c81\", \"proposed_at\": \"2026-10-09T08:17:12\", \"model\": \"deepseek-ai/DeepSeek-V4-Flash\", \"stage\": \"stage1\", \"path\": \"cheap\", \"confidence\": \"medium\", \"reasons\": [\"grounded reason\"], \"missing\": [], \"flags\": [], \"capital_stage\": \"UNKNOWN\", \"themes\": [], \"sector\": \"robotics\", \"entity_type\": \"VENTURE\", \"run_id\": \"run-1\"}, \"plc\": {\"candidate_id\": \"plc\", \"proposal\": \"RESEARCH\", \"status\": \"proposed\", \"prompt_version\": \"triage-v3\", \"input_sha\": \"24f48a89983332b4\", \"proposed_at\": \"2026-10-09T08:17:12\", \"model\": \"deepseek-ai/DeepSeek-V4-Flash\", \"stage\": \"stage1\", \"path\": \"cheap\", \"confidence\": \"medium\", \"reasons\": [\"grounded reason\"], \"missing\": [], \"flags\": [], \"capital_stage\": \"UNKNOWN\", \"themes\": [], \"sector\": \"robotics\", \"entity_type\": \"VENTURE\", \"run_id\": \"run-1\"}, \"na-global\": {\"candidate_id\": \"na-global\", \"proposal\": \"RESEARCH\", \"status\": \"proposed\", \"prompt_version\": \"triage-v3\", \"input_sha\": \"bcfd8c729591488a\", \"proposed_at\": \"2026-10-09T08:17:12\", \"model\": \"deepseek-ai/DeepSeek-V4-Flash\", \"stage\": \"stage1\", \"path\": \"cheap\", \"confidence\": \"medium\", \"reasons\": [\"grounded reason\"], \"missing\": [], \"flags\": [], \"capital_stage\": \"UNKNOWN\", \"themes\": [], \"sector\": \"robotics\", \"entity_type\": \"VENTURE\", \"run_id\": \"run-1\"}, \"na-eu\": {\"candidate_id\": \"na-eu\", \"proposal\": \"RESEARCH\", \"status\": \"proposed\", \"prompt_version\": \"triage-v3\", \"input_sha\": \"f4257a1552375faf\", \"proposed_at\": \"2026-10-09T08:17:12\", \"model\": \"deepseek-ai/DeepSeek-V4-Flash\", \"stage\": \"stage1\", \"path\": \"cheap\", \"confidence\": \"medium\", \"reasons\": [\"grounded reason\"], \"missing\": [], \"flags\": [], \"capital_stage\": \"UNKNOWN\", \"themes\": [], \"sector\": \"robotics\", \"entity_type\": \"VENTURE\", \"run_id\": \"run-1\"}, \"na-country\": {\"candidate_id\": \"na-country\", \"proposal\": \"RESEARCH\", \"status\": \"proposed\", \"prompt_version\": \"triage-v3\", \"input_sha\": \"f00f84211ff7d699\", \"proposed_at\": \"2026-10-09T08:17:12\", \"model\": \"deepseek-ai/DeepSeek-V4-Flash\", \"stage\": \"stage1\", \"path\": \"cheap\", \"confidence\": \"medium\", \"reasons\": [\"grounded reason\"], \"missing\": [], \"flags\": [], \"capital_stage\": \"UNKNOWN\", \"themes\": [], \"sector\": \"robotics\", \"entity_type\": \"VENTURE\", \"run_id\": \"run-1\"}, \"override\": {\"candidate_id\": \"override\", \"proposal\": \"RESEARCH\", \"status\": \"proposed\", \"prompt_version\": \"triage-v3\", \"input_sha\": \"f8976a358dc528f2\", \"proposed_at\": \"2026-10-09T08:17:12\", \"model\": \"deepseek-ai/DeepSeek-V4-Flash\", \"stage\": \"stage1\", \"path\": \"cheap\", \"confidence\": \"medium\", \"reasons\": [\"grounded reason\"], \"missing\": [], \"flags\": [], \"capital_stage\": \"UNKNOWN\", \"themes\": [], \"sector\": \"robotics\", \"entity_type\": \"VENTURE\", \"run_id\": \"run-1\"}, \"region-eu\": {\"candidate_id\": \"region-eu\", \"proposal\": \"RESEARCH\", \"status\": \"proposed\", \"prompt_version\": \"triage-v3\", \"input_sha\": \"6eab41d7cbb05698\", \"proposed_at\": \"2026-10-09T08:17:12\", \"model\": \"deepseek-ai/DeepSeek-V4-Flash\", \"stage\": \"stage1\", \"path\": \"cheap\", \"confidence\": \"medium\", \"reasons\": [\"grounded reason\"], \"missing\": [], \"flags\": [], \"capital_stage\": \"UNKNOWN\", \"themes\": [], \"sector\": \"robotics\", \"entity_type\": \"VENTURE\", \"run_id\": \"run-1\"}, \"geo-str\": {\"candidate_id\": \"geo-str\", \"proposal\": \"RESEARCH\", \"status\": \"proposed\", \"prompt_version\": \"triage-v3\", \"input_sha\": \"2af36a6db6f3a46e\", \"proposed_at\": \"2026-10-09T08:17:12\", \"model\": \"deepseek-ai/DeepSeek-V4-Flash\", \"stage\": \"stage1\", \"path\": \"cheap\", \"confidence\": \"medium\", \"reasons\": [\"grounded reason\"], \"missing\": [], \"flags\": [], \"capital_stage\": \"UNKNOWN\", \"themes\": [], \"sector\": \"robotics\", \"entity_type\": \"VENTURE\", \"run_id\": \"run-1\"}, \"broken-date\": {\"candidate_id\": \"broken-date\", \"proposal\": \"RESEARCH\", \"status\": \"proposed\", \"prompt_version\": \"triage-v3\", \"input_sha\": \"21e2e11fc97dea6a\", \"proposed_at\": \"2026-10-09T08:17:12\", \"model\": \"deepseek-ai/DeepSeek-V4-Flash\", \"stage\": \"stage1\", \"path\": \"cheap\", \"confidence\": \"medium\", \"reasons\": [\"grounded reason\"], \"missing\": [], \"flags\": [], \"capital_stage\": \"UNKNOWN\", \"themes\": [], \"sector\": \"robotics\", \"entity_type\": \"VENTURE\", \"run_id\": \"run-1\"}, \"broken-unknown\": {\"candidate_id\": \"broken-unknown\", \"proposal\": \"RESEARCH\", \"status\": \"proposed\", \"prompt_version\": \"triage-v3\", \"input_sha\": \"a3bb540eea3f0a81\", \"proposed_at\": \"2026-10-09T08:17:12\", \"model\": \"deepseek-ai/DeepSeek-V4-Flash\", \"stage\": \"stage1\", \"path\": \"cheap\", \"confidence\": \"medium\", \"reasons\": [\"grounded reason\"], \"missing\": [], \"flags\": [], \"capital_stage\": null, \"themes\": [], \"sector\": \"robotics\", \"entity_type\": \"VENTURE\", \"run_id\": \"run-1\"}, \"headline\": {\"candidate_id\": \"headline\", \"proposal\": \"RESEARCH\", \"status\": \"proposed\", \"prompt_version\": \"triage-v3\", \"input_sha\": \"d3315b878aceaeef\", \"proposed_at\": \"2026-10-09T08:17:12\", \"model\": \"deepseek-ai/DeepSeek-V4-Flash\", \"stage\": \"stage1\", \"path\": \"cheap\", \"confidence\": \"medium\", \"reasons\": [\"grounded reason\"], \"missing\": [], \"flags\": [], \"capital_stage\": \"UNKNOWN\", \"themes\": [], \"sector\": \"robotics\", \"entity_type\": \"VENTURE\", \"run_id\": \"run-1\"}, \"label-kontext\": {\"candidate_id\": \"label-kontext\", \"proposal\": \"RESEARCH\", \"status\": \"proposed\", \"prompt_version\": \"triage-v3\", \"input_sha\": \"0f6b9c502b0c4d52\", \"proposed_at\": \"2026-10-09T08:17:12\", \"model\": \"deepseek-ai/DeepSeek-V4-Flash\", \"stage\": \"stage1\", \"path\": \"cheap\", \"confidence\": \"medium\", \"reasons\": [\"grounded reason\"], \"missing\": [], \"flags\": [], \"capital_stage\": \"UNKNOWN\", \"themes\": [], \"sector\": \"robotics\", \"entity_type\": \"VENTURE\", \"run_id\": \"run-1\"}, \"portfolio\": {\"candidate_id\": \"portfolio\", \"proposal\": \"KEEP\", \"status\": \"proposed\", \"prompt_version\": \"triage-v3\", \"input_sha\": \"1283e4e034c4ea59\", \"proposed_at\": \"2026-10-09T08:17:12\", \"model\": \"deepseek-ai/DeepSeek-V4-Flash\", \"stage\": \"stage1\", \"path\": \"cheap\", \"confidence\": \"medium\", \"reasons\": [\"grounded reason\"], \"missing\": [], \"flags\": [], \"capital_stage\": \"PRE_COMPANY\", \"themes\": [], \"sector\": \"robotics\", \"entity_type\": \"VENTURE\", \"run_id\": \"run-1\"}, \"portfolio-reject\": {\"candidate_id\": \"portfolio-reject\", \"proposal\": \"REJECT\", \"status\": \"proposed\", \"prompt_version\": \"triage-v3\", \"input_sha\": \"33c225bfb78a4e76\", \"proposed_at\": \"2026-10-09T08:17:12\", \"model\": \"deepseek-ai/DeepSeek-V4-Flash\", \"stage\": \"stage1\", \"path\": \"cheap -> veto: both reject\", \"confidence\": \"medium\", \"reasons\": [\"grounded reason\"], \"missing\": [], \"flags\": [], \"capital_stage\": \"UNKNOWN\", \"themes\": [], \"sector\": \"robotics\", \"entity_type\": \"VENTURE\", \"run_id\": \"run-1\", \"reject_basis\": \"NON_VENTURE\"}, \"relationship\": {\"candidate_id\": \"relationship\", \"proposal\": \"WATCH\", \"status\": \"proposed\", \"prompt_version\": \"triage-v3\", \"input_sha\": \"72719faaf025030c\", \"proposed_at\": \"2026-10-09T08:17:12\", \"model\": \"deepseek-ai/DeepSeek-V4-Flash\", \"stage\": \"stage1\", \"path\": \"cheap\", \"confidence\": \"medium\", \"reasons\": [\"grounded reason\"], \"missing\": [], \"flags\": [], \"capital_stage\": \"ROUND_FORMING\", \"themes\": [], \"sector\": \"robotics\", \"entity_type\": \"VENTURE\", \"run_id\": \"run-1\"}, \"not-relationship\": {\"candidate_id\": \"not-relationship\", \"proposal\": \"RESEARCH\", \"status\": \"proposed\", \"prompt_version\": \"triage-v3\", \"input_sha\": \"a9da2c6f1ba2f596\", \"proposed_at\": \"2026-10-09T08:17:12\", \"model\": \"deepseek-ai/DeepSeek-V4-Flash\", \"stage\": \"stage1\", \"path\": \"cheap\", \"confidence\": \"medium\", \"reasons\": [\"grounded reason\"], \"missing\": [], \"flags\": [], \"capital_stage\": \"UNKNOWN\", \"themes\": [], \"sector\": \"robotics\", \"entity_type\": \"VENTURE\", \"run_id\": \"run-1\"}, \"resembles\": {\"candidate_id\": \"resembles\", \"proposal\": \"RESEARCH\", \"status\": \"proposed\", \"prompt_version\": \"triage-v3\", \"input_sha\": \"68896c815f9a437d\", \"proposed_at\": \"2026-10-09T08:17:12\", \"model\": \"deepseek-ai/DeepSeek-V4-Flash\", \"stage\": \"stage1\", \"path\": \"cheap\", \"confidence\": \"medium\", \"reasons\": [\"grounded reason\"], \"missing\": [], \"flags\": [], \"capital_stage\": \"UNKNOWN\", \"themes\": [], \"sector\": \"robotics\", \"entity_type\": \"VENTURE\", \"run_id\": \"run-1\"}, \"conviction\": {\"candidate_id\": \"conviction\", \"proposal\": \"RESEARCH\", \"status\": \"proposed\", \"prompt_version\": \"triage-v3\", \"input_sha\": \"4a68de11f46cfffd\", \"proposed_at\": \"2026-10-09T08:17:12\", \"model\": \"deepseek-ai/DeepSeek-V4-Flash\", \"stage\": \"stage1\", \"path\": \"cheap\", \"confidence\": \"medium\", \"reasons\": [\"grounded reason\"], \"missing\": [], \"flags\": [], \"capital_stage\": \"UNKNOWN\", \"themes\": [], \"sector\": \"robotics\", \"entity_type\": \"VENTURE\", \"run_id\": \"run-1\"}, \"conviction-clear\": {\"candidate_id\": \"conviction-clear\", \"proposal\": \"RESEARCH\", \"status\": \"proposed\", \"prompt_version\": \"triage-v3\", \"input_sha\": \"6002d8d13c00885d\", \"proposed_at\": \"2026-10-09T08:17:12\", \"model\": \"deepseek-ai/DeepSeek-V4-Flash\", \"stage\": \"stage1\", \"path\": \"cheap\", \"confidence\": \"medium\", \"reasons\": [\"grounded reason\"], \"missing\": [], \"flags\": [], \"capital_stage\": \"UNKNOWN\", \"themes\": [], \"sector\": \"robotics\", \"entity_type\": \"VENTURE\", \"run_id\": \"run-1\"}, \"intake\": {\"candidate_id\": \"intake\", \"proposal\": \"RESEARCH\", \"status\": \"proposed\", \"prompt_version\": \"triage-v3\", \"input_sha\": \"a03343abb7b15a9b\", \"proposed_at\": \"2026-10-09T08:17:12\", \"model\": \"deepseek-ai/DeepSeek-V4-Flash\", \"stage\": \"stage1\", \"path\": \"cheap\", \"confidence\": \"medium\", \"reasons\": [\"grounded reason\"], \"missing\": [], \"flags\": [], \"capital_stage\": \"UNKNOWN\", \"themes\": [], \"sector\": \"robotics\", \"entity_type\": \"VENTURE\", \"run_id\": \"run-1\"}, \"obvious\": {\"candidate_id\": \"obvious\", \"proposal\": \"REJECT\", \"status\": \"proposed\", \"prompt_version\": \"triage-v3\", \"input_sha\": \"c997d32acdaa4b4f\", \"proposed_at\": \"2026-10-09T08:17:12\", \"model\": \"deepseek-ai/DeepSeek-V4-Flash\", \"stage\": \"stage1\", \"path\": \"cheap -> veto: both reject\", \"confidence\": \"medium\", \"reasons\": [\"grounded reason\"], \"missing\": [], \"flags\": [], \"capital_stage\": \"ALREADY_INSTITUTIONALLY_FUNDED\", \"themes\": [], \"sector\": \"robotics\", \"entity_type\": \"VENTURE\", \"run_id\": \"run-1\", \"reject_basis\": \"NOT_AN_ENTITY\", \"reject_evidence\": \"Cookie banner\", \"model_proposal\": \"REJECT\", \"veto\": {\"model\": \"Qwen/Qwen3.5-397B-A17B\", \"mode\": \"standard\", \"ok\": true, \"model_proposal\": \"REJECT\", \"reject_basis\": \"NOT_AN_ENTITY\", \"reasons\": [\"not an entity\"]}}, \"obvious-stage0\": {\"candidate_id\": \"obvious-stage0\", \"proposal\": \"REJECT\", \"status\": \"proposed\", \"prompt_version\": \"triage-v3\", \"input_sha\": \"5d5dc2b1a8a43c06\", \"proposed_at\": \"2026-10-09T08:17:12\", \"model\": \"deepseek-ai/DeepSeek-V4-Flash\", \"stage\": \"stage0\", \"path\": \"stage0 junk\", \"confidence\": \"medium\", \"reasons\": [\"grounded reason\"], \"missing\": [], \"flags\": [], \"capital_stage\": \"UNKNOWN\", \"themes\": [], \"sector\": \"robotics\", \"entity_type\": \"VENTURE\", \"run_id\": \"run-1\"}, \"stale\": {\"candidate_id\": \"stale\", \"proposal\": \"REJECT\", \"status\": \"proposed\", \"prompt_version\": \"triage-v3\", \"input_sha\": \"0123456789abcdef\", \"proposed_at\": \"2026-10-09T08:17:12\", \"model\": \"deepseek-ai/DeepSeek-V4-Flash\", \"stage\": \"stage1\", \"path\": \"cheap -> veto: both reject\", \"confidence\": \"medium\", \"reasons\": [\"grounded reason\"], \"missing\": [], \"flags\": [], \"capital_stage\": \"UNKNOWN\", \"themes\": [], \"sector\": \"robotics\", \"entity_type\": \"VENTURE\", \"run_id\": \"run-1\"}, \"old-prompt\": {\"candidate_id\": \"old-prompt\", \"proposal\": \"KEEP\", \"status\": \"proposed\", \"prompt_version\": \"triage-v2\", \"input_sha\": \"3116d00003b7ff81\", \"proposed_at\": \"2026-10-09T08:17:12\", \"model\": \"deepseek-ai/DeepSeek-V4-Flash\", \"stage\": \"stage1\", \"path\": \"cheap\", \"confidence\": \"medium\", \"reasons\": [\"grounded reason\"], \"missing\": [], \"flags\": [], \"capital_stage\": \"UNKNOWN\", \"themes\": [], \"sector\": \"robotics\", \"entity_type\": \"VENTURE\", \"run_id\": \"run-1\"}, \"baseline\": {\"candidate_id\": \"baseline\", \"proposal\": \"REJECT\", \"status\": \"proposed\", \"prompt_version\": \"triage-v3\", \"input_sha\": \"877c00fddfa8d014\", \"proposed_at\": \"2026-10-09T08:17:12\", \"model\": \"deepseek-ai/DeepSeek-V4-Flash\", \"stage\": \"stage1\", \"path\": \"both reject\", \"confidence\": \"medium\", \"reasons\": [\"grounded reason\"], \"missing\": [], \"flags\": [], \"capital_stage\": \"ANGEL_ONLY\", \"themes\": [], \"sector\": \"robotics\", \"entity_type\": \"VENTURE\", \"run_id\": \"run-1\"}, \"research-decided\": {\"candidate_id\": \"research-decided\", \"proposal\": \"KEEP\", \"status\": \"proposed\", \"prompt_version\": \"triage-v3\", \"input_sha\": \"aec0279eefe08189\", \"proposed_at\": \"2026-10-09T08:17:12\", \"model\": \"deepseek-ai/DeepSeek-V4-Flash\", \"stage\": \"stage1\", \"path\": \"cheap\", \"confidence\": \"medium\", \"reasons\": [\"grounded reason\"], \"missing\": [], \"flags\": [], \"capital_stage\": \"GRANT_ONLY\", \"themes\": [], \"sector\": \"robotics\", \"entity_type\": \"VENTURE\", \"run_id\": \"run-1\"}, \"error\": {\"candidate_id\": \"error\", \"proposal\": \"RESEARCH\", \"status\": \"error\", \"prompt_version\": \"triage-v3\", \"input_sha\": \"995f0f97cd44e675\", \"proposed_at\": \"2026-10-09T08:17:12\", \"model\": \"deepseek-ai/DeepSeek-V4-Flash\", \"stage\": \"stage1\", \"path\": \"cheap\", \"confidence\": \"medium\", \"reasons\": [\"grounded reason\"], \"missing\": [], \"flags\": [], \"capital_stage\": \"UNKNOWN\", \"themes\": [], \"sector\": \"robotics\", \"entity_type\": \"VENTURE\", \"run_id\": \"run-1\"}, \"needs-human\": {\"candidate_id\": \"needs-human\", \"proposal\": \"WATCH\", \"status\": \"needs_human\", \"prompt_version\": \"triage-v3\", \"input_sha\": \"80416b92edb9dfc7\", \"proposed_at\": \"2026-10-09T08:17:12\", \"model\": \"deepseek-ai/DeepSeek-V4-Flash\", \"stage\": \"stage1\", \"path\": \"cheap\", \"confidence\": \"medium\", \"reasons\": [\"grounded reason\"], \"missing\": [], \"flags\": [], \"capital_stage\": \"UNKNOWN\", \"themes\": [], \"sector\": \"robotics\", \"entity_type\": \"VENTURE\", \"run_id\": \"run-1\", \"veto\": {}}, \"verdict\": {\"candidate_id\": \"verdict\", \"proposal\": \"RESEARCH\", \"status\": \"proposed\", \"prompt_version\": \"triage-v3\", \"input_sha\": \"7dceb426bed5c7a5\", \"proposed_at\": \"2026-10-09T08:17:12\", \"model\": \"deepseek-ai/DeepSeek-V4-Flash\", \"stage\": \"stage1\", \"path\": \"cheap\", \"confidence\": \"medium\", \"reasons\": [\"grounded reason\"], \"missing\": [], \"flags\": [], \"capital_stage\": \"UNKNOWN\", \"themes\": [], \"sector\": \"robotics\", \"entity_type\": \"VENTURE\", \"run_id\": \"run-1\"}, \"card\": {\"candidate_id\": \"card\", \"proposal\": \"RESEARCH\", \"status\": \"proposed\", \"prompt_version\": \"triage-v3\", \"input_sha\": \"6450491f64a39565\", \"proposed_at\": \"2026-10-09T08:17:12\", \"model\": \"deepseek-ai/DeepSeek-V4-Flash\", \"stage\": \"stage1\", \"path\": \"cheap\", \"confidence\": \"medium\", \"reasons\": [\"grounded reason\"], \"missing\": [], \"flags\": [], \"capital_stage\": \"UNKNOWN\", \"themes\": [], \"sector\": \"robotics\", \"entity_type\": \"VENTURE\", \"run_id\": \"run-1\"}, \"card-none\": {\"candidate_id\": \"card-none\", \"proposal\": \"RESEARCH\", \"status\": \"proposed\", \"prompt_version\": \"triage-v3\", \"input_sha\": \"1de55b79f5ecb6ea\", \"proposed_at\": \"2026-10-09T08:17:12\", \"model\": \"deepseek-ai/DeepSeek-V4-Flash\", \"stage\": \"stage1\", \"path\": \"cheap\", \"confidence\": \"medium\", \"reasons\": [\"grounded reason\"], \"missing\": [], \"flags\": [], \"capital_stage\": \"UNKNOWN\", \"themes\": [], \"sector\": \"robotics\", \"entity_type\": \"VENTURE\", \"run_id\": \"run-1\"}}}",
+  "workspace_geos.json": "{\"eu\": [\"ZZ\"]}"
+ },
+ "provenance": {
+  "old_dirty": false,
+  "old_revision": "6c739b9cb6ca2517b845e381d39a36c50eccc59e",
+  "units": 67
+ },
+ "tables": {
+  "cities": [
+   "Karlsruhe",
+   "Munich",
+   "Zürich",
+   "Lausanne",
+   "Stuttgart",
+   "Frankfurt",
+   "Paris",
+   "Amsterdam",
+   "Delft",
+   "Eindhoven",
+   "Berlin",
+   "Darmstadt",
+   "London"
+  ],
+  "discovery_tiers": {
+   "announcement": "Announcement feed — discovery only, usually recently funded",
+   "manual": "Manual / relationship",
+   "pre_company": "Pre-company channel (DIANA/EUDIS, TUM/UnternehmerTUM, transfer office, grant winner, stealth/talent exit) — THE EDGE",
+   "register": "Company register"
+  },
+  "eu_places": [
+   "albania",
+   "amsterdam",
+   "andorra",
+   "austria",
+   "barcelona",
+   "belarus",
+   "belgium",
+   "berlin",
+   "bosnia and herzegovina",
+   "bulgaria",
+   "copenhagen",
+   "croatia",
+   "cyprus",
+   "czechia",
+   "darmstadt",
+   "delft",
+   "denmark",
+   "eindhoven",
+   "estonia",
+   "eu-funded",
+   "europe",
+   "european",
+   "faroe islands",
+   "finland",
+   "france",
+   "frankfurt",
+   "germany",
+   "gibraltar",
+   "greece",
+   "greenland",
+   "guernsey",
+   "helsinki",
+   "horizon europe",
+   "hungary",
+   "iceland",
+   "ireland",
+   "isle of man",
+   "italy",
+   "jersey",
+   "karlsruhe",
+   "kosovo",
+   "latvia",
+   "lausanne",
+   "liechtenstein",
+   "lisbon",
+   "lithuania",
+   "london",
+   "luxembourg",
+   "madrid",
+   "malta",
+   "milan",
+   "moldova",
+   "monaco",
+   "montenegro",
+   "munich",
+   "münchen",
+   "netherlands",
+   "north macedonia",
+   "norway",
+   "oslo",
+   "paris",
+   "poland",
+   "portugal",
+   "prague",
+   "riga",
+   "romania",
+   "san marino",
+   "serbia",
+   "slovakia",
+   "slovenia",
+   "spain",
+   "stockholm",
+   "stuttgart",
+   "svalbard",
+   "sweden",
+   "switzerland",
+   "tallinn",
+   "ukraine",
+   "united kingdom",
+   "vatican city",
+   "vienna",
+   "vilnius",
+   "warsaw",
+   "wien",
+   "zurich",
+   "zürich",
+   "åland islands"
+  ],
+  "headline_patterns": {
+   "_CITY_BASED": [
+    "^\\s*[A-ZÀ-Ž][\\w.\\-]*(?:\\s[A-ZÀ-Ž][\\w.\\-]*)?[\\-\\u2011]based\\s+",
+    34
+   ],
+   "_COUNTRY_POSS": [
+    "^\\s*[A-ZÀ-Ž][\\w]*(?:\\s[A-Z][\\w]*)?[\\u2019']s\\s+",
+    32
+   ],
+   "_HEADLINE_LABELS": [
+    "^\\s*(exclusive|breaking|interview|podcast|analysis|opinion|update|watch|meet|report)\\s*[:\\u2014\\-–]\\s*",
+    34
+   ]
+  },
+  "headline_strings": {
+   "_FUNDING_VERBS": "(?:raises?|raised|secures?|secured|closes?|closed|lands?|bags?|nabs?|gets?|receives?|announces?|launches?|sammelt|erh[äa]lt|sichert(?:\\s+sich)?|schlie[ßs]s?t)",
+   "_NAME_RUN": "[A-ZÀ-Ž0-9][\\w&.\\u2019'\\-]*(?:\\s+[A-ZÀ-Ž0-9][\\w&.\\u2019'\\-]*){0,3}",
+   "_NAME_TOKEN": "[A-ZÀ-Ž0-9][\\w&.\\u2019'\\-]*"
+  },
+  "incumbents": [
+   "bae systems",
+   "thales",
+   "airbus",
+   "siemens",
+   "rolls-royce",
+   "rolls royce",
+   "johnson matthey",
+   "bp ",
+   "shell ",
+   "astrazeneca",
+   "glaxosmithkline",
+   "gsk",
+   "unilever",
+   "leonardo",
+   "babcock",
+   "qinetiq",
+   "ibm",
+   "microsoft",
+   "google",
+   "amazon",
+   "nokia",
+   "ericsson",
+   "alcatel",
+   "bosch",
+   "philips",
+   "toshiba",
+   "hitachi",
+   "jaguar land rover",
+   "ford motor",
+   "british telecom",
+   "bt group",
+   "vodafone",
+   "national grid",
+   "edf ",
+   "arm limited",
+   "lockheed",
+   "boeing",
+   "raytheon",
+   "northrop",
+   "general electric",
+   "ge aviation",
+   "safran",
+   "mbda",
+   "saab",
+   "kongsberg",
+   "rheinmetall",
+   "hensoldt",
+   "dassault",
+   "orange sa",
+   "telefonica",
+   "deutsche telekom",
+   "sap se",
+   "basf",
+   "bayer ag",
+   "novartis",
+   "roche",
+   "nestle",
+   "abb ",
+   "schneider electric",
+   "volkswagen",
+   "bmw",
+   "daimler",
+   "mercedes-benz"
+  ],
+  "locked_v3": {
+   "cheap_model": "deepseek-ai/DeepSeek-V4-Flash",
+   "prompt_version": "triage-v3",
+   "veto_model": "Qwen/Qwen3.5-397B-A17B",
+   "veto_thinking": false
+  },
+  "name_stop": [
+   "agtech",
+   "american",
+   "amsterdam",
+   "analysis",
+   "austria",
+   "austrian",
+   "belgian",
+   "belgium",
+   "berlin",
+   "biotech",
+   "breaking",
+   "british",
+   "canadian",
+   "cleantech",
+   "climatetech",
+   "company",
+   "copenhagen",
+   "czech",
+   "danish",
+   "deeptech",
+   "denmark",
+   "deutschland",
+   "dutch",
+   "edtech",
+   "estonia",
+   "estonian",
+   "eu",
+   "europe",
+   "european",
+   "exclusive",
+   "finland",
+   "finnish",
+   "fintech",
+   "firm",
+   "foodtech",
+   "france",
+   "french",
+   "from",
+   "geneva",
+   "genf",
+   "german",
+   "germany",
+   "hamburg",
+   "healthtech",
+   "helsinki",
+   "here",
+   "how",
+   "inside",
+   "insurtech",
+   "interview",
+   "irish",
+   "italian",
+   "italy",
+   "london",
+   "madrid",
+   "medtech",
+   "meet",
+   "milan",
+   "munich",
+   "münchen",
+   "netherlands",
+   "norway",
+   "norwegian",
+   "opinion",
+   "oslo",
+   "paris",
+   "podcast",
+   "poland",
+   "polish",
+   "portuguese",
+   "proptech",
+   "regtech",
+   "report",
+   "review",
+   "roundup",
+   "saas",
+   "schweiz",
+   "spacetech",
+   "spain",
+   "spanish",
+   "start-up",
+   "start-ups",
+   "startbase",
+   "startup",
+   "startupnews",
+   "startups",
+   "state",
+   "stockholm",
+   "sweden",
+   "swedish",
+   "swiss",
+   "switzerland",
+   "the",
+   "these",
+   "this",
+   "top",
+   "vienna",
+   "week",
+   "weekly",
+   "what",
+   "why",
+   "wien",
+   "zurich",
+   "zürich"
+  ],
+  "portfolio": [
+   [
+    "Nexcade",
+    "AI agents for freight forwarders: quoting, tenders, rates, bookings, reporting",
+    [
+     "freight",
+     "forward",
+     "quoting",
+     "booking",
+     "logistics agent"
+    ]
+   ],
+   [
+    "Tabular",
+    "AI accounting automation, ledger entries, VAT, reconciliation",
+    [
+     "accounting",
+     "buchhaltung",
+     "ledger",
+     "bookkeeping",
+     "vat"
+    ]
+   ],
+   [
+    "Nettle",
+    "AI commercial-insurance risk assessment and inspections for insurers",
+    [
+     "insurance",
+     "underwriting",
+     "inspection",
+     "commercial insurance",
+     "risk assessment"
+    ]
+   ],
+   [
+    "Rematiq",
+    "AI compliance for medtech regulations (FDA/MDR) integrated into development",
+    [
+     "medtech",
+     "mdr",
+     "fda",
+     "regulatory",
+     "compliance",
+     "medical device"
+    ]
+   ],
+   [
+    "Resourcly",
+    "AI platform turning idle parts / long-tail inventory into profit for manufacturers",
+    [
+     "spare parts",
+     "inventory",
+     "idle parts",
+     "mro",
+     "manufactur"
+    ]
+   ],
+   [
+    "Linexa",
+    "AI mapping and unifying automation logic across shop floors",
+    [
+     "shop floor",
+     "plc",
+     "automation logic",
+     "manufactur",
+     "downtime"
+    ]
+   ],
+   [
+    "Avoltra",
+    "industrial energy procurement intelligence",
+    [
+     "energy procurement",
+     "energy",
+     "ppa",
+     "industrial energy"
+    ]
+   ],
+   [
+    "Pactum",
+    "autonomous negotiation of supplier contracts",
+    [
+     "negotiation",
+     "supplier",
+     "procurement"
+    ]
+   ],
+   [
+    "Vestigas",
+    "digital delivery notes / supply-chain documents for construction",
+    [
+     "construction",
+     "delivery note",
+     "bau",
+     "lieferschein"
+    ]
+   ],
+   [
+    "Atmen",
+    "certification data infrastructure for sustainable/industrial products, carbon intensity",
+    [
+     "certification",
+     "carbon intensity",
+     "cbam",
+     "hydrogen",
+     "decarbon"
+    ]
+   ],
+   [
+    "Enapi",
+    "transaction broker / clearing house for EV charging",
+    [
+     "ev charging",
+     "charging",
+     "clearing",
+     "emsp",
+     "cpo"
+    ]
+   ],
+   [
+    "Andercore",
+    "AI-driven industrial supply trade platform with pricing, delivery, financing",
+    [
+     "industrial supply",
+     "trade platform",
+     "cross-border",
+     "b2b marketplace"
+    ]
+   ],
+   [
+    "Metycle",
+    "managed marketplace for secondary metals",
+    [
+     "metal",
+     "metall",
+     "scrap",
+     "recycling marketplace"
+    ]
+   ],
+   [
+    "Waypoint",
+    "B2B marketplace for fertilisers and commodity chemicals",
+    [
+     "fertili",
+     "commodity chemical",
+     "chemicals marketplace"
+    ]
+   ],
+   [
+    "Laserhub",
+    "procurement platform for custom metal parts",
+    [
+     "metal parts",
+     "sheet metal",
+     "cnc",
+     "laser cut"
+    ]
+   ],
+   [
+    "Mimo",
+    "SME payments platform with built-in credit",
+    [
+     "sme payments",
+     "accounts payable",
+     "credit",
+     "bookkeepers"
+    ]
+   ],
+   [
+    "Re:cap",
+    "non-dilutive debt funding + financial operations for digital businesses",
+    [
+     "non-dilutive",
+     "revenue-based",
+     "debt funding",
+     "financial operations"
+    ]
+   ],
+   [
+    "Copay",
+    "early-payment platform between main contractors and subcontractors",
+    [
+     "early payment",
+     "subcontractor",
+     "construction payments"
+    ]
+   ],
+   [
+    "Riva",
+    "blockchain-based B2B instant payments",
+    [
+     "blockchain payments",
+     "instant payments",
+     "b2b payments"
+    ]
+   ],
+   [
+    "ReStabilise",
+    "FCA-authorised regulated digital-money stablecoin",
+    [
+     "stablecoin",
+     "e-money",
+     "digital money",
+     "fca"
+    ]
+   ],
+   [
+    "Baobab",
+    "MGA for digital/cyber risks: cyber insurance, IT liability",
+    [
+     "cyber insurance",
+     "mga",
+     "it liability",
+     "cyber risk"
+    ]
+   ],
+   [
+    "Claimer",
+    "automation of UK R&D tax credit claims",
+    [
+     "r&d tax",
+     "tax credit",
+     "hmrc"
+    ]
+   ],
+   [
+    "Project Q",
+    "modular sensor systems fusing data sources into real-time intelligence for defence operations",
+    [
+     "sensor",
+     "sensor fusion",
+     "defence intelligence",
+     "real-time intelligence",
+     "c2"
+    ]
+   ],
+   [
+    "Scipio",
+    "AI-driven military resupply/logistics planning integrated with C2/C4ISR",
+    [
+     "military logistics",
+     "resupply",
+     "c4isr",
+     "defence logistics"
+    ]
+   ],
+   [
+    "ARX Robotics",
+    "modular unmanned ground systems for military and commercial use",
+    [
+     "ugv",
+     "ground robot",
+     "unmanned ground"
+    ]
+   ],
+   [
+    "Quantum Systems",
+    "eVTOL ISR drones and multi-domain autonomous systems",
+    [
+     "uav",
+     "isr drone",
+     "evtol drone",
+     "reconnaissance"
+    ]
+   ],
+   [
+    "STARK",
+    "software-defined defence systems (loitering munitions)",
+    [
+     "loitering",
+     "munition",
+     "strike drone"
+    ]
+   ],
+   [
+    "Black Semiconductor",
+    "graphene photonics chips",
+    [
+     "photonic",
+     "graphene",
+     "chip",
+     "semiconductor"
+    ]
+   ],
+   [
+    "Hades",
+    "ultra-deep geothermal energy and critical mineral extraction",
+    [
+     "geothermal",
+     "critical minerals",
+     "mining",
+     "subsurface"
+    ]
+   ],
+   [
+    "Vaeridion",
+    "electric regional aircraft (Microliner)",
+    [
+     "electric aircraft",
+     "regional aviation",
+     "aviation"
+    ]
+   ],
+   [
+    "Twig Bio",
+    "AI-defined bio-fermented ingredients",
+    [
+     "fermentation",
+     "bio ingredient",
+     "biomanufactur"
+    ]
+   ],
+   [
+    "Distil Labs",
+    "fine-tuning small language models from few examples",
+    [
+     "small language model",
+     "fine-tun",
+     "slm"
+    ]
+   ],
+   [
+    "Restack",
+    "backend framework for reliable AI agents",
+    [
+     "agent backend",
+     "agent framework",
+     "orchestration"
+    ]
+   ],
+   [
+    "Flow AI",
+    "test data engine / evaluation for AI agents",
+    [
+     "agent evaluation",
+     "test data",
+     "agent testing"
+    ]
+   ],
+   [
+    "Montamo",
+    "training newcomers as heat-pump / green-tech installers",
+    [
+     "installer",
+     "heat pump",
+     "training",
+     "workforce"
+    ]
+   ],
+   [
+    "Labrys",
+    "workforce management and payments for global teams in hard regions",
+    [
+     "workforce management",
+     "global teams",
+     "payroll"
+    ]
+   ],
+   [
+    "11x",
+    "AI SDR / sales agents",
+    [
+     "sdr",
+     "sales agent",
+     "outbound"
+    ]
+   ],
+   [
+    "Dixa",
+    "AI customer service platform",
+    [
+     "customer service",
+     "support platform"
+    ]
+   ],
+   [
+    "Root Global",
+    "Scope 3 measurement in agricultural supply chains",
+    [
+     "scope 3",
+     "agri",
+     "farm emissions"
+    ]
+   ],
+   [
+    "Architect",
+    "AI that adapts web pages per visitor",
+    [
+     "landing page",
+     "conversion",
+     "personalis"
+    ]
+   ]
+  ],
+  "portfolio_patterns": {
+   "_PROJECT_A": [
+    "\\bproject\\s*a\\b(?!\\s*[:\\-–]?\\s*\\d)(\\s+ventures)?",
+    34
+   ],
+   "_RELATIONSHIP_WORDS": [
+    "\\b(invest|backed|led by|participat|round|funding|portfolio|partner)",
+    34
+   ]
+  },
+  "pre_funding": [
+   "ANGEL_ONLY",
+   "BOOTSTRAPPED",
+   "GRANT_ONLY",
+   "INCORPORATED_NO_INSTITUTIONAL",
+   "PRE_COMPANY"
+  ],
+  "prompt_version": "triage-v3",
+  "repair_patterns": {
+   "_AFTER_DESCRIPTOR": [
+    "\\b(?i:startup|start-up|scale-?up|company|firm|unternehmen|spin-?off|spinout|lab|labs|studio|insurtech|fintech|legaltech|defen[cs]etech|deeptech|climatetech|agritech|medtech|biotech|healthtech|proptech|spacetech|foodtech|contech)\\s+([A-ZÀ-Ž][\\w&.’'\\-]*(?:\\.ai|\\.io)?(?:\\s+[A-ZÀ-Ž][\\w&.’'\\-]*(?:\\.ai|\\.io)?){0,2})(?=\\s+(?:has|hat|aus|from|in|is|ist|will|wird|raises|raised|secures|erh[äa]lt|sammelt|sichert|lands|closes)\\b|\\s*[,.;:(—–]|\\s*$)",
+    32
+   ],
+   "_BEFORE_VERB": [
+    "(?:^|[.;:—–]\\s+)([A-ZÀ-Ž][\\w&.’'\\-]*(?:\\.ai|\\.io)?(?:\\s+[A-ZÀ-Ž][\\w&.’'\\-]*(?:\\.ai|\\.io)?){0,2})\\s+(?:awarded|wins|won|obtains|holt sich|gewinnt|to enter|to expand|to launch|enters|expands|launches|joins|named|selected)\\b",
+    32
+   ],
+   "_DATEISH": [
+    "^\\s*((mon|tue|wed|thu|fri|sat|sun)[a-z]*,?\\s*)?(\\d{1,2}[./]\\d{1,2}[./]\\d{2,4}|\\d{1,2}\\s+[a-zäéû]+\\s+\\d{4}|[a-z]+\\s+\\d{1,2},?\\s+\\d{4})([,;\\s]+\\d{1,2}[:.]\\d{2})?\\s*[·•\\-–]*\\s*$",
+    34
+   ],
+   "_EVENTISH": [
+    "\\b(summit|conference|career fair|masterclass|workshop|meetup|webinar|hackathon|demo day|info session|ask the expert|industry day|open day|festival|award ceremony)\\b",
+    34
+   ],
+   "_LEGAL_SUFFIX": [
+    "\\b(inc|llc|ltd|limited|gmbh|ag|sa|sas|bv|oy|ab|plc|corp|corporation|pc|lp|llp)\\b\\.?",
+    34
+   ],
+   "_NOT_A_COMPANY": [
+    "(-based|-founded|\\bfair$|\\bday$|\\bsummit$|\\baccelerator$|\\baward$|\\bprize$|\\bprogram(me)?$|\\bfund$|\\bweek$)",
+    34
+   ]
+  },
+  "repair_sets": {
+   "_DEMONYMS": [
+    "american",
+    "austrian",
+    "baltic",
+    "belgian",
+    "british",
+    "canadian",
+    "czech",
+    "danish",
+    "dutch",
+    "estonian",
+    "european",
+    "finnish",
+    "french",
+    "german",
+    "greek",
+    "hungarian",
+    "irish",
+    "israeli",
+    "italian",
+    "latvian",
+    "lithuanian",
+    "nordic",
+    "norwegian",
+    "polish",
+    "portuguese",
+    "romanian",
+    "spanish",
+    "swedish",
+    "swiss",
+    "ukrainian",
+    "us"
+   ],
+   "_GENERIC": [
+    "ai",
+    "and",
+    "apply",
+    "award",
+    "category",
+    "chf",
+    "connect",
+    "das",
+    "den",
+    "der",
+    "die",
+    "discover",
+    "eic",
+    "eur",
+    "euro",
+    "europe",
+    "european",
+    "explore",
+    "find",
+    "first",
+    "five",
+    "for",
+    "funding",
+    "grand",
+    "high",
+    "innovate uk",
+    "join",
+    "la",
+    "le",
+    "leader",
+    "leaders",
+    "learn",
+    "meet",
+    "million",
+    "millionen",
+    "more",
+    "new",
+    "nih",
+    "nih sbir",
+    "nsf",
+    "nsf sbir",
+    "pre-seed",
+    "prize",
+    "project",
+    "read",
+    "register",
+    "sbir",
+    "second",
+    "seed",
+    "series",
+    "show",
+    "startup",
+    "startups",
+    "sttr",
+    "the",
+    "twenty",
+    "ukri",
+    "university",
+    "usd",
+    "watch",
+    "with",
+    "zero"
+   ],
+   "_LEADING_NOISE": [
+    "american",
+    "austrian",
+    "baltic",
+    "belgian",
+    "british",
+    "canadian",
+    "czech",
+    "danish",
+    "das",
+    "der",
+    "die",
+    "dutch",
+    "estonian",
+    "european",
+    "exclusive",
+    "finnish",
+    "french",
+    "funding",
+    "german",
+    "greek",
+    "hungarian",
+    "irish",
+    "israeli",
+    "italian",
+    "la",
+    "latvian",
+    "le",
+    "les",
+    "lithuanian",
+    "new",
+    "nordic",
+    "norwegian",
+    "polish",
+    "portuguese",
+    "romanian",
+    "spanish",
+    "swedish",
+    "swiss",
+    "the",
+    "thriving",
+    "ukrainian",
+    "us"
+   ]
+  },
+  "routing_patterns": {
+   "_CATAPULT": [
+    "\\bcatapult\\b",
+    34
+   ],
+   "_GOVERNMENT": [
+    "\\b(department (of|for)|ministry|ministerium|council\\b|county|borough|municipal|government|\\bagency\\b|\\bdstl\\b|defence science and technology|met office|nhs\\b|nhs trust|health board|uk research and innovation|innovate uk|research council|\\bukri\\b|european commission|bundesamt)",
+    34
+   ],
+   "_PLC": [
+    "\\b(plc|p\\.l\\.c\\.)\\b",
+    34
+   ],
+   "_PUBLIC_RESEARCH": [
+    "\\b(national (physical )?laborator(y|ies)|national lab\\b|fraunhofer|max[- ]planck|helmholtz|leibniz|\\bcnrs\\b|\\binria\\b|\\bcea\\b|\\btno\\b|\\besa\\b|estec|\\bcern\\b|perimeter inst|alan turing institute|research institute|institut (f[uü]r|national)|institute (for|of) (physics|theoretical|advanced study)|lawrence (berkeley|livermore)|\\bnasa\\b|\\bnist\\b|rutherford appleton|culham|\\bstfc\\b|\\bnpl\\b)",
+    34
+   ],
+   "_UNIVERSITY": [
+    "\\b(universit(y|ies|ät|at|é|e|à|a|eit)|college|school of|polytechnic|politecnico|hochschule|institute of technology|eth z[uü]rich|epfl|imperial college|kings? college|ucl\\b|tu (m[uü]nchen|berlin|delft|wien)|\\bkth\\b|chalmers|tudelft)",
+    34
+   ]
+  }
+ },
+ "units": {
+  "0:eu-plain": {
+   "broken_name_reason": "",
+   "card": "name: Acme Robotics GmbH\ndescription: Industrial robots for SMEs in Munich.\nfound via: Oracle Feed (Announcement feed — discovery only, usually recently funded)\nsource url: \ndate:  (detected)\nlocation:   geo=DE\nsectors: ai_sw",
+   "card_sha": "972ea1c66f509b0c",
+   "check": {
+    "evidence": [],
+    "record": null,
+    "route_to_omar": false,
+    "status": "NONE",
+    "twins": []
+   },
+   "european_connection": "munich",
+   "extract_company": "UNKNOWN",
+   "extract_entities": [],
+   "names_for": [
+    "Acme Robotics GmbH"
+   ],
+   "non_startup_reason": "",
+   "repair": {
+    "broken": "",
+    "display_name": "Acme Robotics GmbH",
+    "entities": [],
+    "original_name": "Acme Robotics GmbH"
+   },
+   "route": {
+    "queue": "operating",
+    "reason": "Europe"
+   }
+  },
+  "10:override": {
+   "broken_name_reason": "",
+   "card": "name: Zed Labs\ndescription: Software.\nfound via: Oracle Feed (Announcement feed — discovery only, usually recently funded)\nsource url: \ndate:  (detected)\nlocation:   geo=ZZ\nsectors: ai_sw",
+   "card_sha": "f8976a358dc528f2",
+   "check": {
+    "evidence": [],
+    "record": null,
+    "route_to_omar": false,
+    "status": "NONE",
+    "twins": []
+   },
+   "european_connection": "",
+   "extract_company": "UNKNOWN",
+   "extract_entities": [],
+   "names_for": [
+    "Zed Labs"
+   ],
+   "non_startup_reason": "",
+   "repair": {
+    "broken": "",
+    "display_name": "Zed Labs",
+    "entities": [],
+    "original_name": "Zed Labs"
+   },
+   "route": {
+    "queue": "operating",
+    "reason": "Europe"
+   }
+  },
+  "11:region-eu": {
+   "broken_name_reason": "",
+   "card": "name: Scope Co\ndescription: Pan-European.\nfound via: Oracle Feed (Announcement feed — discovery only, usually recently funded)\nsource url: \ndate:  (detected)\nlocation:   geo=\nsectors: ai_sw",
+   "card_sha": "6eab41d7cbb05698",
+   "check": {
+    "evidence": [],
+    "record": null,
+    "route_to_omar": false,
+    "status": "NONE",
+    "twins": []
+   },
+   "european_connection": "",
+   "extract_company": "UNKNOWN",
+   "extract_entities": [],
+   "names_for": [
+    "Scope Co"
+   ],
+   "non_startup_reason": "",
+   "repair": {
+    "broken": "",
+    "display_name": "Scope Co",
+    "entities": [],
+    "original_name": "Scope Co"
+   },
+   "route": {
+    "queue": "operating",
+    "reason": "Europe"
+   }
+  },
+  "12:geo-str": {
+   "broken_name_reason": "",
+   "card": "name: String Geo\ndescription: Software.\nfound via: Oracle Feed (Announcement feed — discovery only, usually recently funded)\nsource url: \ndate:  (detected)\nlocation:   geo=U,S\nsectors: ai_sw",
+   "card_sha": "2af36a6db6f3a46e",
+   "check": {
+    "evidence": [],
+    "record": null,
+    "route_to_omar": false,
+    "status": "NONE",
+    "twins": []
+   },
+   "european_connection": "",
+   "extract_company": "UNKNOWN",
+   "extract_entities": [],
+   "names_for": [
+    "String Geo"
+   ],
+   "non_startup_reason": "",
+   "repair": {
+    "broken": "",
+    "display_name": "String Geo",
+    "entities": [],
+    "original_name": "String Geo"
+   },
+   "route": {
+    "queue": "global_only",
+    "reason": "North America — Europe-first view (switch to Global to see it)"
+   }
+  },
+  "13:broken-date": {
+   "broken_name_reason": "name is a date / time",
+   "card": "name: 01.10.2026 17:08\ndescription: RheoCarti awarded the EIC grant. The team builds cartilage implants.\nfound via: Oracle Feed (Announcement feed — discovery only, usually recently funded)\nsource url: \ndate:  (detected)\nlocation:   geo=DE\nsectors: ai_sw",
+   "card_sha": "21e2e11fc97dea6a",
+   "check": {
+    "evidence": [],
+    "record": null,
+    "route_to_omar": false,
+    "status": "NONE",
+    "twins": []
+   },
+   "european_connection": "",
+   "extract_company": "01.10.2026 17",
+   "extract_entities": [
+    {
+     "evidence": "RheoCarti awarded the EIC grant.",
+     "method": "subject of event verb",
+     "name": "RheoCarti"
+    }
+   ],
+   "names_for": [
+    "RheoCarti"
+   ],
+   "non_startup_reason": "",
+   "repair": {
+    "broken": "name is a date / time",
+    "display_name": "RheoCarti",
+    "entities": [
+     {
+      "evidence": "RheoCarti awarded the EIC grant.",
+      "method": "subject of event verb",
+      "name": "RheoCarti"
+     }
+    ],
+    "original_name": "01.10.2026 17:08"
+   },
+   "route": {
+    "queue": "operating",
+    "reason": "Europe"
+   }
+  },
+  "14:broken-unknown": {
+   "broken_name_reason": "name UNKNOWN",
+   "card": "name: UNKNOWN\ndescription: Startup Kontext raises €2M to secure AI agents.\nfound via: Oracle Feed (Announcement feed — discovery only, usually recently funded)\nsource url: \ndate:  (detected)\nlocation:   geo=DE\nsectors: ai_sw",
+   "card_sha": "a3bb540eea3f0a81",
+   "check": {
+    "evidence": [],
+    "record": null,
+    "route_to_omar": false,
+    "status": "NONE",
+    "twins": []
+   },
+   "european_connection": "",
+   "extract_company": "UNKNOWN",
+   "extract_entities": [
+    {
+     "evidence": "Startup Kontext raises €2M to secure AI agents.",
+     "method": "headline extractor",
+     "name": "Kontext"
+    }
+   ],
+   "names_for": [
+    "Kontext"
+   ],
+   "non_startup_reason": "",
+   "repair": {
+    "broken": "name UNKNOWN",
+    "display_name": "Kontext",
+    "entities": [
+     {
+      "evidence": "Startup Kontext raises €2M to secure AI agents.",
+      "method": "headline extractor",
+      "name": "Kontext"
+     }
+    ],
+    "original_name": "UNKNOWN"
+   },
+   "route": {
+    "queue": "operating",
+    "reason": "Europe"
+   }
+  },
+  "15:headline": {
+   "broken_name_reason": "name is a headline",
+   "card": "name: How Acme Labs is shaping the future of defence\ndescription: Acme Labs builds C2 software.\nfound via: Oracle Feed (Announcement feed — discovery only, usually recently funded)\nsource url: \ndate:  (detected)\nlocation:   geo=DE\nsectors: ai_sw",
+   "card_sha": "d3315b878aceaeef",
+   "check": {
+    "evidence": [],
+    "record": null,
+    "route_to_omar": false,
+    "status": "NONE",
+    "twins": []
+   },
+   "european_connection": "",
+   "extract_company": "UNKNOWN",
+   "extract_entities": [],
+   "names_for": [
+    "How Acme Labs is shaping the future of defence"
+   ],
+   "non_startup_reason": "",
+   "repair": {
+    "broken": "name is a headline",
+    "display_name": "How Acme Labs is shaping the future of defence",
+    "entities": [],
+    "original_name": "How Acme Labs is shaping the future of defence"
+   },
+   "route": {
+    "queue": "operating",
+    "reason": "Europe"
+   }
+  },
+  "16:label-kontext": {
+   "broken_name_reason": "",
+   "card": "name: KI-Security-Startup Kontext\ndescription: Security for AI agents.\nfound via: Oracle Feed (Announcement feed — discovery only, usually recently funded)\nsource url: \ndate:  (detected)\nlocation:   geo=DE\nsectors: ai_sw",
+   "card_sha": "0f6b9c502b0c4d52",
+   "check": {
+    "evidence": [],
+    "record": null,
+    "route_to_omar": false,
+    "status": "NONE",
+    "twins": []
+   },
+   "european_connection": "",
+   "extract_company": "UNKNOWN",
+   "extract_entities": [
+    {
+     "evidence": "KI-Security-Startup Kontext.",
+     "method": "descriptor phrase",
+     "name": "Kontext"
+    }
+   ],
+   "names_for": [
+    "KI-Security-Startup Kontext",
+    "Kontext"
+   ],
+   "non_startup_reason": "",
+   "repair": {
+    "broken": "",
+    "display_name": "KI-Security-Startup Kontext",
+    "entities": [],
+    "original_name": "KI-Security-Startup Kontext"
+   },
+   "route": {
+    "queue": "operating",
+    "reason": "Europe"
+   }
+  },
+  "17:portfolio": {
+   "broken_name_reason": "",
+   "card": "name: Nexcade\ndescription: AI agents for freight forwarders.\nfound via: Oracle Feed (Announcement feed — discovery only, usually recently funded)\nsource url: \ndate:  (detected)\nlocation:   geo=DE\nsectors: ai_sw",
+   "card_sha": "1283e4e034c4ea59",
+   "check": {
+    "evidence": [
+     "Nexcade is a Project A portfolio company (AI agents for freight forwarders: quoting, tenders, rates, bookings, reporting)"
+    ],
+    "record": null,
+    "route_to_omar": true,
+    "status": "KNOWN_PORTFOLIO",
+    "twins": [
+     {
+      "keyword_hits": 2,
+      "name": "Nexcade",
+      "what": "AI agents for freight forwarders: quoting, tenders, rates, bookings, reporting"
+     }
+    ]
+   },
+   "european_connection": "",
+   "extract_company": "UNKNOWN",
+   "extract_entities": [],
+   "names_for": [
+    "Nexcade"
+   ],
+   "non_startup_reason": "",
+   "repair": {
+    "broken": "",
+    "display_name": "Nexcade",
+    "entities": [],
+    "original_name": "Nexcade"
+   },
+   "route": {
+    "queue": "operating",
+    "reason": "Europe"
+   }
+  },
+  "18:portfolio-reject": {
+   "broken_name_reason": "",
+   "card": "name: Tabular GmbH\ndescription: Accounting automation.\nfound via: Oracle Feed (Announcement feed — discovery only, usually recently funded)\nsource url: \ndate:  (detected)\nlocation:   geo=DE\nsectors: ai_sw",
+   "card_sha": "33c225bfb78a4e76",
+   "check": {
+    "evidence": [
+     "Tabular is a Project A portfolio company (AI accounting automation, ledger entries, VAT, reconciliation)"
+    ],
+    "record": null,
+    "route_to_omar": true,
+    "status": "KNOWN_PORTFOLIO",
+    "twins": []
+   },
+   "european_connection": "",
+   "extract_company": "UNKNOWN",
+   "extract_entities": [],
+   "names_for": [
+    "Tabular GmbH"
+   ],
+   "non_startup_reason": "",
+   "repair": {
+    "broken": "",
+    "display_name": "Tabular GmbH",
+    "entities": [],
+    "original_name": "Tabular GmbH"
+   },
+   "route": {
+    "queue": "operating",
+    "reason": "Europe"
+   }
+  },
+  "19:relationship": {
+   "broken_name_reason": "",
+   "card": "name: Orbit Systems\ndescription: Orbit Systems raised a seed round led by Project A Ventures.\nfound via: Oracle Feed (Announcement feed — discovery only, usually recently funded)\nsource url: \ndate:  (detected)\nlocation:   geo=DE\nsectors: ai_sw",
+   "card_sha": "72719faaf025030c",
+   "check": {
+    "evidence": [
+     "the source text names Project A: …Orbit Systems Orbit Systems raised a seed round led by Project A Ventures.…"
+    ],
+    "record": null,
+    "route_to_omar": true,
+    "status": "PROJECT_A_RELATIONSHIP",
+    "twins": []
+   },
+   "european_connection": "",
+   "extract_company": "UNKNOWN",
+   "extract_entities": [
+    {
+     "evidence": "Orbit Systems raised a seed round led by Project A Ventures.",
+     "method": "headline extractor",
+     "name": "Orbit Systems"
+    }
+   ],
+   "names_for": [
+    "Orbit Systems"
+   ],
+   "non_startup_reason": "",
+   "repair": {
+    "broken": "",
+    "display_name": "Orbit Systems",
+    "entities": [],
+    "original_name": "Orbit Systems"
+   },
+   "route": {
+    "queue": "operating",
+    "reason": "Europe"
+   }
+  },
+  "1:uni": {
+   "broken_name_reason": "",
+   "card": "name: Technical University of Munich\ndescription: A spinout project from the robotics lab.\nfound via: Oracle Feed (Announcement feed — discovery only, usually recently funded)\nsource url: \ndate:  (detected)\nlocation:   geo=DE\nsectors: ai_sw",
+   "card_sha": "9bbdec86ce4ba415",
+   "check": {
+    "evidence": [],
+    "record": null,
+    "route_to_omar": false,
+    "status": "NONE",
+    "twins": []
+   },
+   "european_connection": "munich",
+   "extract_company": "UNKNOWN",
+   "extract_entities": [],
+   "names_for": [
+    "Technical University of Munich"
+   ],
+   "non_startup_reason": "university / academic institution",
+   "repair": {
+    "broken": "",
+    "display_name": "Technical University of Munich",
+    "entities": [],
+    "original_name": "Technical University of Munich"
+   },
+   "route": {
+    "queue": "non_startup",
+    "reason": "university / academic institution"
+   }
+  },
+  "20:not-relationship": {
+   "broken_name_reason": "",
+   "card": "name: Lesson Co\ndescription: Project A: 5 lessons from building a fund.\nfound via: Oracle Feed (Announcement feed — discovery only, usually recently funded)\nsource url: \ndate:  (detected)\nlocation:   geo=DE\nsectors: ai_sw",
+   "card_sha": "a9da2c6f1ba2f596",
+   "check": {
+    "evidence": [],
+    "record": null,
+    "route_to_omar": false,
+    "status": "NONE",
+    "twins": []
+   },
+   "european_connection": "",
+   "extract_company": "UNKNOWN",
+   "extract_entities": [
+    {
+     "evidence": "Project A: 5 lessons from building a fund.",
+     "method": "headline extractor",
+     "name": "Project A"
+    }
+   ],
+   "names_for": [
+    "Lesson Co"
+   ],
+   "non_startup_reason": "",
+   "repair": {
+    "broken": "",
+    "display_name": "Lesson Co",
+    "entities": [],
+    "original_name": "Lesson Co"
+   },
+   "route": {
+    "queue": "operating",
+    "reason": "Europe"
+   }
+  },
+  "21:resembles": {
+   "broken_name_reason": "",
+   "card": "name: Cargo Brain\ndescription: Quoting and booking automation for freight forwarders and logistics agent.\nfound via: Oracle Feed (Announcement feed — discovery only, usually recently funded)\nsource url: \ndate:  (detected)\nlocation:   geo=DE\nsectors: ai_sw",
+   "card_sha": "68896c815f9a437d",
+   "check": {
+    "evidence": [
+     "resembles portfolio company Nexcade (5 keyword hits)"
+    ],
+    "record": null,
+    "route_to_omar": true,
+    "status": "RESEMBLES_PORTFOLIO",
+    "twins": [
+     {
+      "keyword_hits": 5,
+      "name": "Nexcade",
+      "what": "AI agents for freight forwarders: quoting, tenders, rates, bookings, reporting"
+     }
+    ]
+   },
+   "european_connection": "",
+   "extract_company": "UNKNOWN",
+   "extract_entities": [],
+   "names_for": [
+    "Cargo Brain"
+   ],
+   "non_startup_reason": "",
+   "repair": {
+    "broken": "",
+    "display_name": "Cargo Brain",
+    "entities": [],
+    "original_name": "Cargo Brain"
+   },
+   "route": {
+    "queue": "operating",
+    "reason": "Europe"
+   }
+  },
+  "22:conviction": {
+   "broken_name_reason": "",
+   "card": "name: Conflict Robotics\ndescription: Robots.\nfound via: Oracle Feed (Announcement feed — discovery only, usually recently funded)\nsource url: \ndate:  (detected)\nlocation:   geo=DE\nsectors: ai_sw",
+   "card_sha": "4a68de11f46cfffd",
+   "check": {
+    "evidence": [
+     "Conviction record has conflict = unclear (human-set)"
+    ],
+    "record": {
+     "conflict": "unclear",
+     "name": "Conflict Robotics GmbH",
+     "slug": "Conflict Robotics GmbH",
+     "where": "Conviction"
+    },
+    "route_to_omar": true,
+    "status": "EXISTING_RECORD",
+    "twins": []
+   },
+   "european_connection": "",
+   "extract_company": "UNKNOWN",
+   "extract_entities": [],
+   "names_for": [
+    "Conflict Robotics"
+   ],
+   "non_startup_reason": "",
+   "repair": {
+    "broken": "",
+    "display_name": "Conflict Robotics",
+    "entities": [],
+    "original_name": "Conflict Robotics"
+   },
+   "route": {
+    "queue": "operating",
+    "reason": "Europe"
+   }
+  },
+  "23:conviction-clear": {
+   "broken_name_reason": "",
+   "card": "name: Clear Robotics\ndescription: Robots.\nfound via: Oracle Feed (Announcement feed — discovery only, usually recently funded)\nsource url: \ndate:  (detected)\nlocation:   geo=DE\nsectors: ai_sw",
+   "card_sha": "6002d8d13c00885d",
+   "check": {
+    "evidence": [],
+    "record": {
+     "conflict": "none",
+     "name": "Clear Robotics",
+     "slug": "Clear Robotics",
+     "where": "Conviction"
+    },
+    "route_to_omar": false,
+    "status": "EXISTING_RECORD",
+    "twins": []
+   },
+   "european_connection": "",
+   "extract_company": "UNKNOWN",
+   "extract_entities": [],
+   "names_for": [
+    "Clear Robotics"
+   ],
+   "non_startup_reason": "",
+   "repair": {
+    "broken": "",
+    "display_name": "Clear Robotics",
+    "entities": [],
+    "original_name": "Clear Robotics"
+   },
+   "route": {
+    "queue": "operating",
+    "reason": "Europe"
+   }
+  },
+  "24:intake": {
+   "broken_name_reason": "",
+   "card": "name: Intake Labs\ndescription: Found by a scout.\nfound via: Oracle Feed (Announcement feed — discovery only, usually recently funded)\nsource url: \ndate:  (detected)\nlocation:   geo=DE\nsectors: ai_sw",
+   "card_sha": "a03343abb7b15a9b",
+   "check": {
+    "evidence": [],
+    "record": {
+     "conflict": null,
+     "name": "Intake Labs",
+     "status": "REVIEWING",
+     "where": "Scout Intake"
+    },
+    "route_to_omar": false,
+    "status": "EXISTING_RECORD",
+    "twins": []
+   },
+   "european_connection": "",
+   "extract_company": "UNKNOWN",
+   "extract_entities": [],
+   "names_for": [
+    "Intake Labs"
+   ],
+   "non_startup_reason": "",
+   "repair": {
+    "broken": "",
+    "display_name": "Intake Labs",
+    "entities": [],
+    "original_name": "Intake Labs"
+   },
+   "route": {
+    "queue": "operating",
+    "reason": "Europe"
+   }
+  },
+  "25:obvious": {
+   "broken_name_reason": "",
+   "card": "name: Junk Page\ndescription: Cookie banner.\nfound via: Oracle Feed (Announcement feed — discovery only, usually recently funded)\nsource url: \ndate:  (detected)\nlocation:   geo=DE\nsectors: ai_sw",
+   "card_sha": "c997d32acdaa4b4f",
+   "check": {
+    "evidence": [],
+    "record": null,
+    "route_to_omar": false,
+    "status": "NONE",
+    "twins": []
+   },
+   "european_connection": "",
+   "extract_company": "UNKNOWN",
+   "extract_entities": [],
+   "names_for": [
+    "Junk Page"
+   ],
+   "non_startup_reason": "",
+   "repair": {
+    "broken": "",
+    "display_name": "Junk Page",
+    "entities": [],
+    "original_name": "Junk Page"
+   },
+   "route": {
+    "queue": "operating",
+    "reason": "Europe"
+   }
+  },
+  "26:obvious-stage0": {
+   "broken_name_reason": "name is a date / time",
+   "card": "name: 05.10.2026 14:00\ndescription: \nfound via: Oracle Feed (Announcement feed — discovery only, usually recently funded)\nsource url: \ndate:  (detected)\nlocation:   geo=DE\nsectors: ai_sw",
+   "card_sha": "5d5dc2b1a8a43c06",
+   "check": {
+    "evidence": [],
+    "record": null,
+    "route_to_omar": false,
+    "status": "NONE",
+    "twins": []
+   },
+   "european_connection": "",
+   "extract_company": "05.10.2026 14",
+   "extract_entities": [],
+   "names_for": [
+    "05.10.2026 14:00"
+   ],
+   "non_startup_reason": "",
+   "repair": {
+    "broken": "name is a date / time",
+    "display_name": "05.10.2026 14:00",
+    "entities": [],
+    "original_name": "05.10.2026 14:00"
+   },
+   "route": {
+    "queue": "operating",
+    "reason": "Europe"
+   }
+  },
+  "27:stale": {
+   "broken_name_reason": "",
+   "card": "name: Changed Co\ndescription: The text changed after triage.\nfound via: Oracle Feed (Announcement feed — discovery only, usually recently funded)\nsource url: \ndate:  (detected)\nlocation:   geo=DE\nsectors: ai_sw",
+   "card_sha": "5c893c02a1579121",
+   "check": {
+    "evidence": [],
+    "record": null,
+    "route_to_omar": false,
+    "status": "NONE",
+    "twins": []
+   },
+   "european_connection": "",
+   "extract_company": "UNKNOWN",
+   "extract_entities": [],
+   "names_for": [
+    "Changed Co"
+   ],
+   "non_startup_reason": "",
+   "repair": {
+    "broken": "",
+    "display_name": "Changed Co",
+    "entities": [],
+    "original_name": "Changed Co"
+   },
+   "route": {
+    "queue": "operating",
+    "reason": "Europe"
+   }
+  },
+  "28:old-prompt": {
+   "broken_name_reason": "",
+   "card": "name: Old Prompt Co\ndescription: Triaged under v2.\nfound via: Oracle Feed (Announcement feed — discovery only, usually recently funded)\nsource url: \ndate:  (detected)\nlocation:   geo=DE\nsectors: ai_sw",
+   "card_sha": "3116d00003b7ff81",
+   "check": {
+    "evidence": [],
+    "record": null,
+    "route_to_omar": false,
+    "status": "NONE",
+    "twins": []
+   },
+   "european_connection": "",
+   "extract_company": "UNKNOWN",
+   "extract_entities": [],
+   "names_for": [
+    "Old Prompt Co"
+   ],
+   "non_startup_reason": "",
+   "repair": {
+    "broken": "",
+    "display_name": "Old Prompt Co",
+    "entities": [],
+    "original_name": "Old Prompt Co"
+   },
+   "route": {
+    "queue": "operating",
+    "reason": "Europe"
+   }
+  },
+  "29:baseline": {
+   "broken_name_reason": "",
+   "card": "name: Baseline Co\ndescription: Already known.\nfound via: Oracle Feed (Announcement feed — discovery only, usually recently funded)\nsource url: \ndate:  (detected)\nlocation:   geo=DE\nsectors: ai_sw",
+   "card_sha": "877c00fddfa8d014",
+   "check": {
+    "evidence": [],
+    "record": null,
+    "route_to_omar": false,
+    "status": "NONE",
+    "twins": []
+   },
+   "european_connection": "",
+   "extract_company": "UNKNOWN",
+   "extract_entities": [],
+   "names_for": [
+    "Baseline Co"
+   ],
+   "non_startup_reason": "",
+   "repair": {
+    "broken": "",
+    "display_name": "Baseline Co",
+    "entities": [],
+    "original_name": "Baseline Co"
+   },
+   "route": {
+    "queue": "operating",
+    "reason": "Europe"
+   }
+  },
+  "2:gov": {
+   "broken_name_reason": "",
+   "card": "name: Innovate UK\ndescription: Grant programme.\nfound via: Oracle Feed (Announcement feed — discovery only, usually recently funded)\nsource url: \ndate:  (detected)\nlocation:   geo=DE\nsectors: ai_sw",
+   "card_sha": "4aaf57649a9cf6c6",
+   "check": {
+    "evidence": [],
+    "record": null,
+    "route_to_omar": false,
+    "status": "NONE",
+    "twins": []
+   },
+   "european_connection": "",
+   "extract_company": "UNKNOWN",
+   "extract_entities": [],
+   "names_for": [
+    "Innovate UK"
+   ],
+   "non_startup_reason": "government / public body",
+   "repair": {
+    "broken": "",
+    "display_name": "Innovate UK",
+    "entities": [],
+    "original_name": "Innovate UK"
+   },
+   "route": {
+    "queue": "non_startup",
+    "reason": "government / public body"
+   }
+  },
+  "30:research-decided": {
+   "broken_name_reason": "",
+   "card": "name: Decided Co\ndescription: Operator reviewing.\nfound via: Oracle Feed (Announcement feed — discovery only, usually recently funded)\nsource url: \ndate:  (detected)\nlocation:   geo=DE\nsectors: ai_sw",
+   "card_sha": "aec0279eefe08189",
+   "check": {
+    "evidence": [],
+    "record": null,
+    "route_to_omar": false,
+    "status": "NONE",
+    "twins": []
+   },
+   "european_connection": "",
+   "extract_company": "UNKNOWN",
+   "extract_entities": [],
+   "names_for": [
+    "Decided Co"
+   ],
+   "non_startup_reason": "",
+   "repair": {
+    "broken": "",
+    "display_name": "Decided Co",
+    "entities": [],
+    "original_name": "Decided Co"
+   },
+   "route": {
+    "queue": "operating",
+    "reason": "Europe"
+   }
+  },
+  "31:error": {
+   "broken_name_reason": "",
+   "card": "name: Error Co\ndescription: Triage failed.\nfound via: Oracle Feed (Announcement feed — discovery only, usually recently funded)\nsource url: \ndate:  (detected)\nlocation:   geo=DE\nsectors: ai_sw",
+   "card_sha": "995f0f97cd44e675",
+   "check": {
+    "evidence": [],
+    "record": null,
+    "route_to_omar": false,
+    "status": "NONE",
+    "twins": []
+   },
+   "european_connection": "",
+   "extract_company": "UNKNOWN",
+   "extract_entities": [],
+   "names_for": [
+    "Error Co"
+   ],
+   "non_startup_reason": "",
+   "repair": {
+    "broken": "",
+    "display_name": "Error Co",
+    "entities": [],
+    "original_name": "Error Co"
+   },
+   "route": {
+    "queue": "operating",
+    "reason": "Europe"
+   }
+  },
+  "32:needs-human": {
+   "broken_name_reason": "",
+   "card": "name: Human Co\ndescription: Needs a human.\nfound via: Oracle Feed (Announcement feed — discovery only, usually recently funded)\nsource url: \ndate:  (detected)\nlocation:   geo=DE\nsectors: ai_sw",
+   "card_sha": "80416b92edb9dfc7",
+   "check": {
+    "evidence": [],
+    "record": null,
+    "route_to_omar": false,
+    "status": "NONE",
+    "twins": []
+   },
+   "european_connection": "",
+   "extract_company": "UNKNOWN",
+   "extract_entities": [],
+   "names_for": [
+    "Human Co"
+   ],
+   "non_startup_reason": "",
+   "repair": {
+    "broken": "",
+    "display_name": "Human Co",
+    "entities": [],
+    "original_name": "Human Co"
+   },
+   "route": {
+    "queue": "operating",
+    "reason": "Europe"
+   }
+  },
+  "33:no-proposal": {
+   "broken_name_reason": "",
+   "card": "name: Quiet Co\ndescription: Never triaged.\nfound via: Oracle Feed (Announcement feed — discovery only, usually recently funded)\nsource url: \ndate:  (detected)\nlocation:   geo=DE\nsectors: ai_sw",
+   "card_sha": "bc675ec6b0a6e598",
+   "check": {
+    "evidence": [],
+    "record": null,
+    "route_to_omar": false,
+    "status": "NONE",
+    "twins": []
+   },
+   "european_connection": "",
+   "extract_company": "UNKNOWN",
+   "extract_entities": [],
+   "names_for": [
+    "Quiet Co"
+   ],
+   "non_startup_reason": "",
+   "repair": {
+    "broken": "",
+    "display_name": "Quiet Co",
+    "entities": [],
+    "original_name": "Quiet Co"
+   },
+   "route": {
+    "queue": "operating",
+    "reason": "Europe"
+   }
+  },
+  "34:verdict": {
+   "broken_name_reason": "",
+   "card": "name: Verdict Co\ndescription: Operator decided.\nfound via: Oracle Feed (Announcement feed — discovery only, usually recently funded)\nsource url: \ndate:  (detected)\nlocation:   geo=DE\nsectors: ai_sw",
+   "card_sha": "7dceb426bed5c7a5",
+   "check": {
+    "evidence": [],
+    "record": null,
+    "route_to_omar": false,
+    "status": "NONE",
+    "twins": []
+   },
+   "european_connection": "",
+   "extract_company": "UNKNOWN",
+   "extract_entities": [],
+   "names_for": [
+    "Verdict Co"
+   ],
+   "non_startup_reason": "",
+   "repair": {
+    "broken": "",
+    "display_name": "Verdict Co",
+    "entities": [],
+    "original_name": "Verdict Co"
+   },
+   "route": {
+    "queue": "operating",
+    "reason": "Europe"
+   }
+  },
+  "35:card": {
+   "broken_name_reason": "",
+   "card": "name: Card Co\ndescription: Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories across Europe. Robotics for factories\nfound via: Oracle Feed (grant)\nsource url: https://example.org/a\ndate: 2026-10-01 (published)\nlocation: Berlin DE geo=DE\nsectors: robotics, defence\nalso seen at: Feed 0; Feed 1; Feed 2; Feed 3; Feed 4",
+   "card_sha": "6450491f64a39565",
+   "check": {
+    "evidence": [],
+    "record": null,
+    "route_to_omar": false,
+    "status": "NONE",
+    "twins": []
+   },
+   "european_connection": "berlin",
+   "extract_company": "UNKNOWN",
+   "extract_entities": [],
+   "names_for": [
+    "Card Co"
+   ],
+   "non_startup_reason": "",
+   "repair": {
+    "broken": "",
+    "display_name": "Card Co",
+    "entities": [],
+    "original_name": "Card Co"
+   },
+   "route": {
+    "queue": "operating",
+    "reason": "Europe"
+   }
+  },
+  "36:card-none": {
+   "broken_name_reason": "",
+   "card": "name: Card None\ndescription: \nfound via: Oracle Feed ()\nsource url: \ndate:  (detected)\nlocation:   geo=\nsectors: ",
+   "card_sha": "1de55b79f5ecb6ea",
+   "check": {
+    "evidence": [],
+    "record": null,
+    "route_to_omar": false,
+    "status": "NONE",
+    "twins": []
+   },
+   "european_connection": "",
+   "extract_company": "UNKNOWN",
+   "extract_entities": [],
+   "names_for": [
+    "Card None"
+   ],
+   "non_startup_reason": "",
+   "repair": {
+    "broken": "",
+    "display_name": "Card None",
+    "entities": [],
+    "original_name": "Card None"
+   },
+   "route": {
+    "queue": "operating",
+    "reason": "geography unresolved — kept visible"
+   }
+  },
+  "37:": {
+   "broken_name_reason": "",
+   "card": "name: No Id\ndescription: Skipped by the view.\nfound via: Oracle Feed (Announcement feed — discovery only, usually recently funded)\nsource url: \ndate:  (detected)\nlocation:   geo=DE\nsectors: ai_sw",
+   "card_sha": "7f7270ad5f463dbc",
+   "check": {
+    "evidence": [],
+    "record": null,
+    "route_to_omar": false,
+    "status": "NONE",
+    "twins": []
+   },
+   "european_connection": "",
+   "extract_company": "UNKNOWN",
+   "extract_entities": [],
+   "names_for": [
+    "No Id"
+   ],
+   "non_startup_reason": "",
+   "repair": {
+    "broken": "",
+    "display_name": "No Id",
+    "entities": [],
+    "original_name": "No Id"
+   },
+   "route": {
+    "queue": "operating",
+    "reason": "Europe"
+   }
+  },
+  "38:unit-0": {
+   "broken_name_reason": "name is a date / time",
+   "card": "name: Thursday, November 5, 2026 ·\ndescription: \nfound via: Oracle Feed (Announcement feed — discovery only, usually recently funded)\nsource url: \ndate:  (detected)\nlocation:   geo=DE\nsectors: ai_sw",
+   "card_sha": "76a6ffa15e72eb0e",
+   "check": {
+    "evidence": [],
+    "record": null,
+    "route_to_omar": false,
+    "status": "NONE",
+    "twins": []
+   },
+   "european_connection": "",
+   "extract_company": "UNKNOWN",
+   "extract_entities": [],
+   "names_for": [
+    "Thursday, November 5, 2026 ·"
+   ],
+   "non_startup_reason": "",
+   "repair": {
+    "broken": "name is a date / time",
+    "display_name": "Thursday, November 5, 2026 ·",
+    "entities": [],
+    "original_name": "Thursday, November 5, 2026 ·"
+   },
+   "route": {
+    "queue": "operating",
+    "reason": "Europe"
+   }
+  },
+  "39:unit-1": {
+   "broken_name_reason": "name is a nationality / descriptor",
+   "card": "name: Swiss-German\ndescription: A Swiss-German team.\nfound via: Oracle Feed (Announcement feed — discovery only, usually recently funded)\nsource url: \ndate:  (detected)\nlocation:   geo=DE\nsectors: ai_sw",
+   "card_sha": "05b4b8d6160c0c64",
+   "check": {
+    "evidence": [],
+    "record": null,
+    "route_to_omar": false,
+    "status": "NONE",
+    "twins": []
+   },
+   "european_connection": "",
+   "extract_company": "UNKNOWN",
+   "extract_entities": [],
+   "names_for": [
+    "Swiss-German"
+   ],
+   "non_startup_reason": "",
+   "repair": {
+    "broken": "name is a nationality / descriptor",
+    "display_name": "Swiss-German",
+    "entities": [],
+    "original_name": "Swiss-German"
+   },
+   "route": {
+    "queue": "operating",
+    "reason": "Europe"
+   }
+  },
+  "3:catapult": {
+   "broken_name_reason": "",
+   "card": "name: Digital Catapult\ndescription: UK innovation centre.\nfound via: Oracle Feed (Announcement feed — discovery only, usually recently funded)\nsource url: \ndate:  (detected)\nlocation:   geo=DE\nsectors: ai_sw",
+   "card_sha": "fe09921b3ef175ef",
+   "check": {
+    "evidence": [],
+    "record": null,
+    "route_to_omar": false,
+    "status": "NONE",
+    "twins": []
+   },
+   "european_connection": "",
+   "extract_company": "UNKNOWN",
+   "extract_entities": [],
+   "names_for": [
+    "Digital Catapult"
+   ],
+   "non_startup_reason": "Catapult centre (public innovation body)",
+   "repair": {
+    "broken": "",
+    "display_name": "Digital Catapult",
+    "entities": [],
+    "original_name": "Digital Catapult"
+   },
+   "route": {
+    "queue": "non_startup",
+    "reason": "Catapult centre (public innovation body)"
+   }
+  },
+  "40:unit-2": {
+   "broken_name_reason": "name is an event",
+   "card": "name: TechCrunch Disrupt Summit\ndescription: \nfound via: Oracle Feed (Announcement feed — discovery only, usually recently funded)\nsource url: \ndate:  (detected)\nlocation:   geo=DE\nsectors: ai_sw",
+   "card_sha": "a08169cfe418b914",
+   "check": {
+    "evidence": [],
+    "record": null,
+    "route_to_omar": false,
+    "status": "NONE",
+    "twins": []
+   },
+   "european_connection": "",
+   "extract_company": "UNKNOWN",
+   "extract_entities": [],
+   "names_for": [
+    "TechCrunch Disrupt Summit"
+   ],
+   "non_startup_reason": "",
+   "repair": {
+    "broken": "name is an event",
+    "display_name": "TechCrunch Disrupt Summit",
+    "entities": [],
+    "original_name": "TechCrunch Disrupt Summit"
+   },
+   "route": {
+    "queue": "operating",
+    "reason": "Europe"
+   }
+  },
+  "41:unit-3": {
+   "broken_name_reason": "",
+   "card": "name: Foo Bar Baz Qux Quux GmbH raises\ndescription: Long legal name.\nfound via: Oracle Feed (Announcement feed — discovery only, usually recently funded)\nsource url: \ndate:  (detected)\nlocation:   geo=DE\nsectors: ai_sw",
+   "card_sha": "6e8571d44b6a253c",
+   "check": {
+    "evidence": [],
+    "record": null,
+    "route_to_omar": false,
+    "status": "NONE",
+    "twins": []
+   },
+   "european_connection": "",
+   "extract_company": "Foo Bar Baz Qux",
+   "extract_entities": [
+    {
+     "evidence": "Foo Bar Baz Qux Quux GmbH raises.",
+     "method": "headline extractor",
+     "name": "Foo Bar Baz Qux"
+    }
+   ],
+   "names_for": [
+    "Foo Bar Baz Qux Quux GmbH raises",
+    "Foo Bar Baz Qux"
+   ],
+   "non_startup_reason": "",
+   "repair": {
+    "broken": "",
+    "display_name": "Foo Bar Baz Qux Quux GmbH raises",
+    "entities": [],
+    "original_name": "Foo Bar Baz Qux Quux GmbH raises"
+   },
+   "route": {
+    "queue": "operating",
+    "reason": "Europe"
+   }
+  },
+  "42:unit-4": {
+   "broken_name_reason": "",
+   "card": "name: Shell Energy Retail\ndescription: \nfound via: Oracle Feed (Announcement feed — discovery only, usually recently funded)\nsource url: \ndate:  (detected)\nlocation:   geo=DE\nsectors: ai_sw",
+   "card_sha": "fcccd9cf028d4e8e",
+   "check": {
+    "evidence": [],
+    "record": null,
+    "route_to_omar": false,
+    "status": "NONE",
+    "twins": []
+   },
+   "european_connection": "",
+   "extract_company": "UNKNOWN",
+   "extract_entities": [],
+   "names_for": [
+    "Shell Energy Retail"
+   ],
+   "non_startup_reason": "large incumbent (shell)",
+   "repair": {
+    "broken": "",
+    "display_name": "Shell Energy Retail",
+    "entities": [],
+    "original_name": "Shell Energy Retail"
+   },
+   "route": {
+    "queue": "non_startup",
+    "reason": "large incumbent (shell)"
+   }
+  },
+  "43:unit-5": {
+   "broken_name_reason": "",
+   "card": "name: BP\ndescription: \nfound via: Oracle Feed (Announcement feed — discovery only, usually recently funded)\nsource url: \ndate:  (detected)\nlocation:   geo=DE\nsectors: ai_sw",
+   "card_sha": "7b1e3ee0202e9ff6",
+   "check": {
+    "evidence": [],
+    "record": null,
+    "route_to_omar": false,
+    "status": "NONE",
+    "twins": []
+   },
+   "european_connection": "",
+   "extract_company": "UNKNOWN",
+   "extract_entities": [],
+   "names_for": [
+    "BP"
+   ],
+   "non_startup_reason": "large incumbent (bp)",
+   "repair": {
+    "broken": "",
+    "display_name": "BP",
+    "entities": [],
+    "original_name": "BP"
+   },
+   "route": {
+    "queue": "non_startup",
+    "reason": "large incumbent (bp)"
+   }
+  },
+  "44:unit-6": {
+   "broken_name_reason": "",
+   "card": "name: Imperial College London\ndescription: \nfound via: Oracle Feed (Announcement feed — discovery only, usually recently funded)\nsource url: \ndate:  (detected)\nlocation:   geo=DE\nsectors: ai_sw",
+   "card_sha": "1a128118de1a521f",
+   "check": {
+    "evidence": [],
+    "record": null,
+    "route_to_omar": false,
+    "status": "NONE",
+    "twins": []
+   },
+   "european_connection": "london",
+   "extract_company": "UNKNOWN",
+   "extract_entities": [],
+   "names_for": [
+    "Imperial College London"
+   ],
+   "non_startup_reason": "university / academic institution",
+   "repair": {
+    "broken": "",
+    "display_name": "Imperial College London",
+    "entities": [],
+    "original_name": "Imperial College London"
+   },
+   "route": {
+    "queue": "non_startup",
+    "reason": "university / academic institution"
+   }
+  },
+  "45:unit-7": {
+   "broken_name_reason": "name is a headline",
+   "card": "name: Exclusive: Gravity Gardens secures €3M\ndescription: \nfound via: Oracle Feed (Announcement feed — discovery only, usually recently funded)\nsource url: \ndate:  (detected)\nlocation:   geo=DE\nsectors: ai_sw",
+   "card_sha": "2099bd02691e591a",
+   "check": {
+    "evidence": [],
+    "record": null,
+    "route_to_omar": false,
+    "status": "NONE",
+    "twins": []
+   },
+   "european_connection": "",
+   "extract_company": "Gravity Gardens",
+   "extract_entities": [
+    {
+     "evidence": "Exclusive: Gravity Gardens secures €3M",
+     "method": "headline extractor",
+     "name": "Gravity Gardens"
+    }
+   ],
+   "names_for": [
+    "Gravity Gardens"
+   ],
+   "non_startup_reason": "",
+   "repair": {
+    "broken": "name is a headline",
+    "display_name": "Gravity Gardens",
+    "entities": [
+     {
+      "evidence": "Exclusive: Gravity Gardens secures €3M",
+      "method": "headline extractor",
+      "name": "Gravity Gardens"
+     }
+    ],
+    "original_name": "Exclusive: Gravity Gardens secures €3M"
+   },
+   "route": {
+    "queue": "operating",
+    "reason": "Europe"
+   }
+  },
+  "46:unit-8": {
+   "broken_name_reason": "name is a headline",
+   "card": "name: Dutch AgTech Gravity Gardens secures €3M seed\ndescription: \nfound via: Oracle Feed (Announcement feed — discovery only, usually recently funded)\nsource url: \ndate:  (detected)\nlocation:   geo=DE\nsectors: ai_sw",
+   "card_sha": "1ffb99ed1a3ad5d8",
+   "check": {
+    "evidence": [],
+    "record": null,
+    "route_to_omar": false,
+    "status": "NONE",
+    "twins": []
+   },
+   "european_connection": "",
+   "extract_company": "Gravity Gardens",
+   "extract_entities": [
+    {
+     "evidence": "Dutch AgTech Gravity Gardens secures €3M seed",
+     "method": "headline extractor",
+     "name": "Gravity Gardens"
+    }
+   ],
+   "names_for": [
+    "Gravity Gardens"
+   ],
+   "non_startup_reason": "",
+   "repair": {
+    "broken": "name is a headline",
+    "display_name": "Gravity Gardens",
+    "entities": [
+     {
+      "evidence": "Dutch AgTech Gravity Gardens secures €3M seed",
+      "method": "headline extractor",
+      "name": "Gravity Gardens"
+     }
+    ],
+    "original_name": "Dutch AgTech Gravity Gardens secures €3M seed"
+   },
+   "route": {
+    "queue": "operating",
+    "reason": "Europe"
+   }
+  },
+  "47:unit-9": {
+   "broken_name_reason": "name is a headline",
+   "card": "name: Berlin-based Foo raises €1M\ndescription: \nfound via: Oracle Feed (Announcement feed — discovery only, usually recently funded)\nsource url: \ndate:  (detected)\nlocation:   geo=DE\nsectors: ai_sw",
+   "card_sha": "29f1ab12433f32c5",
+   "check": {
+    "evidence": [],
+    "record": null,
+    "route_to_omar": false,
+    "status": "NONE",
+    "twins": []
+   },
+   "european_connection": "",
+   "extract_company": "Foo",
+   "extract_entities": [
+    {
+     "evidence": "Berlin-based Foo raises €1M",
+     "method": "headline extractor",
+     "name": "Foo"
+    }
+   ],
+   "names_for": [
+    "Foo"
+   ],
+   "non_startup_reason": "",
+   "repair": {
+    "broken": "name is a headline",
+    "display_name": "Foo",
+    "entities": [
+     {
+      "evidence": "Berlin-based Foo raises €1M",
+      "method": "headline extractor",
+      "name": "Foo"
+     }
+    ],
+    "original_name": "Berlin-based Foo raises €1M"
+   },
+   "route": {
+    "queue": "operating",
+    "reason": "Europe"
+   }
+  },
+  "48:unit-10": {
+   "broken_name_reason": "",
+   "card": "name: Sweden’s Einride lands $100M\ndescription: \nfound via: Oracle Feed (Announcement feed — discovery only, usually recently funded)\nsource url: \ndate:  (detected)\nlocation:   geo=DE\nsectors: ai_sw",
+   "card_sha": "e9996e40cfe6a2c5",
+   "check": {
+    "evidence": [],
+    "record": null,
+    "route_to_omar": false,
+    "status": "NONE",
+    "twins": []
+   },
+   "european_connection": "sweden",
+   "extract_company": "Einride",
+   "extract_entities": [
+    {
+     "evidence": "Sweden’s Einride lands $100M",
+     "method": "headline extractor",
+     "name": "Einride"
+    }
+   ],
+   "names_for": [
+    "Sweden’s Einride lands $100M",
+    "Einride"
+   ],
+   "non_startup_reason": "",
+   "repair": {
+    "broken": "",
+    "display_name": "Sweden’s Einride lands $100M",
+    "entities": [],
+    "original_name": "Sweden’s Einride lands $100M"
+   },
+   "route": {
+    "queue": "operating",
+    "reason": "Europe"
+   }
+  },
+  "49:unit-11": {
+   "broken_name_reason": "name UNKNOWN",
+   "card": "name: UNKNOWN\ndescription: DeepPsy’s obtains CE mark. More text.\nfound via: Oracle Feed (Announcement feed — discovery only, usually recently funded)\nsource url: \ndate:  (detected)\nlocation:   geo=DE\nsectors: ai_sw",
+   "card_sha": "f54e926f2e0aff41",
+   "check": {
+    "evidence": [],
+    "record": null,
+    "route_to_omar": false,
+    "status": "NONE",
+    "twins": []
+   },
+   "european_connection": "",
+   "extract_company": "UNKNOWN",
+   "extract_entities": [
+    {
+     "evidence": "DeepPsy’s obtains CE mark.",
+     "method": "subject of event verb",
+     "name": "DeepPsy"
+    }
+   ],
+   "names_for": [
+    "DeepPsy"
+   ],
+   "non_startup_reason": "",
+   "repair": {
+    "broken": "name UNKNOWN",
+    "display_name": "DeepPsy",
+    "entities": [
+     {
+      "evidence": "DeepPsy’s obtains CE mark.",
+      "method": "subject of event verb",
+      "name": "DeepPsy"
+     }
+    ],
+    "original_name": "UNKNOWN"
+   },
+   "route": {
+    "queue": "operating",
+    "reason": "Europe"
+   }
+  },
+  "4:research": {
+   "broken_name_reason": "",
+   "card": "name: Fraunhofer Institute for Laser Technology\ndescription: Applied research.\nfound via: Oracle Feed (Announcement feed — discovery only, usually recently funded)\nsource url: \ndate:  (detected)\nlocation:   geo=DE\nsectors: ai_sw",
+   "card_sha": "e09502b4310feaca",
+   "check": {
+    "evidence": [],
+    "record": null,
+    "route_to_omar": false,
+    "status": "NONE",
+    "twins": []
+   },
+   "european_connection": "",
+   "extract_company": "UNKNOWN",
+   "extract_entities": [],
+   "names_for": [
+    "Fraunhofer Institute for Laser Technology"
+   ],
+   "non_startup_reason": "public research organisation",
+   "repair": {
+    "broken": "",
+    "display_name": "Fraunhofer Institute for Laser Technology",
+    "entities": [],
+    "original_name": "Fraunhofer Institute for Laser Technology"
+   },
+   "route": {
+    "queue": "non_startup",
+    "reason": "public research organisation"
+   }
+  },
+  "50:unit-12": {
+   "broken_name_reason": "name UNKNOWN",
+   "card": "name: UNKNOWN\ndescription: The defence technology company DOD Solution has raised a round.\nfound via: Oracle Feed (Announcement feed — discovery only, usually recently funded)\nsource url: \ndate:  (detected)\nlocation:   geo=DE\nsectors: ai_sw",
+   "card_sha": "60f6d94357e8033e",
+   "check": {
+    "evidence": [],
+    "record": null,
+    "route_to_omar": false,
+    "status": "NONE",
+    "twins": []
+   },
+   "european_connection": "",
+   "extract_company": "UNKNOWN",
+   "extract_entities": [
+    {
+     "evidence": "The defence technology company DOD Solution has raised a round.",
+     "method": "descriptor phrase",
+     "name": "DOD Solution"
+    }
+   ],
+   "names_for": [
+    "DOD Solution"
+   ],
+   "non_startup_reason": "",
+   "repair": {
+    "broken": "name UNKNOWN",
+    "display_name": "DOD Solution",
+    "entities": [
+     {
+      "evidence": "The defence technology company DOD Solution has raised a round.",
+      "method": "descriptor phrase",
+      "name": "DOD Solution"
+     }
+    ],
+    "original_name": "UNKNOWN"
+   },
+   "route": {
+    "queue": "operating",
+    "reason": "Europe"
+   }
+  },
+  "51:unit-13": {
+   "broken_name_reason": "name UNKNOWN",
+   "card": "name: UNKNOWN\ndescription: Meet the AI Research Lab Grubel, based in Zurich.\nfound via: Oracle Feed (Announcement feed — discovery only, usually recently funded)\nsource url: \ndate:  (detected)\nlocation:   geo=DE\nsectors: ai_sw",
+   "card_sha": "d35e08a23d523ba7",
+   "check": {
+    "evidence": [],
+    "record": null,
+    "route_to_omar": false,
+    "status": "NONE",
+    "twins": []
+   },
+   "european_connection": "zurich",
+   "extract_company": "UNKNOWN",
+   "extract_entities": [
+    {
+     "evidence": "Meet the AI Research Lab Grubel, based in Zurich.",
+     "method": "descriptor phrase",
+     "name": "Grubel"
+    }
+   ],
+   "names_for": [
+    "Grubel"
+   ],
+   "non_startup_reason": "",
+   "repair": {
+    "broken": "name UNKNOWN",
+    "display_name": "Grubel",
+    "entities": [
+     {
+      "evidence": "Meet the AI Research Lab Grubel, based in Zurich.",
+      "method": "descriptor phrase",
+      "name": "Grubel"
+     }
+    ],
+    "original_name": "UNKNOWN"
+   },
+   "route": {
+    "queue": "operating",
+    "reason": "Europe"
+   }
+  },
+  "52:unit-14": {
+   "broken_name_reason": "name UNKNOWN",
+   "card": "name: UNKNOWN\ndescription: Five startups win — Acme Wins Prize.\nfound via: Oracle Feed (Announcement feed — discovery only, usually recently funded)\nsource url: \ndate:  (detected)\nlocation:   geo=DE\nsectors: ai_sw",
+   "card_sha": "3252733f72f2cf79",
+   "check": {
+    "evidence": [],
+    "record": null,
+    "route_to_omar": false,
+    "status": "NONE",
+    "twins": []
+   },
+   "european_connection": "",
+   "extract_company": "UNKNOWN",
+   "extract_entities": [],
+   "names_for": [],
+   "non_startup_reason": "",
+   "repair": {
+    "broken": "name UNKNOWN",
+    "display_name": "UNKNOWN",
+    "entities": [],
+    "original_name": "UNKNOWN"
+   },
+   "route": {
+    "queue": "operating",
+    "reason": "Europe"
+   }
+  },
+  "53:unit-15": {
+   "broken_name_reason": "name is a headline",
+   "card": "name: German Bionic raises €10M\ndescription: \nfound via: Oracle Feed (Announcement feed — discovery only, usually recently funded)\nsource url: \ndate:  (detected)\nlocation:   geo=DE\nsectors: ai_sw",
+   "card_sha": "455dca1b77336a15",
+   "check": {
+    "evidence": [],
+    "record": null,
+    "route_to_omar": false,
+    "status": "NONE",
+    "twins": []
+   },
+   "european_connection": "",
+   "extract_company": "German Bionic",
+   "extract_entities": [
+    {
+     "evidence": "German Bionic raises €10M",
+     "method": "headline extractor",
+     "name": "Bionic"
+    }
+   ],
+   "names_for": [
+    "Bionic"
+   ],
+   "non_startup_reason": "",
+   "repair": {
+    "broken": "name is a headline",
+    "display_name": "Bionic",
+    "entities": [
+     {
+      "evidence": "German Bionic raises €10M",
+      "method": "headline extractor",
+      "name": "Bionic"
+     }
+    ],
+    "original_name": "German Bionic raises €10M"
+   },
+   "route": {
+    "queue": "operating",
+    "reason": "Europe"
+   }
+  },
+  "54:unit-16": {
+   "broken_name_reason": "name is a headline",
+   "card": "name: The Startup Fooly raises seed\ndescription: \nfound via: Oracle Feed (Announcement feed — discovery only, usually recently funded)\nsource url: \ndate:  (detected)\nlocation:   geo=DE\nsectors: ai_sw",
+   "card_sha": "8a3fd2df570fef42",
+   "check": {
+    "evidence": [],
+    "record": null,
+    "route_to_omar": false,
+    "status": "NONE",
+    "twins": []
+   },
+   "european_connection": "",
+   "extract_company": "Fooly",
+   "extract_entities": [
+    {
+     "evidence": "The Startup Fooly raises seed",
+     "method": "headline extractor",
+     "name": "Fooly"
+    }
+   ],
+   "names_for": [
+    "Fooly"
+   ],
+   "non_startup_reason": "",
+   "repair": {
+    "broken": "name is a headline",
+    "display_name": "Fooly",
+    "entities": [
+     {
+      "evidence": "The Startup Fooly raises seed",
+      "method": "headline extractor",
+      "name": "Fooly"
+     }
+    ],
+    "original_name": "The Startup Fooly raises seed"
+   },
+   "route": {
+    "queue": "operating",
+    "reason": "Europe"
+   }
+  },
+  "55:unit-17": {
+   "broken_name_reason": "",
+   "card": "name: ACMEROBOTICSINTERNATIONAL\ndescription: \nfound via: Oracle Feed (Announcement feed — discovery only, usually recently funded)\nsource url: \ndate:  (detected)\nlocation:   geo=DE\nsectors: ai_sw",
+   "card_sha": "9200bbbbb3da7b82",
+   "check": {
+    "evidence": [],
+    "record": null,
+    "route_to_omar": false,
+    "status": "NONE",
+    "twins": []
+   },
+   "european_connection": "",
+   "extract_company": "UNKNOWN",
+   "extract_entities": [],
+   "names_for": [
+    "ACMEROBOTICSINTERNATIONAL"
+   ],
+   "non_startup_reason": "",
+   "repair": {
+    "broken": "",
+    "display_name": "ACMEROBOTICSINTERNATIONAL",
+    "entities": [],
+    "original_name": "ACMEROBOTICSINTERNATIONAL"
+   },
+   "route": {
+    "queue": "operating",
+    "reason": "Europe"
+   }
+  },
+  "56:unit-18": {
+   "broken_name_reason": "",
+   "card": "name: Project A 2\ndescription: project a 2 fund\nfound via: Oracle Feed (Announcement feed — discovery only, usually recently funded)\nsource url: \ndate:  (detected)\nlocation:   geo=DE\nsectors: ai_sw",
+   "card_sha": "d33e08dbb7d50082",
+   "check": {
+    "evidence": [],
+    "record": null,
+    "route_to_omar": false,
+    "status": "NONE",
+    "twins": []
+   },
+   "european_connection": "",
+   "extract_company": "UNKNOWN",
+   "extract_entities": [],
+   "names_for": [
+    "Project A 2"
+   ],
+   "non_startup_reason": "",
+   "repair": {
+    "broken": "",
+    "display_name": "Project A 2",
+    "entities": [],
+    "original_name": "Project A 2"
+   },
+   "route": {
+    "queue": "operating",
+    "reason": "Europe"
+   }
+  },
+  "57:unit-19": {
+   "broken_name_reason": "",
+   "card": "name: X\ndescription: y\nfound via: Oracle Feed (Announcement feed — discovery only, usually recently funded)\nsource url: \ndate:  (detected)\nlocation:   geo=DE\nsectors: ai_sw",
+   "card_sha": "42eefb7f551a54b3",
+   "check": {
+    "evidence": [],
+    "record": null,
+    "route_to_omar": false,
+    "status": "NONE",
+    "twins": []
+   },
+   "european_connection": "",
+   "extract_company": "UNKNOWN",
+   "extract_entities": [],
+   "names_for": [
+    "X"
+   ],
+   "non_startup_reason": "",
+   "repair": {
+    "broken": "",
+    "display_name": "X",
+    "entities": [],
+    "original_name": "X"
+   },
+   "route": {
+    "queue": "operating",
+    "reason": "Europe"
+   }
+  },
+  "58:unit-20": {
+   "broken_name_reason": "name UNKNOWN",
+   "card": "name: \ndescription: \nfound via: Oracle Feed (Announcement feed — discovery only, usually recently funded)\nsource url: \ndate:  (detected)\nlocation:   geo=DE\nsectors: ai_sw",
+   "card_sha": "1c20d3a1e436c827",
+   "check": {
+    "evidence": [],
+    "record": null,
+    "route_to_omar": false,
+    "status": "NONE",
+    "twins": []
+   },
+   "european_connection": "",
+   "extract_company": "UNKNOWN",
+   "extract_entities": [],
+   "names_for": [],
+   "non_startup_reason": "",
+   "repair": {
+    "broken": "name UNKNOWN",
+    "display_name": "",
+    "entities": [],
+    "original_name": ""
+   },
+   "route": {
+    "queue": "operating",
+    "reason": "Europe"
+   }
+  },
+  "59:unit-21": {
+   "broken_name_reason": "",
+   "card": "name: Startup Kontext: AI security\ndescription: \nfound via: Oracle Feed (Announcement feed — discovery only, usually recently funded)\nsource url: \ndate:  (detected)\nlocation:   geo=DE\nsectors: ai_sw",
+   "card_sha": "c5c8616f018ee9eb",
+   "check": {
+    "evidence": [],
+    "record": null,
+    "route_to_omar": false,
+    "status": "NONE",
+    "twins": []
+   },
+   "european_connection": "",
+   "extract_company": "Kontext",
+   "extract_entities": [
+    {
+     "evidence": "Startup Kontext: AI security",
+     "method": "headline extractor",
+     "name": "Kontext"
+    }
+   ],
+   "names_for": [
+    "Startup Kontext: AI security",
+    "Kontext"
+   ],
+   "non_startup_reason": "",
+   "repair": {
+    "broken": "",
+    "display_name": "Startup Kontext: AI security",
+    "entities": [],
+    "original_name": "Startup Kontext: AI security"
+   },
+   "route": {
+    "queue": "operating",
+    "reason": "Europe"
+   }
+  },
+  "5:incumbent": {
+   "broken_name_reason": "",
+   "card": "name: Rolls-Royce Holdings\ndescription: Engines.\nfound via: Oracle Feed (Announcement feed — discovery only, usually recently funded)\nsource url: \ndate:  (detected)\nlocation:   geo=DE\nsectors: ai_sw",
+   "card_sha": "459c9c0410bb5c81",
+   "check": {
+    "evidence": [],
+    "record": null,
+    "route_to_omar": false,
+    "status": "NONE",
+    "twins": []
+   },
+   "european_connection": "",
+   "extract_company": "UNKNOWN",
+   "extract_entities": [],
+   "names_for": [
+    "Rolls-Royce Holdings"
+   ],
+   "non_startup_reason": "large incumbent (rolls-royce)",
+   "repair": {
+    "broken": "",
+    "display_name": "Rolls-Royce Holdings",
+    "entities": [],
+    "original_name": "Rolls-Royce Holdings"
+   },
+   "route": {
+    "queue": "non_startup",
+    "reason": "large incumbent (rolls-royce)"
+   }
+  },
+  "60:unit-22": {
+   "broken_name_reason": "name is a headline",
+   "card": "name: Fintech Mondu raises\ndescription: \nfound via: Oracle Feed (Announcement feed — discovery only, usually recently funded)\nsource url: \ndate:  (detected)\nlocation:   geo=DE\nsectors: ai_sw",
+   "card_sha": "b343c535b84a8028",
+   "check": {
+    "evidence": [],
+    "record": null,
+    "route_to_omar": false,
+    "status": "NONE",
+    "twins": []
+   },
+   "european_connection": "",
+   "extract_company": "Mondu",
+   "extract_entities": [
+    {
+     "evidence": "Fintech Mondu raises",
+     "method": "headline extractor",
+     "name": "Mondu"
+    }
+   ],
+   "names_for": [
+    "Mondu"
+   ],
+   "non_startup_reason": "",
+   "repair": {
+    "broken": "name is a headline",
+    "display_name": "Mondu",
+    "entities": [
+     {
+      "evidence": "Fintech Mondu raises",
+      "method": "headline extractor",
+      "name": "Mondu"
+     }
+    ],
+    "original_name": "Fintech Mondu raises"
+   },
+   "route": {
+    "queue": "operating",
+    "reason": "Europe"
+   }
+  },
+  "61:unit-23": {
+   "broken_name_reason": "name is a headline",
+   "card": "name: Robotics Spin-off Nimble from Munich wins award\ndescription: \nfound via: Oracle Feed (Announcement feed — discovery only, usually recently funded)\nsource url: \ndate:  (detected)\nlocation:   geo=DE\nsectors: ai_sw",
+   "card_sha": "a06d37d411e4b848",
+   "check": {
+    "evidence": [],
+    "record": null,
+    "route_to_omar": false,
+    "status": "NONE",
+    "twins": []
+   },
+   "european_connection": "munich",
+   "extract_company": "UNKNOWN",
+   "extract_entities": [
+    {
+     "evidence": "Robotics Spin-off Nimble from Munich wins award",
+     "method": "descriptor phrase",
+     "name": "Nimble"
+    }
+   ],
+   "names_for": [
+    "Nimble"
+   ],
+   "non_startup_reason": "",
+   "repair": {
+    "broken": "name is a headline",
+    "display_name": "Nimble",
+    "entities": [
+     {
+      "evidence": "Robotics Spin-off Nimble from Munich wins award",
+      "method": "descriptor phrase",
+      "name": "Nimble"
+     }
+    ],
+    "original_name": "Robotics Spin-off Nimble from Munich wins award"
+   },
+   "route": {
+    "queue": "operating",
+    "reason": "Europe"
+   }
+  },
+  "62:unit-24": {
+   "broken_name_reason": "name is a headline",
+   "card": "name: Acme Robotics and the Future Factory\ndescription: \nfound via: Oracle Feed (Announcement feed — discovery only, usually recently funded)\nsource url: \ndate:  (detected)\nlocation:   geo=DE\nsectors: ai_sw",
+   "card_sha": "20b05ac9a468b512",
+   "check": {
+    "evidence": [],
+    "record": null,
+    "route_to_omar": false,
+    "status": "NONE",
+    "twins": []
+   },
+   "european_connection": "",
+   "extract_company": "UNKNOWN",
+   "extract_entities": [],
+   "names_for": [
+    "Acme Robotics and the Future Factory"
+   ],
+   "non_startup_reason": "",
+   "repair": {
+    "broken": "name is a headline",
+    "display_name": "Acme Robotics and the Future Factory",
+    "entities": [],
+    "original_name": "Acme Robotics and the Future Factory"
+   },
+   "route": {
+    "queue": "operating",
+    "reason": "Europe"
+   }
+  },
+  "63:unit-25": {
+   "broken_name_reason": "",
+   "card": "name: Acme Robotics for Future Factories\ndescription: \nfound via: Oracle Feed (Announcement feed — discovery only, usually recently funded)\nsource url: \ndate:  (detected)\nlocation:   geo=DE\nsectors: ai_sw",
+   "card_sha": "bf1e7a205729e2c4",
+   "check": {
+    "evidence": [],
+    "record": null,
+    "route_to_omar": false,
+    "status": "NONE",
+    "twins": []
+   },
+   "european_connection": "",
+   "extract_company": "UNKNOWN",
+   "extract_entities": [],
+   "names_for": [
+    "Acme Robotics for Future Factories"
+   ],
+   "non_startup_reason": "",
+   "repair": {
+    "broken": "",
+    "display_name": "Acme Robotics for Future Factories",
+    "entities": [],
+    "original_name": "Acme Robotics for Future Factories"
+   },
+   "route": {
+    "queue": "operating",
+    "reason": "Europe"
+   }
+  },
+  "64:unit-26": {
+   "broken_name_reason": "",
+   "card": "name: ACME ROBOTICS\ndescription: \nfound via: Oracle Feed (Announcement feed — discovery only, usually recently funded)\nsource url: \ndate:  (detected)\nlocation:   geo=DE\nsectors: ai_sw",
+   "card_sha": "82e6cbf073fb2260",
+   "check": {
+    "evidence": [],
+    "record": null,
+    "route_to_omar": false,
+    "status": "NONE",
+    "twins": []
+   },
+   "european_connection": "",
+   "extract_company": "UNKNOWN",
+   "extract_entities": [],
+   "names_for": [
+    "ACME ROBOTICS"
+   ],
+   "non_startup_reason": "",
+   "repair": {
+    "broken": "",
+    "display_name": "ACME ROBOTICS",
+    "entities": [],
+    "original_name": "ACME ROBOTICS"
+   },
+   "route": {
+    "queue": "operating",
+    "reason": "Europe"
+   }
+  },
+  "65:unit-27": {
+   "broken_name_reason": "name is a headline",
+   "card": "name: ACMEROBOTICSX raises €2M\ndescription: \nfound via: Oracle Feed (Announcement feed — discovery only, usually recently funded)\nsource url: \ndate:  (detected)\nlocation:   geo=DE\nsectors: ai_sw",
+   "card_sha": "350ce77f14119f1c",
+   "check": {
+    "evidence": [],
+    "record": null,
+    "route_to_omar": false,
+    "status": "NONE",
+    "twins": []
+   },
+   "european_connection": "",
+   "extract_company": "UNKNOWN",
+   "extract_entities": [],
+   "names_for": [
+    "ACMEROBOTICSX raises €2M"
+   ],
+   "non_startup_reason": "",
+   "repair": {
+    "broken": "name is a headline",
+    "display_name": "ACMEROBOTICSX raises €2M",
+    "entities": [],
+    "original_name": "ACMEROBOTICSX raises €2M"
+   },
+   "route": {
+    "queue": "operating",
+    "reason": "Europe"
+   }
+  },
+  "66:unit-28": {
+   "broken_name_reason": "name is a headline",
+   "card": "name: ACMEROBOTICS raises €2M\ndescription: \nfound via: Oracle Feed (Announcement feed — discovery only, usually recently funded)\nsource url: \ndate:  (detected)\nlocation:   geo=DE\nsectors: ai_sw",
+   "card_sha": "ecff3e11008897cd",
+   "check": {
+    "evidence": [],
+    "record": null,
+    "route_to_omar": false,
+    "status": "NONE",
+    "twins": []
+   },
+   "european_connection": "",
+   "extract_company": "ACMEROBOTICS",
+   "extract_entities": [
+    {
+     "evidence": "ACMEROBOTICS raises €2M",
+     "method": "headline extractor",
+     "name": "ACMEROBOTICS"
+    }
+   ],
+   "names_for": [
+    "ACMEROBOTICS"
+   ],
+   "non_startup_reason": "",
+   "repair": {
+    "broken": "name is a headline",
+    "display_name": "ACMEROBOTICS",
+    "entities": [
+     {
+      "evidence": "ACMEROBOTICS raises €2M",
+      "method": "headline extractor",
+      "name": "ACMEROBOTICS"
+     }
+    ],
+    "original_name": "ACMEROBOTICS raises €2M"
+   },
+   "route": {
+    "queue": "operating",
+    "reason": "Europe"
+   }
+  },
+  "6:plc": {
+   "broken_name_reason": "",
+   "card": "name: Acme Widgets PLC\ndescription: Listed widgets.\nfound via: Oracle Feed (Announcement feed — discovery only, usually recently funded)\nsource url: \ndate:  (detected)\nlocation:   geo=DE\nsectors: ai_sw",
+   "card_sha": "24f48a89983332b4",
+   "check": {
+    "evidence": [],
+    "record": null,
+    "route_to_omar": false,
+    "status": "NONE",
+    "twins": []
+   },
+   "european_connection": "",
+   "extract_company": "Acme Widgets PLC",
+   "extract_entities": [
+    {
+     "evidence": "Acme Widgets PLC.",
+     "method": "headline extractor",
+     "name": "Acme Widgets PLC"
+    },
+    {
+     "evidence": "Listed widgets.",
+     "method": "headline extractor",
+     "name": "Listed"
+    }
+   ],
+   "names_for": [
+    "Acme Widgets PLC"
+   ],
+   "non_startup_reason": "listed company (PLC) — likely incumbent",
+   "repair": {
+    "broken": "",
+    "display_name": "Acme Widgets PLC",
+    "entities": [],
+    "original_name": "Acme Widgets PLC"
+   },
+   "route": {
+    "queue": "non_startup",
+    "reason": "listed company (PLC) — likely incumbent"
+   }
+  },
+  "7:na-global": {
+   "broken_name_reason": "",
+   "card": "name: Prairie AI Inc\ndescription: Agents for US farmers in Iowa.\nfound via: Oracle Feed (Announcement feed — discovery only, usually recently funded)\nsource url: \ndate:  (detected)\nlocation:   geo=US\nsectors: ai_sw",
+   "card_sha": "bcfd8c729591488a",
+   "check": {
+    "evidence": [],
+    "record": null,
+    "route_to_omar": false,
+    "status": "NONE",
+    "twins": []
+   },
+   "european_connection": "",
+   "extract_company": "UNKNOWN",
+   "extract_entities": [],
+   "names_for": [
+    "Prairie AI Inc"
+   ],
+   "non_startup_reason": "",
+   "repair": {
+    "broken": "",
+    "display_name": "Prairie AI Inc",
+    "entities": [],
+    "original_name": "Prairie AI Inc"
+   },
+   "route": {
+    "queue": "global_only",
+    "reason": "North America — Europe-first view (switch to Global to see it)"
+   }
+  },
+  "8:na-eu": {
+   "broken_name_reason": "",
+   "card": "name: Harbor AI Inc\ndescription: US startup with an office in Munich.\nfound via: Oracle Feed (Announcement feed — discovery only, usually recently funded)\nsource url: \ndate:  (detected)\nlocation:   geo=US\nsectors: ai_sw",
+   "card_sha": "f4257a1552375faf",
+   "check": {
+    "evidence": [],
+    "record": null,
+    "route_to_omar": false,
+    "status": "NONE",
+    "twins": []
+   },
+   "european_connection": "munich",
+   "extract_company": "UNKNOWN",
+   "extract_entities": [],
+   "names_for": [
+    "Harbor AI Inc"
+   ],
+   "non_startup_reason": "",
+   "repair": {
+    "broken": "",
+    "display_name": "Harbor AI Inc",
+    "entities": [],
+    "original_name": "Harbor AI Inc"
+   },
+   "route": {
+    "queue": "operating",
+    "reason": "North American record with a European connection (munich)"
+   }
+  },
+  "9:na-country": {
+   "broken_name_reason": "",
+   "card": "name: Maple Labs\ndescription: Built in Toronto.\nfound via: Oracle Feed (Announcement feed — discovery only, usually recently funded)\nsource url: \ndate:  (detected)\nlocation:  Canada geo=\nsectors: ai_sw",
+   "card_sha": "f00f84211ff7d699",
+   "check": {
+    "evidence": [],
+    "record": null,
+    "route_to_omar": false,
+    "status": "NONE",
+    "twins": []
+   },
+   "european_connection": "",
+   "extract_company": "UNKNOWN",
+   "extract_entities": [],
+   "names_for": [
+    "Maple Labs"
+   ],
+   "non_startup_reason": "",
+   "repair": {
+    "broken": "",
+    "display_name": "Maple Labs",
+    "entities": [],
+    "original_name": "Maple Labs"
+   },
+   "route": {
+    "queue": "global_only",
+    "reason": "North America — Europe-first view (switch to Global to see it)"
+   }
+  }
+ },
+ "view": {
+  "architecture": {
+   "accepted": "ACCEPTED — shadow only",
+   "holdout": {
+    "false_rejects": 0,
+    "n": 100
+   },
+   "locked": {
+    "cheap_model": "deepseek-ai/DeepSeek-V4-Flash",
+    "prompt_version": "triage-v3",
+    "veto_model": "Qwen/Qwen3.5-397B-A17B",
+    "veto_thinking": false
+   },
+   "prompt_version": "triage-v3"
+  },
+  "calibration": {
+   "agreement": 0.667,
+   "decisions": 3,
+   "machine_rejects_overturned_to_keep_or_research": 1,
+   "machine_rejects_reviewed": 2,
+   "matrix_machine_to_mohamed": {
+    "REJECT": {
+     "KEEP": 1,
+     "REJECT": 1
+    },
+    "RESEARCH": {
+     "RESEARCH": 1
+    }
+   }
+  },
+  "counts": {
+   "global_only": {
+    "RESEARCH": 3
+   },
+   "non_startup": {
+    "KEEP": 1,
+    "RESEARCH": 5
+   },
+   "operating": {
+    "ASK_OMAR_CONFLICT": 3,
+    "KEEP": 1,
+    "KNOWN_PORTFOLIO": 1,
+    "OBVIOUS_REJECT": 2,
+    "REJECT": 4,
+    "RESEARCH": 14,
+    "WATCH": 1
+   }
+  },
+  "note": "Machine proposals only. Nothing becomes a decision until Mohamed accepts or overrides it.",
+  "pending": {
+   "error": "TRIAGE FAILED: schema error",
+   "needs-human": "TRIAGE PENDING: waiting",
+   "no-proposal": "TRIAGE FAILED: failed again"
+  },
+  "proposals": {
+   "baseline": {
+    "candidate_id": "baseline",
+    "capital_stage": "ANGEL_ONLY",
+    "confidence": "medium",
+    "display_proposal": "REJECT",
+    "edge": "PRE_FUNDING_EDGE",
+    "entity": {
+     "broken": "",
+     "display_name": "Baseline Co",
+     "entities": []
+    },
+    "entity_type": "VENTURE",
+    "flags": [],
+    "flash": {
+     "confidence": "medium",
+     "model": "deepseek-ai/DeepSeek-V4-Flash",
+     "proposal": "REJECT",
+     "reject_basis": null
+    },
+    "missing": [],
+    "mohamed": null,
+    "obvious_reject": true,
+    "path": "both reject",
+    "portfolio": {
+     "evidence": [],
+     "record": null,
+     "route_to_omar": false,
+     "status": "NONE",
+     "twins": []
+    },
+    "prompt_version": "triage-v3",
+    "proposal": "REJECT",
+    "proposed_at": "2026-10-09T08:17:12",
+    "queue": null,
+    "reasons": [
+     "grounded reason"
+    ],
+    "reject_basis": null,
+    "reject_evidence": null,
+    "routing": {
+     "queue": "operating",
+     "reason": "Europe"
+    },
+    "sector": "robotics",
+    "stage": "stage1",
+    "stale": false,
+    "status": "proposed",
+    "themes": [],
+    "veto": null
+   },
+   "broken-date": {
+    "candidate_id": "broken-date",
+    "capital_stage": "UNKNOWN",
+    "confidence": "medium",
+    "display_proposal": "RESEARCH",
+    "edge": "UNKNOWN",
+    "entity": {
+     "broken": "name is a date / time",
+     "display_name": "RheoCarti",
+     "entities": [
+      {
+       "evidence": "RheoCarti awarded the EIC grant.",
+       "method": "subject of event verb",
+       "name": "RheoCarti"
+      }
+     ]
+    },
+    "entity_type": "VENTURE",
+    "flags": [],
+    "flash": {
+     "confidence": "medium",
+     "model": "deepseek-ai/DeepSeek-V4-Flash",
+     "proposal": "RESEARCH",
+     "reject_basis": null
+    },
+    "missing": [],
+    "mohamed": null,
+    "obvious_reject": false,
+    "path": "cheap",
+    "portfolio": {
+     "evidence": [],
+     "record": null,
+     "route_to_omar": false,
+     "status": "NONE",
+     "twins": []
+    },
+    "prompt_version": "triage-v3",
+    "proposal": "RESEARCH",
+    "proposed_at": "2026-10-09T08:17:12",
+    "queue": null,
+    "reasons": [
+     "grounded reason"
+    ],
+    "reject_basis": null,
+    "reject_evidence": null,
+    "routing": {
+     "queue": "operating",
+     "reason": "Europe"
+    },
+    "sector": "robotics",
+    "stage": "stage1",
+    "stale": false,
+    "status": "proposed",
+    "themes": [],
+    "veto": null
+   },
+   "broken-unknown": {
+    "candidate_id": "broken-unknown",
+    "capital_stage": null,
+    "confidence": "medium",
+    "display_proposal": "RESEARCH",
+    "edge": "UNKNOWN",
+    "entity": {
+     "broken": "name UNKNOWN",
+     "display_name": "Kontext",
+     "entities": [
+      {
+       "evidence": "Startup Kontext raises €2M to secure AI agents.",
+       "method": "headline extractor",
+       "name": "Kontext"
+      }
+     ]
+    },
+    "entity_type": "VENTURE",
+    "flags": [],
+    "flash": {
+     "confidence": "medium",
+     "model": "deepseek-ai/DeepSeek-V4-Flash",
+     "proposal": "RESEARCH",
+     "reject_basis": null
+    },
+    "missing": [],
+    "mohamed": null,
+    "obvious_reject": false,
+    "path": "cheap",
+    "portfolio": {
+     "evidence": [],
+     "record": null,
+     "route_to_omar": false,
+     "status": "NONE",
+     "twins": []
+    },
+    "prompt_version": "triage-v3",
+    "proposal": "RESEARCH",
+    "proposed_at": "2026-10-09T08:17:12",
+    "queue": null,
+    "reasons": [
+     "grounded reason"
+    ],
+    "reject_basis": null,
+    "reject_evidence": null,
+    "routing": {
+     "queue": "operating",
+     "reason": "Europe"
+    },
+    "sector": "robotics",
+    "stage": "stage1",
+    "stale": false,
+    "status": "proposed",
+    "themes": [],
+    "veto": null
+   },
+   "card": {
+    "candidate_id": "card",
+    "capital_stage": "UNKNOWN",
+    "confidence": "medium",
+    "display_proposal": "RESEARCH",
+    "edge": "UNKNOWN",
+    "entity": {
+     "broken": "",
+     "display_name": "Card Co",
+     "entities": []
+    },
+    "entity_type": "VENTURE",
+    "flags": [],
+    "flash": {
+     "confidence": "medium",
+     "model": "deepseek-ai/DeepSeek-V4-Flash",
+     "proposal": "RESEARCH",
+     "reject_basis": null
+    },
+    "missing": [],
+    "mohamed": null,
+    "obvious_reject": false,
+    "path": "cheap",
+    "portfolio": {
+     "evidence": [],
+     "record": null,
+     "route_to_omar": false,
+     "status": "NONE",
+     "twins": []
+    },
+    "prompt_version": "triage-v3",
+    "proposal": "RESEARCH",
+    "proposed_at": "2026-10-09T08:17:12",
+    "queue": null,
+    "reasons": [
+     "grounded reason"
+    ],
+    "reject_basis": null,
+    "reject_evidence": null,
+    "routing": {
+     "queue": "operating",
+     "reason": "Europe"
+    },
+    "sector": "robotics",
+    "stage": "stage1",
+    "stale": false,
+    "status": "proposed",
+    "themes": [],
+    "veto": null
+   },
+   "card-none": {
+    "candidate_id": "card-none",
+    "capital_stage": "UNKNOWN",
+    "confidence": "medium",
+    "display_proposal": "RESEARCH",
+    "edge": "UNKNOWN",
+    "entity": {
+     "broken": "",
+     "display_name": "Card None",
+     "entities": []
+    },
+    "entity_type": "VENTURE",
+    "flags": [],
+    "flash": {
+     "confidence": "medium",
+     "model": "deepseek-ai/DeepSeek-V4-Flash",
+     "proposal": "RESEARCH",
+     "reject_basis": null
+    },
+    "missing": [],
+    "mohamed": null,
+    "obvious_reject": false,
+    "path": "cheap",
+    "portfolio": {
+     "evidence": [],
+     "record": null,
+     "route_to_omar": false,
+     "status": "NONE",
+     "twins": []
+    },
+    "prompt_version": "triage-v3",
+    "proposal": "RESEARCH",
+    "proposed_at": "2026-10-09T08:17:12",
+    "queue": null,
+    "reasons": [
+     "grounded reason"
+    ],
+    "reject_basis": null,
+    "reject_evidence": null,
+    "routing": {
+     "queue": "operating",
+     "reason": "geography unresolved — kept visible"
+    },
+    "sector": "robotics",
+    "stage": "stage1",
+    "stale": false,
+    "status": "proposed",
+    "themes": [],
+    "veto": null
+   },
+   "catapult": {
+    "candidate_id": "catapult",
+    "capital_stage": "UNKNOWN",
+    "confidence": "medium",
+    "display_proposal": "RESEARCH",
+    "edge": "UNKNOWN",
+    "entity": {
+     "broken": "",
+     "display_name": "Digital Catapult",
+     "entities": []
+    },
+    "entity_type": "VENTURE",
+    "flags": [],
+    "flash": {
+     "confidence": "medium",
+     "model": "deepseek-ai/DeepSeek-V4-Flash",
+     "proposal": "RESEARCH",
+     "reject_basis": null
+    },
+    "missing": [],
+    "mohamed": null,
+    "obvious_reject": false,
+    "path": "cheap",
+    "portfolio": {
+     "evidence": [],
+     "record": null,
+     "route_to_omar": false,
+     "status": "NONE",
+     "twins": []
+    },
+    "prompt_version": "triage-v3",
+    "proposal": "RESEARCH",
+    "proposed_at": "2026-10-09T08:17:12",
+    "queue": null,
+    "reasons": [
+     "grounded reason"
+    ],
+    "reject_basis": null,
+    "reject_evidence": null,
+    "routing": {
+     "queue": "non_startup",
+     "reason": "Catapult centre (public innovation body)"
+    },
+    "sector": "robotics",
+    "stage": "stage1",
+    "stale": false,
+    "status": "proposed",
+    "themes": [],
+    "veto": null
+   },
+   "conviction": {
+    "candidate_id": "conviction",
+    "capital_stage": "UNKNOWN",
+    "confidence": "medium",
+    "display_proposal": "ASK_OMAR_CONFLICT",
+    "edge": "UNKNOWN",
+    "entity": {
+     "broken": "",
+     "display_name": "Conflict Robotics",
+     "entities": []
+    },
+    "entity_type": "VENTURE",
+    "flags": [],
+    "flash": {
+     "confidence": "medium",
+     "model": "deepseek-ai/DeepSeek-V4-Flash",
+     "proposal": "RESEARCH",
+     "reject_basis": null
+    },
+    "missing": [],
+    "mohamed": null,
+    "obvious_reject": false,
+    "path": "cheap",
+    "portfolio": {
+     "evidence": [
+      "Conviction record has conflict = unclear (human-set)"
+     ],
+     "record": {
+      "conflict": "unclear",
+      "name": "Conflict Robotics GmbH",
+      "slug": "Conflict Robotics GmbH",
+      "where": "Conviction"
+     },
+     "route_to_omar": true,
+     "status": "EXISTING_RECORD",
+     "twins": []
+    },
+    "prompt_version": "triage-v3",
+    "proposal": "RESEARCH",
+    "proposed_at": "2026-10-09T08:17:12",
+    "queue": null,
+    "reasons": [
+     "grounded reason"
+    ],
+    "reject_basis": null,
+    "reject_evidence": null,
+    "routing": {
+     "queue": "operating",
+     "reason": "Europe"
+    },
+    "sector": "robotics",
+    "stage": "stage1",
+    "stale": false,
+    "status": "proposed",
+    "themes": [],
+    "veto": null
+   },
+   "conviction-clear": {
+    "candidate_id": "conviction-clear",
+    "capital_stage": "UNKNOWN",
+    "confidence": "medium",
+    "display_proposal": "RESEARCH",
+    "edge": "UNKNOWN",
+    "entity": {
+     "broken": "",
+     "display_name": "Clear Robotics",
+     "entities": []
+    },
+    "entity_type": "VENTURE",
+    "flags": [],
+    "flash": {
+     "confidence": "medium",
+     "model": "deepseek-ai/DeepSeek-V4-Flash",
+     "proposal": "RESEARCH",
+     "reject_basis": null
+    },
+    "missing": [],
+    "mohamed": null,
+    "obvious_reject": false,
+    "path": "cheap",
+    "portfolio": {
+     "evidence": [],
+     "record": {
+      "conflict": "none",
+      "name": "Clear Robotics",
+      "slug": "Clear Robotics",
+      "where": "Conviction"
+     },
+     "route_to_omar": false,
+     "status": "EXISTING_RECORD",
+     "twins": []
+    },
+    "prompt_version": "triage-v3",
+    "proposal": "RESEARCH",
+    "proposed_at": "2026-10-09T08:17:12",
+    "queue": null,
+    "reasons": [
+     "grounded reason"
+    ],
+    "reject_basis": null,
+    "reject_evidence": null,
+    "routing": {
+     "queue": "operating",
+     "reason": "Europe"
+    },
+    "sector": "robotics",
+    "stage": "stage1",
+    "stale": false,
+    "status": "proposed",
+    "themes": [],
+    "veto": null
+   },
+   "eu-plain": {
+    "candidate_id": "eu-plain",
+    "capital_stage": "UNKNOWN",
+    "confidence": "medium",
+    "display_proposal": "RESEARCH",
+    "edge": "UNKNOWN",
+    "entity": {
+     "broken": "",
+     "display_name": "Acme Robotics GmbH",
+     "entities": []
+    },
+    "entity_type": "VENTURE",
+    "flags": [],
+    "flash": {
+     "confidence": "medium",
+     "model": "deepseek-ai/DeepSeek-V4-Flash",
+     "proposal": "RESEARCH",
+     "reject_basis": null
+    },
+    "missing": [],
+    "mohamed": null,
+    "obvious_reject": false,
+    "path": "cheap",
+    "portfolio": {
+     "evidence": [],
+     "record": null,
+     "route_to_omar": false,
+     "status": "NONE",
+     "twins": []
+    },
+    "prompt_version": "triage-v3",
+    "proposal": "RESEARCH",
+    "proposed_at": "2026-10-09T08:17:12",
+    "queue": {
+     "at": "2026-11-08T19:40:00",
+     "priority": 80,
+     "priority_why": [
+      "fresh"
+     ],
+     "reason": "routed eu-plain",
+     "resurfaced": false,
+     "state": "NEEDS_OPERATOR",
+     "underlying": null
+    },
+    "reasons": [
+     "grounded reason"
+    ],
+    "reject_basis": null,
+    "reject_evidence": null,
+    "routing": {
+     "queue": "operating",
+     "reason": "Europe"
+    },
+    "sector": "robotics",
+    "stage": "stage1",
+    "stale": false,
+    "status": "proposed",
+    "themes": [],
+    "veto": null
+   },
+   "geo-str": {
+    "candidate_id": "geo-str",
+    "capital_stage": "UNKNOWN",
+    "confidence": "medium",
+    "display_proposal": "RESEARCH",
+    "edge": "UNKNOWN",
+    "entity": {
+     "broken": "",
+     "display_name": "String Geo",
+     "entities": []
+    },
+    "entity_type": "VENTURE",
+    "flags": [],
+    "flash": {
+     "confidence": "medium",
+     "model": "deepseek-ai/DeepSeek-V4-Flash",
+     "proposal": "RESEARCH",
+     "reject_basis": null
+    },
+    "missing": [],
+    "mohamed": null,
+    "obvious_reject": false,
+    "path": "cheap",
+    "portfolio": {
+     "evidence": [],
+     "record": null,
+     "route_to_omar": false,
+     "status": "NONE",
+     "twins": []
+    },
+    "prompt_version": "triage-v3",
+    "proposal": "RESEARCH",
+    "proposed_at": "2026-10-09T08:17:12",
+    "queue": null,
+    "reasons": [
+     "grounded reason"
+    ],
+    "reject_basis": null,
+    "reject_evidence": null,
+    "routing": {
+     "queue": "global_only",
+     "reason": "North America — Europe-first view (switch to Global to see it)"
+    },
+    "sector": "robotics",
+    "stage": "stage1",
+    "stale": false,
+    "status": "proposed",
+    "themes": [],
+    "veto": null
+   },
+   "gov": {
+    "candidate_id": "gov",
+    "capital_stage": "UNKNOWN",
+    "confidence": "medium",
+    "display_proposal": "RESEARCH",
+    "edge": "UNKNOWN",
+    "entity": {
+     "broken": "",
+     "display_name": "Innovate UK",
+     "entities": []
+    },
+    "entity_type": "VENTURE",
+    "flags": [],
+    "flash": {
+     "confidence": "medium",
+     "model": "deepseek-ai/DeepSeek-V4-Flash",
+     "proposal": "RESEARCH",
+     "reject_basis": null
+    },
+    "missing": [],
+    "mohamed": null,
+    "obvious_reject": false,
+    "path": "cheap",
+    "portfolio": {
+     "evidence": [],
+     "record": null,
+     "route_to_omar": false,
+     "status": "NONE",
+     "twins": []
+    },
+    "prompt_version": "triage-v3",
+    "proposal": "RESEARCH",
+    "proposed_at": "2026-10-09T08:17:12",
+    "queue": null,
+    "reasons": [
+     "grounded reason"
+    ],
+    "reject_basis": null,
+    "reject_evidence": null,
+    "routing": {
+     "queue": "non_startup",
+     "reason": "government / public body"
+    },
+    "sector": "robotics",
+    "stage": "stage1",
+    "stale": false,
+    "status": "proposed",
+    "themes": [],
+    "veto": null
+   },
+   "headline": {
+    "candidate_id": "headline",
+    "capital_stage": "UNKNOWN",
+    "confidence": "medium",
+    "display_proposal": "RESEARCH",
+    "edge": "UNKNOWN",
+    "entity": {
+     "broken": "name is a headline",
+     "display_name": "How Acme Labs is shaping the future of defence",
+     "entities": []
+    },
+    "entity_type": "VENTURE",
+    "flags": [],
+    "flash": {
+     "confidence": "medium",
+     "model": "deepseek-ai/DeepSeek-V4-Flash",
+     "proposal": "RESEARCH",
+     "reject_basis": null
+    },
+    "missing": [],
+    "mohamed": null,
+    "obvious_reject": false,
+    "path": "cheap",
+    "portfolio": {
+     "evidence": [],
+     "record": null,
+     "route_to_omar": false,
+     "status": "NONE",
+     "twins": []
+    },
+    "prompt_version": "triage-v3",
+    "proposal": "RESEARCH",
+    "proposed_at": "2026-10-09T08:17:12",
+    "queue": null,
+    "reasons": [
+     "grounded reason"
+    ],
+    "reject_basis": null,
+    "reject_evidence": null,
+    "routing": {
+     "queue": "operating",
+     "reason": "Europe"
+    },
+    "sector": "robotics",
+    "stage": "stage1",
+    "stale": false,
+    "status": "proposed",
+    "themes": [],
+    "veto": null
+   },
+   "incumbent": {
+    "candidate_id": "incumbent",
+    "capital_stage": "UNKNOWN",
+    "confidence": "medium",
+    "display_proposal": "RESEARCH",
+    "edge": "UNKNOWN",
+    "entity": {
+     "broken": "",
+     "display_name": "Rolls-Royce Holdings",
+     "entities": []
+    },
+    "entity_type": "VENTURE",
+    "flags": [],
+    "flash": {
+     "confidence": "medium",
+     "model": "deepseek-ai/DeepSeek-V4-Flash",
+     "proposal": "RESEARCH",
+     "reject_basis": null
+    },
+    "missing": [],
+    "mohamed": null,
+    "obvious_reject": false,
+    "path": "cheap",
+    "portfolio": {
+     "evidence": [],
+     "record": null,
+     "route_to_omar": false,
+     "status": "NONE",
+     "twins": []
+    },
+    "prompt_version": "triage-v3",
+    "proposal": "RESEARCH",
+    "proposed_at": "2026-10-09T08:17:12",
+    "queue": null,
+    "reasons": [
+     "grounded reason"
+    ],
+    "reject_basis": null,
+    "reject_evidence": null,
+    "routing": {
+     "queue": "non_startup",
+     "reason": "large incumbent (rolls-royce)"
+    },
+    "sector": "robotics",
+    "stage": "stage1",
+    "stale": false,
+    "status": "proposed",
+    "themes": [],
+    "veto": null
+   },
+   "intake": {
+    "candidate_id": "intake",
+    "capital_stage": "UNKNOWN",
+    "confidence": "medium",
+    "display_proposal": "RESEARCH",
+    "edge": "UNKNOWN",
+    "entity": {
+     "broken": "",
+     "display_name": "Intake Labs",
+     "entities": []
+    },
+    "entity_type": "VENTURE",
+    "flags": [],
+    "flash": {
+     "confidence": "medium",
+     "model": "deepseek-ai/DeepSeek-V4-Flash",
+     "proposal": "RESEARCH",
+     "reject_basis": null
+    },
+    "missing": [],
+    "mohamed": null,
+    "obvious_reject": false,
+    "path": "cheap",
+    "portfolio": {
+     "evidence": [],
+     "record": {
+      "conflict": null,
+      "name": "Intake Labs",
+      "status": "REVIEWING",
+      "where": "Scout Intake"
+     },
+     "route_to_omar": false,
+     "status": "EXISTING_RECORD",
+     "twins": []
+    },
+    "prompt_version": "triage-v3",
+    "proposal": "RESEARCH",
+    "proposed_at": "2026-10-09T08:17:12",
+    "queue": null,
+    "reasons": [
+     "grounded reason"
+    ],
+    "reject_basis": null,
+    "reject_evidence": null,
+    "routing": {
+     "queue": "operating",
+     "reason": "Europe"
+    },
+    "sector": "robotics",
+    "stage": "stage1",
+    "stale": false,
+    "status": "proposed",
+    "themes": [],
+    "veto": null
+   },
+   "label-kontext": {
+    "candidate_id": "label-kontext",
+    "capital_stage": "UNKNOWN",
+    "confidence": "medium",
+    "display_proposal": "RESEARCH",
+    "edge": "UNKNOWN",
+    "entity": {
+     "broken": "",
+     "display_name": "KI-Security-Startup Kontext",
+     "entities": []
+    },
+    "entity_type": "VENTURE",
+    "flags": [],
+    "flash": {
+     "confidence": "medium",
+     "model": "deepseek-ai/DeepSeek-V4-Flash",
+     "proposal": "RESEARCH",
+     "reject_basis": null
+    },
+    "missing": [],
+    "mohamed": null,
+    "obvious_reject": false,
+    "path": "cheap",
+    "portfolio": {
+     "evidence": [],
+     "record": null,
+     "route_to_omar": false,
+     "status": "NONE",
+     "twins": []
+    },
+    "prompt_version": "triage-v3",
+    "proposal": "RESEARCH",
+    "proposed_at": "2026-10-09T08:17:12",
+    "queue": null,
+    "reasons": [
+     "grounded reason"
+    ],
+    "reject_basis": null,
+    "reject_evidence": null,
+    "routing": {
+     "queue": "operating",
+     "reason": "Europe"
+    },
+    "sector": "robotics",
+    "stage": "stage1",
+    "stale": false,
+    "status": "proposed",
+    "themes": [],
+    "veto": null
+   },
+   "na-country": {
+    "candidate_id": "na-country",
+    "capital_stage": "UNKNOWN",
+    "confidence": "medium",
+    "display_proposal": "RESEARCH",
+    "edge": "UNKNOWN",
+    "entity": {
+     "broken": "",
+     "display_name": "Maple Labs",
+     "entities": []
+    },
+    "entity_type": "VENTURE",
+    "flags": [],
+    "flash": {
+     "confidence": "medium",
+     "model": "deepseek-ai/DeepSeek-V4-Flash",
+     "proposal": "RESEARCH",
+     "reject_basis": null
+    },
+    "missing": [],
+    "mohamed": null,
+    "obvious_reject": false,
+    "path": "cheap",
+    "portfolio": {
+     "evidence": [],
+     "record": null,
+     "route_to_omar": false,
+     "status": "NONE",
+     "twins": []
+    },
+    "prompt_version": "triage-v3",
+    "proposal": "RESEARCH",
+    "proposed_at": "2026-10-09T08:17:12",
+    "queue": null,
+    "reasons": [
+     "grounded reason"
+    ],
+    "reject_basis": null,
+    "reject_evidence": null,
+    "routing": {
+     "queue": "global_only",
+     "reason": "North America — Europe-first view (switch to Global to see it)"
+    },
+    "sector": "robotics",
+    "stage": "stage1",
+    "stale": false,
+    "status": "proposed",
+    "themes": [],
+    "veto": null
+   },
+   "na-eu": {
+    "candidate_id": "na-eu",
+    "capital_stage": "UNKNOWN",
+    "confidence": "medium",
+    "display_proposal": "RESEARCH",
+    "edge": "UNKNOWN",
+    "entity": {
+     "broken": "",
+     "display_name": "Harbor AI Inc",
+     "entities": []
+    },
+    "entity_type": "VENTURE",
+    "flags": [],
+    "flash": {
+     "confidence": "medium",
+     "model": "deepseek-ai/DeepSeek-V4-Flash",
+     "proposal": "RESEARCH",
+     "reject_basis": null
+    },
+    "missing": [],
+    "mohamed": null,
+    "obvious_reject": false,
+    "path": "cheap",
+    "portfolio": {
+     "evidence": [],
+     "record": null,
+     "route_to_omar": false,
+     "status": "NONE",
+     "twins": []
+    },
+    "prompt_version": "triage-v3",
+    "proposal": "RESEARCH",
+    "proposed_at": "2026-10-09T08:17:12",
+    "queue": null,
+    "reasons": [
+     "grounded reason"
+    ],
+    "reject_basis": null,
+    "reject_evidence": null,
+    "routing": {
+     "queue": "operating",
+     "reason": "North American record with a European connection (munich)"
+    },
+    "sector": "robotics",
+    "stage": "stage1",
+    "stale": false,
+    "status": "proposed",
+    "themes": [],
+    "veto": null
+   },
+   "na-global": {
+    "candidate_id": "na-global",
+    "capital_stage": "UNKNOWN",
+    "confidence": "medium",
+    "display_proposal": "RESEARCH",
+    "edge": "UNKNOWN",
+    "entity": {
+     "broken": "",
+     "display_name": "Prairie AI Inc",
+     "entities": []
+    },
+    "entity_type": "VENTURE",
+    "flags": [],
+    "flash": {
+     "confidence": "medium",
+     "model": "deepseek-ai/DeepSeek-V4-Flash",
+     "proposal": "RESEARCH",
+     "reject_basis": null
+    },
+    "missing": [],
+    "mohamed": null,
+    "obvious_reject": false,
+    "path": "cheap",
+    "portfolio": {
+     "evidence": [],
+     "record": null,
+     "route_to_omar": false,
+     "status": "NONE",
+     "twins": []
+    },
+    "prompt_version": "triage-v3",
+    "proposal": "RESEARCH",
+    "proposed_at": "2026-10-09T08:17:12",
+    "queue": null,
+    "reasons": [
+     "grounded reason"
+    ],
+    "reject_basis": null,
+    "reject_evidence": null,
+    "routing": {
+     "queue": "global_only",
+     "reason": "North America — Europe-first view (switch to Global to see it)"
+    },
+    "sector": "robotics",
+    "stage": "stage1",
+    "stale": false,
+    "status": "proposed",
+    "themes": [],
+    "veto": null
+   },
+   "needs-human": {
+    "candidate_id": "needs-human",
+    "capital_stage": "UNKNOWN",
+    "confidence": "medium",
+    "display_proposal": "WATCH",
+    "edge": "UNKNOWN",
+    "entity": {
+     "broken": "",
+     "display_name": "Human Co",
+     "entities": []
+    },
+    "entity_type": "VENTURE",
+    "flags": [],
+    "flash": {
+     "confidence": "medium",
+     "model": "deepseek-ai/DeepSeek-V4-Flash",
+     "proposal": "WATCH",
+     "reject_basis": null
+    },
+    "missing": [],
+    "mohamed": null,
+    "obvious_reject": false,
+    "path": "cheap",
+    "portfolio": {
+     "evidence": [],
+     "record": null,
+     "route_to_omar": false,
+     "status": "NONE",
+     "twins": []
+    },
+    "prompt_version": "triage-v3",
+    "proposal": "WATCH",
+    "proposed_at": "2026-10-09T08:17:12",
+    "queue": null,
+    "reasons": [
+     "grounded reason"
+    ],
+    "reject_basis": null,
+    "reject_evidence": null,
+    "routing": {
+     "queue": "operating",
+     "reason": "Europe"
+    },
+    "sector": "robotics",
+    "stage": "stage1",
+    "stale": false,
+    "status": "needs_human",
+    "themes": [],
+    "veto": null
+   },
+   "not-relationship": {
+    "candidate_id": "not-relationship",
+    "capital_stage": "UNKNOWN",
+    "confidence": "medium",
+    "display_proposal": "RESEARCH",
+    "edge": "UNKNOWN",
+    "entity": {
+     "broken": "",
+     "display_name": "Lesson Co",
+     "entities": []
+    },
+    "entity_type": "VENTURE",
+    "flags": [],
+    "flash": {
+     "confidence": "medium",
+     "model": "deepseek-ai/DeepSeek-V4-Flash",
+     "proposal": "RESEARCH",
+     "reject_basis": null
+    },
+    "missing": [],
+    "mohamed": null,
+    "obvious_reject": false,
+    "path": "cheap",
+    "portfolio": {
+     "evidence": [],
+     "record": null,
+     "route_to_omar": false,
+     "status": "NONE",
+     "twins": []
+    },
+    "prompt_version": "triage-v3",
+    "proposal": "RESEARCH",
+    "proposed_at": "2026-10-09T08:17:12",
+    "queue": null,
+    "reasons": [
+     "grounded reason"
+    ],
+    "reject_basis": null,
+    "reject_evidence": null,
+    "routing": {
+     "queue": "operating",
+     "reason": "Europe"
+    },
+    "sector": "robotics",
+    "stage": "stage1",
+    "stale": false,
+    "status": "proposed",
+    "themes": [],
+    "veto": null
+   },
+   "obvious": {
+    "candidate_id": "obvious",
+    "capital_stage": "ALREADY_INSTITUTIONALLY_FUNDED",
+    "confidence": "medium",
+    "display_proposal": "REJECT",
+    "edge": "ALREADY_FUNDED",
+    "entity": {
+     "broken": "",
+     "display_name": "Junk Page",
+     "entities": []
+    },
+    "entity_type": "VENTURE",
+    "flags": [],
+    "flash": {
+     "confidence": "medium",
+     "model": "deepseek-ai/DeepSeek-V4-Flash",
+     "proposal": "REJECT",
+     "reject_basis": "NOT_AN_ENTITY"
+    },
+    "missing": [],
+    "mohamed": {
+     "agreed": true,
+     "at": "2026-10-31T17:23:00",
+     "mode": "batch_accept",
+     "verdict": "REJECT"
+    },
+    "obvious_reject": true,
+    "path": "cheap -> veto: both reject",
+    "portfolio": {
+     "evidence": [],
+     "record": null,
+     "route_to_omar": false,
+     "status": "NONE",
+     "twins": []
+    },
+    "prompt_version": "triage-v3",
+    "proposal": "REJECT",
+    "proposed_at": "2026-10-09T08:17:12",
+    "queue": null,
+    "reasons": [
+     "grounded reason"
+    ],
+    "reject_basis": "NOT_AN_ENTITY",
+    "reject_evidence": "Cookie banner",
+    "routing": {
+     "queue": "operating",
+     "reason": "Europe"
+    },
+    "sector": "robotics",
+    "stage": "stage1",
+    "stale": false,
+    "status": "proposed",
+    "themes": [],
+    "veto": {
+     "mode": "standard",
+     "model": "Qwen/Qwen3.5-397B-A17B",
+     "ok": true,
+     "proposal": "REJECT",
+     "reasons": [
+      "not an entity"
+     ],
+     "reject_basis": "NOT_AN_ENTITY"
+    }
+   },
+   "obvious-stage0": {
+    "candidate_id": "obvious-stage0",
+    "capital_stage": "UNKNOWN",
+    "confidence": "medium",
+    "display_proposal": "REJECT",
+    "edge": "UNKNOWN",
+    "entity": {
+     "broken": "name is a date / time",
+     "display_name": "05.10.2026 14:00",
+     "entities": []
+    },
+    "entity_type": "VENTURE",
+    "flags": [],
+    "flash": {
+     "confidence": "medium",
+     "model": "deepseek-ai/DeepSeek-V4-Flash",
+     "proposal": "REJECT",
+     "reject_basis": null
+    },
+    "missing": [],
+    "mohamed": null,
+    "obvious_reject": true,
+    "path": "stage0 junk",
+    "portfolio": {
+     "evidence": [],
+     "record": null,
+     "route_to_omar": false,
+     "status": "NONE",
+     "twins": []
+    },
+    "prompt_version": "triage-v3",
+    "proposal": "REJECT",
+    "proposed_at": "2026-10-09T08:17:12",
+    "queue": null,
+    "reasons": [
+     "grounded reason"
+    ],
+    "reject_basis": null,
+    "reject_evidence": null,
+    "routing": {
+     "queue": "operating",
+     "reason": "Europe"
+    },
+    "sector": "robotics",
+    "stage": "stage0",
+    "stale": false,
+    "status": "proposed",
+    "themes": [],
+    "veto": null
+   },
+   "old-prompt": {
+    "candidate_id": "old-prompt",
+    "capital_stage": "UNKNOWN",
+    "confidence": "medium",
+    "display_proposal": "KEEP",
+    "edge": "UNKNOWN",
+    "entity": {
+     "broken": "",
+     "display_name": "Old Prompt Co",
+     "entities": []
+    },
+    "entity_type": "VENTURE",
+    "flags": [],
+    "flash": {
+     "confidence": "medium",
+     "model": "deepseek-ai/DeepSeek-V4-Flash",
+     "proposal": "KEEP",
+     "reject_basis": null
+    },
+    "missing": [],
+    "mohamed": null,
+    "obvious_reject": false,
+    "path": "cheap",
+    "portfolio": {
+     "evidence": [],
+     "record": null,
+     "route_to_omar": false,
+     "status": "NONE",
+     "twins": []
+    },
+    "prompt_version": "triage-v2",
+    "proposal": "KEEP",
+    "proposed_at": "2026-10-09T08:17:12",
+    "queue": null,
+    "reasons": [
+     "grounded reason"
+    ],
+    "reject_basis": null,
+    "reject_evidence": null,
+    "routing": {
+     "queue": "operating",
+     "reason": "Europe"
+    },
+    "sector": "robotics",
+    "stage": "stage1",
+    "stale": true,
+    "status": "proposed",
+    "themes": [],
+    "veto": null
+   },
+   "override": {
+    "candidate_id": "override",
+    "capital_stage": "UNKNOWN",
+    "confidence": "medium",
+    "display_proposal": "RESEARCH",
+    "edge": "UNKNOWN",
+    "entity": {
+     "broken": "",
+     "display_name": "Zed Labs",
+     "entities": []
+    },
+    "entity_type": "VENTURE",
+    "flags": [],
+    "flash": {
+     "confidence": "medium",
+     "model": "deepseek-ai/DeepSeek-V4-Flash",
+     "proposal": "RESEARCH",
+     "reject_basis": null
+    },
+    "missing": [],
+    "mohamed": null,
+    "obvious_reject": false,
+    "path": "cheap",
+    "portfolio": {
+     "evidence": [],
+     "record": null,
+     "route_to_omar": false,
+     "status": "NONE",
+     "twins": []
+    },
+    "prompt_version": "triage-v3",
+    "proposal": "RESEARCH",
+    "proposed_at": "2026-10-09T08:17:12",
+    "queue": null,
+    "reasons": [
+     "grounded reason"
+    ],
+    "reject_basis": null,
+    "reject_evidence": null,
+    "routing": {
+     "queue": "operating",
+     "reason": "Europe"
+    },
+    "sector": "robotics",
+    "stage": "stage1",
+    "stale": false,
+    "status": "proposed",
+    "themes": [],
+    "veto": null
+   },
+   "plc": {
+    "candidate_id": "plc",
+    "capital_stage": "UNKNOWN",
+    "confidence": "medium",
+    "display_proposal": "RESEARCH",
+    "edge": "UNKNOWN",
+    "entity": {
+     "broken": "",
+     "display_name": "Acme Widgets PLC",
+     "entities": []
+    },
+    "entity_type": "VENTURE",
+    "flags": [],
+    "flash": {
+     "confidence": "medium",
+     "model": "deepseek-ai/DeepSeek-V4-Flash",
+     "proposal": "RESEARCH",
+     "reject_basis": null
+    },
+    "missing": [],
+    "mohamed": null,
+    "obvious_reject": false,
+    "path": "cheap",
+    "portfolio": {
+     "evidence": [],
+     "record": null,
+     "route_to_omar": false,
+     "status": "NONE",
+     "twins": []
+    },
+    "prompt_version": "triage-v3",
+    "proposal": "RESEARCH",
+    "proposed_at": "2026-10-09T08:17:12",
+    "queue": null,
+    "reasons": [
+     "grounded reason"
+    ],
+    "reject_basis": null,
+    "reject_evidence": null,
+    "routing": {
+     "queue": "non_startup",
+     "reason": "listed company (PLC) — likely incumbent"
+    },
+    "sector": "robotics",
+    "stage": "stage1",
+    "stale": false,
+    "status": "proposed",
+    "themes": [],
+    "veto": null
+   },
+   "portfolio": {
+    "candidate_id": "portfolio",
+    "capital_stage": "PRE_COMPANY",
+    "confidence": "medium",
+    "display_proposal": "KNOWN_PORTFOLIO",
+    "edge": "PRE_FUNDING_EDGE",
+    "entity": {
+     "broken": "",
+     "display_name": "Nexcade",
+     "entities": []
+    },
+    "entity_type": "VENTURE",
+    "flags": [],
+    "flash": {
+     "confidence": "medium",
+     "model": "deepseek-ai/DeepSeek-V4-Flash",
+     "proposal": "KEEP",
+     "reject_basis": null
+    },
+    "missing": [],
+    "mohamed": null,
+    "obvious_reject": false,
+    "path": "cheap",
+    "portfolio": {
+     "evidence": [
+      "Nexcade is a Project A portfolio company (AI agents for freight forwarders: quoting, tenders, rates, bookings, reporting)"
+     ],
+     "record": null,
+     "route_to_omar": true,
+     "status": "KNOWN_PORTFOLIO",
+     "twins": [
+      {
+       "keyword_hits": 2,
+       "name": "Nexcade",
+       "what": "AI agents for freight forwarders: quoting, tenders, rates, bookings, reporting"
+      }
+     ]
+    },
+    "prompt_version": "triage-v3",
+    "proposal": "KEEP",
+    "proposed_at": "2026-10-09T08:17:12",
+    "queue": {
+     "at": "2026-11-08T19:40:00",
+     "priority": 90,
+     "priority_why": [
+      "fresh"
+     ],
+     "reason": "routed portfolio",
+     "resurfaced": false,
+     "state": "CONFLICT_GATED",
+     "underlying": null
+    },
+    "reasons": [
+     "grounded reason"
+    ],
+    "reject_basis": null,
+    "reject_evidence": null,
+    "routing": {
+     "queue": "operating",
+     "reason": "Europe"
+    },
+    "sector": "robotics",
+    "stage": "stage1",
+    "stale": false,
+    "status": "proposed",
+    "themes": [],
+    "veto": null
+   },
+   "portfolio-reject": {
+    "candidate_id": "portfolio-reject",
+    "capital_stage": "UNKNOWN",
+    "confidence": "medium",
+    "display_proposal": "REJECT",
+    "edge": "UNKNOWN",
+    "entity": {
+     "broken": "",
+     "display_name": "Tabular GmbH",
+     "entities": []
+    },
+    "entity_type": "VENTURE",
+    "flags": [],
+    "flash": {
+     "confidence": "medium",
+     "model": "deepseek-ai/DeepSeek-V4-Flash",
+     "proposal": "REJECT",
+     "reject_basis": "NON_VENTURE"
+    },
+    "missing": [],
+    "mohamed": null,
+    "obvious_reject": false,
+    "path": "cheap -> veto: both reject",
+    "portfolio": {
+     "evidence": [
+      "Tabular is a Project A portfolio company (AI accounting automation, ledger entries, VAT, reconciliation)"
+     ],
+     "record": null,
+     "route_to_omar": true,
+     "status": "KNOWN_PORTFOLIO",
+     "twins": []
+    },
+    "prompt_version": "triage-v3",
+    "proposal": "REJECT",
+    "proposed_at": "2026-10-09T08:17:12",
+    "queue": null,
+    "reasons": [
+     "grounded reason"
+    ],
+    "reject_basis": "NON_VENTURE",
+    "reject_evidence": null,
+    "routing": {
+     "queue": "operating",
+     "reason": "Europe"
+    },
+    "sector": "robotics",
+    "stage": "stage1",
+    "stale": false,
+    "status": "proposed",
+    "themes": [],
+    "veto": null
+   },
+   "region-eu": {
+    "candidate_id": "region-eu",
+    "capital_stage": "UNKNOWN",
+    "confidence": "medium",
+    "display_proposal": "RESEARCH",
+    "edge": "UNKNOWN",
+    "entity": {
+     "broken": "",
+     "display_name": "Scope Co",
+     "entities": []
+    },
+    "entity_type": "VENTURE",
+    "flags": [],
+    "flash": {
+     "confidence": "medium",
+     "model": "deepseek-ai/DeepSeek-V4-Flash",
+     "proposal": "RESEARCH",
+     "reject_basis": null
+    },
+    "missing": [],
+    "mohamed": null,
+    "obvious_reject": false,
+    "path": "cheap",
+    "portfolio": {
+     "evidence": [],
+     "record": null,
+     "route_to_omar": false,
+     "status": "NONE",
+     "twins": []
+    },
+    "prompt_version": "triage-v3",
+    "proposal": "RESEARCH",
+    "proposed_at": "2026-10-09T08:17:12",
+    "queue": null,
+    "reasons": [
+     "grounded reason"
+    ],
+    "reject_basis": null,
+    "reject_evidence": null,
+    "routing": {
+     "queue": "operating",
+     "reason": "Europe"
+    },
+    "sector": "robotics",
+    "stage": "stage1",
+    "stale": false,
+    "status": "proposed",
+    "themes": [],
+    "veto": null
+   },
+   "relationship": {
+    "candidate_id": "relationship",
+    "capital_stage": "ROUND_FORMING",
+    "confidence": "medium",
+    "display_proposal": "ASK_OMAR_CONFLICT",
+    "edge": "ROUND_FORMING",
+    "entity": {
+     "broken": "",
+     "display_name": "Orbit Systems",
+     "entities": []
+    },
+    "entity_type": "VENTURE",
+    "flags": [],
+    "flash": {
+     "confidence": "medium",
+     "model": "deepseek-ai/DeepSeek-V4-Flash",
+     "proposal": "WATCH",
+     "reject_basis": null
+    },
+    "missing": [],
+    "mohamed": null,
+    "obvious_reject": false,
+    "path": "cheap",
+    "portfolio": {
+     "evidence": [
+      "the source text names Project A: …Orbit Systems Orbit Systems raised a seed round led by Project A Ventures.…"
+     ],
+     "record": null,
+     "route_to_omar": true,
+     "status": "PROJECT_A_RELATIONSHIP",
+     "twins": []
+    },
+    "prompt_version": "triage-v3",
+    "proposal": "WATCH",
+    "proposed_at": "2026-10-09T08:17:12",
+    "queue": null,
+    "reasons": [
+     "grounded reason"
+    ],
+    "reject_basis": null,
+    "reject_evidence": null,
+    "routing": {
+     "queue": "operating",
+     "reason": "Europe"
+    },
+    "sector": "robotics",
+    "stage": "stage1",
+    "stale": false,
+    "status": "proposed",
+    "themes": [],
+    "veto": null
+   },
+   "research": {
+    "candidate_id": "research",
+    "capital_stage": "UNKNOWN",
+    "confidence": "medium",
+    "display_proposal": "RESEARCH",
+    "edge": "UNKNOWN",
+    "entity": {
+     "broken": "",
+     "display_name": "Fraunhofer Institute for Laser Technology",
+     "entities": []
+    },
+    "entity_type": "VENTURE",
+    "flags": [],
+    "flash": {
+     "confidence": "medium",
+     "model": "deepseek-ai/DeepSeek-V4-Flash",
+     "proposal": "RESEARCH",
+     "reject_basis": null
+    },
+    "missing": [],
+    "mohamed": null,
+    "obvious_reject": false,
+    "path": "cheap",
+    "portfolio": {
+     "evidence": [],
+     "record": null,
+     "route_to_omar": false,
+     "status": "NONE",
+     "twins": []
+    },
+    "prompt_version": "triage-v3",
+    "proposal": "RESEARCH",
+    "proposed_at": "2026-10-09T08:17:12",
+    "queue": null,
+    "reasons": [
+     "grounded reason"
+    ],
+    "reject_basis": null,
+    "reject_evidence": null,
+    "routing": {
+     "queue": "non_startup",
+     "reason": "public research organisation"
+    },
+    "sector": "robotics",
+    "stage": "stage1",
+    "stale": false,
+    "status": "proposed",
+    "themes": [],
+    "veto": null
+   },
+   "research-decided": {
+    "candidate_id": "research-decided",
+    "capital_stage": "GRANT_ONLY",
+    "confidence": "medium",
+    "display_proposal": "KEEP",
+    "edge": "PRE_FUNDING_EDGE",
+    "entity": {
+     "broken": "",
+     "display_name": "Decided Co",
+     "entities": []
+    },
+    "entity_type": "VENTURE",
+    "flags": [],
+    "flash": {
+     "confidence": "medium",
+     "model": "deepseek-ai/DeepSeek-V4-Flash",
+     "proposal": "KEEP",
+     "reject_basis": null
+    },
+    "missing": [],
+    "mohamed": null,
+    "obvious_reject": false,
+    "path": "cheap",
+    "portfolio": {
+     "evidence": [],
+     "record": null,
+     "route_to_omar": false,
+     "status": "NONE",
+     "twins": []
+    },
+    "prompt_version": "triage-v3",
+    "proposal": "KEEP",
+    "proposed_at": "2026-10-09T08:17:12",
+    "queue": null,
+    "reasons": [
+     "grounded reason"
+    ],
+    "reject_basis": null,
+    "reject_evidence": null,
+    "routing": {
+     "queue": "operating",
+     "reason": "Europe"
+    },
+    "sector": "robotics",
+    "stage": "stage1",
+    "stale": false,
+    "status": "proposed",
+    "themes": [],
+    "veto": null
+   },
+   "resembles": {
+    "candidate_id": "resembles",
+    "capital_stage": "UNKNOWN",
+    "confidence": "medium",
+    "display_proposal": "ASK_OMAR_CONFLICT",
+    "edge": "UNKNOWN",
+    "entity": {
+     "broken": "",
+     "display_name": "Cargo Brain",
+     "entities": []
+    },
+    "entity_type": "VENTURE",
+    "flags": [],
+    "flash": {
+     "confidence": "medium",
+     "model": "deepseek-ai/DeepSeek-V4-Flash",
+     "proposal": "RESEARCH",
+     "reject_basis": null
+    },
+    "missing": [],
+    "mohamed": null,
+    "obvious_reject": false,
+    "path": "cheap",
+    "portfolio": {
+     "evidence": [
+      "resembles portfolio company Nexcade (5 keyword hits)"
+     ],
+     "record": null,
+     "route_to_omar": true,
+     "status": "RESEMBLES_PORTFOLIO",
+     "twins": [
+      {
+       "keyword_hits": 5,
+       "name": "Nexcade",
+       "what": "AI agents for freight forwarders: quoting, tenders, rates, bookings, reporting"
+      }
+     ]
+    },
+    "prompt_version": "triage-v3",
+    "proposal": "RESEARCH",
+    "proposed_at": "2026-10-09T08:17:12",
+    "queue": null,
+    "reasons": [
+     "grounded reason"
+    ],
+    "reject_basis": null,
+    "reject_evidence": null,
+    "routing": {
+     "queue": "operating",
+     "reason": "Europe"
+    },
+    "sector": "robotics",
+    "stage": "stage1",
+    "stale": false,
+    "status": "proposed",
+    "themes": [],
+    "veto": null
+   },
+   "stale": {
+    "candidate_id": "stale",
+    "capital_stage": "UNKNOWN",
+    "confidence": "medium",
+    "display_proposal": "REJECT",
+    "edge": "UNKNOWN",
+    "entity": {
+     "broken": "",
+     "display_name": "Changed Co",
+     "entities": []
+    },
+    "entity_type": "VENTURE",
+    "flags": [],
+    "flash": {
+     "confidence": "medium",
+     "model": "deepseek-ai/DeepSeek-V4-Flash",
+     "proposal": "REJECT",
+     "reject_basis": null
+    },
+    "missing": [],
+    "mohamed": null,
+    "obvious_reject": false,
+    "path": "cheap -> veto: both reject",
+    "portfolio": {
+     "evidence": [],
+     "record": null,
+     "route_to_omar": false,
+     "status": "NONE",
+     "twins": []
+    },
+    "prompt_version": "triage-v3",
+    "proposal": "REJECT",
+    "proposed_at": "2026-10-09T08:17:12",
+    "queue": null,
+    "reasons": [
+     "grounded reason"
+    ],
+    "reject_basis": null,
+    "reject_evidence": null,
+    "routing": {
+     "queue": "operating",
+     "reason": "Europe"
+    },
+    "sector": "robotics",
+    "stage": "stage1",
+    "stale": true,
+    "status": "proposed",
+    "themes": [],
+    "veto": null
+   },
+   "uni": {
+    "candidate_id": "uni",
+    "capital_stage": "FIRST_INSTITUTIONAL",
+    "confidence": "medium",
+    "display_proposal": "KEEP",
+    "edge": "FIRST_INSTITUTIONAL",
+    "entity": {
+     "broken": "",
+     "display_name": "Technical University of Munich",
+     "entities": []
+    },
+    "entity_type": "VENTURE",
+    "flags": [],
+    "flash": {
+     "confidence": "medium",
+     "model": "deepseek-ai/DeepSeek-V4-Flash",
+     "proposal": "KEEP",
+     "reject_basis": null
+    },
+    "missing": [],
+    "mohamed": null,
+    "obvious_reject": false,
+    "path": "cheap",
+    "portfolio": {
+     "evidence": [],
+     "record": null,
+     "route_to_omar": false,
+     "status": "NONE",
+     "twins": []
+    },
+    "prompt_version": "triage-v3",
+    "proposal": "KEEP",
+    "proposed_at": "2026-10-09T08:17:12",
+    "queue": {
+     "at": "2026-11-08T19:40:00",
+     "priority": 10,
+     "priority_why": [
+      "fresh"
+     ],
+     "reason": "routed uni",
+     "resurfaced": false,
+     "state": "MACHINE_WATCH",
+     "underlying": null
+    },
+    "reasons": [
+     "grounded reason"
+    ],
+    "reject_basis": null,
+    "reject_evidence": null,
+    "routing": {
+     "queue": "non_startup",
+     "reason": "university / academic institution"
+    },
+    "sector": "robotics",
+    "stage": "stage1",
+    "stale": false,
+    "status": "proposed",
+    "themes": [],
+    "veto": null
+   },
+   "verdict": {
+    "candidate_id": "verdict",
+    "capital_stage": "UNKNOWN",
+    "confidence": "medium",
+    "display_proposal": "RESEARCH",
+    "edge": "UNKNOWN",
+    "entity": {
+     "broken": "",
+     "display_name": "Verdict Co",
+     "entities": []
+    },
+    "entity_type": "VENTURE",
+    "flags": [],
+    "flash": {
+     "confidence": "medium",
+     "model": "deepseek-ai/DeepSeek-V4-Flash",
+     "proposal": "RESEARCH",
+     "reject_basis": null
+    },
+    "missing": [],
+    "mohamed": {
+     "agreed": true,
+     "at": "2026-10-31T17:21:00",
+     "mode": "accept",
+     "verdict": "RESEARCH"
+    },
+    "obvious_reject": false,
+    "path": "cheap",
+    "portfolio": {
+     "evidence": [],
+     "record": null,
+     "route_to_omar": false,
+     "status": "NONE",
+     "twins": []
+    },
+    "prompt_version": "triage-v3",
+    "proposal": "RESEARCH",
+    "proposed_at": "2026-10-09T08:17:12",
+    "queue": null,
+    "reasons": [
+     "grounded reason"
+    ],
+    "reject_basis": null,
+    "reject_evidence": null,
+    "routing": {
+     "queue": "operating",
+     "reason": "Europe"
+    },
+    "sector": "robotics",
+    "stage": "stage1",
+    "stale": false,
+    "status": "proposed",
+    "themes": [],
+    "veto": null
+   }
+  }
+ }
+}

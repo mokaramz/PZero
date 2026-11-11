@@ -1,0 +1,104 @@
+/* PROJECT ZERO — DARK THEME. The same warm editorial identity at night: warm charcoal canvas < bone < paper (never pure
+   black), warm ivory ink (never pure white), and the semantic accents lifted to stay legible on dark surfaces. NAVY
+   keeps its meaning (authority, focus, selection, the one primary action) as a light steel-navy, with dark text on
+   it. Every pair below meets WCAG AA (contrast checked in e2e/tests/theme.spec.ts):
+     ink / paper 12.6 · mut / paper 6.2 · faint / paper 4.9 · navy / paper 7.4 · navy-ink / navy 8.3
+     green / paper 7.2 · amber / paper 7.0 · blue / paper 7.0
+   Switched by <html data-theme="dark"> (the header toggle, remembered per browser). No purple, no neon, no glow. */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  /* neutral layers */
+  --bg: #191816;
+  --bone: #1f1e1b;
+  --paper: #252420;
+  --paper-2: #2b2a26;
+  --linen: #34322d;
+  --stone: #4a4740;
+  --ink: #ece7de;
+  --ink-2: #d5cfc4;
+  --mut: #aaa397;
+  --faint: #959084;
+  --hair: rgba(236, 231, 222, 0.1);
+  --hair-2: rgba(236, 231, 222, 0.17);
+  --well: rgba(236, 231, 222, 0.05);
+
+  /* steel blue — interaction */
+  --blue: #8fb0e0;
+  --blue-ink: #a9c3ea;
+  --blue-soft: #1e2733;
+  --blue-line: #3d5476;
+
+  /* NAVY — authority, lifted for dark surfaces; text on it is dark */
+  --navy: #9db4d8;
+  --navy-ink: #141a24;
+  --navy-mut: #2c3a50;
+  --navy-soft: #232c3a;
+  --on-navy: #141a24;
+  --on-navy-warm: #3a2e22;
+
+  /* semantic accents */
+  --green: #86bd9b;
+  --green-soft: #1d2822;
+  --amber: #cfa688;
+  --amber-soft: #2d2620;
+  --red: #d0a08a;
+  --red-soft: #2f2521;
+  --slate: #a6b0bf;
+  --slate-soft: #24272d;
+
+  /* page-specific tints (light values are the exact former hard-coded colours; see tokens.css) */
+  --tint-blue: #1f2833;
+  --tint-steel: #222a34;
+  --tint-navy: #262b33;
+  --tint-sage: #1f2a23;
+  --tint-sage-2: #212b24;
+  --tint-warm: #2a2620;
+  --tint-warm-2: #27241f;
+  --tint-cream: #29261f;
+  --tint-cream-2: #28251f;
+  --tint-blue-2: #212a36;
+  --map-canvas: #2a2925;
+  --line-blue: #3d5476;
+  --line-green: #3f6650;
+  --line-sand: #5c4d3c;
+  --dot-sand: #a88a71;
+  --dot-sage: #6f9a80;
+
+  /* depth on dark: shadows deepen instead of lighten */
+  --sh-card: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --sh-raise: 0 1px 2px rgba(0, 0, 0, 0.35), 0 8px 22px rgba(0, 0, 0, 0.35);
+  --sh-3: 0 1px 2px rgba(0, 0, 0, 0.4), 0 14px 36px rgba(0, 0, 0, 0.5);
+  --rail-bg: #1c1b18;
+}
+
+:root[data-theme="dark"] ::selection {
+  background: rgba(143, 176, 224, 0.28);
+}
+
+/* the theme switch itself eases its colours; nothing else animates because of a theme change */
+html[data-theme-switching] *,
+html[data-theme-switching] *::before,
+html[data-theme-switching] *::after {
+  transition: background-color var(--dur) var(--ease-out), border-color var(--dur) var(--ease-out), color var(--dur) var(--ease-out) !important;
+}
+
+/* LARGE NAVY SURFACES stay deep in the dark theme. Navy as text, edges and small actions is the lifted steel-navy
+   above; a whole navy panel (the Desk's Best opportunity, the Events "Where should I go" anchor, the active navigation
+   item) would become a glaring light block, so inside those surfaces the navy family is re-scoped to a deep navy with
+   ivory text (ivory on deep navy: 10.4 : 1). Scoped here, so no page file changes. */
+:root[data-theme="dark"] [data-testid="desk-best"],
+:root[data-theme="dark"] [data-testid="wsig"],
+:root[data-theme="dark"] aside[aria-label="Main navigation"] a[aria-current="page"] {
+  --navy: #2b3a52;
+  --navy-deep: #243146;
+  --navy-ink: #eef1f5;
+  --navy-mut: #b3bdcc;
+  --on-navy: #fff;
+  --on-navy-warm: #e6dccf;
+}
+/* the Best opportunity's one action: a light button on the deep navy card */
+:root[data-theme="dark"] [data-testid="desk-best"] a[href^="/conviction"] {
+  background: #eef1f5;
+  color: #1f2b3d;
+}

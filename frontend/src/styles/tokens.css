@@ -1,0 +1,133 @@
+/* Project Zero design tokens — warm paper workspace, ink text, one steel-blue action family, a few muted semantic
+   accents (docs/design-system.md). Calm ≠ colourless: surfaces are layered, selection and decisions are visible.
+   Forbidden anywhere in the UI: red, yellow, mint, lavender, violet (or near substitutes). */
+:root {
+  /* neutral layers — canvas < bone < paper; linen / stone for fills and firmer lines */
+  --bg: #eeebe4; /* L0 warm paper canvas */
+  --bone: #f5f3ee; /* L1 workspace / list well / secondary surface */
+  --paper: #fbfaf7; /* L2 information card — never pure white */
+  --paper-2: #f6f4ef; /* quiet hover inside a card */
+  --linen: #e7e3da; /* neutral fill: secondary buttons, hover rows, quiet chips */
+  --stone: #d5d0c5; /* firmer hairline */
+  --ink: #23211c; /* warm ink — never pure black */
+  --ink-2: #3a3731;
+  --mut: #605b53; /* secondary text (≥ 5.5:1 on paper) */
+  --faint: #78726a; /* metadata (≥ 4.5:1 on paper) */
+  --hair: rgba(35, 33, 28, 0.09);
+  --hair-2: rgba(35, 33, 28, 0.15);
+  --well: rgba(35, 33, 28, 0.045);
+
+  /* steel blue — interaction, selection, the primary action */
+  --blue: #2b5c9e;
+  --blue-ink: #234b82; /* selected text / hover */
+  --blue-soft: #e5ebf3; /* selected surface tint */
+  --blue-line: #a9bcd6; /* selected edge */
+  /* deep steel navy — the one dark anchor surface (decision column), as in Events */
+  /* NAVY — Project Zero's authority colour: focus, decision, strongest selection. ONE canonical dark blue; hover deepens
+     it with color-mix (never a second hex). Scarce by design: scarcity gives it authority. */
+  --navy: #1f2b3d;
+  --navy-ink: #eef1f5; /* text on navy (14.2:1) */
+  --navy-mut: #a7b2c1; /* secondary text on navy (6.4:1) */
+  --navy-soft: #e9ecf1; /* a navy-tinted selected surface (navy text on it: 12.4:1) */
+  --navy-deep: color-mix(in srgb, var(--navy) 86%, #000); /* hover / pressed — derived, not a new colour */
+
+  /* semantic accents — used as small markers and label text, never as large fills */
+  --green: #3a6a50; /* restrained forest: verified / positive / progress */
+  --green-soft: #e7eee8;
+  --amber: #86664f; /* muted cocoa-taupe: needs Mohamed / attention / uncertainty (no yellow) */
+  --amber-soft: #f0e9e1;
+  --red: #7a5a48; /* deeper cocoa: risk / conflict / reject — never alarm red; the label carries the meaning */
+  --red-soft: #f0e8e3;
+  --slate: #5b6577; /* machine / background / neutral classification */
+  --slate-soft: #e9ebee;
+  --purple: var(--slate); /* legacy token: slate (no violet) */
+  --on-navy: #fff; /* text / lines on a navy surface (dark theme: dark text on the lifted navy) */
+  --on-navy-warm: #e6dccf; /* a warm accent on a navy surface */
+
+  /* page-specific tints — named so the dark theme (theme-dark.css) can redefine them; the light values are exactly the
+     colours these surfaces always had, so the light theme renders identically */
+  --tint-blue: #eef4ff;
+  --tint-steel: #f1f3f5; /* --blue-soft 55 % over --paper */
+  --tint-navy: #f3f4f4; /* --navy-soft 45 % over --paper */
+  --tint-sage: #edf2ee; /* --green-soft 70 % over --paper */
+  --tint-sage-2: #eff3ef;
+  --tint-warm: #f4efe3;
+  --tint-warm-2: #f8f5ee;
+  --tint-cream: #faf6ee;
+  --tint-cream-2: #faf7ef;
+  --tint-blue-2: #e8eef7;
+  --map-canvas: #e9e7e1;
+  --line-blue: #b9cdf4;
+  --line-green: #b7dfbb;
+  --line-sand: #d8c6a5;
+  --dot-sand: #c9ab8d; /* --amber at ~55 % on paper */
+  --dot-sage: #9fb8a6; /* --green at ~45 % on paper */
+  --peach: var(--linen); /* legacy token: linen */
+
+  /* type — system / free fonts only (no proprietary font files) */
+  --font-ui: -apple-system, BlinkMacSystemFont, "Segoe UI Variable Text", "SF Pro Text", Inter, "Segoe UI", Carlito,
+    "Liberation Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Source Serif 4", "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Charter,
+    "Bitstream Charter", Georgia, ui-serif, serif;
+  --font-mono: "JetBrains Mono", "SF Mono", "Cascadia Mono", Consolas, "Liberation Mono", monospace;
+
+  /* spacing — 4px rhythm */
+  --s1: 4px;
+  --s2: 8px;
+  --s3: 12px;
+  --s4: 16px;
+  --s5: 24px;
+  --s6: 32px;
+  --s7: 48px;
+  --s8: 64px;
+
+  /* shape + depth — 4–8px geometry; warm, restrained elevation */
+  --r-sm: 4px;
+  --r-md: 6px;
+  --r-lg: 8px;
+  --r-xl: 10px;
+  --sh-1: none;
+  --sh-card: 0 1px 2px rgba(35, 33, 28, 0.05); /* L2 information card */
+  --sh-2: var(--sh-card);
+  --sh-raise: 0 1px 2px rgba(35, 33, 28, 0.05), 0 8px 22px rgba(35, 33, 28, 0.08); /* L3 decision card / featured */
+  --sh-3: 0 1px 2px rgba(35, 33, 28, 0.06), 0 14px 36px rgba(35, 33, 28, 0.12); /* overlays */
+  --glass: var(--paper);
+  --glass-line: var(--hair);
+  --glass-shadow: none;
+  --rail-bg: #e9e6de;
+
+  /* motion */
+  --motion: 160ms;
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+
+  /* layout */
+  --rail-w: 232px;
+  --topbar-h: 40px;
+  --content-max: 1240px;
+
+  /* Operator Focus */
+  --font-display: var(--font-serif);
+  --r-card: 8px;
+  --r-pill: 999px;
+}
+
+/* motion: short, purposeful, always ends (docs/design-system.md → Motion) */
+:root {
+  --dur-fast: 120ms; /* hover, press, small state feedback */
+  --dur: 180ms; /* selection, normal UI transitions */
+  --dur-slow: 260ms; /* disclosures, entering content, rail width */
+  --dur-draw: 640ms; /* the one-time signal-line reveal on the Investment Desk */
+  --dur-trace: 520ms; /* a convergence trace / relationship path / sparkline drawing once */
+  --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion: 0ms;
+    --dur-fast: 0ms;
+    --dur: 0ms;
+    --dur-slow: 0ms;
+    --dur-draw: 0ms;
+    --dur-trace: 0ms;
+  }
+}

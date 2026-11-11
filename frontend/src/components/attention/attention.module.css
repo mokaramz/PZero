@@ -1,0 +1,117 @@
+/* Focus architecture primitives — quiet by default; the selected item and the one primary action carry the weight. */
+
+/* ---------------- ContextInspector (Layer 2) */
+.inspector {
+  position: sticky;
+  top: 0;
+  min-width: 0;
+  align-self: start;
+}
+.inspectorClose {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+  display: inline-grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border: 1px solid var(--hair);
+  border-radius: var(--r-sm);
+  background: var(--paper);
+  color: var(--mut);
+  cursor: pointer;
+}
+.inspectorClose:hover {
+  color: var(--ink);
+  background: var(--paper-2);
+}
+.inspectorEmpty {
+  margin: 0;
+  padding: 40px 16px;
+  text-align: center;
+  color: var(--faint);
+  font-size: 13px;
+}
+
+/* ---------------- GroupedFilters */
+.filters {
+  border-bottom: 1px solid var(--hair);
+}
+.flush {
+  border-bottom: 0;
+}
+.flush .filterRow {
+  padding: 0;
+}
+.flush .morePanelInline {
+  margin-top: 8px;
+  border: 1px solid var(--hair);
+  border-radius: var(--r-md);
+}
+.filterRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+  padding: 10px 16px;
+}
+.filterView,
+.filterAttention {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+.filterView + .filterAttention {
+  padding-left: 14px;
+  border-left: 1px solid var(--hair);
+}
+.moreFilters {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font: 500 12px var(--font-ui);
+  color: var(--mut);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--r-md);
+  padding: 4px 8px;
+  cursor: pointer;
+  transition: color var(--dur-fast) var(--ease-out), background var(--dur-fast) var(--ease-out);
+}
+.moreFilters:hover {
+  color: var(--ink);
+  background: var(--well);
+}
+.moreFiltersOn {
+  color: var(--ink-2);
+  border-color: var(--hair);
+}
+.moreChevron {
+  transition: transform var(--dur) var(--ease-out);
+}
+.moreChevronOpen {
+  transform: rotate(90deg);
+}
+.morePanelInline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+  padding: 10px 16px 12px;
+  background: var(--bone);
+  border-top: 1px solid var(--hair);
+}
+
+@media (max-width: 900px) {
+  .moreFilters {
+    margin-left: 0;
+  }
+  .filterView + .filterAttention {
+    padding-left: 0;
+    border-left: 0;
+  }
+}
+

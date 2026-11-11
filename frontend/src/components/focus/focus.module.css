@@ -1,0 +1,537 @@
+/* Operator Focus — flat cards, one semantic field per card, generous spacing, serif display names. */
+.kicker {
+  display: inline-block;
+  font: 500 11px/1.2 var(--font-ui);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--mut);
+  margin-bottom: 6px;
+}
+.k_attention {
+  color: var(--amber);
+}
+.k_progress {
+  color: var(--green);
+}
+.k_risk {
+  color: var(--red);
+}
+.k_info {
+  color: var(--blue);
+}
+
+/* ---------------------------------------------------------------- lists + disclosure */
+.list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.list li {
+  position: relative;
+  padding-left: 14px;
+  line-height: 1.45;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.62em;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.55;
+}
+.empty {
+  color: var(--mut);
+  font-size: 13px;
+}
+.moreBtn {
+  margin-top: 6px;
+  font: 500 12px var(--font-ui);
+  color: inherit;
+  opacity: 0.75;
+  background: none;
+  border: 0;
+  padding: 2px 0;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.moreBtn:hover {
+  opacity: 1;
+}
+
+.disclosure {
+  background: transparent;
+  border: 0;
+  border-top: 1px solid var(--hair);
+  border-radius: 0;
+  margin-top: 0;
+}
+.disclosure + .disclosure:last-child,
+.disclosure:last-child {
+  border-bottom: 1px solid var(--hair);
+}
+.audit .summaryTitle {
+  color: var(--mut);
+  font-weight: 400;
+}
+/* a disclosure row: functional icon · title · one-line summary · chevron (mockup 2) */
+.summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 6px;
+  cursor: pointer;
+  list-style: none;
+  border-radius: var(--r-md);
+  transition: background var(--motion) var(--ease);
+}
+.summary::-webkit-details-marker {
+  display: none;
+}
+.summary:hover {
+  background: var(--well);
+}
+.summaryIcon {
+  color: var(--faint);
+  flex: none;
+}
+.summaryTitle {
+  font-weight: 500;
+  font-size: 13.5px;
+}
+.summaryHint {
+  margin-left: auto;
+  color: var(--mut);
+  font-size: 12px;
+  text-align: right;
+}
+.summaryChevron {
+  color: var(--faint);
+  flex: none;
+  transition: transform var(--motion) var(--ease);
+}
+.summaryHint + .summaryChevron {
+  margin-left: 4px;
+}
+.summaryTitle + .summaryChevron {
+  margin-left: auto;
+}
+.disclosure[open] > .summary .summaryChevron {
+  transform: rotate(90deg);
+}
+.disclosureBody {
+  padding: 4px 6px 16px 31px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 640px) {
+  .disclosureBody {
+    padding-left: 6px;
+  }
+}
+
+/* ---------------------------------------------------------------- the decision card (mockup 2: "PZ Review") */
+.decision {
+  container-type: inline-size;
+  background: var(--paper);
+  border: 1px solid var(--hair-2);
+  border-radius: var(--r-card);
+  box-shadow: var(--sh-raise); /* L3: the decision is the raised surface */
+  padding: 16px 20px 14px;
+  margin: 12px 0;
+}
+.decisionHead {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.decisionTitle {
+  font: 400 21px/1.2 var(--font-display);
+  letter-spacing: -0.012em;
+  margin: 0;
+}
+.decisionAside {
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--mut);
+}
+/* why · risk · unknown: three quiet tonal cells — tint supports the word, never replaces it */
+.cells {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  font-size: 13.5px;
+}
+.cell {
+  border: 1px solid var(--hair);
+  border-radius: var(--r-lg);
+  padding: 10px 14px;
+  min-width: 0;
+}
+.cell .kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+  color: var(--ink-2);
+  letter-spacing: 0.04em;
+}
+.cell[data-tone="why"] {
+  background: var(--green-soft);
+}
+.cell[data-tone="why"] .kicker svg {
+  color: var(--green);
+}
+.cell[data-tone="risk"] {
+  background: var(--red-soft);
+}
+.cell[data-tone="risk"] .kicker,
+.cell[data-tone="risk"] .kicker svg {
+  color: var(--red);
+}
+.cell[data-tone="unknown"] {
+  background: var(--bone);
+}
+.cell[data-tone="unknown"] .kicker svg {
+  color: var(--slate);
+}
+/* PZ VIEW — an investment judgment, read as one line */
+.pzRow {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  margin-top: 8px;
+  padding: 10px 14px;
+  border-radius: var(--r-lg);
+  background: var(--bone);
+  border: 1px solid var(--hair);
+  box-shadow: inset 3px 0 0 var(--navy);
+}
+.pzLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex: none;
+  font: 500 12px var(--font-ui);
+  color: var(--mut);
+  padding-right: 14px;
+  border-right: 1px solid var(--hair-2);
+  align-self: stretch;
+}
+.pzState {
+  font: 400 19px/1.3 var(--font-display);
+  letter-spacing: -0.01em;
+  color: var(--navy);
+  min-width: 0;
+}
+/* YOUR MOVE — the strongest operational element: one primary action, everything else quiet */
+.moveRow {
+  display: flex;
+  align-items: center;
+  gap: 8px 16px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--hair);
+}
+.moveLead {
+  flex: 1 1 260px;
+  min-width: 0;
+}
+.moveLabel {
+  font: 500 12px var(--font-ui);
+  color: var(--mut);
+}
+.moveText {
+  font: 400 19px/1.3 var(--font-display);
+  letter-spacing: -0.01em;
+  margin-top: 2px;
+}
+.moveDetail {
+  font: 400 12.5px/1.45 var(--font-ui);
+  color: var(--mut);
+  margin-top: 3px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.moveBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font: 500 13px/1 var(--font-ui);
+  padding: 10px 16px;
+  border-radius: var(--r-md);
+  background: var(--navy);
+  color: var(--navy-ink);
+  border: 1px solid var(--navy);
+  cursor: pointer;
+  white-space: nowrap;
+  text-decoration: none;
+  transition: background-color var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
+}
+.moveBtn:hover {
+  text-decoration: none;
+  background: var(--navy-deep);
+}
+.moveBtn:active {
+  transform: translateY(1px);
+}
+.decisionsRow {
+  flex-basis: 100%;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+@container (max-width: 640px) {
+  .cells {
+    grid-template-columns: 1fr;
+  }
+  .pzRow {
+    flex-direction: column;
+    gap: 4px;
+  }
+  .pzLabel {
+    border-right: 0;
+    padding-right: 0;
+  }
+}
+
+/* ---------------------------------------------------------------- monogram · highlights · status */
+.monogram {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  border-radius: var(--r-lg);
+  background: var(--linen);
+  border: 1px solid var(--hair);
+  color: var(--ink-2);
+  font-family: var(--font-display);
+  letter-spacing: 0.02em;
+  line-height: 1;
+}
+.highlights {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  margin: 10px 0 0;
+  background: var(--paper);
+  border: 1px solid var(--hair);
+  border-radius: var(--r-lg);
+  box-shadow: var(--sh-card);
+}
+.highlight {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 9px 14px;
+  min-width: 0;
+}
+.highlight + .highlight {
+  border-left: 1px solid var(--hair);
+}
+.highlightIcon {
+  color: var(--faint);
+  flex: none;
+  margin-top: 2px;
+}
+.highlightBody {
+  min-width: 0;
+}
+.highlightBody dt {
+  font: 500 10.5px var(--font-ui);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+.highlightBody dd {
+  margin: 3px 0 0;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--ink);
+  overflow-wrap: break-word; /* wrap between words, never mid-word */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.highlightHint {
+  display: block;
+  font-size: 11.5px;
+  color: var(--faint);
+  margin-top: 1px;
+}
+.h_progress {
+  color: var(--green) !important;
+}
+.h_risk {
+  color: var(--red) !important;
+}
+@media (max-width: 640px) {
+  .highlight + .highlight {
+    border-left: 0;
+    border-top: 1px solid var(--hair);
+  }
+}
+.status {
+  display: inline-flex;
+  align-items: center;
+  font: 500 10.5px/1 var(--font-ui);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 4px 7px;
+  border-radius: var(--r-sm);
+  white-space: nowrap;
+}
+.s_neutral {
+  background: var(--linen);
+  color: var(--ink-2);
+}
+.s_progress {
+  background: var(--green-soft);
+  color: var(--green);
+}
+.s_attention {
+  background: var(--amber-soft);
+  color: var(--amber);
+}
+.s_risk {
+  background: var(--red-soft);
+  color: var(--red);
+}
+.s_focus {
+  background: var(--navy);
+  color: var(--navy-ink);
+}
+.s_machine {
+  background: var(--slate-soft);
+  color: var(--slate);
+}
+/* motion: a state that changes (working → complete) eases rather than jumps; cards lift slightly on hover */
+.status {
+  transition: background-color var(--dur) var(--ease-out), color var(--dur) var(--ease-out);
+}
+
+/* ---------------------------------------------------------------- DecisionCard variant="editorial" (Deal Flow only)
+   The PZ Review as an editorial page, not an analysis panel: warm paper, navy labels, thin lines, a slim navy edge on
+   the takeaways, risk (sand) | unknown (steel-grey) side by side, PZ view | your move side by side. Opt-in; every other
+   DecisionCard keeps the default look. */
+.ed {
+  padding: 16px 18px 18px;
+  background: var(--paper);
+  border: 1px solid var(--hair-2);
+  border-radius: var(--r-xl);
+  box-shadow: var(--sh-card);
+}
+.edTitle {
+  font: 600 24px/1.15 var(--font-display);
+  letter-spacing: -0.015em;
+  color: var(--navy);
+}
+.edLabel {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font: 600 10.5px var(--font-ui);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--navy);
+  margin-bottom: 6px;
+}
+.edTakeaways {
+  margin-top: 10px;
+  padding: 10px 14px 10px 18px;
+  border: 1px solid var(--hair);
+  border-radius: var(--r-md);
+  box-shadow: inset 3px 0 0 var(--navy);
+}
+.edTakeaways .edLabel::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  margin-left: 8px;
+  background: var(--hair-2);
+}
+.edTakeaways ul,
+.edCell ul {
+  margin: 0;
+  padding-left: 18px;
+  list-style: disc;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--ink);
+}
+.edTakeaways ul li::marker {
+  color: var(--navy);
+}
+.edPair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 10px;
+}
+.edCell {
+  min-width: 0;
+  padding: 10px 14px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--hair);
+}
+.edCell[data-tone="risk"] {
+  background: var(--amber-soft);
+}
+.edCell[data-tone="risk"] .edLabel {
+  color: var(--amber);
+}
+.edCell[data-tone="unknown"] {
+  background: var(--slate-soft);
+}
+.edCell[data-tone="unknown"] .edLabel {
+  color: var(--slate);
+}
+.edCell ul {
+  font-size: 13px;
+}
+.edCell p {
+  margin: 0;
+  font-size: 13px;
+  color: var(--ink-2);
+}
+.edView,
+.edMove {
+  min-width: 0;
+  padding: 10px 14px;
+  border-top: 1px solid var(--hair);
+}
+.edView {
+  box-shadow: inset 2px 0 0 var(--navy);
+}
+.edViewText {
+  font: italic 400 18px/1.25 var(--font-display);
+  color: var(--navy);
+}
+.edMoveText {
+  font: 400 16px/1.3 var(--font-display);
+  color: var(--ink);
+}
+.edMoveBtn {
+  margin-top: 8px;
+  align-self: flex-start;
+}
+.edMove {
+  display: flex;
+  flex-direction: column;
+}
+@media (max-width: 560px) {
+  .edPair {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
