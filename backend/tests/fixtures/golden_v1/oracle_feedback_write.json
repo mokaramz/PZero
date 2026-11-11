@@ -1,0 +1,5280 @@
+{
+ "corpus": {
+  "base": {
+   "decisions": {
+    "imp-1": {
+     "by": "Mohamed",
+     "decision": "rejected",
+     "name": "Imported One",
+     "source_ids": [
+      "src-a"
+     ],
+     "ts": "2026-11-01 10:00:00"
+    },
+    "imp-2": {
+     "by": "Mohamed",
+     "decision": "kept",
+     "name": "Acme GmbH",
+     "source_ids": [
+      "src-a"
+     ],
+     "ts": "2026-11-01 10:00:00"
+    },
+    "imp-3": {
+     "by": "Mohamed",
+     "decision": "research",
+     "name": "Imported Three",
+     "source_ids": [
+      "src-a"
+     ],
+     "ts": "2026-11-01 10:00:00"
+    },
+    "imp-4": {
+     "by": "Mohamed",
+     "decision": "watch",
+     "name": "Imported Four",
+     "source_ids": [
+      "src-a",
+      "src-b"
+     ],
+     "ts": "2026-11-01 10:00:00"
+    },
+    "imp-5": {
+     "by": "Mohamed",
+     "decision": "kept",
+     "name": "Acme GmbH",
+     "source_ids": [
+      "src-c"
+     ],
+     "ts": "2026-11-01 10:00:00"
+    }
+   },
+   "history": [],
+   "label": "Feedback-adjusted sourcing priority",
+   "omar": {
+    "acme": {
+     "candidate_id": "",
+     "company": "Acme GmbH",
+     "outcome": "positive",
+     "source_ids": [
+      "src-a",
+      "src-c"
+     ]
+    },
+    "linked": {
+     "candidate_id": "imp-4",
+     "company": "Linked",
+     "outcome": "negative",
+     "source_ids": [
+      "src-b"
+     ]
+    }
+   },
+   "version": 2
+  },
+  "probes": [
+   {
+    "id": "imp-1",
+    "name": "Imported One",
+    "source_id": "src-a"
+   },
+   {
+    "id": "imp-2",
+    "name": "Acme GmbH",
+    "source_id": "src-a"
+   },
+   {
+    "id": "imp-3",
+    "name": "Imported Three",
+    "source_id": "src-a"
+   },
+   {
+    "all_source_ids": [
+     "src-a",
+     "src-b"
+    ],
+    "id": "imp-4",
+    "name": "Imported Four",
+    "source_id": "src-a"
+   },
+   {
+    "id": "new-5",
+    "name": "Fifth Co",
+    "source_id": "src-a"
+   },
+   {
+    "all_source_ids": [
+     "src-a",
+     "src-b"
+    ],
+    "id": "new-6",
+    "name": "Sixth Co",
+    "source_id": "src-a"
+   },
+   {
+    "id": "new-7",
+    "name": "No Source Co"
+   },
+   {
+    "id": "b-1",
+    "name": "B One",
+    "source_id": "src-b"
+   },
+   {
+    "id": "b-2",
+    "name": "B Two",
+    "source_id": "src-b"
+   },
+   {
+    "id": "b-3",
+    "name": "B Three",
+    "source_id": "src-b"
+   },
+   {
+    "id": "b-4",
+    "name": "B Four",
+    "source_id": "src-b"
+   }
+  ],
+  "steps": [
+   {
+    "candidate": {
+     "id": "new-5",
+     "name": "Fifth Co",
+     "source_id": "src-a"
+    },
+    "decision": "kept"
+   },
+   {
+    "candidate": {
+     "all_source_ids": [
+      "src-a",
+      "src-b"
+     ],
+     "id": "new-6",
+     "name": "Sixth Co",
+     "source_id": "src-a"
+    },
+    "decision": "research"
+   },
+   {
+    "candidate": {
+     "id": "imp-1",
+     "name": "Imported One",
+     "source_id": "src-a"
+    },
+    "decision": "kept"
+   },
+   {
+    "candidate": {
+     "id": "imp-2",
+     "name": "Acme GmbH",
+     "source_id": "src-a"
+    },
+    "decision": "new"
+   },
+   {
+    "candidate": {
+     "id": "new-7",
+     "name": "No Source Co"
+    },
+    "decision": "kept"
+   },
+   {
+    "candidate": {
+     "id": "imp-3",
+     "name": "Imported Three"
+    },
+    "decision": "new"
+   },
+   {
+    "candidate": {
+     "id": "new-5",
+     "name": "Fifth Co"
+    },
+    "decision": "new"
+   },
+   {
+    "candidate": {
+     "all_source_ids": [
+      "src-a",
+      "src-b"
+     ],
+     "id": "new-6",
+     "name": "Sixth Co",
+     "source_id": "src-a"
+    },
+    "decision": "baseline"
+   },
+   {
+    "candidate": {
+     "id": "b-1",
+     "name": "B One",
+     "source_id": "src-b"
+    },
+    "decision": "kept"
+   },
+   {
+    "candidate": {
+     "id": "b-2",
+     "name": "B Two",
+     "source_id": "src-b"
+    },
+    "decision": "kept"
+   },
+   {
+    "candidate": {
+     "id": "b-3",
+     "name": "B Three",
+     "source_id": "src-b"
+    },
+    "decision": "kept"
+   },
+   {
+    "candidate": {
+     "id": "b-4",
+     "name": "B Four",
+     "source_id": "src-b"
+    },
+    "decision": "kept"
+   },
+   {
+    "candidate": {
+     "id": "imp-2",
+     "name": "Acme GmbH",
+     "source_id": "src-a"
+    },
+    "decision": "rejected"
+   },
+   {
+    "candidate": {
+     "id": "imp-1",
+     "name": "Imported One",
+     "source_id": "src-a"
+    },
+    "decision": "kept"
+   },
+   {
+    "candidate": {
+     "also_seen": [
+      {
+       "source_id": "src-d"
+      }
+     ],
+     "id": "new-6",
+     "name": "Sixth Co",
+     "source_id": "src-a"
+    },
+    "decision": "watch"
+   },
+   {
+    "candidate": {
+     "all_source_ids": [
+      "src-a",
+      "src-b"
+     ],
+     "id": "imp-4",
+     "name": "Imported Four",
+     "source_id": "src-a"
+    },
+    "decision": "rejected"
+   }
+  ]
+ },
+ "expected": [
+  {
+   "decision_keys": [
+    "imp-1",
+    "imp-2",
+    "imp-3",
+    "imp-4",
+    "imp-5",
+    "new-5"
+   ],
+   "decisions": {
+    "imp-1": {
+     "by": "Mohamed",
+     "decision": "rejected",
+     "name": "Imported One",
+     "source_ids": [
+      "src-a"
+     ]
+    },
+    "imp-2": {
+     "by": "Mohamed",
+     "decision": "kept",
+     "name": "Acme GmbH",
+     "source_ids": [
+      "src-a"
+     ]
+    },
+    "imp-3": {
+     "by": "Mohamed",
+     "decision": "research",
+     "name": "Imported Three",
+     "source_ids": [
+      "src-a"
+     ]
+    },
+    "imp-4": {
+     "by": "Mohamed",
+     "decision": "watch",
+     "name": "Imported Four",
+     "source_ids": [
+      "src-a",
+      "src-b"
+     ]
+    },
+    "imp-5": {
+     "by": "Mohamed",
+     "decision": "kept",
+     "name": "Acme GmbH",
+     "source_ids": [
+      "src-c"
+     ]
+    },
+    "new-5": {
+     "by": "Mohamed",
+     "decision": "kept",
+     "name": "Fifth Co",
+     "source_ids": [
+      "src-a"
+     ]
+    }
+   },
+   "entry": {
+    "by": "Mohamed",
+    "decision": "kept",
+    "name": "Fifth Co",
+    "source_ids": [
+     "src-a"
+    ]
+   },
+   "probes": {
+    "b-1": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "neutral prior — 1 of 5 reviewed companies needed before this source is adjusted (1 watch, Omar −1)",
+     "sources": [
+      {
+       "active": false,
+       "adjustment": 0,
+       "reviewed": 1,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "b-2": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "neutral prior — 1 of 5 reviewed companies needed before this source is adjusted (1 watch, Omar −1)",
+     "sources": [
+      {
+       "active": false,
+       "adjustment": 0,
+       "reviewed": 1,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "b-3": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "neutral prior — 1 of 5 reviewed companies needed before this source is adjusted (1 watch, Omar −1)",
+     "sources": [
+      {
+       "active": false,
+       "adjustment": 0,
+       "reviewed": 1,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "b-4": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "neutral prior — 1 of 5 reviewed companies needed before this source is adjusted (1 watch, Omar −1)",
+     "sources": [
+      {
+       "active": false,
+       "adjustment": 0,
+       "reviewed": 1,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "imp-1": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "5 reviewed companies (2 kept, 1 research, 1 watch, 1 rejected, Omar +1) → net +5 over 5 → +2 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 5,
+       "source_id": "src-a"
+      }
+     ]
+    },
+    "imp-2": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "5 reviewed companies (2 kept, 1 research, 1 watch, 1 rejected, Omar +1) → net +5 over 5 → +2 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 5,
+       "source_id": "src-a"
+      }
+     ]
+    },
+    "imp-3": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "5 reviewed companies (2 kept, 1 research, 1 watch, 1 rejected, Omar +1) → net +5 over 5 → +2 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 5,
+       "source_id": "src-a"
+      }
+     ]
+    },
+    "imp-4": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "src-a +2 (5 reviewed); src-b +0 (neutral prior, 1/5 reviewed) → sum +2 capped to ±3",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 5,
+       "source_id": "src-a"
+      },
+      {
+       "active": false,
+       "adjustment": 0,
+       "reviewed": 1,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "new-5": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "5 reviewed companies (2 kept, 1 research, 1 watch, 1 rejected, Omar +1) → net +5 over 5 → +2 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 5,
+       "source_id": "src-a"
+      }
+     ]
+    },
+    "new-6": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "src-a +2 (5 reviewed); src-b +0 (neutral prior, 1/5 reviewed) → sum +2 capped to ±3",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 5,
+       "source_id": "src-a"
+      },
+      {
+       "active": false,
+       "adjustment": 0,
+       "reviewed": 1,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "new-7": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "no source id on this candidate — neutral",
+     "sources": []
+    }
+   },
+   "table": {
+    "src-a": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "reason": "5 reviewed companies (2 kept, 1 research, 1 watch, 1 rejected, Omar +1) → net +5 over 5 → +2 (cap ±3, ordering only)",
+     "reviewed": 5,
+     "source_id": "src-a",
+     "stats": {
+      "kept": 2,
+      "omar_negative": 0,
+      "omar_positive": 1,
+      "rejected": 1,
+      "research": 1,
+      "reviewed": 5,
+      "score": 5,
+      "watch": 1
+     }
+    },
+    "src-b": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "reason": "neutral prior — 1 of 5 reviewed companies needed before this source is adjusted (1 watch, Omar −1)",
+     "reviewed": 1,
+     "source_id": "src-b",
+     "stats": {
+      "kept": 0,
+      "omar_negative": 1,
+      "omar_positive": 0,
+      "rejected": 0,
+      "research": 0,
+      "reviewed": 1,
+      "score": -2,
+      "watch": 1
+     }
+    },
+    "src-c": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "reason": "neutral prior — 2 of 5 reviewed companies needed before this source is adjusted (1 kept, Omar +1)",
+     "reviewed": 2,
+     "source_id": "src-c",
+     "stats": {
+      "kept": 1,
+      "omar_negative": 0,
+      "omar_positive": 1,
+      "rejected": 0,
+      "research": 0,
+      "reviewed": 2,
+      "score": 4,
+      "watch": 0
+     }
+    }
+   }
+  },
+  {
+   "decision_keys": [
+    "imp-1",
+    "imp-2",
+    "imp-3",
+    "imp-4",
+    "imp-5",
+    "new-5",
+    "new-6"
+   ],
+   "decisions": {
+    "imp-1": {
+     "by": "Mohamed",
+     "decision": "rejected",
+     "name": "Imported One",
+     "source_ids": [
+      "src-a"
+     ]
+    },
+    "imp-2": {
+     "by": "Mohamed",
+     "decision": "kept",
+     "name": "Acme GmbH",
+     "source_ids": [
+      "src-a"
+     ]
+    },
+    "imp-3": {
+     "by": "Mohamed",
+     "decision": "research",
+     "name": "Imported Three",
+     "source_ids": [
+      "src-a"
+     ]
+    },
+    "imp-4": {
+     "by": "Mohamed",
+     "decision": "watch",
+     "name": "Imported Four",
+     "source_ids": [
+      "src-a",
+      "src-b"
+     ]
+    },
+    "imp-5": {
+     "by": "Mohamed",
+     "decision": "kept",
+     "name": "Acme GmbH",
+     "source_ids": [
+      "src-c"
+     ]
+    },
+    "new-5": {
+     "by": "Mohamed",
+     "decision": "kept",
+     "name": "Fifth Co",
+     "source_ids": [
+      "src-a"
+     ]
+    },
+    "new-6": {
+     "by": "Mohamed",
+     "decision": "research",
+     "name": "Sixth Co",
+     "source_ids": [
+      "src-a",
+      "src-b"
+     ]
+    }
+   },
+   "entry": {
+    "by": "Mohamed",
+    "decision": "research",
+    "name": "Sixth Co",
+    "source_ids": [
+     "src-a",
+     "src-b"
+    ]
+   },
+   "probes": {
+    "b-1": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "neutral prior — 2 of 5 reviewed companies needed before this source is adjusted (1 research, 1 watch, Omar −1)",
+     "sources": [
+      {
+       "active": false,
+       "adjustment": 0,
+       "reviewed": 2,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "b-2": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "neutral prior — 2 of 5 reviewed companies needed before this source is adjusted (1 research, 1 watch, Omar −1)",
+     "sources": [
+      {
+       "active": false,
+       "adjustment": 0,
+       "reviewed": 2,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "b-3": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "neutral prior — 2 of 5 reviewed companies needed before this source is adjusted (1 research, 1 watch, Omar −1)",
+     "sources": [
+      {
+       "active": false,
+       "adjustment": 0,
+       "reviewed": 2,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "b-4": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "neutral prior — 2 of 5 reviewed companies needed before this source is adjusted (1 research, 1 watch, Omar −1)",
+     "sources": [
+      {
+       "active": false,
+       "adjustment": 0,
+       "reviewed": 2,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "imp-1": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "6 reviewed companies (2 kept, 2 research, 1 watch, 1 rejected, Omar +1) → net +6 over 6 → +2 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 6,
+       "source_id": "src-a"
+      }
+     ]
+    },
+    "imp-2": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "6 reviewed companies (2 kept, 2 research, 1 watch, 1 rejected, Omar +1) → net +6 over 6 → +2 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 6,
+       "source_id": "src-a"
+      }
+     ]
+    },
+    "imp-3": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "6 reviewed companies (2 kept, 2 research, 1 watch, 1 rejected, Omar +1) → net +6 over 6 → +2 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 6,
+       "source_id": "src-a"
+      }
+     ]
+    },
+    "imp-4": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "src-a +2 (6 reviewed); src-b +0 (neutral prior, 2/5 reviewed) → sum +2 capped to ±3",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 6,
+       "source_id": "src-a"
+      },
+      {
+       "active": false,
+       "adjustment": 0,
+       "reviewed": 2,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "new-5": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "6 reviewed companies (2 kept, 2 research, 1 watch, 1 rejected, Omar +1) → net +6 over 6 → +2 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 6,
+       "source_id": "src-a"
+      }
+     ]
+    },
+    "new-6": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "src-a +2 (6 reviewed); src-b +0 (neutral prior, 2/5 reviewed) → sum +2 capped to ±3",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 6,
+       "source_id": "src-a"
+      },
+      {
+       "active": false,
+       "adjustment": 0,
+       "reviewed": 2,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "new-7": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "no source id on this candidate — neutral",
+     "sources": []
+    }
+   },
+   "table": {
+    "src-a": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "reason": "6 reviewed companies (2 kept, 2 research, 1 watch, 1 rejected, Omar +1) → net +6 over 6 → +2 (cap ±3, ordering only)",
+     "reviewed": 6,
+     "source_id": "src-a",
+     "stats": {
+      "kept": 2,
+      "omar_negative": 0,
+      "omar_positive": 1,
+      "rejected": 1,
+      "research": 2,
+      "reviewed": 6,
+      "score": 6,
+      "watch": 1
+     }
+    },
+    "src-b": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "reason": "neutral prior — 2 of 5 reviewed companies needed before this source is adjusted (1 research, 1 watch, Omar −1)",
+     "reviewed": 2,
+     "source_id": "src-b",
+     "stats": {
+      "kept": 0,
+      "omar_negative": 1,
+      "omar_positive": 0,
+      "rejected": 0,
+      "research": 1,
+      "reviewed": 2,
+      "score": -1,
+      "watch": 1
+     }
+    },
+    "src-c": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "reason": "neutral prior — 2 of 5 reviewed companies needed before this source is adjusted (1 kept, Omar +1)",
+     "reviewed": 2,
+     "source_id": "src-c",
+     "stats": {
+      "kept": 1,
+      "omar_negative": 0,
+      "omar_positive": 1,
+      "rejected": 0,
+      "research": 0,
+      "reviewed": 2,
+      "score": 4,
+      "watch": 0
+     }
+    }
+   }
+  },
+  {
+   "decision_keys": [
+    "imp-1",
+    "imp-2",
+    "imp-3",
+    "imp-4",
+    "imp-5",
+    "new-5",
+    "new-6"
+   ],
+   "decisions": {
+    "imp-1": {
+     "by": "Mohamed",
+     "decision": "kept",
+     "name": "Imported One",
+     "source_ids": [
+      "src-a"
+     ]
+    },
+    "imp-2": {
+     "by": "Mohamed",
+     "decision": "kept",
+     "name": "Acme GmbH",
+     "source_ids": [
+      "src-a"
+     ]
+    },
+    "imp-3": {
+     "by": "Mohamed",
+     "decision": "research",
+     "name": "Imported Three",
+     "source_ids": [
+      "src-a"
+     ]
+    },
+    "imp-4": {
+     "by": "Mohamed",
+     "decision": "watch",
+     "name": "Imported Four",
+     "source_ids": [
+      "src-a",
+      "src-b"
+     ]
+    },
+    "imp-5": {
+     "by": "Mohamed",
+     "decision": "kept",
+     "name": "Acme GmbH",
+     "source_ids": [
+      "src-c"
+     ]
+    },
+    "new-5": {
+     "by": "Mohamed",
+     "decision": "kept",
+     "name": "Fifth Co",
+     "source_ids": [
+      "src-a"
+     ]
+    },
+    "new-6": {
+     "by": "Mohamed",
+     "decision": "research",
+     "name": "Sixth Co",
+     "source_ids": [
+      "src-a",
+      "src-b"
+     ]
+    }
+   },
+   "entry": {
+    "by": "Mohamed",
+    "decision": "kept",
+    "name": "Imported One",
+    "source_ids": [
+     "src-a"
+    ]
+   },
+   "probes": {
+    "b-1": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "neutral prior — 2 of 5 reviewed companies needed before this source is adjusted (1 research, 1 watch, Omar −1)",
+     "sources": [
+      {
+       "active": false,
+       "adjustment": 0,
+       "reviewed": 2,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "b-2": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "neutral prior — 2 of 5 reviewed companies needed before this source is adjusted (1 research, 1 watch, Omar −1)",
+     "sources": [
+      {
+       "active": false,
+       "adjustment": 0,
+       "reviewed": 2,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "b-3": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "neutral prior — 2 of 5 reviewed companies needed before this source is adjusted (1 research, 1 watch, Omar −1)",
+     "sources": [
+      {
+       "active": false,
+       "adjustment": 0,
+       "reviewed": 2,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "b-4": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "neutral prior — 2 of 5 reviewed companies needed before this source is adjusted (1 research, 1 watch, Omar −1)",
+     "sources": [
+      {
+       "active": false,
+       "adjustment": 0,
+       "reviewed": 2,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "imp-1": {
+     "active": true,
+     "adjustment": 3,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "6 reviewed companies (3 kept, 2 research, 1 watch, Omar +1) → net +10 over 6 → +3 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 3,
+       "reviewed": 6,
+       "source_id": "src-a"
+      }
+     ]
+    },
+    "imp-2": {
+     "active": true,
+     "adjustment": 3,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "6 reviewed companies (3 kept, 2 research, 1 watch, Omar +1) → net +10 over 6 → +3 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 3,
+       "reviewed": 6,
+       "source_id": "src-a"
+      }
+     ]
+    },
+    "imp-3": {
+     "active": true,
+     "adjustment": 3,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "6 reviewed companies (3 kept, 2 research, 1 watch, Omar +1) → net +10 over 6 → +3 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 3,
+       "reviewed": 6,
+       "source_id": "src-a"
+      }
+     ]
+    },
+    "imp-4": {
+     "active": true,
+     "adjustment": 3,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "src-a +3 (6 reviewed); src-b +0 (neutral prior, 2/5 reviewed) → sum +3 capped to ±3",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 3,
+       "reviewed": 6,
+       "source_id": "src-a"
+      },
+      {
+       "active": false,
+       "adjustment": 0,
+       "reviewed": 2,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "new-5": {
+     "active": true,
+     "adjustment": 3,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "6 reviewed companies (3 kept, 2 research, 1 watch, Omar +1) → net +10 over 6 → +3 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 3,
+       "reviewed": 6,
+       "source_id": "src-a"
+      }
+     ]
+    },
+    "new-6": {
+     "active": true,
+     "adjustment": 3,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "src-a +3 (6 reviewed); src-b +0 (neutral prior, 2/5 reviewed) → sum +3 capped to ±3",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 3,
+       "reviewed": 6,
+       "source_id": "src-a"
+      },
+      {
+       "active": false,
+       "adjustment": 0,
+       "reviewed": 2,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "new-7": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "no source id on this candidate — neutral",
+     "sources": []
+    }
+   },
+   "table": {
+    "src-a": {
+     "active": true,
+     "adjustment": 3,
+     "label": "Feedback-adjusted sourcing priority",
+     "reason": "6 reviewed companies (3 kept, 2 research, 1 watch, Omar +1) → net +10 over 6 → +3 (cap ±3, ordering only)",
+     "reviewed": 6,
+     "source_id": "src-a",
+     "stats": {
+      "kept": 3,
+      "omar_negative": 0,
+      "omar_positive": 1,
+      "rejected": 0,
+      "research": 2,
+      "reviewed": 6,
+      "score": 10,
+      "watch": 1
+     }
+    },
+    "src-b": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "reason": "neutral prior — 2 of 5 reviewed companies needed before this source is adjusted (1 research, 1 watch, Omar −1)",
+     "reviewed": 2,
+     "source_id": "src-b",
+     "stats": {
+      "kept": 0,
+      "omar_negative": 1,
+      "omar_positive": 0,
+      "rejected": 0,
+      "research": 1,
+      "reviewed": 2,
+      "score": -1,
+      "watch": 1
+     }
+    },
+    "src-c": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "reason": "neutral prior — 2 of 5 reviewed companies needed before this source is adjusted (1 kept, Omar +1)",
+     "reviewed": 2,
+     "source_id": "src-c",
+     "stats": {
+      "kept": 1,
+      "omar_negative": 0,
+      "omar_positive": 1,
+      "rejected": 0,
+      "research": 0,
+      "reviewed": 2,
+      "score": 4,
+      "watch": 0
+     }
+    }
+   }
+  },
+  {
+   "decision_keys": [
+    "imp-1",
+    "imp-3",
+    "imp-4",
+    "imp-5",
+    "new-5",
+    "new-6"
+   ],
+   "decisions": {
+    "imp-1": {
+     "by": "Mohamed",
+     "decision": "kept",
+     "name": "Imported One",
+     "source_ids": [
+      "src-a"
+     ]
+    },
+    "imp-3": {
+     "by": "Mohamed",
+     "decision": "research",
+     "name": "Imported Three",
+     "source_ids": [
+      "src-a"
+     ]
+    },
+    "imp-4": {
+     "by": "Mohamed",
+     "decision": "watch",
+     "name": "Imported Four",
+     "source_ids": [
+      "src-a",
+      "src-b"
+     ]
+    },
+    "imp-5": {
+     "by": "Mohamed",
+     "decision": "kept",
+     "name": "Acme GmbH",
+     "source_ids": [
+      "src-c"
+     ]
+    },
+    "new-5": {
+     "by": "Mohamed",
+     "decision": "kept",
+     "name": "Fifth Co",
+     "source_ids": [
+      "src-a"
+     ]
+    },
+    "new-6": {
+     "by": "Mohamed",
+     "decision": "research",
+     "name": "Sixth Co",
+     "source_ids": [
+      "src-a",
+      "src-b"
+     ]
+    }
+   },
+   "entry": null,
+   "probes": {
+    "b-1": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "neutral prior — 2 of 5 reviewed companies needed before this source is adjusted (1 research, 1 watch, Omar −1)",
+     "sources": [
+      {
+       "active": false,
+       "adjustment": 0,
+       "reviewed": 2,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "b-2": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "neutral prior — 2 of 5 reviewed companies needed before this source is adjusted (1 research, 1 watch, Omar −1)",
+     "sources": [
+      {
+       "active": false,
+       "adjustment": 0,
+       "reviewed": 2,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "b-3": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "neutral prior — 2 of 5 reviewed companies needed before this source is adjusted (1 research, 1 watch, Omar −1)",
+     "sources": [
+      {
+       "active": false,
+       "adjustment": 0,
+       "reviewed": 2,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "b-4": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "neutral prior — 2 of 5 reviewed companies needed before this source is adjusted (1 research, 1 watch, Omar −1)",
+     "sources": [
+      {
+       "active": false,
+       "adjustment": 0,
+       "reviewed": 2,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "imp-1": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "6 reviewed companies (2 kept, 2 research, 1 watch, Omar +1) → net +8 over 6 → +2 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 6,
+       "source_id": "src-a"
+      }
+     ]
+    },
+    "imp-2": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "6 reviewed companies (2 kept, 2 research, 1 watch, Omar +1) → net +8 over 6 → +2 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 6,
+       "source_id": "src-a"
+      }
+     ]
+    },
+    "imp-3": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "6 reviewed companies (2 kept, 2 research, 1 watch, Omar +1) → net +8 over 6 → +2 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 6,
+       "source_id": "src-a"
+      }
+     ]
+    },
+    "imp-4": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "src-a +2 (6 reviewed); src-b +0 (neutral prior, 2/5 reviewed) → sum +2 capped to ±3",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 6,
+       "source_id": "src-a"
+      },
+      {
+       "active": false,
+       "adjustment": 0,
+       "reviewed": 2,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "new-5": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "6 reviewed companies (2 kept, 2 research, 1 watch, Omar +1) → net +8 over 6 → +2 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 6,
+       "source_id": "src-a"
+      }
+     ]
+    },
+    "new-6": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "src-a +2 (6 reviewed); src-b +0 (neutral prior, 2/5 reviewed) → sum +2 capped to ±3",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 6,
+       "source_id": "src-a"
+      },
+      {
+       "active": false,
+       "adjustment": 0,
+       "reviewed": 2,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "new-7": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "no source id on this candidate — neutral",
+     "sources": []
+    }
+   },
+   "table": {
+    "src-a": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "reason": "6 reviewed companies (2 kept, 2 research, 1 watch, Omar +1) → net +8 over 6 → +2 (cap ±3, ordering only)",
+     "reviewed": 6,
+     "source_id": "src-a",
+     "stats": {
+      "kept": 2,
+      "omar_negative": 0,
+      "omar_positive": 1,
+      "rejected": 0,
+      "research": 2,
+      "reviewed": 6,
+      "score": 8,
+      "watch": 1
+     }
+    },
+    "src-b": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "reason": "neutral prior — 2 of 5 reviewed companies needed before this source is adjusted (1 research, 1 watch, Omar −1)",
+     "reviewed": 2,
+     "source_id": "src-b",
+     "stats": {
+      "kept": 0,
+      "omar_negative": 1,
+      "omar_positive": 0,
+      "rejected": 0,
+      "research": 1,
+      "reviewed": 2,
+      "score": -1,
+      "watch": 1
+     }
+    },
+    "src-c": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "reason": "neutral prior — 1 of 5 reviewed companies needed before this source is adjusted (1 kept, Omar +1)",
+     "reviewed": 1,
+     "source_id": "src-c",
+     "stats": {
+      "kept": 1,
+      "omar_negative": 0,
+      "omar_positive": 1,
+      "rejected": 0,
+      "research": 0,
+      "reviewed": 1,
+      "score": 4,
+      "watch": 0
+     }
+    }
+   }
+  },
+  {
+   "decision_keys": [
+    "imp-1",
+    "imp-3",
+    "imp-4",
+    "imp-5",
+    "new-5",
+    "new-6"
+   ],
+   "decisions": {
+    "imp-1": {
+     "by": "Mohamed",
+     "decision": "kept",
+     "name": "Imported One",
+     "source_ids": [
+      "src-a"
+     ]
+    },
+    "imp-3": {
+     "by": "Mohamed",
+     "decision": "research",
+     "name": "Imported Three",
+     "source_ids": [
+      "src-a"
+     ]
+    },
+    "imp-4": {
+     "by": "Mohamed",
+     "decision": "watch",
+     "name": "Imported Four",
+     "source_ids": [
+      "src-a",
+      "src-b"
+     ]
+    },
+    "imp-5": {
+     "by": "Mohamed",
+     "decision": "kept",
+     "name": "Acme GmbH",
+     "source_ids": [
+      "src-c"
+     ]
+    },
+    "new-5": {
+     "by": "Mohamed",
+     "decision": "kept",
+     "name": "Fifth Co",
+     "source_ids": [
+      "src-a"
+     ]
+    },
+    "new-6": {
+     "by": "Mohamed",
+     "decision": "research",
+     "name": "Sixth Co",
+     "source_ids": [
+      "src-a",
+      "src-b"
+     ]
+    }
+   },
+   "entry": null,
+   "probes": {
+    "b-1": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "neutral prior — 2 of 5 reviewed companies needed before this source is adjusted (1 research, 1 watch, Omar −1)",
+     "sources": [
+      {
+       "active": false,
+       "adjustment": 0,
+       "reviewed": 2,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "b-2": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "neutral prior — 2 of 5 reviewed companies needed before this source is adjusted (1 research, 1 watch, Omar −1)",
+     "sources": [
+      {
+       "active": false,
+       "adjustment": 0,
+       "reviewed": 2,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "b-3": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "neutral prior — 2 of 5 reviewed companies needed before this source is adjusted (1 research, 1 watch, Omar −1)",
+     "sources": [
+      {
+       "active": false,
+       "adjustment": 0,
+       "reviewed": 2,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "b-4": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "neutral prior — 2 of 5 reviewed companies needed before this source is adjusted (1 research, 1 watch, Omar −1)",
+     "sources": [
+      {
+       "active": false,
+       "adjustment": 0,
+       "reviewed": 2,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "imp-1": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "6 reviewed companies (2 kept, 2 research, 1 watch, Omar +1) → net +8 over 6 → +2 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 6,
+       "source_id": "src-a"
+      }
+     ]
+    },
+    "imp-2": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "6 reviewed companies (2 kept, 2 research, 1 watch, Omar +1) → net +8 over 6 → +2 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 6,
+       "source_id": "src-a"
+      }
+     ]
+    },
+    "imp-3": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "6 reviewed companies (2 kept, 2 research, 1 watch, Omar +1) → net +8 over 6 → +2 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 6,
+       "source_id": "src-a"
+      }
+     ]
+    },
+    "imp-4": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "src-a +2 (6 reviewed); src-b +0 (neutral prior, 2/5 reviewed) → sum +2 capped to ±3",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 6,
+       "source_id": "src-a"
+      },
+      {
+       "active": false,
+       "adjustment": 0,
+       "reviewed": 2,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "new-5": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "6 reviewed companies (2 kept, 2 research, 1 watch, Omar +1) → net +8 over 6 → +2 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 6,
+       "source_id": "src-a"
+      }
+     ]
+    },
+    "new-6": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "src-a +2 (6 reviewed); src-b +0 (neutral prior, 2/5 reviewed) → sum +2 capped to ±3",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 6,
+       "source_id": "src-a"
+      },
+      {
+       "active": false,
+       "adjustment": 0,
+       "reviewed": 2,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "new-7": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "no source id on this candidate — neutral",
+     "sources": []
+    }
+   },
+   "table": {
+    "src-a": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "reason": "6 reviewed companies (2 kept, 2 research, 1 watch, Omar +1) → net +8 over 6 → +2 (cap ±3, ordering only)",
+     "reviewed": 6,
+     "source_id": "src-a",
+     "stats": {
+      "kept": 2,
+      "omar_negative": 0,
+      "omar_positive": 1,
+      "rejected": 0,
+      "research": 2,
+      "reviewed": 6,
+      "score": 8,
+      "watch": 1
+     }
+    },
+    "src-b": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "reason": "neutral prior — 2 of 5 reviewed companies needed before this source is adjusted (1 research, 1 watch, Omar −1)",
+     "reviewed": 2,
+     "source_id": "src-b",
+     "stats": {
+      "kept": 0,
+      "omar_negative": 1,
+      "omar_positive": 0,
+      "rejected": 0,
+      "research": 1,
+      "reviewed": 2,
+      "score": -1,
+      "watch": 1
+     }
+    },
+    "src-c": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "reason": "neutral prior — 1 of 5 reviewed companies needed before this source is adjusted (1 kept, Omar +1)",
+     "reviewed": 1,
+     "source_id": "src-c",
+     "stats": {
+      "kept": 1,
+      "omar_negative": 0,
+      "omar_positive": 1,
+      "rejected": 0,
+      "research": 0,
+      "reviewed": 1,
+      "score": 4,
+      "watch": 0
+     }
+    }
+   }
+  },
+  {
+   "decision_keys": [
+    "imp-1",
+    "imp-3",
+    "imp-4",
+    "imp-5",
+    "new-5",
+    "new-6"
+   ],
+   "decisions": {
+    "imp-1": {
+     "by": "Mohamed",
+     "decision": "kept",
+     "name": "Imported One",
+     "source_ids": [
+      "src-a"
+     ]
+    },
+    "imp-3": {
+     "by": "Mohamed",
+     "decision": "research",
+     "name": "Imported Three",
+     "source_ids": [
+      "src-a"
+     ]
+    },
+    "imp-4": {
+     "by": "Mohamed",
+     "decision": "watch",
+     "name": "Imported Four",
+     "source_ids": [
+      "src-a",
+      "src-b"
+     ]
+    },
+    "imp-5": {
+     "by": "Mohamed",
+     "decision": "kept",
+     "name": "Acme GmbH",
+     "source_ids": [
+      "src-c"
+     ]
+    },
+    "new-5": {
+     "by": "Mohamed",
+     "decision": "kept",
+     "name": "Fifth Co",
+     "source_ids": [
+      "src-a"
+     ]
+    },
+    "new-6": {
+     "by": "Mohamed",
+     "decision": "research",
+     "name": "Sixth Co",
+     "source_ids": [
+      "src-a",
+      "src-b"
+     ]
+    }
+   },
+   "entry": null,
+   "probes": {
+    "b-1": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "neutral prior — 2 of 5 reviewed companies needed before this source is adjusted (1 research, 1 watch, Omar −1)",
+     "sources": [
+      {
+       "active": false,
+       "adjustment": 0,
+       "reviewed": 2,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "b-2": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "neutral prior — 2 of 5 reviewed companies needed before this source is adjusted (1 research, 1 watch, Omar −1)",
+     "sources": [
+      {
+       "active": false,
+       "adjustment": 0,
+       "reviewed": 2,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "b-3": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "neutral prior — 2 of 5 reviewed companies needed before this source is adjusted (1 research, 1 watch, Omar −1)",
+     "sources": [
+      {
+       "active": false,
+       "adjustment": 0,
+       "reviewed": 2,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "b-4": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "neutral prior — 2 of 5 reviewed companies needed before this source is adjusted (1 research, 1 watch, Omar −1)",
+     "sources": [
+      {
+       "active": false,
+       "adjustment": 0,
+       "reviewed": 2,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "imp-1": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "6 reviewed companies (2 kept, 2 research, 1 watch, Omar +1) → net +8 over 6 → +2 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 6,
+       "source_id": "src-a"
+      }
+     ]
+    },
+    "imp-2": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "6 reviewed companies (2 kept, 2 research, 1 watch, Omar +1) → net +8 over 6 → +2 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 6,
+       "source_id": "src-a"
+      }
+     ]
+    },
+    "imp-3": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "6 reviewed companies (2 kept, 2 research, 1 watch, Omar +1) → net +8 over 6 → +2 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 6,
+       "source_id": "src-a"
+      }
+     ]
+    },
+    "imp-4": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "src-a +2 (6 reviewed); src-b +0 (neutral prior, 2/5 reviewed) → sum +2 capped to ±3",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 6,
+       "source_id": "src-a"
+      },
+      {
+       "active": false,
+       "adjustment": 0,
+       "reviewed": 2,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "new-5": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "6 reviewed companies (2 kept, 2 research, 1 watch, Omar +1) → net +8 over 6 → +2 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 6,
+       "source_id": "src-a"
+      }
+     ]
+    },
+    "new-6": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "src-a +2 (6 reviewed); src-b +0 (neutral prior, 2/5 reviewed) → sum +2 capped to ±3",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 6,
+       "source_id": "src-a"
+      },
+      {
+       "active": false,
+       "adjustment": 0,
+       "reviewed": 2,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "new-7": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "no source id on this candidate — neutral",
+     "sources": []
+    }
+   },
+   "table": {
+    "src-a": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "reason": "6 reviewed companies (2 kept, 2 research, 1 watch, Omar +1) → net +8 over 6 → +2 (cap ±3, ordering only)",
+     "reviewed": 6,
+     "source_id": "src-a",
+     "stats": {
+      "kept": 2,
+      "omar_negative": 0,
+      "omar_positive": 1,
+      "rejected": 0,
+      "research": 2,
+      "reviewed": 6,
+      "score": 8,
+      "watch": 1
+     }
+    },
+    "src-b": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "reason": "neutral prior — 2 of 5 reviewed companies needed before this source is adjusted (1 research, 1 watch, Omar −1)",
+     "reviewed": 2,
+     "source_id": "src-b",
+     "stats": {
+      "kept": 0,
+      "omar_negative": 1,
+      "omar_positive": 0,
+      "rejected": 0,
+      "research": 1,
+      "reviewed": 2,
+      "score": -1,
+      "watch": 1
+     }
+    },
+    "src-c": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "reason": "neutral prior — 1 of 5 reviewed companies needed before this source is adjusted (1 kept, Omar +1)",
+     "reviewed": 1,
+     "source_id": "src-c",
+     "stats": {
+      "kept": 1,
+      "omar_negative": 0,
+      "omar_positive": 1,
+      "rejected": 0,
+      "research": 0,
+      "reviewed": 1,
+      "score": 4,
+      "watch": 0
+     }
+    }
+   }
+  },
+  {
+   "decision_keys": [
+    "imp-1",
+    "imp-3",
+    "imp-4",
+    "imp-5",
+    "new-5",
+    "new-6"
+   ],
+   "decisions": {
+    "imp-1": {
+     "by": "Mohamed",
+     "decision": "kept",
+     "name": "Imported One",
+     "source_ids": [
+      "src-a"
+     ]
+    },
+    "imp-3": {
+     "by": "Mohamed",
+     "decision": "research",
+     "name": "Imported Three",
+     "source_ids": [
+      "src-a"
+     ]
+    },
+    "imp-4": {
+     "by": "Mohamed",
+     "decision": "watch",
+     "name": "Imported Four",
+     "source_ids": [
+      "src-a",
+      "src-b"
+     ]
+    },
+    "imp-5": {
+     "by": "Mohamed",
+     "decision": "kept",
+     "name": "Acme GmbH",
+     "source_ids": [
+      "src-c"
+     ]
+    },
+    "new-5": {
+     "by": "Mohamed",
+     "decision": "kept",
+     "name": "Fifth Co",
+     "source_ids": [
+      "src-a"
+     ]
+    },
+    "new-6": {
+     "by": "Mohamed",
+     "decision": "research",
+     "name": "Sixth Co",
+     "source_ids": [
+      "src-a",
+      "src-b"
+     ]
+    }
+   },
+   "entry": null,
+   "probes": {
+    "b-1": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "neutral prior — 2 of 5 reviewed companies needed before this source is adjusted (1 research, 1 watch, Omar −1)",
+     "sources": [
+      {
+       "active": false,
+       "adjustment": 0,
+       "reviewed": 2,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "b-2": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "neutral prior — 2 of 5 reviewed companies needed before this source is adjusted (1 research, 1 watch, Omar −1)",
+     "sources": [
+      {
+       "active": false,
+       "adjustment": 0,
+       "reviewed": 2,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "b-3": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "neutral prior — 2 of 5 reviewed companies needed before this source is adjusted (1 research, 1 watch, Omar −1)",
+     "sources": [
+      {
+       "active": false,
+       "adjustment": 0,
+       "reviewed": 2,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "b-4": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "neutral prior — 2 of 5 reviewed companies needed before this source is adjusted (1 research, 1 watch, Omar −1)",
+     "sources": [
+      {
+       "active": false,
+       "adjustment": 0,
+       "reviewed": 2,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "imp-1": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "6 reviewed companies (2 kept, 2 research, 1 watch, Omar +1) → net +8 over 6 → +2 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 6,
+       "source_id": "src-a"
+      }
+     ]
+    },
+    "imp-2": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "6 reviewed companies (2 kept, 2 research, 1 watch, Omar +1) → net +8 over 6 → +2 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 6,
+       "source_id": "src-a"
+      }
+     ]
+    },
+    "imp-3": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "6 reviewed companies (2 kept, 2 research, 1 watch, Omar +1) → net +8 over 6 → +2 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 6,
+       "source_id": "src-a"
+      }
+     ]
+    },
+    "imp-4": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "src-a +2 (6 reviewed); src-b +0 (neutral prior, 2/5 reviewed) → sum +2 capped to ±3",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 6,
+       "source_id": "src-a"
+      },
+      {
+       "active": false,
+       "adjustment": 0,
+       "reviewed": 2,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "new-5": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "6 reviewed companies (2 kept, 2 research, 1 watch, Omar +1) → net +8 over 6 → +2 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 6,
+       "source_id": "src-a"
+      }
+     ]
+    },
+    "new-6": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "src-a +2 (6 reviewed); src-b +0 (neutral prior, 2/5 reviewed) → sum +2 capped to ±3",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 6,
+       "source_id": "src-a"
+      },
+      {
+       "active": false,
+       "adjustment": 0,
+       "reviewed": 2,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "new-7": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "no source id on this candidate — neutral",
+     "sources": []
+    }
+   },
+   "table": {
+    "src-a": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "reason": "6 reviewed companies (2 kept, 2 research, 1 watch, Omar +1) → net +8 over 6 → +2 (cap ±3, ordering only)",
+     "reviewed": 6,
+     "source_id": "src-a",
+     "stats": {
+      "kept": 2,
+      "omar_negative": 0,
+      "omar_positive": 1,
+      "rejected": 0,
+      "research": 2,
+      "reviewed": 6,
+      "score": 8,
+      "watch": 1
+     }
+    },
+    "src-b": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "reason": "neutral prior — 2 of 5 reviewed companies needed before this source is adjusted (1 research, 1 watch, Omar −1)",
+     "reviewed": 2,
+     "source_id": "src-b",
+     "stats": {
+      "kept": 0,
+      "omar_negative": 1,
+      "omar_positive": 0,
+      "rejected": 0,
+      "research": 1,
+      "reviewed": 2,
+      "score": -1,
+      "watch": 1
+     }
+    },
+    "src-c": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "reason": "neutral prior — 1 of 5 reviewed companies needed before this source is adjusted (1 kept, Omar +1)",
+     "reviewed": 1,
+     "source_id": "src-c",
+     "stats": {
+      "kept": 1,
+      "omar_negative": 0,
+      "omar_positive": 1,
+      "rejected": 0,
+      "research": 0,
+      "reviewed": 1,
+      "score": 4,
+      "watch": 0
+     }
+    }
+   }
+  },
+  {
+   "decision_keys": [
+    "imp-1",
+    "imp-3",
+    "imp-4",
+    "imp-5",
+    "new-5"
+   ],
+   "decisions": {
+    "imp-1": {
+     "by": "Mohamed",
+     "decision": "kept",
+     "name": "Imported One",
+     "source_ids": [
+      "src-a"
+     ]
+    },
+    "imp-3": {
+     "by": "Mohamed",
+     "decision": "research",
+     "name": "Imported Three",
+     "source_ids": [
+      "src-a"
+     ]
+    },
+    "imp-4": {
+     "by": "Mohamed",
+     "decision": "watch",
+     "name": "Imported Four",
+     "source_ids": [
+      "src-a",
+      "src-b"
+     ]
+    },
+    "imp-5": {
+     "by": "Mohamed",
+     "decision": "kept",
+     "name": "Acme GmbH",
+     "source_ids": [
+      "src-c"
+     ]
+    },
+    "new-5": {
+     "by": "Mohamed",
+     "decision": "kept",
+     "name": "Fifth Co",
+     "source_ids": [
+      "src-a"
+     ]
+    }
+   },
+   "entry": null,
+   "probes": {
+    "b-1": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "neutral prior — 1 of 5 reviewed companies needed before this source is adjusted (1 watch, Omar −1)",
+     "sources": [
+      {
+       "active": false,
+       "adjustment": 0,
+       "reviewed": 1,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "b-2": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "neutral prior — 1 of 5 reviewed companies needed before this source is adjusted (1 watch, Omar −1)",
+     "sources": [
+      {
+       "active": false,
+       "adjustment": 0,
+       "reviewed": 1,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "b-3": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "neutral prior — 1 of 5 reviewed companies needed before this source is adjusted (1 watch, Omar −1)",
+     "sources": [
+      {
+       "active": false,
+       "adjustment": 0,
+       "reviewed": 1,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "b-4": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "neutral prior — 1 of 5 reviewed companies needed before this source is adjusted (1 watch, Omar −1)",
+     "sources": [
+      {
+       "active": false,
+       "adjustment": 0,
+       "reviewed": 1,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "imp-1": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "5 reviewed companies (2 kept, 1 research, 1 watch, Omar +1) → net +7 over 5 → +2 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 5,
+       "source_id": "src-a"
+      }
+     ]
+    },
+    "imp-2": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "5 reviewed companies (2 kept, 1 research, 1 watch, Omar +1) → net +7 over 5 → +2 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 5,
+       "source_id": "src-a"
+      }
+     ]
+    },
+    "imp-3": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "5 reviewed companies (2 kept, 1 research, 1 watch, Omar +1) → net +7 over 5 → +2 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 5,
+       "source_id": "src-a"
+      }
+     ]
+    },
+    "imp-4": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "src-a +2 (5 reviewed); src-b +0 (neutral prior, 1/5 reviewed) → sum +2 capped to ±3",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 5,
+       "source_id": "src-a"
+      },
+      {
+       "active": false,
+       "adjustment": 0,
+       "reviewed": 1,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "new-5": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "5 reviewed companies (2 kept, 1 research, 1 watch, Omar +1) → net +7 over 5 → +2 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 5,
+       "source_id": "src-a"
+      }
+     ]
+    },
+    "new-6": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "src-a +2 (5 reviewed); src-b +0 (neutral prior, 1/5 reviewed) → sum +2 capped to ±3",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 5,
+       "source_id": "src-a"
+      },
+      {
+       "active": false,
+       "adjustment": 0,
+       "reviewed": 1,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "new-7": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "no source id on this candidate — neutral",
+     "sources": []
+    }
+   },
+   "table": {
+    "src-a": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "reason": "5 reviewed companies (2 kept, 1 research, 1 watch, Omar +1) → net +7 over 5 → +2 (cap ±3, ordering only)",
+     "reviewed": 5,
+     "source_id": "src-a",
+     "stats": {
+      "kept": 2,
+      "omar_negative": 0,
+      "omar_positive": 1,
+      "rejected": 0,
+      "research": 1,
+      "reviewed": 5,
+      "score": 7,
+      "watch": 1
+     }
+    },
+    "src-b": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "reason": "neutral prior — 1 of 5 reviewed companies needed before this source is adjusted (1 watch, Omar −1)",
+     "reviewed": 1,
+     "source_id": "src-b",
+     "stats": {
+      "kept": 0,
+      "omar_negative": 1,
+      "omar_positive": 0,
+      "rejected": 0,
+      "research": 0,
+      "reviewed": 1,
+      "score": -2,
+      "watch": 1
+     }
+    },
+    "src-c": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "reason": "neutral prior — 1 of 5 reviewed companies needed before this source is adjusted (1 kept, Omar +1)",
+     "reviewed": 1,
+     "source_id": "src-c",
+     "stats": {
+      "kept": 1,
+      "omar_negative": 0,
+      "omar_positive": 1,
+      "rejected": 0,
+      "research": 0,
+      "reviewed": 1,
+      "score": 4,
+      "watch": 0
+     }
+    }
+   }
+  },
+  {
+   "decision_keys": [
+    "imp-1",
+    "imp-3",
+    "imp-4",
+    "imp-5",
+    "new-5",
+    "b-1"
+   ],
+   "decisions": {
+    "b-1": {
+     "by": "Mohamed",
+     "decision": "kept",
+     "name": "B One",
+     "source_ids": [
+      "src-b"
+     ]
+    },
+    "imp-1": {
+     "by": "Mohamed",
+     "decision": "kept",
+     "name": "Imported One",
+     "source_ids": [
+      "src-a"
+     ]
+    },
+    "imp-3": {
+     "by": "Mohamed",
+     "decision": "research",
+     "name": "Imported Three",
+     "source_ids": [
+      "src-a"
+     ]
+    },
+    "imp-4": {
+     "by": "Mohamed",
+     "decision": "watch",
+     "name": "Imported Four",
+     "source_ids": [
+      "src-a",
+      "src-b"
+     ]
+    },
+    "imp-5": {
+     "by": "Mohamed",
+     "decision": "kept",
+     "name": "Acme GmbH",
+     "source_ids": [
+      "src-c"
+     ]
+    },
+    "new-5": {
+     "by": "Mohamed",
+     "decision": "kept",
+     "name": "Fifth Co",
+     "source_ids": [
+      "src-a"
+     ]
+    }
+   },
+   "entry": {
+    "by": "Mohamed",
+    "decision": "kept",
+    "name": "B One",
+    "source_ids": [
+     "src-b"
+    ]
+   },
+   "probes": {
+    "b-1": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "neutral prior — 2 of 5 reviewed companies needed before this source is adjusted (1 kept, 1 watch, Omar −1)",
+     "sources": [
+      {
+       "active": false,
+       "adjustment": 0,
+       "reviewed": 2,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "b-2": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "neutral prior — 2 of 5 reviewed companies needed before this source is adjusted (1 kept, 1 watch, Omar −1)",
+     "sources": [
+      {
+       "active": false,
+       "adjustment": 0,
+       "reviewed": 2,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "b-3": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "neutral prior — 2 of 5 reviewed companies needed before this source is adjusted (1 kept, 1 watch, Omar −1)",
+     "sources": [
+      {
+       "active": false,
+       "adjustment": 0,
+       "reviewed": 2,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "b-4": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "neutral prior — 2 of 5 reviewed companies needed before this source is adjusted (1 kept, 1 watch, Omar −1)",
+     "sources": [
+      {
+       "active": false,
+       "adjustment": 0,
+       "reviewed": 2,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "imp-1": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "5 reviewed companies (2 kept, 1 research, 1 watch, Omar +1) → net +7 over 5 → +2 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 5,
+       "source_id": "src-a"
+      }
+     ]
+    },
+    "imp-2": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "5 reviewed companies (2 kept, 1 research, 1 watch, Omar +1) → net +7 over 5 → +2 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 5,
+       "source_id": "src-a"
+      }
+     ]
+    },
+    "imp-3": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "5 reviewed companies (2 kept, 1 research, 1 watch, Omar +1) → net +7 over 5 → +2 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 5,
+       "source_id": "src-a"
+      }
+     ]
+    },
+    "imp-4": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "src-a +2 (5 reviewed); src-b +0 (neutral prior, 2/5 reviewed) → sum +2 capped to ±3",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 5,
+       "source_id": "src-a"
+      },
+      {
+       "active": false,
+       "adjustment": 0,
+       "reviewed": 2,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "new-5": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "5 reviewed companies (2 kept, 1 research, 1 watch, Omar +1) → net +7 over 5 → +2 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 5,
+       "source_id": "src-a"
+      }
+     ]
+    },
+    "new-6": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "src-a +2 (5 reviewed); src-b +0 (neutral prior, 2/5 reviewed) → sum +2 capped to ±3",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 5,
+       "source_id": "src-a"
+      },
+      {
+       "active": false,
+       "adjustment": 0,
+       "reviewed": 2,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "new-7": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "no source id on this candidate — neutral",
+     "sources": []
+    }
+   },
+   "table": {
+    "src-a": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "reason": "5 reviewed companies (2 kept, 1 research, 1 watch, Omar +1) → net +7 over 5 → +2 (cap ±3, ordering only)",
+     "reviewed": 5,
+     "source_id": "src-a",
+     "stats": {
+      "kept": 2,
+      "omar_negative": 0,
+      "omar_positive": 1,
+      "rejected": 0,
+      "research": 1,
+      "reviewed": 5,
+      "score": 7,
+      "watch": 1
+     }
+    },
+    "src-b": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "reason": "neutral prior — 2 of 5 reviewed companies needed before this source is adjusted (1 kept, 1 watch, Omar −1)",
+     "reviewed": 2,
+     "source_id": "src-b",
+     "stats": {
+      "kept": 1,
+      "omar_negative": 1,
+      "omar_positive": 0,
+      "rejected": 0,
+      "research": 0,
+      "reviewed": 2,
+      "score": 0,
+      "watch": 1
+     }
+    },
+    "src-c": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "reason": "neutral prior — 1 of 5 reviewed companies needed before this source is adjusted (1 kept, Omar +1)",
+     "reviewed": 1,
+     "source_id": "src-c",
+     "stats": {
+      "kept": 1,
+      "omar_negative": 0,
+      "omar_positive": 1,
+      "rejected": 0,
+      "research": 0,
+      "reviewed": 1,
+      "score": 4,
+      "watch": 0
+     }
+    }
+   }
+  },
+  {
+   "decision_keys": [
+    "imp-1",
+    "imp-3",
+    "imp-4",
+    "imp-5",
+    "new-5",
+    "b-1",
+    "b-2"
+   ],
+   "decisions": {
+    "b-1": {
+     "by": "Mohamed",
+     "decision": "kept",
+     "name": "B One",
+     "source_ids": [
+      "src-b"
+     ]
+    },
+    "b-2": {
+     "by": "Mohamed",
+     "decision": "kept",
+     "name": "B Two",
+     "source_ids": [
+      "src-b"
+     ]
+    },
+    "imp-1": {
+     "by": "Mohamed",
+     "decision": "kept",
+     "name": "Imported One",
+     "source_ids": [
+      "src-a"
+     ]
+    },
+    "imp-3": {
+     "by": "Mohamed",
+     "decision": "research",
+     "name": "Imported Three",
+     "source_ids": [
+      "src-a"
+     ]
+    },
+    "imp-4": {
+     "by": "Mohamed",
+     "decision": "watch",
+     "name": "Imported Four",
+     "source_ids": [
+      "src-a",
+      "src-b"
+     ]
+    },
+    "imp-5": {
+     "by": "Mohamed",
+     "decision": "kept",
+     "name": "Acme GmbH",
+     "source_ids": [
+      "src-c"
+     ]
+    },
+    "new-5": {
+     "by": "Mohamed",
+     "decision": "kept",
+     "name": "Fifth Co",
+     "source_ids": [
+      "src-a"
+     ]
+    }
+   },
+   "entry": {
+    "by": "Mohamed",
+    "decision": "kept",
+    "name": "B Two",
+    "source_ids": [
+     "src-b"
+    ]
+   },
+   "probes": {
+    "b-1": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "neutral prior — 3 of 5 reviewed companies needed before this source is adjusted (2 kept, 1 watch, Omar −1)",
+     "sources": [
+      {
+       "active": false,
+       "adjustment": 0,
+       "reviewed": 3,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "b-2": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "neutral prior — 3 of 5 reviewed companies needed before this source is adjusted (2 kept, 1 watch, Omar −1)",
+     "sources": [
+      {
+       "active": false,
+       "adjustment": 0,
+       "reviewed": 3,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "b-3": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "neutral prior — 3 of 5 reviewed companies needed before this source is adjusted (2 kept, 1 watch, Omar −1)",
+     "sources": [
+      {
+       "active": false,
+       "adjustment": 0,
+       "reviewed": 3,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "b-4": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "neutral prior — 3 of 5 reviewed companies needed before this source is adjusted (2 kept, 1 watch, Omar −1)",
+     "sources": [
+      {
+       "active": false,
+       "adjustment": 0,
+       "reviewed": 3,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "imp-1": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "5 reviewed companies (2 kept, 1 research, 1 watch, Omar +1) → net +7 over 5 → +2 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 5,
+       "source_id": "src-a"
+      }
+     ]
+    },
+    "imp-2": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "5 reviewed companies (2 kept, 1 research, 1 watch, Omar +1) → net +7 over 5 → +2 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 5,
+       "source_id": "src-a"
+      }
+     ]
+    },
+    "imp-3": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "5 reviewed companies (2 kept, 1 research, 1 watch, Omar +1) → net +7 over 5 → +2 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 5,
+       "source_id": "src-a"
+      }
+     ]
+    },
+    "imp-4": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "src-a +2 (5 reviewed); src-b +0 (neutral prior, 3/5 reviewed) → sum +2 capped to ±3",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 5,
+       "source_id": "src-a"
+      },
+      {
+       "active": false,
+       "adjustment": 0,
+       "reviewed": 3,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "new-5": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "5 reviewed companies (2 kept, 1 research, 1 watch, Omar +1) → net +7 over 5 → +2 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 5,
+       "source_id": "src-a"
+      }
+     ]
+    },
+    "new-6": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "src-a +2 (5 reviewed); src-b +0 (neutral prior, 3/5 reviewed) → sum +2 capped to ±3",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 5,
+       "source_id": "src-a"
+      },
+      {
+       "active": false,
+       "adjustment": 0,
+       "reviewed": 3,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "new-7": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "no source id on this candidate — neutral",
+     "sources": []
+    }
+   },
+   "table": {
+    "src-a": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "reason": "5 reviewed companies (2 kept, 1 research, 1 watch, Omar +1) → net +7 over 5 → +2 (cap ±3, ordering only)",
+     "reviewed": 5,
+     "source_id": "src-a",
+     "stats": {
+      "kept": 2,
+      "omar_negative": 0,
+      "omar_positive": 1,
+      "rejected": 0,
+      "research": 1,
+      "reviewed": 5,
+      "score": 7,
+      "watch": 1
+     }
+    },
+    "src-b": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "reason": "neutral prior — 3 of 5 reviewed companies needed before this source is adjusted (2 kept, 1 watch, Omar −1)",
+     "reviewed": 3,
+     "source_id": "src-b",
+     "stats": {
+      "kept": 2,
+      "omar_negative": 1,
+      "omar_positive": 0,
+      "rejected": 0,
+      "research": 0,
+      "reviewed": 3,
+      "score": 2,
+      "watch": 1
+     }
+    },
+    "src-c": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "reason": "neutral prior — 1 of 5 reviewed companies needed before this source is adjusted (1 kept, Omar +1)",
+     "reviewed": 1,
+     "source_id": "src-c",
+     "stats": {
+      "kept": 1,
+      "omar_negative": 0,
+      "omar_positive": 1,
+      "rejected": 0,
+      "research": 0,
+      "reviewed": 1,
+      "score": 4,
+      "watch": 0
+     }
+    }
+   }
+  },
+  {
+   "decision_keys": [
+    "imp-1",
+    "imp-3",
+    "imp-4",
+    "imp-5",
+    "new-5",
+    "b-1",
+    "b-2",
+    "b-3"
+   ],
+   "decisions": {
+    "b-1": {
+     "by": "Mohamed",
+     "decision": "kept",
+     "name": "B One",
+     "source_ids": [
+      "src-b"
+     ]
+    },
+    "b-2": {
+     "by": "Mohamed",
+     "decision": "kept",
+     "name": "B Two",
+     "source_ids": [
+      "src-b"
+     ]
+    },
+    "b-3": {
+     "by": "Mohamed",
+     "decision": "kept",
+     "name": "B Three",
+     "source_ids": [
+      "src-b"
+     ]
+    },
+    "imp-1": {
+     "by": "Mohamed",
+     "decision": "kept",
+     "name": "Imported One",
+     "source_ids": [
+      "src-a"
+     ]
+    },
+    "imp-3": {
+     "by": "Mohamed",
+     "decision": "research",
+     "name": "Imported Three",
+     "source_ids": [
+      "src-a"
+     ]
+    },
+    "imp-4": {
+     "by": "Mohamed",
+     "decision": "watch",
+     "name": "Imported Four",
+     "source_ids": [
+      "src-a",
+      "src-b"
+     ]
+    },
+    "imp-5": {
+     "by": "Mohamed",
+     "decision": "kept",
+     "name": "Acme GmbH",
+     "source_ids": [
+      "src-c"
+     ]
+    },
+    "new-5": {
+     "by": "Mohamed",
+     "decision": "kept",
+     "name": "Fifth Co",
+     "source_ids": [
+      "src-a"
+     ]
+    }
+   },
+   "entry": {
+    "by": "Mohamed",
+    "decision": "kept",
+    "name": "B Three",
+    "source_ids": [
+     "src-b"
+    ]
+   },
+   "probes": {
+    "b-1": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "neutral prior — 4 of 5 reviewed companies needed before this source is adjusted (3 kept, 1 watch, Omar −1)",
+     "sources": [
+      {
+       "active": false,
+       "adjustment": 0,
+       "reviewed": 4,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "b-2": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "neutral prior — 4 of 5 reviewed companies needed before this source is adjusted (3 kept, 1 watch, Omar −1)",
+     "sources": [
+      {
+       "active": false,
+       "adjustment": 0,
+       "reviewed": 4,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "b-3": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "neutral prior — 4 of 5 reviewed companies needed before this source is adjusted (3 kept, 1 watch, Omar −1)",
+     "sources": [
+      {
+       "active": false,
+       "adjustment": 0,
+       "reviewed": 4,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "b-4": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "neutral prior — 4 of 5 reviewed companies needed before this source is adjusted (3 kept, 1 watch, Omar −1)",
+     "sources": [
+      {
+       "active": false,
+       "adjustment": 0,
+       "reviewed": 4,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "imp-1": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "5 reviewed companies (2 kept, 1 research, 1 watch, Omar +1) → net +7 over 5 → +2 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 5,
+       "source_id": "src-a"
+      }
+     ]
+    },
+    "imp-2": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "5 reviewed companies (2 kept, 1 research, 1 watch, Omar +1) → net +7 over 5 → +2 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 5,
+       "source_id": "src-a"
+      }
+     ]
+    },
+    "imp-3": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "5 reviewed companies (2 kept, 1 research, 1 watch, Omar +1) → net +7 over 5 → +2 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 5,
+       "source_id": "src-a"
+      }
+     ]
+    },
+    "imp-4": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "src-a +2 (5 reviewed); src-b +0 (neutral prior, 4/5 reviewed) → sum +2 capped to ±3",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 5,
+       "source_id": "src-a"
+      },
+      {
+       "active": false,
+       "adjustment": 0,
+       "reviewed": 4,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "new-5": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "5 reviewed companies (2 kept, 1 research, 1 watch, Omar +1) → net +7 over 5 → +2 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 5,
+       "source_id": "src-a"
+      }
+     ]
+    },
+    "new-6": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "src-a +2 (5 reviewed); src-b +0 (neutral prior, 4/5 reviewed) → sum +2 capped to ±3",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 5,
+       "source_id": "src-a"
+      },
+      {
+       "active": false,
+       "adjustment": 0,
+       "reviewed": 4,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "new-7": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "no source id on this candidate — neutral",
+     "sources": []
+    }
+   },
+   "table": {
+    "src-a": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "reason": "5 reviewed companies (2 kept, 1 research, 1 watch, Omar +1) → net +7 over 5 → +2 (cap ±3, ordering only)",
+     "reviewed": 5,
+     "source_id": "src-a",
+     "stats": {
+      "kept": 2,
+      "omar_negative": 0,
+      "omar_positive": 1,
+      "rejected": 0,
+      "research": 1,
+      "reviewed": 5,
+      "score": 7,
+      "watch": 1
+     }
+    },
+    "src-b": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "reason": "neutral prior — 4 of 5 reviewed companies needed before this source is adjusted (3 kept, 1 watch, Omar −1)",
+     "reviewed": 4,
+     "source_id": "src-b",
+     "stats": {
+      "kept": 3,
+      "omar_negative": 1,
+      "omar_positive": 0,
+      "rejected": 0,
+      "research": 0,
+      "reviewed": 4,
+      "score": 4,
+      "watch": 1
+     }
+    },
+    "src-c": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "reason": "neutral prior — 1 of 5 reviewed companies needed before this source is adjusted (1 kept, Omar +1)",
+     "reviewed": 1,
+     "source_id": "src-c",
+     "stats": {
+      "kept": 1,
+      "omar_negative": 0,
+      "omar_positive": 1,
+      "rejected": 0,
+      "research": 0,
+      "reviewed": 1,
+      "score": 4,
+      "watch": 0
+     }
+    }
+   }
+  },
+  {
+   "decision_keys": [
+    "imp-1",
+    "imp-3",
+    "imp-4",
+    "imp-5",
+    "new-5",
+    "b-1",
+    "b-2",
+    "b-3",
+    "b-4"
+   ],
+   "decisions": {
+    "b-1": {
+     "by": "Mohamed",
+     "decision": "kept",
+     "name": "B One",
+     "source_ids": [
+      "src-b"
+     ]
+    },
+    "b-2": {
+     "by": "Mohamed",
+     "decision": "kept",
+     "name": "B Two",
+     "source_ids": [
+      "src-b"
+     ]
+    },
+    "b-3": {
+     "by": "Mohamed",
+     "decision": "kept",
+     "name": "B Three",
+     "source_ids": [
+      "src-b"
+     ]
+    },
+    "b-4": {
+     "by": "Mohamed",
+     "decision": "kept",
+     "name": "B Four",
+     "source_ids": [
+      "src-b"
+     ]
+    },
+    "imp-1": {
+     "by": "Mohamed",
+     "decision": "kept",
+     "name": "Imported One",
+     "source_ids": [
+      "src-a"
+     ]
+    },
+    "imp-3": {
+     "by": "Mohamed",
+     "decision": "research",
+     "name": "Imported Three",
+     "source_ids": [
+      "src-a"
+     ]
+    },
+    "imp-4": {
+     "by": "Mohamed",
+     "decision": "watch",
+     "name": "Imported Four",
+     "source_ids": [
+      "src-a",
+      "src-b"
+     ]
+    },
+    "imp-5": {
+     "by": "Mohamed",
+     "decision": "kept",
+     "name": "Acme GmbH",
+     "source_ids": [
+      "src-c"
+     ]
+    },
+    "new-5": {
+     "by": "Mohamed",
+     "decision": "kept",
+     "name": "Fifth Co",
+     "source_ids": [
+      "src-a"
+     ]
+    }
+   },
+   "entry": {
+    "by": "Mohamed",
+    "decision": "kept",
+    "name": "B Four",
+    "source_ids": [
+     "src-b"
+    ]
+   },
+   "probes": {
+    "b-1": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "5 reviewed companies (4 kept, 1 watch, Omar −1) → net +6 over 5 → +2 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 5,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "b-2": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "5 reviewed companies (4 kept, 1 watch, Omar −1) → net +6 over 5 → +2 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 5,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "b-3": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "5 reviewed companies (4 kept, 1 watch, Omar −1) → net +6 over 5 → +2 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 5,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "b-4": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "5 reviewed companies (4 kept, 1 watch, Omar −1) → net +6 over 5 → +2 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 5,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "imp-1": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "5 reviewed companies (2 kept, 1 research, 1 watch, Omar +1) → net +7 over 5 → +2 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 5,
+       "source_id": "src-a"
+      }
+     ]
+    },
+    "imp-2": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "5 reviewed companies (2 kept, 1 research, 1 watch, Omar +1) → net +7 over 5 → +2 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 5,
+       "source_id": "src-a"
+      }
+     ]
+    },
+    "imp-3": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "5 reviewed companies (2 kept, 1 research, 1 watch, Omar +1) → net +7 over 5 → +2 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 5,
+       "source_id": "src-a"
+      }
+     ]
+    },
+    "imp-4": {
+     "active": true,
+     "adjustment": 3,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "src-a +2 (5 reviewed); src-b +2 (5 reviewed) → sum +4 capped to ±3",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 5,
+       "source_id": "src-a"
+      },
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 5,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "new-5": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "5 reviewed companies (2 kept, 1 research, 1 watch, Omar +1) → net +7 over 5 → +2 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 5,
+       "source_id": "src-a"
+      }
+     ]
+    },
+    "new-6": {
+     "active": true,
+     "adjustment": 3,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "src-a +2 (5 reviewed); src-b +2 (5 reviewed) → sum +4 capped to ±3",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 5,
+       "source_id": "src-a"
+      },
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 5,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "new-7": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "no source id on this candidate — neutral",
+     "sources": []
+    }
+   },
+   "table": {
+    "src-a": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "reason": "5 reviewed companies (2 kept, 1 research, 1 watch, Omar +1) → net +7 over 5 → +2 (cap ±3, ordering only)",
+     "reviewed": 5,
+     "source_id": "src-a",
+     "stats": {
+      "kept": 2,
+      "omar_negative": 0,
+      "omar_positive": 1,
+      "rejected": 0,
+      "research": 1,
+      "reviewed": 5,
+      "score": 7,
+      "watch": 1
+     }
+    },
+    "src-b": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "reason": "5 reviewed companies (4 kept, 1 watch, Omar −1) → net +6 over 5 → +2 (cap ±3, ordering only)",
+     "reviewed": 5,
+     "source_id": "src-b",
+     "stats": {
+      "kept": 4,
+      "omar_negative": 1,
+      "omar_positive": 0,
+      "rejected": 0,
+      "research": 0,
+      "reviewed": 5,
+      "score": 6,
+      "watch": 1
+     }
+    },
+    "src-c": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "reason": "neutral prior — 1 of 5 reviewed companies needed before this source is adjusted (1 kept, Omar +1)",
+     "reviewed": 1,
+     "source_id": "src-c",
+     "stats": {
+      "kept": 1,
+      "omar_negative": 0,
+      "omar_positive": 1,
+      "rejected": 0,
+      "research": 0,
+      "reviewed": 1,
+      "score": 4,
+      "watch": 0
+     }
+    }
+   }
+  },
+  {
+   "decision_keys": [
+    "imp-1",
+    "imp-3",
+    "imp-4",
+    "imp-5",
+    "new-5",
+    "b-1",
+    "b-2",
+    "b-3",
+    "b-4",
+    "imp-2"
+   ],
+   "decisions": {
+    "b-1": {
+     "by": "Mohamed",
+     "decision": "kept",
+     "name": "B One",
+     "source_ids": [
+      "src-b"
+     ]
+    },
+    "b-2": {
+     "by": "Mohamed",
+     "decision": "kept",
+     "name": "B Two",
+     "source_ids": [
+      "src-b"
+     ]
+    },
+    "b-3": {
+     "by": "Mohamed",
+     "decision": "kept",
+     "name": "B Three",
+     "source_ids": [
+      "src-b"
+     ]
+    },
+    "b-4": {
+     "by": "Mohamed",
+     "decision": "kept",
+     "name": "B Four",
+     "source_ids": [
+      "src-b"
+     ]
+    },
+    "imp-1": {
+     "by": "Mohamed",
+     "decision": "kept",
+     "name": "Imported One",
+     "source_ids": [
+      "src-a"
+     ]
+    },
+    "imp-2": {
+     "by": "Mohamed",
+     "decision": "rejected",
+     "name": "Acme GmbH",
+     "source_ids": [
+      "src-a"
+     ]
+    },
+    "imp-3": {
+     "by": "Mohamed",
+     "decision": "research",
+     "name": "Imported Three",
+     "source_ids": [
+      "src-a"
+     ]
+    },
+    "imp-4": {
+     "by": "Mohamed",
+     "decision": "watch",
+     "name": "Imported Four",
+     "source_ids": [
+      "src-a",
+      "src-b"
+     ]
+    },
+    "imp-5": {
+     "by": "Mohamed",
+     "decision": "kept",
+     "name": "Acme GmbH",
+     "source_ids": [
+      "src-c"
+     ]
+    },
+    "new-5": {
+     "by": "Mohamed",
+     "decision": "kept",
+     "name": "Fifth Co",
+     "source_ids": [
+      "src-a"
+     ]
+    }
+   },
+   "entry": {
+    "by": "Mohamed",
+    "decision": "rejected",
+    "name": "Acme GmbH",
+    "source_ids": [
+     "src-a"
+    ]
+   },
+   "probes": {
+    "b-1": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "5 reviewed companies (4 kept, 1 watch, Omar −1) → net +6 over 5 → +2 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 5,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "b-2": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "5 reviewed companies (4 kept, 1 watch, Omar −1) → net +6 over 5 → +2 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 5,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "b-3": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "5 reviewed companies (4 kept, 1 watch, Omar −1) → net +6 over 5 → +2 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 5,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "b-4": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "5 reviewed companies (4 kept, 1 watch, Omar −1) → net +6 over 5 → +2 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 5,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "imp-1": {
+     "active": true,
+     "adjustment": 1,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "6 reviewed companies (2 kept, 1 research, 1 watch, 1 rejected, Omar +1) → net +5 over 6 → +1 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 1,
+       "reviewed": 6,
+       "source_id": "src-a"
+      }
+     ]
+    },
+    "imp-2": {
+     "active": true,
+     "adjustment": 1,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "6 reviewed companies (2 kept, 1 research, 1 watch, 1 rejected, Omar +1) → net +5 over 6 → +1 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 1,
+       "reviewed": 6,
+       "source_id": "src-a"
+      }
+     ]
+    },
+    "imp-3": {
+     "active": true,
+     "adjustment": 1,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "6 reviewed companies (2 kept, 1 research, 1 watch, 1 rejected, Omar +1) → net +5 over 6 → +1 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 1,
+       "reviewed": 6,
+       "source_id": "src-a"
+      }
+     ]
+    },
+    "imp-4": {
+     "active": true,
+     "adjustment": 3,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "src-a +1 (6 reviewed); src-b +2 (5 reviewed) → sum +3 capped to ±3",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 1,
+       "reviewed": 6,
+       "source_id": "src-a"
+      },
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 5,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "new-5": {
+     "active": true,
+     "adjustment": 1,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "6 reviewed companies (2 kept, 1 research, 1 watch, 1 rejected, Omar +1) → net +5 over 6 → +1 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 1,
+       "reviewed": 6,
+       "source_id": "src-a"
+      }
+     ]
+    },
+    "new-6": {
+     "active": true,
+     "adjustment": 3,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "src-a +1 (6 reviewed); src-b +2 (5 reviewed) → sum +3 capped to ±3",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 1,
+       "reviewed": 6,
+       "source_id": "src-a"
+      },
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 5,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "new-7": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "no source id on this candidate — neutral",
+     "sources": []
+    }
+   },
+   "table": {
+    "src-a": {
+     "active": true,
+     "adjustment": 1,
+     "label": "Feedback-adjusted sourcing priority",
+     "reason": "6 reviewed companies (2 kept, 1 research, 1 watch, 1 rejected, Omar +1) → net +5 over 6 → +1 (cap ±3, ordering only)",
+     "reviewed": 6,
+     "source_id": "src-a",
+     "stats": {
+      "kept": 2,
+      "omar_negative": 0,
+      "omar_positive": 1,
+      "rejected": 1,
+      "research": 1,
+      "reviewed": 6,
+      "score": 5,
+      "watch": 1
+     }
+    },
+    "src-b": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "reason": "5 reviewed companies (4 kept, 1 watch, Omar −1) → net +6 over 5 → +2 (cap ±3, ordering only)",
+     "reviewed": 5,
+     "source_id": "src-b",
+     "stats": {
+      "kept": 4,
+      "omar_negative": 1,
+      "omar_positive": 0,
+      "rejected": 0,
+      "research": 0,
+      "reviewed": 5,
+      "score": 6,
+      "watch": 1
+     }
+    },
+    "src-c": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "reason": "neutral prior — 1 of 5 reviewed companies needed before this source is adjusted (1 kept, Omar +1)",
+     "reviewed": 1,
+     "source_id": "src-c",
+     "stats": {
+      "kept": 1,
+      "omar_negative": 0,
+      "omar_positive": 1,
+      "rejected": 0,
+      "research": 0,
+      "reviewed": 1,
+      "score": 4,
+      "watch": 0
+     }
+    }
+   }
+  },
+  {
+   "decision_keys": [
+    "imp-1",
+    "imp-3",
+    "imp-4",
+    "imp-5",
+    "new-5",
+    "b-1",
+    "b-2",
+    "b-3",
+    "b-4",
+    "imp-2"
+   ],
+   "decisions": {
+    "b-1": {
+     "by": "Mohamed",
+     "decision": "kept",
+     "name": "B One",
+     "source_ids": [
+      "src-b"
+     ]
+    },
+    "b-2": {
+     "by": "Mohamed",
+     "decision": "kept",
+     "name": "B Two",
+     "source_ids": [
+      "src-b"
+     ]
+    },
+    "b-3": {
+     "by": "Mohamed",
+     "decision": "kept",
+     "name": "B Three",
+     "source_ids": [
+      "src-b"
+     ]
+    },
+    "b-4": {
+     "by": "Mohamed",
+     "decision": "kept",
+     "name": "B Four",
+     "source_ids": [
+      "src-b"
+     ]
+    },
+    "imp-1": {
+     "by": "Mohamed",
+     "decision": "kept",
+     "name": "Imported One",
+     "source_ids": [
+      "src-a"
+     ]
+    },
+    "imp-2": {
+     "by": "Mohamed",
+     "decision": "rejected",
+     "name": "Acme GmbH",
+     "source_ids": [
+      "src-a"
+     ]
+    },
+    "imp-3": {
+     "by": "Mohamed",
+     "decision": "research",
+     "name": "Imported Three",
+     "source_ids": [
+      "src-a"
+     ]
+    },
+    "imp-4": {
+     "by": "Mohamed",
+     "decision": "watch",
+     "name": "Imported Four",
+     "source_ids": [
+      "src-a",
+      "src-b"
+     ]
+    },
+    "imp-5": {
+     "by": "Mohamed",
+     "decision": "kept",
+     "name": "Acme GmbH",
+     "source_ids": [
+      "src-c"
+     ]
+    },
+    "new-5": {
+     "by": "Mohamed",
+     "decision": "kept",
+     "name": "Fifth Co",
+     "source_ids": [
+      "src-a"
+     ]
+    }
+   },
+   "entry": {
+    "by": "Mohamed",
+    "decision": "kept",
+    "name": "Imported One",
+    "source_ids": [
+     "src-a"
+    ]
+   },
+   "probes": {
+    "b-1": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "5 reviewed companies (4 kept, 1 watch, Omar −1) → net +6 over 5 → +2 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 5,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "b-2": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "5 reviewed companies (4 kept, 1 watch, Omar −1) → net +6 over 5 → +2 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 5,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "b-3": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "5 reviewed companies (4 kept, 1 watch, Omar −1) → net +6 over 5 → +2 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 5,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "b-4": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "5 reviewed companies (4 kept, 1 watch, Omar −1) → net +6 over 5 → +2 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 5,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "imp-1": {
+     "active": true,
+     "adjustment": 1,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "6 reviewed companies (2 kept, 1 research, 1 watch, 1 rejected, Omar +1) → net +5 over 6 → +1 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 1,
+       "reviewed": 6,
+       "source_id": "src-a"
+      }
+     ]
+    },
+    "imp-2": {
+     "active": true,
+     "adjustment": 1,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "6 reviewed companies (2 kept, 1 research, 1 watch, 1 rejected, Omar +1) → net +5 over 6 → +1 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 1,
+       "reviewed": 6,
+       "source_id": "src-a"
+      }
+     ]
+    },
+    "imp-3": {
+     "active": true,
+     "adjustment": 1,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "6 reviewed companies (2 kept, 1 research, 1 watch, 1 rejected, Omar +1) → net +5 over 6 → +1 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 1,
+       "reviewed": 6,
+       "source_id": "src-a"
+      }
+     ]
+    },
+    "imp-4": {
+     "active": true,
+     "adjustment": 3,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "src-a +1 (6 reviewed); src-b +2 (5 reviewed) → sum +3 capped to ±3",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 1,
+       "reviewed": 6,
+       "source_id": "src-a"
+      },
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 5,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "new-5": {
+     "active": true,
+     "adjustment": 1,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "6 reviewed companies (2 kept, 1 research, 1 watch, 1 rejected, Omar +1) → net +5 over 6 → +1 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 1,
+       "reviewed": 6,
+       "source_id": "src-a"
+      }
+     ]
+    },
+    "new-6": {
+     "active": true,
+     "adjustment": 3,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "src-a +1 (6 reviewed); src-b +2 (5 reviewed) → sum +3 capped to ±3",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 1,
+       "reviewed": 6,
+       "source_id": "src-a"
+      },
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 5,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "new-7": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "no source id on this candidate — neutral",
+     "sources": []
+    }
+   },
+   "table": {
+    "src-a": {
+     "active": true,
+     "adjustment": 1,
+     "label": "Feedback-adjusted sourcing priority",
+     "reason": "6 reviewed companies (2 kept, 1 research, 1 watch, 1 rejected, Omar +1) → net +5 over 6 → +1 (cap ±3, ordering only)",
+     "reviewed": 6,
+     "source_id": "src-a",
+     "stats": {
+      "kept": 2,
+      "omar_negative": 0,
+      "omar_positive": 1,
+      "rejected": 1,
+      "research": 1,
+      "reviewed": 6,
+      "score": 5,
+      "watch": 1
+     }
+    },
+    "src-b": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "reason": "5 reviewed companies (4 kept, 1 watch, Omar −1) → net +6 over 5 → +2 (cap ±3, ordering only)",
+     "reviewed": 5,
+     "source_id": "src-b",
+     "stats": {
+      "kept": 4,
+      "omar_negative": 1,
+      "omar_positive": 0,
+      "rejected": 0,
+      "research": 0,
+      "reviewed": 5,
+      "score": 6,
+      "watch": 1
+     }
+    },
+    "src-c": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "reason": "neutral prior — 1 of 5 reviewed companies needed before this source is adjusted (1 kept, Omar +1)",
+     "reviewed": 1,
+     "source_id": "src-c",
+     "stats": {
+      "kept": 1,
+      "omar_negative": 0,
+      "omar_positive": 1,
+      "rejected": 0,
+      "research": 0,
+      "reviewed": 1,
+      "score": 4,
+      "watch": 0
+     }
+    }
+   }
+  },
+  {
+   "decision_keys": [
+    "imp-1",
+    "imp-3",
+    "imp-4",
+    "imp-5",
+    "new-5",
+    "b-1",
+    "b-2",
+    "b-3",
+    "b-4",
+    "imp-2",
+    "new-6"
+   ],
+   "decisions": {
+    "b-1": {
+     "by": "Mohamed",
+     "decision": "kept",
+     "name": "B One",
+     "source_ids": [
+      "src-b"
+     ]
+    },
+    "b-2": {
+     "by": "Mohamed",
+     "decision": "kept",
+     "name": "B Two",
+     "source_ids": [
+      "src-b"
+     ]
+    },
+    "b-3": {
+     "by": "Mohamed",
+     "decision": "kept",
+     "name": "B Three",
+     "source_ids": [
+      "src-b"
+     ]
+    },
+    "b-4": {
+     "by": "Mohamed",
+     "decision": "kept",
+     "name": "B Four",
+     "source_ids": [
+      "src-b"
+     ]
+    },
+    "imp-1": {
+     "by": "Mohamed",
+     "decision": "kept",
+     "name": "Imported One",
+     "source_ids": [
+      "src-a"
+     ]
+    },
+    "imp-2": {
+     "by": "Mohamed",
+     "decision": "rejected",
+     "name": "Acme GmbH",
+     "source_ids": [
+      "src-a"
+     ]
+    },
+    "imp-3": {
+     "by": "Mohamed",
+     "decision": "research",
+     "name": "Imported Three",
+     "source_ids": [
+      "src-a"
+     ]
+    },
+    "imp-4": {
+     "by": "Mohamed",
+     "decision": "watch",
+     "name": "Imported Four",
+     "source_ids": [
+      "src-a",
+      "src-b"
+     ]
+    },
+    "imp-5": {
+     "by": "Mohamed",
+     "decision": "kept",
+     "name": "Acme GmbH",
+     "source_ids": [
+      "src-c"
+     ]
+    },
+    "new-5": {
+     "by": "Mohamed",
+     "decision": "kept",
+     "name": "Fifth Co",
+     "source_ids": [
+      "src-a"
+     ]
+    },
+    "new-6": {
+     "by": "Mohamed",
+     "decision": "watch",
+     "name": "Sixth Co",
+     "source_ids": [
+      "src-a",
+      "src-d"
+     ]
+    }
+   },
+   "entry": {
+    "by": "Mohamed",
+    "decision": "watch",
+    "name": "Sixth Co",
+    "source_ids": [
+     "src-a",
+     "src-d"
+    ]
+   },
+   "probes": {
+    "b-1": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "5 reviewed companies (4 kept, 1 watch, Omar −1) → net +6 over 5 → +2 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 5,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "b-2": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "5 reviewed companies (4 kept, 1 watch, Omar −1) → net +6 over 5 → +2 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 5,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "b-3": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "5 reviewed companies (4 kept, 1 watch, Omar −1) → net +6 over 5 → +2 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 5,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "b-4": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "5 reviewed companies (4 kept, 1 watch, Omar −1) → net +6 over 5 → +2 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 5,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "imp-1": {
+     "active": true,
+     "adjustment": 1,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "7 reviewed companies (2 kept, 1 research, 2 watch, 1 rejected, Omar +1) → net +5 over 7 → +1 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 1,
+       "reviewed": 7,
+       "source_id": "src-a"
+      }
+     ]
+    },
+    "imp-2": {
+     "active": true,
+     "adjustment": 1,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "7 reviewed companies (2 kept, 1 research, 2 watch, 1 rejected, Omar +1) → net +5 over 7 → +1 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 1,
+       "reviewed": 7,
+       "source_id": "src-a"
+      }
+     ]
+    },
+    "imp-3": {
+     "active": true,
+     "adjustment": 1,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "7 reviewed companies (2 kept, 1 research, 2 watch, 1 rejected, Omar +1) → net +5 over 7 → +1 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 1,
+       "reviewed": 7,
+       "source_id": "src-a"
+      }
+     ]
+    },
+    "imp-4": {
+     "active": true,
+     "adjustment": 3,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "src-a +1 (7 reviewed); src-b +2 (5 reviewed) → sum +3 capped to ±3",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 1,
+       "reviewed": 7,
+       "source_id": "src-a"
+      },
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 5,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "new-5": {
+     "active": true,
+     "adjustment": 1,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "7 reviewed companies (2 kept, 1 research, 2 watch, 1 rejected, Omar +1) → net +5 over 7 → +1 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 1,
+       "reviewed": 7,
+       "source_id": "src-a"
+      }
+     ]
+    },
+    "new-6": {
+     "active": true,
+     "adjustment": 3,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "src-a +1 (7 reviewed); src-b +2 (5 reviewed) → sum +3 capped to ±3",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 1,
+       "reviewed": 7,
+       "source_id": "src-a"
+      },
+      {
+       "active": true,
+       "adjustment": 2,
+       "reviewed": 5,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "new-7": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "no source id on this candidate — neutral",
+     "sources": []
+    }
+   },
+   "table": {
+    "src-a": {
+     "active": true,
+     "adjustment": 1,
+     "label": "Feedback-adjusted sourcing priority",
+     "reason": "7 reviewed companies (2 kept, 1 research, 2 watch, 1 rejected, Omar +1) → net +5 over 7 → +1 (cap ±3, ordering only)",
+     "reviewed": 7,
+     "source_id": "src-a",
+     "stats": {
+      "kept": 2,
+      "omar_negative": 0,
+      "omar_positive": 1,
+      "rejected": 1,
+      "research": 1,
+      "reviewed": 7,
+      "score": 5,
+      "watch": 2
+     }
+    },
+    "src-b": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "reason": "5 reviewed companies (4 kept, 1 watch, Omar −1) → net +6 over 5 → +2 (cap ±3, ordering only)",
+     "reviewed": 5,
+     "source_id": "src-b",
+     "stats": {
+      "kept": 4,
+      "omar_negative": 1,
+      "omar_positive": 0,
+      "rejected": 0,
+      "research": 0,
+      "reviewed": 5,
+      "score": 6,
+      "watch": 1
+     }
+    },
+    "src-c": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "reason": "neutral prior — 1 of 5 reviewed companies needed before this source is adjusted (1 kept, Omar +1)",
+     "reviewed": 1,
+     "source_id": "src-c",
+     "stats": {
+      "kept": 1,
+      "omar_negative": 0,
+      "omar_positive": 1,
+      "rejected": 0,
+      "research": 0,
+      "reviewed": 1,
+      "score": 4,
+      "watch": 0
+     }
+    },
+    "src-d": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "reason": "neutral prior — 1 of 5 reviewed companies needed before this source is adjusted (1 watch)",
+     "reviewed": 1,
+     "source_id": "src-d",
+     "stats": {
+      "kept": 0,
+      "omar_negative": 0,
+      "omar_positive": 0,
+      "rejected": 0,
+      "research": 0,
+      "reviewed": 1,
+      "score": 0,
+      "watch": 1
+     }
+    }
+   }
+  },
+  {
+   "decision_keys": [
+    "imp-1",
+    "imp-3",
+    "imp-4",
+    "imp-5",
+    "new-5",
+    "b-1",
+    "b-2",
+    "b-3",
+    "b-4",
+    "imp-2",
+    "new-6"
+   ],
+   "decisions": {
+    "b-1": {
+     "by": "Mohamed",
+     "decision": "kept",
+     "name": "B One",
+     "source_ids": [
+      "src-b"
+     ]
+    },
+    "b-2": {
+     "by": "Mohamed",
+     "decision": "kept",
+     "name": "B Two",
+     "source_ids": [
+      "src-b"
+     ]
+    },
+    "b-3": {
+     "by": "Mohamed",
+     "decision": "kept",
+     "name": "B Three",
+     "source_ids": [
+      "src-b"
+     ]
+    },
+    "b-4": {
+     "by": "Mohamed",
+     "decision": "kept",
+     "name": "B Four",
+     "source_ids": [
+      "src-b"
+     ]
+    },
+    "imp-1": {
+     "by": "Mohamed",
+     "decision": "kept",
+     "name": "Imported One",
+     "source_ids": [
+      "src-a"
+     ]
+    },
+    "imp-2": {
+     "by": "Mohamed",
+     "decision": "rejected",
+     "name": "Acme GmbH",
+     "source_ids": [
+      "src-a"
+     ]
+    },
+    "imp-3": {
+     "by": "Mohamed",
+     "decision": "research",
+     "name": "Imported Three",
+     "source_ids": [
+      "src-a"
+     ]
+    },
+    "imp-4": {
+     "by": "Mohamed",
+     "decision": "rejected",
+     "name": "Imported Four",
+     "source_ids": [
+      "src-a",
+      "src-b"
+     ]
+    },
+    "imp-5": {
+     "by": "Mohamed",
+     "decision": "kept",
+     "name": "Acme GmbH",
+     "source_ids": [
+      "src-c"
+     ]
+    },
+    "new-5": {
+     "by": "Mohamed",
+     "decision": "kept",
+     "name": "Fifth Co",
+     "source_ids": [
+      "src-a"
+     ]
+    },
+    "new-6": {
+     "by": "Mohamed",
+     "decision": "watch",
+     "name": "Sixth Co",
+     "source_ids": [
+      "src-a",
+      "src-d"
+     ]
+    }
+   },
+   "entry": {
+    "by": "Mohamed",
+    "decision": "rejected",
+    "name": "Imported Four",
+    "source_ids": [
+     "src-a",
+     "src-b"
+    ]
+   },
+   "probes": {
+    "b-1": {
+     "active": true,
+     "adjustment": 1,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "5 reviewed companies (4 kept, 1 rejected, Omar −1) → net +4 over 5 → +1 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 1,
+       "reviewed": 5,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "b-2": {
+     "active": true,
+     "adjustment": 1,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "5 reviewed companies (4 kept, 1 rejected, Omar −1) → net +4 over 5 → +1 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 1,
+       "reviewed": 5,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "b-3": {
+     "active": true,
+     "adjustment": 1,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "5 reviewed companies (4 kept, 1 rejected, Omar −1) → net +4 over 5 → +1 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 1,
+       "reviewed": 5,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "b-4": {
+     "active": true,
+     "adjustment": 1,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "5 reviewed companies (4 kept, 1 rejected, Omar −1) → net +4 over 5 → +1 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 1,
+       "reviewed": 5,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "imp-1": {
+     "active": true,
+     "adjustment": 1,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "7 reviewed companies (2 kept, 1 research, 1 watch, 2 rejected, Omar +1) → net +3 over 7 → +1 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 1,
+       "reviewed": 7,
+       "source_id": "src-a"
+      }
+     ]
+    },
+    "imp-2": {
+     "active": true,
+     "adjustment": 1,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "7 reviewed companies (2 kept, 1 research, 1 watch, 2 rejected, Omar +1) → net +3 over 7 → +1 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 1,
+       "reviewed": 7,
+       "source_id": "src-a"
+      }
+     ]
+    },
+    "imp-3": {
+     "active": true,
+     "adjustment": 1,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "7 reviewed companies (2 kept, 1 research, 1 watch, 2 rejected, Omar +1) → net +3 over 7 → +1 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 1,
+       "reviewed": 7,
+       "source_id": "src-a"
+      }
+     ]
+    },
+    "imp-4": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "src-a +1 (7 reviewed); src-b +1 (5 reviewed) → sum +2 capped to ±3",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 1,
+       "reviewed": 7,
+       "source_id": "src-a"
+      },
+      {
+       "active": true,
+       "adjustment": 1,
+       "reviewed": 5,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "new-5": {
+     "active": true,
+     "adjustment": 1,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "7 reviewed companies (2 kept, 1 research, 1 watch, 2 rejected, Omar +1) → net +3 over 7 → +1 (cap ±3, ordering only)",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 1,
+       "reviewed": 7,
+       "source_id": "src-a"
+      }
+     ]
+    },
+    "new-6": {
+     "active": true,
+     "adjustment": 2,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "src-a +1 (7 reviewed); src-b +1 (5 reviewed) → sum +2 capped to ±3",
+     "sources": [
+      {
+       "active": true,
+       "adjustment": 1,
+       "reviewed": 7,
+       "source_id": "src-a"
+      },
+      {
+       "active": true,
+       "adjustment": 1,
+       "reviewed": 5,
+       "source_id": "src-b"
+      }
+     ]
+    },
+    "new-7": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "not_ml": "ordering only — never suppresses fetching, never rejects, hides or deletes a candidate, never disables a source",
+     "reason": "no source id on this candidate — neutral",
+     "sources": []
+    }
+   },
+   "table": {
+    "src-a": {
+     "active": true,
+     "adjustment": 1,
+     "label": "Feedback-adjusted sourcing priority",
+     "reason": "7 reviewed companies (2 kept, 1 research, 1 watch, 2 rejected, Omar +1) → net +3 over 7 → +1 (cap ±3, ordering only)",
+     "reviewed": 7,
+     "source_id": "src-a",
+     "stats": {
+      "kept": 2,
+      "omar_negative": 0,
+      "omar_positive": 1,
+      "rejected": 2,
+      "research": 1,
+      "reviewed": 7,
+      "score": 3,
+      "watch": 1
+     }
+    },
+    "src-b": {
+     "active": true,
+     "adjustment": 1,
+     "label": "Feedback-adjusted sourcing priority",
+     "reason": "5 reviewed companies (4 kept, 1 rejected, Omar −1) → net +4 over 5 → +1 (cap ±3, ordering only)",
+     "reviewed": 5,
+     "source_id": "src-b",
+     "stats": {
+      "kept": 4,
+      "omar_negative": 1,
+      "omar_positive": 0,
+      "rejected": 1,
+      "research": 0,
+      "reviewed": 5,
+      "score": 4,
+      "watch": 0
+     }
+    },
+    "src-c": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "reason": "neutral prior — 1 of 5 reviewed companies needed before this source is adjusted (1 kept, Omar +1)",
+     "reviewed": 1,
+     "source_id": "src-c",
+     "stats": {
+      "kept": 1,
+      "omar_negative": 0,
+      "omar_positive": 1,
+      "rejected": 0,
+      "research": 0,
+      "reviewed": 1,
+      "score": 4,
+      "watch": 0
+     }
+    },
+    "src-d": {
+     "active": false,
+     "adjustment": 0,
+     "label": "Feedback-adjusted sourcing priority",
+     "reason": "neutral prior — 1 of 5 reviewed companies needed before this source is adjusted (1 watch)",
+     "reviewed": 1,
+     "source_id": "src-d",
+     "stats": {
+      "kept": 0,
+      "omar_negative": 0,
+      "omar_positive": 0,
+      "rejected": 0,
+      "research": 0,
+      "reviewed": 1,
+      "score": 0,
+      "watch": 1
+     }
+    }
+   }
+  }
+ ],
+ "provenance": {
+  "old_dirty": false,
+  "old_revision": "6c739b9cb6ca2517b845e381d39a36c50eccc59e",
+  "steps": 16
+ }
+}

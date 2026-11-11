@@ -78,9 +78,14 @@ def decide(request: Request, candidate_id: str, body: DecisionBody) -> JSONRespo
     try:
         validate_operator_status(body.status)
         with transaction(settings.db_url) as conn:
-            result = DealFlowStore(conn, settings.schema).decide(
-                candidate_id, body.status, reason=body.reason, notes=body.notes, expected_status=body.expected_status
+            store = DealFlowStore(conn, settings.schema)
+            resolved = store.resolve_id("candidate", candidate_id)  # an absorbed old id decides its survivor
+            if resolved is None:
+                return JSONResponse({"ok": False, "error": "candidate not found"}, status_code=404)
+            result = store.decide(
+                resolved, body.status, reason=body.reason, notes=body.notes, expected_status=body.expected_status
             )
+            result["resolved_from"] = {"namespace": "candidate", "id": candidate_id}
     except DecisionError as exc:
         return _error(exc)
     except psycopg.errors.UniqueViolation as exc:  # last line of defence: the database's one-open-candidate rule

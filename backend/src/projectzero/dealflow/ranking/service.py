@@ -11,7 +11,7 @@
     fields, but the ingest tags (``archetype_hits``, ``noise``, ``priority``, ``discovery_tier``) are missing.
 * ``RankingContext`` holds the two inputs that are not per candidate, loaded once per request, so the list and the
   detail paths read the SAME values: the old inbox's exact ``last_run`` (compared directly with ``run_id``) and the
-  feedback ledger, frozen at import (review 008 moves its updates to decision events).
+  effective feedback ledger: the imported one plus every operator decision since (``ranking.ledger``, review 008).
 """
 
 from __future__ import annotations
@@ -25,7 +25,7 @@ from psycopg import sql
 from psycopg.rows import dict_row
 
 from projectzero.core.db import schema_ident
-from projectzero.dealflow.ranking import attention, feedback, tagging, themes
+from projectzero.dealflow.ranking import attention, feedback, ledger, tagging, themes
 
 STATUS_TO_DECISION = {"new": "new", "reviewing": "research", "watch": "watch", "baseline": "baseline",
                       "rejected": "rejected", "archived": "rejected", "kept": "kept"}  # fmt: skip
@@ -48,9 +48,55 @@ class RankingContext:
                 )
             )
             docs = {row["key"]: row["body"] for row in cur.fetchall()}
+            cur.execute(sql.SQL("select raw from {}.legacy_documents where path = %s").format(s), (ledger.LEDGER_FILE,))
+            archived = cur.fetchone()
+            cur.execute(
+                sql.SQL(
+                    "select candidate_id, to_status, detail, at from {}.candidate_events "
+                    "where actor = 'operator' and action = 'status' order by id"
+                ).format(s)
+            )
+            events = cur.fetchall()
+            missing = sorted({str(e["candidate_id"]) for e in events if not ledger.has_snapshot(e)})
+            rows: dict[str, Mapping[str, Any]] = {}
+            aliases: dict[str, list[str]] = {}
+            if missing:  # pre-008 status events: rebuilt from the candidate's current inputs (review 008, H-058)
+                cur.execute(sql.SQL("select * from {}.candidates where id = any(%s)").format(s), (missing,))
+                rows = {str(r["id"]): r for r in cur.fetchall()}
+                cur.execute(
+                    sql.SQL(
+                        "select candidate_id, alias_id from {}.candidate_aliases "
+                        "where namespace = 'candidate' and candidate_id = any(%s)"
+                    ).format(s),
+                    (missing,),
+                )
+                for a in cur.fetchall():
+                    aliases.setdefault(str(a["candidate_id"]), []).append(str(a["alias_id"]))
+            events = backfill_snapshots(events, rows, aliases)
         inbox_rest = docs.get("inbox.json#rest") or {}
-        ledger = docs.get("feedback.json")
-        return cls(last_run=inbox_rest.get("last_run"), ledger=ledger, table=feedback.table(ledger))
+        base = ledger.parse_base(archived["raw"] if archived else None, docs.get("feedback.json"))
+        effective = ledger.effective(base, events)
+        return cls(last_run=inbox_rest.get("last_run"), ledger=effective, table=feedback.table(effective))
+
+
+def backfill_snapshots(
+    events: list[dict[str, Any]], rows: Mapping[str, Mapping[str, Any]], aliases: Mapping[str, list[str]]
+) -> list[dict[str, Any]]:
+    """Status events written before 008 carry no decision snapshot. Supply one from the recorded target status and the
+    candidate's CURRENT ranking input and aliases (the compatibility fallback agreed in review 008). Events that carry
+    a snapshot, including an explicitly empty source list, are left exactly as recorded."""
+    out = []
+    for ev in events:
+        cid = str(ev["candidate_id"])
+        if ledger.has_snapshot(ev) or cid not in rows or ev.get("to_status") not in STATUS_TO_DECISION:
+            out.append(ev)
+            continue
+        c, _ = ranking_input(rows[cid])
+        rec = ledger.decision_record(
+            c, STATUS_TO_DECISION[str(ev["to_status"])], ledger.ordered_keys(cid, aliases.get(cid, []))
+        )
+        out.append({**ev, "detail": {**(ev.get("detail") or {}), "feedback": rec}})
+    return out
 
 
 def is_legacy_inbox_record(legacy: Any) -> TypeGuard[dict[str, Any]]:

@@ -122,6 +122,7 @@ def test_detail_and_old_id_resolution(settings: Settings, schema: str, seeded: d
 def test_decisions_audit_noop_and_guards(settings: Settings, schema: str, seeded: dict[str, str]) -> None:
     beta = seeded["Beta Quantum"]
     first = store_call(settings, schema, lambda s: s.decide(beta, "reviewing", reason="strong founders"))
+    assert first.pop("feedback")["label"] == "Feedback-adjusted sourcing priority"  # the old decide response (008)
     assert first == {"id": beta, "status": "reviewing", "previous_status": "new", "changed": True}
     again = store_call(settings, schema, lambda s: s.decide(beta, "reviewing"))
     assert again["changed"] is False  # never reports a change that did not happen
@@ -169,6 +170,8 @@ def test_http_endpoints_end_to_end(settings: Settings, schema: str, seeded: dict
         decided = client.post(
             f"/api/deal-flow/candidates/{seeded['Delta Space']}/decision", json={"status": "rejected"}
         ).json()
+        assert decided.pop("feedback")["adjustment"] == 0  # the old decide response carries the feedback (008)
+        assert decided.pop("resolved_from") == {"namespace": "candidate", "id": seeded["Delta Space"]}
         assert decided == {
             "ok": True,
             "id": seeded["Delta Space"],

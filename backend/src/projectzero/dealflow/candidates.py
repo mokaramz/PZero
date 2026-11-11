@@ -29,7 +29,8 @@ from psycopg.rows import dict_row
 from psycopg.types.json import Jsonb
 
 from projectzero.core.db import schema_ident
-from projectzero.dealflow.ranking.service import RankingContext, rank
+from projectzero.dealflow.ranking import feedback, ledger
+from projectzero.dealflow.ranking.service import STATUS_TO_DECISION, RankingContext, rank, ranking_input
 
 STATUSES = ("new", "reviewing", "watch", "baseline", "rejected", "archived", "kept")
 OPERATOR_STATUSES = frozenset({"new", "reviewing", "watch", "baseline", "rejected", "archived"})
@@ -319,6 +320,16 @@ class DealFlowStore:
                 "returning id",
                 (notes, candidate_id),
             )
+        # the old record_decision, captured at decision time (review 008): the ranking input as it is now
+        c, _ = ranking_input(self._rows("select * from {s}.candidates where id = %s", (candidate_id,))[0])
+        detail: dict[str, Any] = {"notes": notes} if notes is not None else {}
+        if changed:
+            aliases = self._rows(
+                "select alias_id from {s}.candidate_aliases where namespace = 'candidate' and candidate_id = %s",
+                (candidate_id,),
+            )
+            keys = ledger.ordered_keys(candidate_id, [str(r["alias_id"]) for r in aliases])
+            detail["feedback"] = ledger.decision_record(c, STATUS_TO_DECISION[status], keys)
         if changed or notes is not None:
             self._rows(
                 "insert into {s}.candidate_events "
@@ -330,7 +341,8 @@ class DealFlowStore:
                     current,
                     status if changed else None,
                     reason,
-                    Jsonb({"notes": notes} if notes is not None else {}),
+                    Jsonb(detail),
                 ),
             )
-        return {"id": candidate_id, "status": status, "previous_status": current, "changed": changed}
+        fb = feedback.for_candidate(c, RankingContext.load(self.conn, self._schema).table)  # the old decide response
+        return {"id": candidate_id, "status": status, "previous_status": current, "changed": changed, "feedback": fb}
