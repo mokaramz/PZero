@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-11T16:05:44.015110+00:00",
+  "generated_at": "2026-11-11T18:57:51.376647+00:00",
   "reconciliation": {
     "real_data.json signals": {
       "in": 10,
@@ -12,7 +12,8 @@
       "cycles": 7,
       "items": 39,
       "events": 40,
-      "events_home": "documents (scout_intake.json#rest)"
+      "events_home": "documents (scout_intake.json#rest; event_id without the '|merged:' suffix)",
+      "event_id_merge_suffixes_stripped": 9
     },
     "native_scout.json signals": {
       "in": 150,
@@ -60,8 +61,72 @@
       "company_links": "kept in people.attrs (legacy links are by name; company_people waits for confirmation)"
     },
     "events.json": {
-      "events": 543,
-      "leads_home": "documents (events.json#rest)"
+      "in": 674,
+      "rows": 674,
+      "skipped_without_id": [],
+      "duplicate_ids_blocked": 0,
+      "span_blocked": [],
+      "dates": {
+        "start": {
+          "date_only": 27,
+          "timed": 647,
+          "unparseable": 0,
+          "absent": 0,
+          "free_text": 0
+        },
+        "end": {
+          "date_only": 0,
+          "timed": 647,
+          "unparseable": 0,
+          "absent": 27,
+          "free_text": 0
+        }
+      },
+      "unparseable": {},
+      "end_before_start": 0,
+      "dates_clock": "2026-11-11",
+      "created_at_from": {
+        "created": 10,
+        "retrieved_at": 664,
+        "import_time": 0
+      },
+      "name_from_id": 0,
+      "coordinates": {
+        "lat": {
+          "kept": 11,
+          "kept_from_text": 0,
+          "dropped": 0,
+          "absent": 663
+        },
+        "lng": {
+          "kept": 11,
+          "kept_from_text": 0,
+          "dropped": 0,
+          "absent": 663
+        }
+      },
+      "status": {
+        "new": 671,
+        "skipped": 3
+      }
+    },
+    "events.json leads": {
+      "in": 22,
+      "rows": 22,
+      "open": 22,
+      "decisions": {
+        "new": 22
+      },
+      "skipped_without_id": [],
+      "duplicate_ids_or_unknown_decisions_blocked": 0,
+      "dates": {
+        "date_only": 19,
+        "timed": 0,
+        "unparseable": 0,
+        "absent": 3,
+        "free_text": 0
+      },
+      "created_at_from_import_time": 0
     },
     "bridge_jobs.json": {
       "jobs": 4,
@@ -73,7 +138,7 @@
     },
     "schedule": {
       "jobs": 15,
-      "runs": 263
+      "runs": 268
     }
   },
   "notes": [
@@ -102,7 +167,7 @@
       "present": true,
       "parseable": true,
       "collection": "events",
-      "records": 543
+      "records": 674
     },
     "sources.json": {
       "present": true,
@@ -162,7 +227,7 @@
       "present": true,
       "parseable": true,
       "collection": null,
-      "records": 263
+      "records": 268
     }
   },
   "snapshot": {
@@ -278,22 +343,23 @@
     "candidate_routing": 470,
     "committee_reviews": 215,
     "conviction_entries": 10,
-    "events": 543,
+    "events": 674,
+    "event_leads": 22,
     "research_jobs": 4,
     "model_ledger": 2293,
     "job_state": 15,
-    "job_runs": 263,
-    "documents": 77,
+    "job_runs": 268,
+    "documents": 76,
     "legacy_documents": 2200
   },
-  "archive_bytes": 20695183,
+  "archive_bytes": 20909034,
   "blockers": [],
   "secrets_found": [],
   "rehearsal": {
-    "schema": "pz_rehearse_d3d0d9b8",
+    "schema": "pz_rehearse_28ce9fbf",
     "first_apply": {
       "applied": true,
-      "fingerprint": "0505752d0823cfd4b26e09ecd531f654bffcf088af3bca9bf00a0f454dea4356"
+      "fingerprint": "84e46ecd0fc84b032441c7721c38674d5d8d52e65bfea09b169593b4437843c4"
     },
     "counts": {
       "all_match": true,
@@ -313,18 +379,19 @@
         "candidate_routing": 470,
         "committee_reviews": 215,
         "conviction_entries": 10,
-        "events": 543,
+        "events": 674,
+        "event_leads": 22,
         "research_jobs": 4,
         "model_ledger": 2293,
         "job_state": 15,
-        "job_runs": 263,
-        "documents": 78,
+        "job_runs": 268,
+        "documents": 77,
         "legacy_documents": 2200
       }
     },
     "archive": {
       "files": 2200,
-      "restored_bytes": 20695183,
+      "restored_bytes": 20909034,
       "mismatched": [],
       "all_match": true
     },
@@ -352,18 +419,19 @@
         "candidate_routing": 470,
         "committee_reviews": 215,
         "conviction_entries": 10,
-        "events": 543,
+        "events": 674,
+        "event_leads": 22,
         "research_jobs": 4,
         "model_ledger": 2293,
         "job_state": 15,
-        "job_runs": 263,
-        "documents": 78,
+        "job_runs": 268,
+        "documents": 77,
         "legacy_documents": 2200
       }
     },
     "scratch_schema_dropped": true,
     "conflict_existing_row": {
-      "schema": "pz_conflict_15d286b0",
+      "schema": "pz_conflict_45a86fbc",
       "kind": "row",
       "preexisting": "candidates.id = 4225c719f2f2",
       "outcome": "aborted: unique violation on candidates_pkey",
@@ -377,7 +445,7 @@
       "scratch_schema_dropped": true
     },
     "conflict_existing_archive_path": {
-      "schema": "pz_conflict_b373f02e",
+      "schema": "pz_conflict_e8d6877d",
       "kind": "archive",
       "preexisting": "legacy_documents.path = .browser_opened",
       "outcome": "aborted: unique violation on legacy_documents_pkey",

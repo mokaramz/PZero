@@ -473,3 +473,76 @@ describe("migration 0006 — every Network people write is an append-only person
     assert.equal(grants.rows[0].n, 0);
   });
 });
+
+describe("migration 0007 — an event's dates as stated, and the event leads", () => {
+  test("dates and times are stored as stated; the derived span is all-or-nothing and forward", async () => {
+    const db = await freshDb();
+    await db.query(
+      `insert into pz.events (id, name, start_date, start_time, end_date, end_time, starts_at, ends_at)
+       values ('ev-a', 'Demo day', '2026-09-20', '18:30', '2026-09-20', null,
+               '2026-09-20 18:30+02', '2026-09-21 00:00+02')`,
+    );
+    await db.query(`insert into pz.events (id, name, end_date) values ('ev-undated', 'Undated', '2026-09-22')`);
+    const row = await db.query(`select start_date::text, start_time, end_time from pz.events where id = 'ev-a'`);
+    assert.deepEqual(row.rows[0], { start_date: "2026-09-20", start_time: "18:30", end_time: null });
+    await rejects(
+      db.query(`insert into pz.events (id, name, start_date, start_time, starts_at, ends_at)
+                values ('ev-b', 'B', '2026-09-20', '24:00', '2026-09-20 00:00+02', '2026-09-21 00:00+02')`),
+      /events_start_time_is_hhmm/,
+    );
+    await rejects(
+      db.query(`insert into pz.events (id, name, end_time) values ('ev-c', 'C', '18:30')`),
+      /events_time_needs_a_date/,
+    );
+    await rejects(
+      db.query(`insert into pz.events (id, name, start_date) values ('ev-d', 'D', '2026-09-20')`),
+      /events_span_iff_start/,
+    );
+    await rejects(
+      db.query(`insert into pz.events (id, name, start_date, starts_at, ends_at)
+                values ('ev-e', 'E', '2026-09-20', '2026-09-20 00:00+02', '2026-09-20 00:00+02')`),
+      /events_span_is_forward/,
+    );
+  });
+
+  test("leads are their own locked-down table with the old decision vocabulary", async () => {
+    const db = await freshDb();
+    await db.query(
+      `insert into pz.event_leads (id, title, lead_date, date_raw, legacy) values ('evlead-1', 'Meetup', '2026-12-03', '2026-12-03', '{}')`,
+    );
+    const row = await db.query(`select decision, attrs, lead_date::text from pz.event_leads`);
+    assert.deepEqual(row.rows[0], { decision: "new", attrs: {}, lead_date: "2026-12-03" });
+    for (const decision of ["dismissed", "converted"]) {
+      await db.query(`update pz.event_leads set decision = $1`, [decision]);
+    }
+    await rejects(db.query(`update pz.event_leads set decision = 'maybe'`), /event_leads_decision_check/);
+    await rejects(db.query(`insert into pz.event_leads (id) values ('evlead-1')`), /event_leads_pkey/);
+    const touched = await db.query(`select updated_at > created_at as touched from pz.event_leads`);
+    assert.equal(touched.rows[0].touched, true);
+    const rls = await db.query(`select relrowsecurity from pg_class where relname = 'event_leads'`);
+    assert.equal(rls.rows[0].relrowsecurity, true);
+    const grants = await db.query(
+      `select count(*)::int n from information_schema.role_table_grants
+        where table_schema = 'pz' and table_name = 'event_leads' and grantee in ('anon', 'authenticated', 'PUBLIC')`,
+    );
+    assert.equal(grants.rows[0].n, 0);
+  });
+
+  test("it refuses to run over existing events instead of inventing their dates", async () => {
+    const { PGlite } = await import("@electric-sql/pglite");
+    const { readdirSync } = await import("node:fs");
+    const db = new PGlite();
+    await db.exec("create role anon nologin; create role authenticated nologin;");
+    const files = readdirSync(MIGRATIONS).filter((f) => f.endsWith(".sql")).sort();
+    const seventh = files.find((f) => f.includes("event_dates"));
+    for (const f of files.filter((f) => f < seventh)) await db.exec(readFileSync(join(MIGRATIONS, f), "utf8"));
+    await db.query(`insert into pz.events (id, name, starts_at) values ('ev-early', 'Early', '2026-09-20 00:00+02')`);
+    await rejects(db.exec(readFileSync(join(MIGRATIONS, seventh), "utf8")), /events is not empty/);
+    const cols = await db.query(
+      `select count(*)::int n from information_schema.columns where table_schema = 'pz' and table_name = 'events' and column_name = 'start_date'`,
+    );
+    assert.equal(cols.rows[0].n, 0); // nothing half-applied
+    const leads = await db.query(`select to_regclass('pz.event_leads') is null as absent`);
+    assert.equal(leads.rows[0].absent, true);
+  });
+});

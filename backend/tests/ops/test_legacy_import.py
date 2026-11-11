@@ -868,3 +868,291 @@ def test_the_stored_github_id_uses_the_ownership_validator(legacy: Path, github_
     assert [v for k, v in rows if k == "github"] == ([stored] if stored else [])
     # the account URL is strong exactly when the same id is valid
     assert (("profile_url", "https://github.com/gil-dev") in rows) is (stored is not None)
+
+
+# ── review 014: events and leads as the old app read them ───────────────────────────────────────────────────────
+
+
+def events_plan(legacy: Path, events: Any, leads: Any = ()) -> ImportPlan:
+    write(legacy, "events.json", {"events": events, "leads": list(leads)})
+    return plan_for(legacy)
+
+
+def event(plan: ImportPlan, eid: str) -> dict[str, Any]:
+    (row,) = rows(plan, "events", id=eid)
+    return row
+
+
+def test_an_event_or_lead_without_an_id_is_skipped_and_reported(legacy: Path) -> None:
+    plan = events_plan(legacy, [{"name": "No Id"}, {"id": "", "name": "Empty Id"}, "not a record",
+                                {"id": "ev-a", "name": "Demo day"}],
+                       [{"title": "Lead without id"}, 7, {"id": "evlead-1", "title": "Robotics meetup", "decision": "new"}])  # fmt: skip
+    assert [e["id"] for e in plan.tables["events"]] == ["ev-a"]
+    assert [lead["id"] for lead in plan.tables["event_leads"]] == ["evlead-1"]
+    report = plan.report["reconciliation"]
+    assert report["events.json"]["skipped_without_id"] == [
+        {"position": 0, "name": "No Id", "why": "no id"},
+        {"position": 1, "name": "Empty Id", "why": "no id"},
+        {"position": 2, "name": None, "why": "not a record"},
+    ]
+    assert report["events.json leads"]["skipped_without_id"] == [
+        {"position": 0, "title": "Lead without id", "why": "no id"},
+        {"position": 1, "title": None, "why": "not a record"},
+    ]
+    assert report["events.json"]["in"] == 4 and report["events.json leads"]["in"] == 3
+    assert not plan.blockers
+
+
+def test_a_repeated_event_or_lead_id_blocks_the_import(legacy: Path) -> None:
+    plan = events_plan(legacy, [{"id": "ev-a", "name": "Demo day"}, {"id": "ev-a", "name": "Demo night"}],
+                       [{"id": "evlead-1", "title": "Meetup", "decision": "new"},
+                        {"id": "evlead-1", "title": "Hackathon", "decision": "new"}])  # fmt: skip
+    assert any("'Demo day' and 'Demo night' share the id 'ev-a'" in b for b in plan.blockers)
+    assert any("'Meetup' and 'Hackathon' share the id 'evlead-1'" in b for b in plan.blockers)
+    assert len(rows(plan, "events", id="ev-a")) == 1 and len(rows(plan, "event_leads", id="evlead-1")) == 1
+    result = apply_plan(plan, schema="pz", conn=None)  # refused before any connection
+    assert result["applied"] is False and any("share the id 'ev-a'" in b for b in result["blockers"])
+
+
+@pytest.mark.parametrize(
+    ("start", "end", "columns", "span"),
+    [
+        ("2026-09-20", None, ("2026-09-20", None, None, None), ("2026-09-20T00:00:00+02:00", "2026-09-21T00:00:00+02:00")),
+        ("2026-09-20", "2026-09-22", ("2026-09-20", None, "2026-09-22", None), ("2026-09-20T00:00:00+02:00", "2026-09-23T00:00:00+02:00")),
+        ("2026-09-20T18:30:45", "2026-09-20T21:00", ("2026-09-20", "18:30", "2026-09-20", "21:00"), ("2026-09-20T18:30:00+02:00", "2026-09-20T21:00:00+02:00")),
+        ("2026-09-20T18:30", "", ("2026-09-20", "18:30", None, None), ("2026-09-20T18:30:00+02:00", "2026-09-21T00:00:00+02:00")),
+        ("2026-09-19T23:30Z", None, ("2026-09-20", "01:30", None, None), ("2026-09-20T01:30:00+02:00", "2026-09-21T00:00:00+02:00")),
+        ("20.09.2026 18:30", "21.09.2026", ("2026-09-20", "18:30", "2026-09-21", None), ("2026-09-20T18:30:00+02:00", "2026-09-22T00:00:00+02:00")),
+        ("2026-09-20", "2026-09-18", ("2026-09-20", None, "2026-09-18", None), ("2026-09-20T00:00:00+02:00", "2026-09-21T00:00:00+02:00")),
+        ("TBA", "2026-09-22", (None, None, "2026-09-22", None), (None, None)),
+        ("2026-09-20", "2026-09-20T24:00", ("2026-09-20", None, None, None), ("2026-09-20T00:00:00+02:00", "2026-09-21T00:00:00+02:00")),
+    ],
+)  # fmt: skip
+def test_event_dates_are_the_old_parse_when_and_event_span(
+    legacy: Path, start: Any, end: Any, columns: tuple[Any, ...], span: tuple[str | None, str | None]
+) -> None:
+    e = {"id": "ev-a", "name": "Demo day", "start": start} | ({} if end is None else {"end": end})
+    row = event(events_plan(legacy, [e]), "ev-a")
+    stated = (row["start_date"], row["start_time"], row["end_date"], row["end_time"])
+    assert tuple(v.isoformat() if hasattr(v, "isoformat") else v for v in stated) == columns
+    assert (row["starts_at"] and row["starts_at"].isoformat(), row["ends_at"] and row["ends_at"].isoformat()) == span
+
+
+def test_event_dates_are_counted_and_an_unparseable_value_stays_in_attrs(legacy: Path) -> None:
+    plan = events_plan(legacy, [
+        {"id": "ev-a", "name": "A", "start": "2026-09-20", "end": "2026-09-21"},
+        {"id": "ev-b", "name": "B", "start": "2026-09-20T18:00", "end": "2026-09-20T22:00"},
+        {"id": "ev-c", "name": "C", "start": "TBA", "end": ""},
+        {"id": "ev-d", "name": "D", "start": 20260920},
+        {"id": "ev-e", "name": "E", "start": "2026-09-20T25:00", "end": "2026-09-19"},
+        {"id": "ev-f", "name": "F", "start": "Sept 20"},
+    ])  # fmt: skip
+    report = plan.report["reconciliation"]["events.json"]
+    assert report["dates"] == {
+        "start": {"date_only": 2, "timed": 1, "unparseable": 3, "absent": 0, "free_text": 1},
+        "end": {"date_only": 2, "timed": 1, "unparseable": 0, "absent": 3, "free_text": 0},
+    }
+    assert report["unparseable"] == {"start: invalid time": 1, "start: no date": 1, "start: not text": 1}
+    assert report["dates_clock"] == "2026-11-10"
+    assert event(plan, "ev-c")["attrs"]["start"] == "TBA" and event(plan, "ev-d")["attrs"]["start"] == 20260920
+    assert "start" not in event(plan, "ev-a")["attrs"] and "end" not in event(plan, "ev-c")["attrs"]  # blank: nothing
+    # a month without a year is dated by the import clock (Berlin 2026-11-10): September has passed -> 2027
+    assert event(plan, "ev-f")["start_date"].isoformat() == "2027-09-20"
+    assert event(plan, "ev-e")["start_date"] is None and event(plan, "ev-e")["starts_at"] is None
+    assert event(plan, "ev-e")["end_date"].isoformat() == "2026-09-19"  # the end as stated, even with no start
+
+
+def test_24_00_is_unparseable_and_its_raw_value_stays_in_attrs(legacy: Path) -> None:
+    plan = events_plan(legacy, [{"id": "ev-a", "name": "A", "start": "2026-09-20T24:00", "end": "2026-09-20T24:00"}])
+    row, report = event(plan, "ev-a"), plan.report["reconciliation"]["events.json"]
+    assert (row["start_date"], row["starts_at"], row["end_date"]) == (None, None, None)
+    assert row["attrs"]["start"] == row["attrs"]["end"] == "2026-09-20T24:00"
+    assert report["unparseable"] == {"end: invalid time": 1, "start: invalid time": 1} and not plan.blockers
+
+
+def test_an_end_before_the_start_is_kept_as_stated_and_counted(legacy: Path) -> None:
+    plan = events_plan(legacy, [{"id": "ev-a", "name": "A", "start": "2026-09-20", "end": "2026-09-18"}])
+    assert plan.report["reconciliation"]["events.json"]["end_before_start"] == 1
+    assert event(plan, "ev-a")["ends_at"].isoformat() == "2026-09-21T00:00:00+02:00"  # old event_when: end = start
+
+
+def test_event_created_at_is_created_then_retrieved_at_then_the_import_time(legacy: Path) -> None:
+    plan = events_plan(legacy, [
+        {"id": "ev-a", "name": "A", "created": "2026-09-12", "retrieved_at": "2026-09-01T10:00:00"},
+        {"id": "ev-b", "name": "B"},
+        {"id": "ev-c", "name": "C", "created": "soon"},
+        {"id": "ev-d", "name": "D", "retrieved_at": "2026-09-01T10:00:00"},
+        {"id": "ev-e", "name": "E", "created": "", "retrieved_at": "2026-09-01 10:00:00Z"},
+        {"id": "ev-f", "name": "F", "retrieved_at": "yesterday"},
+    ])  # fmt: skip
+    assert event(plan, "ev-a")["created_at"].isoformat() == "2026-09-12T00:00:00+02:00"
+    assert event(plan, "ev-d")["created_at"].isoformat() == "2026-09-01T10:00:00+02:00"  # naive: Berlin
+    assert event(plan, "ev-e")["created_at"].isoformat() == "2026-09-01T10:00:00+00:00"
+    assert (
+        event(plan, "ev-b")["created_at"]
+        == event(plan, "ev-c")["created_at"]
+        == event(plan, "ev-f")["created_at"]
+        == NOW
+    )
+    assert plan.report["reconciliation"]["events.json"]["created_at_from"] == {
+        "created": 1, "retrieved_at": 2, "import_time": 3}  # fmt: skip
+
+
+@pytest.mark.parametrize(
+    ("start", "end", "why"),
+    [
+        ("2026-03-29T02:45", "2026-03-29T03:15", "does not run forward in UTC"),  # 01:45 UTC -> 01:15 UTC
+        ("9999-12-31", None, "falls after 9999-12-31"),
+        ("9999-12-31T10:00", "", "falls after 9999-12-31"),
+    ],
+)
+def test_a_span_that_overflows_or_runs_backwards_in_utc_blocks_the_import(
+    legacy: Path, start: str, end: str | None, why: str
+) -> None:
+    bad = {"id": "ev-bad", "name": "Night run", "start": start} | ({} if end is None else {"end": end})
+    plan = events_plan(legacy, [bad, {"id": "ev-ok", "name": "OK", "start": "2026-09-20"}])  # the planner finishes
+    (blocker,) = [b for b in plan.blockers if "'ev-bad'" in b]
+    assert "'Night run'" in blocker and repr(start) in blocker and repr(end) in blocker and why in blocker
+    assert rows(plan, "events", id="ev-bad") == [] and len(rows(plan, "events", id="ev-ok")) == 1
+    report = plan.report["reconciliation"]["events.json"]
+    assert report["span_blocked"] == ["ev-bad"] and report["duplicate_ids_blocked"] == 0
+    result = apply_plan(plan, schema="pz", conn=None)  # refused before any connection
+    assert result["applied"] is False and any("'ev-bad'" in b for b in result["blockers"])
+
+
+def test_the_autumn_repeated_hour_and_an_ordinary_span_are_not_blocked(legacy: Path) -> None:
+    plan = events_plan(legacy, [
+        {"id": "ev-a", "name": "A", "start": "2026-10-25T02:30", "end": "2026-10-25T02:45"},
+        {"id": "ev-b", "name": "B", "start": "2026-03-29T01:30", "end": "2026-03-29T03:30"},
+    ])  # fmt: skip
+    assert not plan.blockers
+    b = event(plan, "ev-b")
+    assert (b["starts_at"].isoformat(), b["ends_at"].isoformat()) == (
+        "2026-03-29T01:30:00+01:00",
+        "2026-03-29T03:30:00+02:00",
+    )
+
+
+def test_blank_text_is_null_and_unknown_statuses_are_kept(legacy: Path) -> None:
+    plan = events_plan(legacy, [
+        {"id": "ev-a", "name": "A", "city": "", "country": " ", "url": "", "status": ""},
+        {"id": "ev-b", "name": "B", "city": "UNKNOWN", "country": "DE", "url": " https://b.example.com ", "status": "skipped"},
+        {"id": "ev-c", "name": "", "city": 7, "status": "MAYBE"},
+        {"id": "ev-d", "name": "D", "status": "new"},
+    ])  # fmt: skip
+    a, b, c = event(plan, "ev-a"), event(plan, "ev-b"), event(plan, "ev-c")
+    assert (a["city"], a["country"], a["url"], a["status"]) == (None, None, None, None)
+    assert (b["city"], b["country"], b["url"], b["status"]) == (None, "DE", "https://b.example.com", "skipped")
+    assert c["name"] == "ev-c" and c["city"] is None and c["attrs"]["city"] == 7  # not text: kept in attrs
+    assert c["status"] == "MAYBE"  # no CHECK: an unknown status is kept
+    report = plan.report["reconciliation"]["events.json"]
+    assert report["status"] == {"(none)": 1, "MAYBE": 1, "new": 1, "skipped": 1}
+    assert report["name_from_id"] == 1
+
+
+@pytest.mark.parametrize(
+    ("lat", "lng", "kept", "note"),
+    [
+        (49.0069, 8.4037, (49.0069, 8.4037), "kept"),
+        (49, -180, (49.0, -180.0), "kept"),
+        ("49.5", " 8.25 ", (49.5, 8.25), "kept_from_text"),
+        (True, False, (None, None), "dropped"),
+        (90.5, 181, (None, None), "dropped"),
+        ("NaN", "1e400", (None, None), "dropped"),
+        ("49,5", "8_4", (None, None), "dropped"),
+        ([49], {"v": 8}, (None, None), "dropped"),
+        (None, "", (None, None), "absent"),
+    ],
+)  # fmt: skip
+def test_coordinates_are_finite_numbers_in_range(
+    legacy: Path, lat: Any, lng: Any, kept: tuple[float | None, float | None], note: str
+) -> None:
+    plan = events_plan(legacy, [{"id": "ev-a", "name": "A", "lat": lat, "lng": lng}])
+    row = event(plan, "ev-a")
+    assert (row["lat"], row["lng"]) == kept
+    assert all(not isinstance(v, bool) for v in (row["lat"], row["lng"]))
+    coords = plan.report["reconciliation"]["events.json"]["coordinates"]
+    assert coords["lat"][note] == 1 and coords["lng"][note] == 1
+    if note == "dropped":
+        assert row["attrs"]["lat"] == lat and row["attrs"]["lng"] == lng  # kept in attrs (and legacy)
+    else:
+        assert "lat" not in row["attrs"] and "lng" not in row["attrs"]
+
+
+def test_an_imported_record_field_never_becomes_the_application_record(legacy: Path) -> None:
+    plan = events_plan(legacy, [{"id": "ev-a", "name": "A", "record": {"id": "ev-x", "name": "X"}, "venue": "Hall"}],
+                       [{"id": "evlead-1", "title": "T", "decision": "new", "record": {"title": "X"}}])  # fmt: skip
+    row, (lead,) = event(plan, "ev-a"), plan.tables["event_leads"]
+    assert "record" not in row["attrs"] and row["attrs"]["venue"] == "Hall"
+    assert row["legacy"]["record"] == {"id": "ev-x", "name": "X"}  # still in legacy
+    assert "record" not in lead["attrs"] and lead["legacy"]["record"] == {"title": "X"}
+
+
+def test_leads_become_rows_with_their_parsed_date(legacy: Path) -> None:
+    plan = events_plan(legacy, [], [
+        {"id": "evlead-1", "title": "Robotics meetup", "source": "Luma", "url": "https://luma.example.com/r",
+         "city": "Munich", "type": "founder_meetup", "date": "2026-12-03", "confidence": "low",
+         "detected_on": "2026-11-01", "decision": "new", "note": "", "source_id": "luma-muc", "provenance": "ics"},
+        {"id": "evlead-2", "title": "Demo night", "date": "", "detected_on": "", "decision": "dismissed"},
+        {"id": "evlead-3", "title": "Hack weekend", "date": "Sept 20", "detected_on": "2026-02-30", "decision": "converted"},
+    ])  # fmt: skip
+    one, two, three = (rows(plan, "event_leads", id=f"evlead-{i}")[0] for i in (1, 2, 3))
+    assert one["lead_date"].isoformat() == "2026-12-03" and one["date_raw"] == "2026-12-03"
+    assert (one["title"], one["source"], one["city"], one["type"], one["confidence"]) == (
+        "Robotics meetup", "Luma", "Munich", "founder_meetup", "low")  # fmt: skip
+    assert one["note"] is None and one["attrs"] == {"source_id": "luma-muc", "provenance": "ics"}
+    assert one["detected_on"].isoformat() == "2026-11-01"
+    assert one["created_at"].isoformat() == "2026-11-01T00:00:00+01:00"
+    assert two["lead_date"] is None and two["date_raw"] is None and two["created_at"] == NOW
+    assert three["lead_date"].isoformat() == "2027-09-20" and three["date_raw"] == "Sept 20"
+    assert three["detected_on"] is None and three["attrs"]["detected_on"] == "2026-02-30"  # invalid day: attrs
+    report = plan.report["reconciliation"]["events.json leads"]
+    assert (report["in"], report["rows"], report["open"]) == (3, 3, 1)
+    assert report["decisions"] == {"converted": 1, "dismissed": 1, "new": 1}
+    assert report["dates"] == {"date_only": 2, "timed": 0, "unparseable": 0, "absent": 1, "free_text": 1}
+    assert report["created_at_from_import_time"] == 2
+    assert not any(d["key"] == "events.json#rest" for d in plan.tables["documents"])  # nothing left un-modelled
+
+
+@pytest.mark.parametrize("decision", ["maybe", None, ""])
+def test_a_lead_with_an_unknown_decision_blocks_the_import(legacy: Path, decision: Any) -> None:
+    lead = {"id": "evlead-1", "title": "T"} | ({} if decision is None else {"decision": decision})
+    plan = events_plan(legacy, [], [lead])
+    assert any("lead 'evlead-1' has the decision" in b for b in plan.blockers)
+    assert plan.tables["event_leads"] == []
+
+
+def test_scout_event_reports_drop_the_merge_suffix_in_documents_only(legacy: Path) -> None:
+    intake = json.loads((legacy / "scout_intake.json").read_text(encoding="utf-8"))
+    intake["events"] = {
+        "se-1": {"id": "se-1", "event_name": "Demo day", "event_id": "ev-demo-day-2026-09-20|merged:Demo Day 2026"},
+        "se-2": {"id": "se-2", "event_name": "Meetup", "event_id": "ev-meetup-2026-10-01"},
+        "se-3": {"id": "se-3", "event_name": "Hack", "event_id": ""},
+    }
+    write(legacy, "scout_intake.json", intake)
+    plan = plan_for(legacy)
+    (rest,) = [d["body"] for d in plan.tables["documents"] if d["key"] == "scout_intake.json#rest"]
+    assert {k: v["event_id"] for k, v in rest["events"].items()} == {
+        "se-1": "ev-demo-day-2026-09-20", "se-2": "ev-meetup-2026-10-01", "se-3": ""}  # fmt: skip
+    assert plan.report["reconciliation"]["scout_intake.json"]["event_id_merge_suffixes_stripped"] == 1
+    (archived,) = [f for f in plan.archive if f.path == "scout_intake.json"]
+    assert archived.parsed["events"]["se-1"]["event_id"].endswith("|merged:Demo Day 2026")  # the archive is untouched
+
+
+@pytest.mark.parametrize(
+    ("raw", "kind", "why"),
+    [
+        (None, "absent", None), ("  ", "absent", None), ("2026-09-20", "date_only", None),
+        ("2026-09-20T18:30", "timed", None), ("2026-09-20T18:30+99:00", "unparseable", "the old parse_when raised"),
+        ("0001-01-01T00:30+01:00", "unparseable", "the old parse_when raised"), ("2026-09-20T23:60", "unparseable", "invalid time"),
+        ("next week", "unparseable", "no date"), (0, "unparseable", "not text"), (False, "unparseable", "not text"),
+    ],
+)  # fmt: skip
+def test_stated_never_raises(raw: Any, kind: str, why: str | None) -> None:
+    from datetime import date
+
+    from projectzero.events.when import stated
+
+    s = stated(raw, today=date(2026, 11, 10))
+    assert (s.kind, s.why) == (kind, why)
+    assert (s.date is None) is (kind in ("absent", "unparseable"))

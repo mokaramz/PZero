@@ -23,3 +23,6 @@ sha256 values above before comparing anything.
 five synthetic people sets (dates and the due boundary, sort ties, a graph with a cycle / shared descendant / depth
 limit, link-type quirks, a dict-shaped collection) at two clocks (2026-11-11 12:00 and 2026-11-12 00:30), plus
 `STRENGTHS`, `POTENTIAL`, `FIELDS` and `_slug` (`python -m projectzero.ops.parity_network goldens`).
+`oracle_events_when.json` (review 014): the old `domain/events.py` `parse_when`, `extract_date` and `event_span` over a
+synthetic corpus of 100 date values and 30 start / end pairs at two fixed clocks (2026-03-15 and 2026-11-11), each result
+`{ok}` or `{raises}` (`python -m projectzero.ops.parity_events goldens`).

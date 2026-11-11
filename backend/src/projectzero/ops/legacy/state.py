@@ -26,6 +26,7 @@ TABLE_ORDER = (
     "committee_reviews",
     "conviction_entries",
     "events",
+    "event_leads",
     "research_jobs",
     "model_ledger",
     "job_state",

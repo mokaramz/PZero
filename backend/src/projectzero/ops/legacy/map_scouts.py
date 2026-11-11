@@ -125,7 +125,7 @@ class ScoutMapper(BuilderState):
             "cycles": len(records(data.get("cycles"))),
             "items": len(records(data.get("items"))),
             "events": len(records(data.get("events"))),
-            "events_home": "documents (scout_intake.json#rest)",
+            "events_home": "documents (scout_intake.json#rest; event_id without the '|merged:' suffix)",
         }
 
     # ── Native Scout ────────────────────────────────────────────────────────────────────────────────────────────

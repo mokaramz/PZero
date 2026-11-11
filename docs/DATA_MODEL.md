@@ -20,11 +20,11 @@ Status: **DRAFT v0.1 — awaiting review by Codex.** Schema: `supabase/migration
 | Old file | Records | New home |
 |---|---|---|
 | `inbox.json` → candidates | 1,366 | `candidates` (+ `companies`, `company_identifiers`, `observations`) |
-| `scout_intake.json` → items / cycles / events | 39 / 7 / 40 | `candidates` (origin `legacy_scout00`), `intake_submissions` (one per cycle packet), `events` |
+| `scout_intake.json` → items / cycles / events | 39 / 7 / 40 | `candidates` (origin `legacy_scout00`), `intake_submissions` (one per cycle packet); the 40 Scout 00 event reports stay in `documents` (`scout_intake.json#rest`, `event_id` without the old `\|merged:<name>` suffix, review 014) |
 | `native_scout.json` → signals | 150 | `candidates` (origin `legacy_native`) or `observations` on an existing candidate |
 | `real_data.json` → signals | 10 | `conviction_entries` (+ `companies`) |
 | `people.json` | 247 | `people`, `person_identifiers`, `company_people` |
-| `events.json` | 543 (+20 leads) | `events` |
+| `events.json` | 543 (+20 leads) | `events`, `event_leads` |
 | `sources.json` | 46 | `sources` |
 | `triage_proposals.json` | 1,005 | `triage_proposals` |
 | `queue_routing.json` | 470 | `candidate_routing` |
@@ -92,3 +92,15 @@ target named) or archived-only (with a reason).
   `person_identifiers`: `orcid`, `openalex`, `github`, `patent_inventor` and `profile_url` (a page naming one person:
   LinkedIn `/in/`, GitHub user, ORCID, OpenAlex author, Scholar, X) are strong; `url` (any other link, e.g. the
   GitHub `blog` site) and `alias` are weak (migration 0005).
+- Events (review [014](team/reviews/014-import-events-fixes.md)): `events.legacy` / `event_leads.legacy` are the
+  imported records, never changed; `attrs.record` is reserved for the whole current record once the new app writes the
+  event or lead (an imported `record` field stays in `legacy` only), as for people. Dates are the old `parse_when`
+  (`events/when.py`, ported verbatim): `start_date` / `end_date` and `start_time` / `end_time` as stated (Berlin wall
+  clock, `NULL` time = no time stated, `NULL` date = not stated or not parseable; the raw string stays in `legacy`, and
+  an unparseable one also in `attrs`); `starts_at` / `ends_at` are the derived instants of the old `event_span` (Berlin
+  midnight for a date-only start; `ends_at` is **exclusive**: a date-only end is the next Berlin midnight, no end is the
+  end of the start day); a span that overflows or does not run forward in UTC blocks the import. `created_at` is a
+  valid `created`, else `retrieved_at`, else the import time. A free-text date without a year ("Sept 20") is dated by the import clock. Naive timestamps are
+  Europe/Berlin. Ids are not format-validated; a record without one is skipped and reported, a repeated one blocks the
+  import. Event ↔ person links stay in `attrs.people_met` (no link table yet); `.watch/` page baselines stay
+  archive-only until the scan port decides.
