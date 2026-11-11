@@ -45,3 +45,16 @@ def transaction(db_url: str) -> Iterator[psycopg.Connection[Any]]:
             yield conn
     finally:
         conn.close()
+
+
+@contextmanager
+def read_only_transaction(db_url: str) -> Iterator[psycopg.Connection[Any]]:
+    """A transaction the server refuses to write in (``set transaction read only``): a read route that tried to
+    clean up or migrate on read fails loudly instead of changing data (review 015, Codex H-101)."""
+    conn = connect(db_url)
+    try:
+        with conn.transaction():
+            conn.execute("set transaction read only")
+            yield conn
+    finally:
+        conn.close()

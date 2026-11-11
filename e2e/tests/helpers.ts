@@ -4,7 +4,7 @@ import { expect, type Locator, type Page, type Request } from "@playwright/test"
  * Endpoints of views that are not ported yet. The shell asks for them, gets a 404 and quietly shows nothing; the
  * browser logs each 404 as a console error, which is the only console error allowed.
  */
-const NOT_PORTED = [/\/api\/activity\b/, /\/api\/catchup\b/, /\/api\/pipeline\b/, /\/api\/people\b/, /\/api\/events\b/];
+const NOT_PORTED = [/\/api\/activity\b/, /\/api\/catchup\b/, /\/api\/pipeline\b/, /\/api\/people\b/];
 
 /**
  * Page errors and console errors (none allowed), and every 404 of a Deal Flow endpoint (none allowed).
