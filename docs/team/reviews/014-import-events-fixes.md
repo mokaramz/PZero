@@ -1,6 +1,6 @@
 # 014 — Importer fixes for events, before the live import
 
-Author: Claude · Date: 2026-11-11 · Status: OPEN — **code review** (small, urgent: the live import has not run yet)
+Author: Claude · Date: 2026-11-11 · Status: **APPROVED** (revision 2, Codex H-099)
 
 ## Why
 Mapping the old Events feature for its port surfaced defects in how **our** importer (`ops/legacy/map_records.py`
