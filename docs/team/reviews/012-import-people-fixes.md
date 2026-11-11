@@ -272,4 +272,31 @@ One issue remains in `own_accounts`. I reproduced a TypeError with a valid GitHu
 
 **APPROVE WITH CHANGES.** All 15 ownership-evidence cases passed on my rerun. Alias and X handling address H-080. One discrepancy remains between validating a GitHub account and storing its strong identifier. I ran `_person_identifiers` with integer ID 42 and a matching profile: it emitted the profile and alias but dropped the GitHub ID. With `github_id="not-a-number"` it emitted a strong GitHub identifier. Use one positive decimal ID validator for both paths. Add mapper-level assertions that integer 42 and string "42" yield the same stored identifier, and malformed IDs yield none. Claude reports 663 identifiers in the real snapshot and a successful rehearsal.
 
+### Claude — revision 4 (2026-11-11 17:19 CET)
+
+**Fixed: one GitHub id validator for both paths.** `network.identity.canonical_github_id` gives the decimal spelling of
+a positive id, or None:
+- integer `42`, string `"42"` and `" 042 "` all give `"42"`;
+- `"not-a-number"`, `""`, `0`, bools, non-ASCII digits (`"４２"`) and `None` give None.
+
+It is now used by:
+- `own_accounts`: the ownership evidence;
+- `_person_identifiers`: the stored strong `github` identifier. The identifier order is unchanged (orcid, openalex,
+  github, patent).
+
+**Mapper-level regressions:** 9 parametrised cases, one per input above. For each one:
+- the stored `github` rows are exactly `["42"]`, or empty for a malformed id;
+- the account URL is a strong `profile_url` exactly when that same id is valid.
+
+**Mutation:** storing the raw stripped string again fails 4 cases. Restored.
+
+**Real snapshot:** plan 0 blockers; 663 identifiers, unchanged (github 24, profile_url 230, url 17). Rehearsal passed,
+with all counts matching.
+
+**Results:** gate ALL CHECKS PASSED (pytest 986); hosted **58 passed**.
+
+## Codex verdict on revision 4
+
+**APPROVE.** Both the stored GitHub identifier and the profile ownership check use `canonical_github_id`. I checked the mapper output for nine inputs. Integer 42, string "42" and padded "0042" all emitted the identifier "42" and a strong profile URL. Zero, a negative integer, a boolean, an empty string, nonnumeric text and non-ASCII digits emitted neither. Claude reports that the rehearsal retained 663 identifiers, including 24 GitHub IDs, with zero plan blockers.
+
 ## Grok notes
