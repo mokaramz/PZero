@@ -1,7 +1,8 @@
 /**
  * A small synthetic Events payload (every name invented), as the server lists it on 2026-11-11 (a Wednesday, Berlin):
  * a priority high-signal event and a title-only listing on the same day, a planned event that needs verification, a
- * general / rejected event, an attended past event, an open lead and one Scout 00 suggestion not on Events yet.
+ * general / rejected event, an attended past event, an open lead and one Scout 00 suggestion not on Events yet (merged
+ * from two reports).
  */
 import type { EventHealthPayload, EventRecord, EventsPayload, ScoutReport, WeekendMission, WsigItem } from "../model/types";
 
@@ -40,6 +41,9 @@ export function events(): EventRecord[] {
       sc: { total: 69, band: "", evidence: [] },
       themes: ["AI"],
       registration_url: "https://example.org/alpha",
+      price: { amount: 25, currency: "EUR" },
+      price_state: "paid",
+      notes: "bring a demo",
       url: "https://example.org/alpha",
       assessment: { founder: "HIGH", networking: "MEDIUM", confidence: "STRUCTURED (JSON-LD)", factors: [{ dimension: "founder", band: "HIGH", evidence: ["founders"] }] },
     }),
@@ -74,9 +78,9 @@ export function reports(): ScoutReport[] {
       ev_class: "EV-A",
       why: "Dense founder audience",
       action: "",
-      cycles: ["008"],
+      cycles: ["008", "MW-2026-11-05"],
       url: "https://example.org/harbor",
-      report_ids: ["se-008-1"],
+      report_ids: ["se-008-1", "se-mw-2"],
       statuses: ["NEW"],
       themes: ["Climate"],
       tracked_event_id: "",
@@ -91,8 +95,11 @@ export function eventsPayload(): EventsPayload {
     weekend_window: ["2026-11-14", "2026-11-15"],
     today: TODAY,
     types: { founder_meetup: "Founder meetup", demo_day: "Demo day" },
-    dims: { founder_density: { label: "Founder density", max: 25, ladder: [[16, "some founders"]] } },
-    dim_order: ["founder_density"],
+    dims: {
+      founder_density: { label: "Founder density", max: 25, ladder: [[4, "few founders"], [16, "some founders"], [25, "mostly founders"]] },
+      network_value: { label: "Network value", max: 15, ladder: [[3, "low"], [9, "medium"], [15, "high"]] },
+    },
+    dim_order: ["founder_density", "network_value"],
     manual_sources: [{ name: "Community calendar", url: "https://example.org/cal", how: "Scan the list" }],
     pages: ["https://example.org/page"],
     ics_count: 1,

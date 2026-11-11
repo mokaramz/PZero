@@ -546,3 +546,51 @@ describe("migration 0007 — an event's dates as stated, and the event leads", (
     assert.equal(leads.rows[0].absent, true);
   });
 });
+
+describe("migration 0008 — every Events write is an append-only history row; debrief leads have their own origin", () => {
+  test("a history row has exactly one target, a known action, and is never changed", async () => {
+    const db = await freshDb();
+    await db.query(`insert into pz.events (id, name) values ('ev-a', 'Demo day')`);
+    await db.query(`insert into pz.event_leads (id, title) values ('evlead-1', 'Meetup')`);
+    await db.query(
+      `insert into pz.event_history (event_id, actor, action, before, after) values ('ev-a', 'operator', 'save', $1, $2)`,
+      [JSON.stringify({ status: "new" }), JSON.stringify({ status: "planned" })],
+    );
+    await db.query(`insert into pz.event_history (lead_id, actor, action, after) values ('evlead-1', 'operator', 'convert', '{}')`);
+    for (const action of ["create", "merge", "verify", "lead_decision", "debrief", "scout_add"]) {
+      await db.query(`insert into pz.event_history (event_id, actor, action, after) values ('ev-a', 'operator', $1, '{}')`, [action]);
+    }
+    const row = await db.query(`select event_id, lead_id, before, after, detail from pz.event_history order by id limit 1`);
+    assert.deepEqual(row.rows[0], { event_id: "ev-a", lead_id: null, before: { status: "new" }, after: { status: "planned" }, detail: {} });
+    await rejects(db.query(`insert into pz.event_history (actor, action, after) values ('operator', 'save', '{}')`), /event_history_one_target/);
+    await rejects(
+      db.query(`insert into pz.event_history (event_id, lead_id, actor, action, after) values ('ev-a', 'evlead-1', 'operator', 'save', '{}')`),
+      /event_history_one_target/,
+    );
+    await rejects(
+      db.query(`insert into pz.event_history (event_id, actor, action, after) values ('ev-a', 'operator', 'delete', '{}')`),
+      /event_history_action_check/,
+    );
+    await rejects(
+      db.query(`insert into pz.event_history (event_id, actor, action, after) values ('ev-nobody', 'operator', 'save', '{}')`),
+      /event_history_event_id_fkey/,
+    );
+    await rejects(db.query(`update pz.event_history set actor = 'x'`), /append-only/);
+    await rejects(db.query(`delete from pz.event_history`), /append-only/);
+    await rejects(db.query(`delete from pz.events where id = 'ev-a'`), /append-only/); // the history keeps the event
+    const rls = await db.query(`select relrowsecurity from pg_class where relname = 'event_history'`);
+    assert.equal(rls.rows[0].relrowsecurity, true);
+  });
+
+  test("intake accepts the server-side origin event_debrief, and still refuses an unknown one", async () => {
+    const db = await freshDb();
+    const insert = (origin, sha) =>
+      db.query(
+        `insert into pz.intake_submissions (origin, submitted_by, sha256, contract_version, payload) values ($1, 'operator', $2, '1.0', '{}')`,
+        [origin, sha],
+      );
+    await insert("event_debrief", "a".repeat(64));
+    await insert("legacy_dealflow", "b".repeat(64));
+    await rejects(insert("event_scan", "c".repeat(64)), /intake_submissions_origin_check/);
+  });
+});

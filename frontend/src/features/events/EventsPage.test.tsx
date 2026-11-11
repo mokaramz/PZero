@@ -1,9 +1,9 @@
-import { fireEvent, screen, waitFor, within } from "@testing-library/react";
+import { cleanup, fireEvent, screen, waitFor, within } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { NOT_PORTED } from "./model/deferred";
 import { TODAY } from "./test/fixtures";
-import { fakeServer, renderEvents } from "./test/server";
+import { fakeServer, ok, renderEvents } from "./test/server";
 
 const search = (router: { state: { location: { search: string } } }) => new URLSearchParams(router.state.location.search);
 const cardIds = () => screen.queryAllByTestId("event-card").map((c) => c.getAttribute("data-event-id"));
@@ -44,7 +44,7 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
-describe("Events — the timeline (read-only)", () => {
+describe("Events — the timeline", () => {
   it("shows the counts, the views and the day groups of the next two weeks from the four reads", async () => {
     const srv = fakeServer();
     renderEvents();
@@ -76,30 +76,34 @@ describe("Events — the timeline (read-only)", () => {
 });
 
 describe("Events — deep links", () => {
-  it("?event=<id>&edit=1 shows the event (with the score breakdown) and never opens a form", async () => {
+  it("?event=<id>&edit=1 opens that event's edit form once, then the parameter is removed", async () => {
     fakeServer();
     const { router } = renderEvents("/events?event=ev-gamma&edit=1");
     await loaded();
     const dlg = await screen.findByRole("dialog", { name: "Gamma Demo Day" });
-    expect(within(dlg).getByTestId("event-detail")).toBeInTheDocument();
-    expect(within(dlg).getByTestId("score-breakdown")).toBeInTheDocument();
-    expect(screen.getAllByRole("dialog")).toHaveLength(1);
+    expect(within(dlg).getByRole("form", { name: "Event form" })).toBeInTheDocument();
+    expect(within(dlg).getByLabelText("Event name")).toHaveValue("Gamma Demo Day");
     await waitFor(() => expect(search(router).has("edit")).toBe(false));
     expect(search(router).get("event")).toBe("ev-gamma");
+    fireEvent.click(within(dlg).getByRole("button", { name: "Close" }));
+    // the form closed, the event stays open
+    const detail = await screen.findByRole("dialog", { name: "Gamma Demo Day" });
+    expect(within(detail).getByTestId("score-breakdown")).toBeInTheDocument();
   });
 
-  it("?debrief=1 likewise only shows the event; an unknown id says so", async () => {
+  it("?debrief=1 opens the debrief; an unknown id never turns into a form", async () => {
     fakeServer();
     const { router } = renderEvents("/events?event=ev-alpha&debrief=1");
     await loaded();
-    expect(await screen.findByRole("dialog", { name: "Founders Breakfast Alpha" })).toBeInTheDocument();
+    const dlg = await screen.findByRole("dialog", { name: "Debrief: Founders Breakfast Alpha" });
+    expect(within(dlg).getByTestId("debrief-form")).toBeInTheDocument();
     await waitFor(() => expect(search(router).has("debrief")).toBe(false));
-    fireEvent.click(screen.getByRole("button", { name: "Close" }));
-    expect(search(router).has("event")).toBe(false);
+    cleanup();
 
     fakeServer();
-    renderEvents("/events?event=nope");
+    renderEvents("/events?event=nope&edit=1");
     expect(await screen.findByRole("dialog", { name: "Event not found" })).toBeInTheDocument();
+    expect(screen.queryByRole("form", { name: "Event form" })).toBeNull();
   });
 
   it("a Scout 00 suggestion opens by its key, labelled as not on Events yet", async () => {
@@ -110,61 +114,226 @@ describe("Events — deep links", () => {
   });
 });
 
-describe("Events — every write is visible, disabled and says why", () => {
-  it("cards, details, hero, menu, leads, table, health and the empty state never send a request", async () => {
+describe("Events — status, verify and leads (the old bodies under the new paths)", () => {
+  it("MAYBE in the details, Plan on a card and the table select post a status save", async () => {
     const srv = fakeServer();
+    renderEvents("/events?event=ev-gamma");
+    const dlg = await screen.findByRole("dialog", { name: "Gamma Demo Day" });
+    expect(within(dlg).getByRole("button", { name: "GO" })).toHaveAttribute("aria-pressed", "true");
+    expect(within(dlg).getByRole("button", { name: "Sold out" })).toBeDisabled();
+    expect(within(dlg).queryByText(/Register/)).toBeNull();
+    fireEvent.click(within(dlg).getByRole("button", { name: "MAYBE" }));
+    expect(await screen.findByText("Status → new")).toBeInTheDocument();
+    expect(srv.posts("save")).toEqual([{ id: "ev-gamma", status: "new" }]);
+    fireEvent.click(within(dlg).getByRole("button", { name: "Close" }));
+
+    fireEvent.click(within(screen.getAllByTestId("event-card")[0]).getByRole("button", { name: "Plan" }));
+    await waitFor(() => expect(srv.posts("save")).toHaveLength(2));
+    expect(srv.posts("save")[1]).toEqual({ id: "ev-alpha", status: "planned" });
+
+    fireEvent.click(within(openMenu()).getByRole("menuitem", { name: "Table view" }));
+    fireEvent.change(screen.getByRole("combobox", { name: "Status of Past Robotics Meetup" }), { target: { value: "skipped" } });
+    await waitFor(() => expect(srv.posts("save")).toHaveLength(3));
+    expect(srv.posts("save")[2]).toEqual({ id: "ev-went", status: "skipped" });
+    // every status save refreshes the Events reads
+    await waitFor(() => expect(srv.reads("/api/events/wsig").length).toBeGreaterThan(1));
+  });
+
+  it("Mark as verified posts {id, verified: true} with the old toast", async () => {
+    const srv = fakeServer();
+    renderEvents("/events?event=ev-gamma");
+    const dlg = await screen.findByRole("dialog", { name: "Gamma Demo Day" });
+    fireEvent.click(within(dlg).getByRole("button", { name: "Mark as verified" }));
+    expect(await screen.findByText("Marked as verified by you — now eligible (HUMAN JUDGMENT)")).toBeInTheDocument();
+    expect(srv.posts("verify")).toEqual([{ id: "ev-gamma", verified: true }]);
+  });
+
+  it("Dismiss posts the lead decision", async () => {
+    const srv = fakeServer();
+    renderEvents();
+    await loaded();
+    fireEvent.click(within(openMenu()).getByRole("menuitem", { name: "Leads (1)" }));
+    expect(screen.getByText("Event leads — convert the real ones, dismiss the rest")).toBeInTheDocument();
+    fireEvent.click(within(screen.getByTestId("leads")).getByRole("button", { name: "Dismiss" }));
+    await waitFor(() => expect(srv.posts("lead")).toEqual([{ id: "lead-1", decision: "dismissed" }]));
+  });
+});
+
+describe("Events — the event form", () => {
+  it("an edit keeps the structured price, sends every ladder value and toasts a merge", async () => {
+    const srv = fakeServer({ save: () => ok({ ok: true, id: "ev-alpha|merged:Founders Breakfast Alpha" }) });
+    renderEvents("/events?event=ev-alpha");
+    const detail = await screen.findByRole("dialog", { name: "Founders Breakfast Alpha" });
+    fireEvent.click(within(detail).getByRole("button", { name: "Edit event & notes" }));
+    const form = await screen.findByRole("form", { name: "Event form" });
+    expect(within(form).getByLabelText("Price")).toHaveValue("25 EUR");
+    await waitFor(() => expect(within(form).getByLabelText("Network value (max 15)")).toHaveValue("9"));
+    fireEvent.change(within(form).getByLabelText("Notes"), { target: { value: "bring a demo (edited)" } });
+    fireEvent.click(within(form).getByRole("button", { name: "Save event" }));
+    expect(await screen.findByText("Merged into existing event: Founders Breakfast Alpha")).toBeInTheDocument();
+    const [b] = srv.posts("save");
+    expect(b?.id).toBe("ev-alpha");
+    expect(b?.price).toEqual({ amount: 25, currency: "EUR" });
+    expect(b?.notes).toBe("bring a demo (edited)");
+    expect(b?.score_parts).toEqual({ founder_density: 16, network_value: 9 }); // no human ladder yet: auto-suggested on open
+    expect(b).not.toHaveProperty("convert_lead");
+    await waitFor(() => expect(screen.queryByRole("form", { name: "Event form" })).toBeNull());
+  });
+
+  it("+ Event auto-suggests the ladder; a 409 collision offers the existing event", async () => {
+    const srv = fakeServer({
+      save: () => ({
+        status: 409,
+        body: { ok: false, collision: true, id: "ev-alpha", error: "an event with this name and date already exists with different details (city) — open the existing event to edit it; nothing was saved" },
+      }),
+    });
     const { router } = renderEvents();
     await loaded();
+    fireEvent.click(screen.getByRole("button", { name: "+ Event" }));
+    const form = await screen.findByRole("form", { name: "Event form" });
+    expect(screen.getByRole("dialog", { name: "Add event" })).toBeInTheDocument();
+    // the new event's ladder follows the suggestion (closest rung): 15 → 16, 10 → 9
+    await waitFor(() => expect(within(form).getByLabelText("Founder density (max 25)")).toHaveValue("16"));
+    expect(within(form).getByLabelText("Network value (max 15)")).toHaveValue("9");
+    expect(srv.reads("/api/events/suggest")[0]).toBe("/api/events/suggest?type=founder_meetup");
+    fireEvent.change(within(form).getByLabelText("Event name"), { target: { value: "Founders Breakfast Alpha" } });
+    fireEvent.change(within(form).getByLabelText("City"), { target: { value: "Hamburg" } });
+    fireEvent.click(within(form).getByRole("button", { name: "Save event" }));
+    const alert = await screen.findByTestId("save-collision");
+    expect(alert).toHaveTextContent("an event with this name and date already exists with different details (city)");
+    expect(srv.posts("save")[0]).not.toHaveProperty("id");
+    fireEvent.click(within(alert).getByRole("button", { name: "Open existing event" }));
+    expect(await screen.findByRole("dialog", { name: "Founders Breakfast Alpha" })).toBeInTheDocument();
+    expect(search(router).get("event")).toBe("ev-alpha");
+    expect(screen.queryByRole("form", { name: "Event form" })).toBeNull();
+  });
 
-    const alpha = screen.getAllByTestId("event-card")[0];
-    expectDeferred(within(alpha).getByRole("button", { name: "Plan" }), NOT_PORTED.status);
-    expect(search(router).has("event")).toBe(false); // the inert Plan never opens the card
+  it("a lead converts in ONE save carrying convert_lead (a replayed answer is a success)", async () => {
+    const srv = fakeServer({ save: () => ok({ ok: true, id: "spring-hack-weekend-2026-12-05", replayed: true }) });
+    const { router } = renderEvents();
+    await loaded();
+    fireEvent.click(within(openMenu()).getByRole("menuitem", { name: "Leads (1)" }));
+    fireEvent.click(within(screen.getByTestId("leads")).getByRole("button", { name: "Convert" }));
+    const form = await screen.findByRole("form", { name: "Event form" });
+    expect(within(form).getByLabelText("Event name")).toHaveValue("Spring Hack Weekend");
+    expect(within(form).getByLabelText("Start (YYYY-MM-DD)")).toHaveValue("2026-12-05");
+    fireEvent.click(within(form).getByRole("button", { name: "Save event" }));
+    expect(await screen.findByText("Event saved & scored")).toBeInTheDocument();
+    expect(srv.writes().map((c) => c.path)).toEqual(["/api/events/save"]);
+    const [b] = srv.posts("save");
+    expect(b).toMatchObject({ name: "Spring Hack Weekend", start: "2026-12-05", city: "Berlin", url: "https://example.org/lead", convert_lead: "lead-1" });
+    expect(b).not.toHaveProperty("id");
+    expect(srv.posts("lead")).toEqual([]);
+    await waitFor(() => expect(screen.queryByRole("form", { name: "Event form" })).toBeNull());
+    expect(search(router).has("event")).toBe(false); // only an add opens the saved event
+  });
+});
+
+describe("Events — the debrief", () => {
+  const openDebrief = async () => {
+    renderEvents("/events?event=ev-alpha");
+    const detail = await screen.findByRole("dialog", { name: "Founders Breakfast Alpha" });
+    fireEvent.click(within(detail).getByRole("button", { name: "Debrief after the event" }));
+    return screen.findByTestId("debrief-form");
+  };
+  const type = (f: HTMLElement, label: string, value: string) => fireEvent.change(within(f).getByLabelText(label, { exact: true }), { target: { value } });
+
+  it("posts the old body with each lead's evidence URL and the old toast", async () => {
+    const srv = fakeServer({ debrief: () => ok({ ok: true, people: ["p-a", "p-b"], leads: 1 }) });
+    const f = await openDebrief();
+    expect(f).toHaveTextContent("The loop: Event → Person → Talent Graph → Founder → Startup.");
+    type(f, "Person 1", "Ada Synthetic");
+    type(f, "Person 1 — why interesting / what they do", "Builds test batteries");
+    type(f, "Startup/team 1", "Gridlet Labs");
+    type(f, "Startup/team 1 — what they do", "Battery analytics");
+    type(f, "Startup/team 1 — Evidence URL (optional — the event's URL is used otherwise)", "https://example.org/gridlet");
+    type(f, "Startup/team 2", "Quiet Co");
+    fireEvent.change(within(f).getByRole("textbox", { name: "Notes / promised follow-ups / introductions" }), { target: { value: "Intro promised" } });
+    fireEvent.click(within(f).getByRole("button", { name: "Save debrief" }));
+    expect(await screen.findByText("2 people added, 1 startup leads → Deal Flow")).toBeInTheDocument();
+    expect(srv.posts("debrief")).toEqual([
+      {
+        id: "ev-alpha",
+        people_met: [{ name: "Ada Synthetic", note: "Builds test batteries" }],
+        leads: [
+          { name: "Gridlet Labs", desc: "Battery analytics", url: "https://example.org/gridlet" },
+          { name: "Quiet Co", desc: "", url: "" },
+        ],
+        notes: "Intro promised",
+      },
+    ]);
+    await waitFor(() => expect(screen.queryByTestId("debrief-form")).toBeNull());
+  });
+
+  it("a lead without public evidence is refused at its own row and nothing closes", async () => {
+    const msg = "startup lead 2 (Third Team) has no public evidence URL: give the lead a URL or add the event's URL first — nothing was saved";
+    const srv = fakeServer({ debrief: () => ({ status: 400, body: { ok: false, error: msg, lead: 1 } }) });
+    const f = await openDebrief();
+    type(f, "Startup/team 1", "First Team");
+    type(f, "Startup/team 3", "Third Team"); // row 2 stays empty: the refused lead is the second one SENT, i.e. row 3
+    fireEvent.click(within(f).getByRole("button", { name: "Save debrief" }));
+    const alert = await within(f).findByTestId("debrief-lead-error");
+    expect(alert).toHaveTextContent(msg);
+    expect(alert.parentElement).toContainElement(within(f).getByLabelText("Startup/team 3", { exact: true }));
+    expect(within(f).getAllByTestId("debrief-lead-error")).toHaveLength(1);
+    expect(srv.posts("debrief")[0]?.leads).toEqual([
+      { name: "First Team", desc: "", url: "" },
+      { name: "Third Team", desc: "", url: "" },
+    ]);
+    expect(screen.getByTestId("debrief-form")).toBeInTheDocument();
+  });
+});
+
+describe("Events — Scout 00 suggestions", () => {
+  it("Add posts once per merged report and says where the event now is", async () => {
+    const srv = fakeServer({ scout: () => ok({ ok: true, status: "ADDED TO EVENTS", event_id: "harbor-summit-2026" }) });
+    renderEvents();
+    await loaded();
     const sug = screen.getByTestId("suggestion-card");
-    for (const name of ["Add to Events", "Monitor", "Ignore"]) expectDeferred(within(sug).getByRole("button", { name }), NOT_PORTED.scout);
-    expectDeferred(screen.getByRole("button", { name: "+ Event" }), NOT_PORTED.add);
+    expect(sug).toHaveTextContent("Scout 00 · P2 · EV-A · 2 cycles");
+    fireEvent.click(within(sug).getByRole("button", { name: "Add to Events" }));
+    expect(await screen.findByText("Harbor Summit 2026 is on Events — verify it there before planning")).toBeInTheDocument();
+    expect(srv.posts("scout")).toEqual([
+      { id: "se-008-1", action: "add" },
+      { id: "se-mw-2", action: "add" },
+    ]);
+  });
+
+  it("Ignore from the details closes it; a refused report says so", async () => {
+    const srv = fakeServer({ scout: (b) => (b.id === "se-mw-2" ? ok({ ok: false, error: "unknown Scout 00 report" }) : ok({ ok: true, status: "IGNORED" })) });
+    const { router } = renderEvents("/events?event=scout-harbor");
+    const dlg = await screen.findByRole("dialog", { name: "Harbor Summit 2026" });
+    fireEvent.click(within(dlg).getByRole("button", { name: "Ignore" }));
+    expect(await screen.findByText("Scout 00 report not updated: unknown Scout 00 report")).toBeInTheDocument();
+    expect(srv.posts("scout")).toEqual([
+      { id: "se-008-1", action: "ignore" },
+      { id: "se-mw-2", action: "ignore" },
+    ]);
+    expect(search(router).get("event")).toBe("scout-harbor"); // not updated: the details stay open
+  });
+});
+
+describe("Events — the source scan waits for review 017", () => {
+  it("the menu item, the health drawer and the empty state stay inert with the reason", async () => {
+    const srv = fakeServer();
+    renderEvents();
+    await loaded();
     expectDeferred(within(openMenu()).getByRole("menuitem", { name: "Scan sources" }), NOT_PORTED.scan);
     expect(screen.getByRole("menu")).toBeInTheDocument(); // an inert item leaves the menu open, as any non-action
     fireEvent.keyDown(document, { key: "Escape" });
     expect(screen.queryByRole("menu")).toBeNull();
 
-    // the details of a needs-review planned event: decision, verify, edit, debrief
-    fireEvent.click(within(screen.getAllByTestId("event-card")[2]).getByRole("button", { name: "Details" }));
-    const dlg = await screen.findByRole("dialog", { name: "Gamma Demo Day" });
-    for (const name of ["GO", "MAYBE", "SKIP"]) expectDeferred(within(dlg).getByRole("button", { name }), NOT_PORTED.status);
-    expect(within(dlg).getByRole("button", { name: "GO" })).toHaveAttribute("aria-pressed", "true");
-    expectDeferred(within(dlg).getByRole("button", { name: "Mark as verified" }), NOT_PORTED.verify);
-    expectDeferred(within(dlg).getByRole("button", { name: "Edit event & notes" }), NOT_PORTED.edit);
-    expectDeferred(within(dlg).getByRole("button", { name: "Debrief after the event" }), NOT_PORTED.debrief);
-    expect(within(dlg).getByRole("button", { name: "Sold out" })).toBeDisabled();
-    expect(within(dlg).queryByText(/Register/)).toBeNull();
-    fireEvent.click(within(dlg).getByRole("button", { name: "Close" }));
-
-    // leads
-    fireEvent.click(within(openMenu()).getByRole("menuitem", { name: "Leads (1)" }));
-    const leads = screen.getByTestId("leads");
-    expectDeferred(within(leads).getByRole("button", { name: "Convert" }), NOT_PORTED.lead);
-    expectDeferred(within(leads).getByRole("button", { name: "Dismiss" }), NOT_PORTED.lead);
-
-    // table: the status select shows the stored status and is disabled with the reason
-    fireEvent.click(within(openMenu()).getByRole("menuitem", { name: "Table view" }));
-    const sel = screen.getByRole("combobox", { name: "Status of Gamma Demo Day" });
-    expect(sel).toBeDisabled();
-    expect(sel).toHaveValue("planned");
-    expect(sel).toHaveAccessibleDescription(NOT_PORTED.status);
-
-    // source health: Scan sources
     fireEvent.click(within(openMenu()).getByRole("menuitem", { name: "Source health & scanner log" }));
     const h = await screen.findByRole("dialog", { name: "Source health & scanner log" });
     expectDeferred(within(h).getByRole("button", { name: "Scan sources" }), NOT_PORTED.scan);
     fireEvent.click(within(h).getByRole("button", { name: "Close" }));
 
-    // the empty state of the Planned view filtered to nothing
-    fireEvent.click(screen.getByRole("button", { name: "← Back to events" }));
     fireEvent.click(screen.getByRole("tab", { name: /Planned/ }));
     fireEvent.change(screen.getByLabelText("Date"), { target: { value: "7" } });
     const empty = await screen.findByTestId("events-empty");
     expectDeferred(within(empty).getByRole("button", { name: "Scan sources" }), NOT_PORTED.scan);
-    expectDeferred(within(empty).getByRole("button", { name: "+ Add an event you know" }), NOT_PORTED.add);
+    fireEvent.click(within(empty).getByRole("button", { name: "+ Add an event you know" }));
+    expect(await screen.findByRole("form", { name: "Event form" })).toBeInTheDocument();
 
     expect(srv.writes()).toEqual([]);
   });

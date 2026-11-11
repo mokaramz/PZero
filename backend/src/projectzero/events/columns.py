@@ -19,11 +19,12 @@ from __future__ import annotations
 
 import math
 import re
+from collections.abc import Mapping
 from dataclasses import dataclass, field
 from datetime import UTC, date, datetime
 from typing import Any
 
-from projectzero.events.when import Stated, span_of, stated
+from projectzero.events.when import Stated, free_text_form, span_of, stated
 
 RESERVED_ATTRS = ("id", "record")
 EVENT_PROMOTED = ("id", "name", "start", "end", "city", "country", "url", "status", "lat", "lng")
@@ -90,10 +91,24 @@ def checked_span(start: Stated, end: Stated) -> tuple[datetime | None, datetime 
     return (starts_at, ends_at, None) if forward else (None, None, "not_forward")
 
 
-def event_columns(eid: str, record: dict[str, Any], *, today: date) -> Mapped:
+def stored_stated(raw: Any, stored_date: date | None, stored_time: str | None) -> Stated:
+    """A side as it was STORED (its date and time columns), for a value an edit did not change: the stored result
+    governs, so an unrelated edit never re-resolves a free-text date with the write clock (review 016, Codex H-107)."""
+    if raw is None or (isinstance(raw, str) and not raw.strip()):
+        return Stated("absent")
+    if stored_date is None:
+        return Stated("unparseable", why="stored as no date", free_text=free_text_form(raw))
+    return Stated("timed" if stored_time else "date_only", stored_date, stored_time, free_text=free_text_form(raw))
+
+
+def event_columns(eid: str, record: dict[str, Any], *, today: date, kept: Mapping[str, Stated] | None = None) -> Mapped:
     """Typed columns + ``attrs`` of an event row for ``record`` (``today`` dates a free-text date without a year).
+    ``kept``: the sides ("start" / "end") an edit left unchanged, as stored (``stored_stated``); only the other sides
+    are resolved with ``today``, and the span is derived from the effective values of both.
     ``notes["span_problem"]`` set means the row must not be written (its span check would fail)."""
-    start, end = stated(record.get("start"), today=today), stated(record.get("end"), today=today)
+    keep = kept or {}
+    start = keep.get("start") or stated(record.get("start"), today=today)
+    end = keep.get("end") or stated(record.get("end"), today=today)
     starts_at, ends_at, span_problem = checked_span(start, end)
     name = text(record.get("name"))
     columns: dict[str, Any] = {

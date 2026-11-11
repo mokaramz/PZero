@@ -121,25 +121,21 @@ test.describe("Events — new app, preview database", () => {
     }
   });
 
-  test("deep link opens the event with its score; the decision buttons are disabled and send nothing", async ({ page }) => {
+  test("deep link opens the event with its score; GO saves the status (checked against a fresh read)", async ({ page }) => {
     const w = watch(page);
     const posted = recordPosts(page);
     const p = await payload(page);
-    const hs = upcoming(p).find((e) => e.eligibility.tier === "HIGH-SIGNAL");
+    const hs = upcoming(p).find((e) => e.eligibility.tier === "HIGH-SIGNAL" && e.status !== "planned");
     expect(hs, "the snapshot has an upcoming high-signal event").toBeTruthy();
-    await openEvents(page, `/events?event=${encodeURIComponent(hs!.id)}&edit=1`);
+    await openEvents(page, `/events?event=${encodeURIComponent(hs!.id)}`);
     const dlg = page.getByRole("dialog");
     await expect(dlg.getByTestId("event-detail")).toBeVisible();
-    await expect(page).not.toHaveURL(/edit=1/); // the form waits for review 016: only the event is shown
     await dlg.getByText("Evidence & scoring").click();
     await expect(page.getByTestId("event-score")).toBeVisible();
-    for (const name of ["GO", "MAYBE", "SKIP"]) {
-      const b = dlg.getByRole("button", { name, exact: true });
-      await expect(b).toHaveAttribute("aria-disabled", "true");
-      await expect(b).toHaveAttribute("title", /event writes port/);
-      await b.click({ force: true }); // aria-disabled: a forced click must still do nothing
-    }
-    expect(posted).toEqual([]);
+    await dlg.getByRole("button", { name: "GO", exact: true }).click();
+    await expect(page.getByText("Status → planned")).toBeVisible();
+    expect(posted.filter((x) => x.path === "/api/events/save").map((x) => x.body)).toEqual([{ id: hs!.id, status: "planned" }]);
+    await expect.poll(async () => (await payload(page)).events.find((e) => e.id === hs!.id)?.status).toBe("planned");
     await page.keyboard.press("Escape");
     await expect(page).toHaveURL(/\/events$/);
     w.expectClean();
@@ -172,7 +168,7 @@ test.describe("Events — new app, preview database", () => {
     w.expectClean();
   });
 
-  test("Scout 00 suggestions are labelled suggestions; their actions are disabled", async ({ page }) => {
+  test("Scout 00 suggestions are labelled suggestions, never shown as tracked", async ({ page }) => {
     const w = watch(page);
     const posted = recordPosts(page);
     const p = await payload(page);
@@ -185,9 +181,7 @@ test.describe("Events — new app, preview database", () => {
       // a report Events does not track yet is a labelled suggestion, never an event card
       await expect(cards.first()).toContainText("Scout 00 ·");
       await expect(cards.first()).toContainText("not on Events yet");
-      const add = cards.getByRole("button", { name: "Add to Events" }).first();
-      await expect(add).toHaveAttribute("aria-disabled", "true");
-      await add.click({ force: true });
+      await expect(cards.getByRole("button", { name: "Add to Events" }).first()).toBeEnabled();
     } else {
       // every report is already tracked: the view lists those events, and no suggestion card
       await expect(page.getByTestId("timeline").getByTestId("event-card").first()).toBeVisible();
@@ -222,19 +216,134 @@ test.describe("Events — new app, preview database", () => {
     w.expectClean();
   });
 
-  test("every deferred control explains itself and sends nothing", async ({ page }) => {
+  test("only the source scan is deferred: it explains itself and sends nothing", async ({ page }) => {
     const w = watch(page);
     const posted = recordPosts(page);
     await openEvents(page);
-    const deferred = page.locator("[data-deferred]");
-    const n = await deferred.count();
-    expect(n).toBeGreaterThan(0);
-    for (let i = 0; i < Math.min(n, 25); i++) {
-      const el = deferred.nth(i);
-      await expect(el).toHaveAttribute("title", /arrive|arrives/);
-      if (await el.isVisible()) await el.click({ force: true });
+    await page.getByRole("button", { name: /^More/ }).first().click();
+    const scan = page.locator("[data-deferred]").filter({ hasText: "Scan sources" }).first();
+    await expect(scan).toHaveAttribute("title", /event source scan port/);
+    await scan.click({ force: true });
+    for (const t of await page.locator("[data-deferred]").evaluateAll((els) => els.map((e) => e.getAttribute("title")))) {
+      expect(t).toMatch(/event source scan port/); // nothing else is deferred any more
     }
     expect(posted).toEqual([]);
+    w.expectClean();
+  });
+});
+
+test.describe("Events writes — new app, preview database (review 016)", () => {
+  type Rec = Ev & { price?: unknown; url?: string; notes?: string };
+  const posts = (posted: ReturnType<typeof recordPosts>, path: string) => posted.filter((x) => x.path === `/api/events/${path}`);
+  const find = async (page: Page, id: string) => (await payload(page)).events.find((e) => e.id === id) as Rec | undefined;
+
+  test("+ Event auto-suggests the ladder and saves; a conflicting duplicate offers the existing event", async ({ page }) => {
+    const w = watch(page, { expected: [409] });
+    const posted = recordPosts(page);
+    await openEvents(page);
+    // two random letter words: never "similar" (the old dedup) to an event an earlier run left behind
+    const word = () => Math.random().toString(36).replace(/[^a-z]/g, "").slice(0, 8);
+    const name = `${word()} ${word()} Founder Night`;
+    const fill = async (city: string) => {
+      await page.getByRole("button", { name: "+ Event" }).click();
+      const form = page.getByRole("form", { name: "Event form" });
+      await form.getByLabel("Event name").fill(name);
+      await form.getByLabel(/^Start/).fill("2026-12-04");
+      await form.getByLabel("City").fill(city);
+      await form.getByRole("button", { name: "Save event" }).click();
+    };
+    await fill("Karlsruhe");
+    await expect(page.getByRole("dialog", { name })).toBeVisible(); // saved: it opens
+    await page.keyboard.press("Escape"); // the saved event opens in its drawer; close it before the next add
+    expect(Object.keys((posts(posted, "save")[0].body as { score_parts: object }).score_parts)).toHaveLength(7);
+    await expect.poll(async () => (await payload(page)).events.filter((e) => e.name === name).length).toBe(1);
+    await fill("Berlin"); // the same name and date in another city
+    await expect(page.getByTestId("save-collision")).toContainText("already exists with different details");
+    await page.getByTestId("save-collision").getByRole("button", { name: "Open existing event" }).click();
+    await expect(page.getByRole("dialog", { name })).toBeVisible();
+    expect((await payload(page)).events.filter((e) => e.name === name)).toHaveLength(1);
+    w.expectClean();
+  });
+
+  test("an edit keeps a structured price", async ({ page }) => {
+    const w = watch(page);
+    const posted = recordPosts(page);
+    const ev = (upcoming(await payload(page)) as Rec[]).find((e) => e.price && typeof e.price === "object");
+    test.skip(!ev, "no upcoming event with a structured price in the snapshot");
+    await openEvents(page, `/events?event=${encodeURIComponent(ev!.id)}`);
+    await page.getByRole("button", { name: "Edit event & notes" }).click();
+    const form = page.getByRole("form", { name: "Event form" });
+    await form.getByLabel("Notes").fill("e2e (edited)");
+    await form.getByRole("button", { name: "Save event" }).click();
+    await expect(page.getByText("Event saved & scored")).toBeVisible();
+    expect((posts(posted, "save")[0].body as Rec).price).toEqual(ev!.price);
+    await expect.poll(async () => (await find(page, ev!.id))?.notes).toBe("e2e (edited)");
+    expect((await find(page, ev!.id))?.price).toEqual(ev!.price);
+    w.expectClean();
+  });
+
+  test("a needs-review event can be verified", async ({ page }) => {
+    const w = watch(page);
+    const posted = recordPosts(page);
+    const nr = upcoming(await payload(page)).find((e) => e.eligibility.label === "NEEDS REVIEW");
+    test.skip(!nr, "no upcoming needs-review event in the snapshot");
+    await openEvents(page, `/events?event=${encodeURIComponent(nr!.id)}`);
+    await page.getByRole("dialog").getByRole("button", { name: "Mark as verified" }).click();
+    await expect(page.getByText("Marked as verified by you — now eligible (HUMAN JUDGMENT)")).toBeVisible();
+    expect(posts(posted, "verify").map((x) => x.body)).toEqual([{ id: nr!.id, verified: true }]);
+    await expect.poll(async () => (await find(page, nr!.id))?.eligibility.label).toBe("VERIFIED BY YOU");
+    w.expectClean();
+  });
+
+  test("leads: dismiss posts the old body; convert is ONE save carrying the lead", async ({ page }) => {
+    const w = watch(page);
+    const posted = recordPosts(page);
+    const openLeads = async () => ((await (await page.request.get("/api/events")).json()).leads as Array<{ id: string; title: string }>);
+    const leads = await openLeads();
+    test.skip(leads.length < 2, "fewer than two open leads in the snapshot");
+    await openEvents(page);
+    await more(page, /^Leads/);
+    const rows = await page.getByRole("button", { name: "Convert" }).count();
+    await page.getByRole("button", { name: "Dismiss" }).first().click();
+    await expect.poll(() => posts(posted, "lead").length).toBe(1);
+    await expect(page.getByRole("button", { name: "Convert" })).toHaveCount(rows - 1); // the list refreshed
+    const dismissed = posts(posted, "lead")[0].body as { id: string; decision: string };
+    expect(dismissed.decision).toBe("dismissed");
+    expect(leads.map((x) => x.id)).toContain(dismissed.id); // the page lists leads in its own order
+    await page.getByRole("button", { name: "Convert" }).first().click();
+    const form = page.getByRole("form", { name: "Event form" });
+    const title = await form.getByLabel("Event name").inputValue();
+    const converting = leads.find((x) => x.title === title && x.id !== dismissed.id);
+    expect(converting, "the form is prefilled with an open lead").toBeTruthy();
+    if (!(await form.getByLabel(/^Start/).inputValue())) await form.getByLabel(/^Start/).fill("2026-12-11");
+    await form.getByRole("button", { name: "Save event" }).click();
+    await expect.poll(() => posts(posted, "save").length).toBe(1);
+    expect((posts(posted, "save")[0].body as { convert_lead?: string }).convert_lead).toBe(converting!.id);
+    expect(posts(posted, "lead")).toHaveLength(1); // no second request
+    await expect.poll(async () => (await openLeads()).map((x) => x.id)).not.toContain(converting!.id);
+    w.expectClean();
+  });
+
+  test("debrief after attending: people and Deal Flow leads", async ({ page }) => {
+    const w = watch(page);
+    const posted = recordPosts(page);
+    const ev = ((await payload(page)).events as Rec[]).find((e) => e.past && e.url?.startsWith("http"));
+    test.skip(!ev, "no past event with a URL in the snapshot");
+    const stamp = Date.now();
+    const person = `E2E Met Person ${stamp}`;
+    await openEvents(page, `/events?event=${encodeURIComponent(ev!.id)}&debrief=1`);
+    const f = page.getByTestId("debrief-form");
+    await expect(f).toContainText("The loop: Event → Person → Talent Graph → Founder → Startup.");
+    await f.getByLabel("Person 1", { exact: true }).fill(person);
+    await f.getByLabel("Person 1 — why interesting / what they do").fill("Builds grid batteries");
+    await f.getByLabel("Startup/team 1", { exact: true }).fill(`E2E Startup ${stamp}`);
+    await f.getByLabel("Startup/team 1 — what they do").fill("Battery analytics");
+    await f.getByRole("button", { name: "Save debrief" }).click();
+    await expect(page.getByText(/1 people? added, 1 startup leads? → Deal Flow/)).toBeVisible();
+    expect(posts(posted, "debrief")[0].body).toMatchObject({ id: ev!.id, people_met: [{ name: person, note: "Builds grid batteries" }] });
+    const people = (await (await page.request.get("/api/network/people")).json()).people as Array<{ name: string }>;
+    expect(people.some((x) => x.name === person)).toBe(true);
+    await expect.poll(async () => (await find(page, ev!.id))?.status).toBe("attended");
     w.expectClean();
   });
 });

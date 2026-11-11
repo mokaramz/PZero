@@ -9,8 +9,23 @@ that tried to write fails instead of changing data), computed with ONE Berlin ``
                                number
 * ``GET /api/events/weekend``  the old ``POST /api/weekend`` ``{start, end}`` (it never wrote): ``{missions}``
 
-The writes (``event_save``, ``event_verify``, ``event_lead``, ``event_debrief``, ``scout_event``) are review 016; the
-source scan (``event_find``) is review 017.
+Writes (review 016; each ONE transaction under ``events.writes``' lock order; refused with 409 before the legacy
+import; a body that is not a JSON object is a 400):
+
+* ``POST /api/events/save``     the old ``event_save``: add ``{name, ...}`` / edit ``{id, ...}``; with ``convert_lead``
+                               the lead's conversion in the same transaction -> 200 ``{ok, id}`` (``id|merged:<name>``
+                               after a merge; ``replayed: true`` when a conversion is answered again) · 400 · 404
+                               (unknown id / lead) · 409 ``{collision: true, id}`` (same name and date, conflicting
+                               place)
+* ``POST /api/events/verify``   the old ``event_verify`` ``{id, verified}`` -> ``{ok}`` (``ok: false``: unknown id)
+* ``POST /api/events/lead``     the old ``event_lead`` ``{id, decision}`` -> ``{ok}`` · 400 · 404
+* ``POST /api/events/debrief``  the old ``event_debrief`` ``{id, people_met: [{name, note, founder_potential}],
+                               leads: [{name, desc, url}], notes}`` -> ``{ok, people, leads}`` · 400 (a lead without
+                               public evidence: nothing written) · 404
+* ``POST /api/events/scout``    the old ``scout_event`` ``{id, action: add | monitor | ignore}`` -> ``{ok, status,
+                               event_id}`` (``ok: false`` + error for an unknown report or action)
+
+The source scan (``event_find``) is review 017.
 """
 
 from __future__ import annotations
@@ -19,13 +34,19 @@ from collections.abc import Callable
 from datetime import datetime
 from typing import Any
 
+import psycopg
 from fastapi import APIRouter, Request
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 
-from projectzero.core.db import read_only_transaction
-from projectzero.events import store, view
+from projectzero.api.routers.conviction import Body
+from projectzero.core.db import read_only_transaction, transaction
+from projectzero.dealflow.intake.postgres import IntakeClosedError
+from projectzero.events import edits, store, view
+from projectzero.events.edits import EventsError
 from projectzero.events.when import BERLIN
+from projectzero.events.writes import EventsWriter
+from projectzero.network.edits import NetworkError
 
 router = APIRouter(prefix="/api/events", tags=["events"])
 
@@ -79,3 +100,57 @@ def get_wsig(request: Request) -> JSONResponse:
 def get_weekend(request: Request) -> JSONResponse:
     start, end = request.query_params.get("start", ""), request.query_params.get("end", "")
     return _read(request, lambda data, today: view.weekend_payload(data, today, start, end), people=True)
+
+
+# ── writes (review 016) ─────────────────────────────────────────────────────────────────────────────────────────
+_VALIDATE: dict[str, Callable[[dict[str, Any]], Any]] = {
+    "save": edits.validate_save,
+    "lead": edits.lead_decision,
+    "debrief": edits.validate_debrief,
+}
+SAVE_RACE = "this event was just created by another save — open it and save again; nothing was saved"
+
+
+def _write(request: Request, body: Body, action: str) -> JSONResponse:
+    if isinstance(body, JSONResponse):
+        return body
+    settings = request.app.state.settings
+    try:
+        if check := _VALIDATE.get(action):
+            check(body)  # bad requests never open a connection
+        with transaction(settings.db_url) as conn:
+            out = getattr(EventsWriter(conn, settings.schema, _now(request)), action)(body)
+    except (EventsError, NetworkError) as exc:  # raised inside the transaction: everything it wrote is rolled back
+        return JSONResponse(jsonable_encoder({"ok": False, "error": str(exc), **exc.extra}), status_code=exc.status)
+    except IntakeClosedError as exc:
+        return JSONResponse({"ok": False, "error": str(exc)}, status_code=409)
+    except psycopg.errors.UniqueViolation as exc:  # the last line of defence, after the rollback
+        if exc.diag.constraint_name == "events_pkey":
+            return JSONResponse({"ok": False, "error": SAVE_RACE}, status_code=409)
+        raise
+    return JSONResponse(jsonable_encoder(out))
+
+
+@router.post("/save")
+def event_save(request: Request, body: Body) -> JSONResponse:
+    return _write(request, body, "save")
+
+
+@router.post("/verify")
+def event_verify(request: Request, body: Body) -> JSONResponse:
+    return _write(request, body, "verify")
+
+
+@router.post("/lead")
+def event_lead(request: Request, body: Body) -> JSONResponse:
+    return _write(request, body, "lead")
+
+
+@router.post("/debrief")
+def event_debrief(request: Request, body: Body) -> JSONResponse:
+    return _write(request, body, "debrief")
+
+
+@router.post("/scout")
+def scout_event(request: Request, body: Body) -> JSONResponse:
+    return _write(request, body, "scout")

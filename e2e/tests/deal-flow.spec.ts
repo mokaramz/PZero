@@ -90,6 +90,8 @@ test.describe("Deal Flow — new app, preview database", () => {
     const posted = recordPosts(page);
     await openDealFlow(page, "/deal-flow?find=1");
     await expect(page.getByTestId("find-btn")).toBeFocused();
+    await expect(page.getByTestId("cand-detail").first()).toBeVisible();
+    await page.waitForLoadState("networkidle"); // count only once the detail and its triage panel have loaded
     const deferred = page.locator('[aria-disabled="true"]');
     const n = await deferred.count();
     expect(n).toBeGreaterThan(3);

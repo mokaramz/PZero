@@ -48,7 +48,7 @@ select = ["E", "F", "W", "I", "B", "UP", "SIM", "RUF"]
 "src/projectzero/ops/parity_conviction.py" = ["E501"]  # the synthetic corpus: one case per line
 # protected Events rules (RC2 assessment, ladders, gazetteer, source catalogue): regexes and texts are verbatim
 "src/projectzero/events/{engine,place,catalog}.py" = ["E501"]
-"src/projectzero/ops/parity_events_read.py" = ["E501"]  # the synthetic corpus: one case per line
+"src/projectzero/ops/parity_events_{read,write}.py" = ["E501"]  # the synthetic corpus: one case per line
 
 [tool.mypy]
 python_version = "3.12"
