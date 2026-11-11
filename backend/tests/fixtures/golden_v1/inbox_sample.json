@@ -1,0 +1,6899 @@
+{
+ "candidates": [
+  {
+   "all_source_ids": [
+    "ch-epfl-creation"
+   ],
+   "archetype_hits": [],
+   "bootstrap_source": true,
+   "category": "ICT",
+   "country": "Switzerland",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "new",
+   "description": "Category: ICT. Next generation photo sharing app. Project leader(s): Patrick Schönmann.",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "CH"
+   ],
+   "geo_scope": "country",
+   "id": "0ec6b6cb83a3",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "Lausanne, Switzerland",
+   "name": "Alblooms",
+   "noise": false,
+   "notes": "",
+   "priority": 5,
+   "q_found": [
+    "ch-epfl-creation"
+   ],
+   "quality_source_id": "ch-epfl-creation",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "EPFL - startups in creation (official)",
+   "source_date": null,
+   "source_id": "ch-epfl-creation",
+   "source_sectors": [
+    "deeptech",
+    "ai_sw",
+    "robotics"
+   ],
+   "source_url": "https://www.epfl.ch/innovation/startup/wp-content/uploads/2025/06/Alblooms_November2023.pdf",
+   "src_quality": 2,
+   "twins": [],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is",
+    "EPFL startup in creation (official pre-company list)"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "ch-epfl-creation"
+   ],
+   "archetype_hits": [],
+   "bootstrap_source": true,
+   "category": "Engineering",
+   "country": "Switzerland",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "new",
+   "description": "Category: Engineering. Automatic and high precision Acoustic Emission–MicroSeismic monitoring. Project leader(s): Maalek Momeni.",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "CH"
+   ],
+   "geo_scope": "country",
+   "id": "2e1a867bdf2b",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "Lausanne, Switzerland",
+   "name": "SIMORGH",
+   "noise": false,
+   "notes": "",
+   "priority": 5,
+   "q_found": [
+    "ch-epfl-creation"
+   ],
+   "quality_source_id": "ch-epfl-creation",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "EPFL - startups in creation (official)",
+   "source_date": null,
+   "source_id": "ch-epfl-creation",
+   "source_sectors": [
+    "deeptech",
+    "ai_sw",
+    "robotics"
+   ],
+   "source_url": "https://www.epfl.ch/innovation/startup/wp-content/uploads/2024/01/Simorgh_January2024.pdf",
+   "src_quality": 2,
+   "twins": [],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is",
+    "EPFL startup in creation (official pre-company list)"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "ch-epfl-creation"
+   ],
+   "archetype_hits": [],
+   "bootstrap_source": true,
+   "category": "ICT",
+   "country": "Switzerland",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "new",
+   "description": "Category: ICT. LLM-powered personalized news assistant delivering summaries of the day’s most important events, catered precisely to your interests. Project leader(s): Paul Madelénat, Jacopo Moretti, Ludovic Mermo, Florian Déjean.",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "CH"
+   ],
+   "geo_scope": "country",
+   "id": "40c592c3839d",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "Lausanne, Switzerland",
+   "name": "Actualia",
+   "noise": false,
+   "notes": "",
+   "priority": 5,
+   "q_found": [
+    "ch-epfl-creation"
+   ],
+   "quality_source_id": "ch-epfl-creation",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [
+    "ai_sw"
+   ],
+   "seen_runs": 1,
+   "source": "EPFL - startups in creation (official)",
+   "source_date": null,
+   "source_id": "ch-epfl-creation",
+   "source_sectors": [
+    "deeptech",
+    "ai_sw",
+    "robotics"
+   ],
+   "source_url": "https://www.epfl.ch/innovation/startup/wp-content/uploads/2025/05/Actualia_May2025.pdf",
+   "src_quality": 2,
+   "twins": [],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is",
+    "EPFL startup in creation (official pre-company list)"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "ch-epfl-creation"
+   ],
+   "archetype_hits": [],
+   "bootstrap_source": true,
+   "category": "Biotech",
+   "country": "Switzerland",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "new",
+   "description": "Category: Biotech. Development of a platform for antiviral therapies based on the targeted delivery of siRNAs, which inhibit the synthesis of key viral proteins to stop replication. Project leader(s): Rémi La Polla.",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "CH"
+   ],
+   "geo_scope": "country",
+   "id": "51c8d0f4416b",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "Lausanne, Switzerland",
+   "name": "BioLNP Innovation",
+   "noise": false,
+   "notes": "",
+   "opportunistic": true,
+   "priority": 6,
+   "q_found": [
+    "ch-epfl-creation"
+   ],
+   "quality_source_id": "ch-epfl-creation",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [
+    "bio"
+   ],
+   "seen_runs": 1,
+   "source": "EPFL - startups in creation (official)",
+   "source_date": null,
+   "source_id": "ch-epfl-creation",
+   "source_sectors": [
+    "deeptech",
+    "ai_sw",
+    "robotics"
+   ],
+   "source_url": "https://www.epfl.ch/innovation/startup/wp-content/uploads/2025/09/BioLNP-Innovation_September2025.pdf",
+   "src_quality": 2,
+   "twins": [
+    "Tabular"
+   ],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is",
+    "Possible portfolio twin(s): Tabular → run conflict check",
+    "EPFL startup in creation (official pre-company list)",
+    "OPPORTUNISTIC — candidate text is bio/pharma; outside core themes, #15 outlier route only"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "ch-epfl-creation"
+   ],
+   "archetype_hits": [],
+   "bootstrap_source": true,
+   "category": "Cleantech",
+   "country": "Switzerland",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "new",
+   "description": "Category: Cleantech. Managing sea-level rise with innovative adoptable coastal defence infrastructure. Project leader(s): Tara Habibi, Thomas Keller and Shanin Maghsoudizand.",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "CH"
+   ],
+   "geo_scope": "country",
+   "id": "809238251bf6",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "Lausanne, Switzerland",
+   "name": "SafeShore",
+   "noise": false,
+   "notes": "",
+   "priority": 6,
+   "q_found": [
+    "ch-epfl-creation"
+   ],
+   "quality_source_id": "ch-epfl-creation",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [
+    "defence"
+   ],
+   "seen_runs": 1,
+   "source": "EPFL - startups in creation (official)",
+   "source_date": null,
+   "source_id": "ch-epfl-creation",
+   "source_sectors": [
+    "deeptech",
+    "ai_sw",
+    "robotics"
+   ],
+   "source_url": "https://www.epfl.ch/innovation/startup/wp-content/uploads/2024/10/SafeShore_October2024.pdf",
+   "src_quality": 2,
+   "twins": [
+    "Tabular"
+   ],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is",
+    "Possible portfolio twin(s): Tabular → run conflict check",
+    "EPFL startup in creation (official pre-company list)"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "ch-epfl-creation"
+   ],
+   "archetype_hits": [],
+   "bootstrap_source": true,
+   "category": "Cleantech",
+   "country": "Switzerland",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "new",
+   "description": "Category: Cleantech. Providing accurate and reliable in-situ stress data required for safe carbon capture and storage. Project leader(s): Angelica Tuttolomondo and Alex Horvath.",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "CH"
+   ],
+   "geo_scope": "country",
+   "id": "a663b5a40ac8",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "Lausanne, Switzerland",
+   "name": "InSituMetrix",
+   "noise": false,
+   "notes": "",
+   "priority": 6,
+   "q_found": [
+    "ch-epfl-creation"
+   ],
+   "quality_source_id": "ch-epfl-creation",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [
+    "climate"
+   ],
+   "seen_runs": 1,
+   "source": "EPFL - startups in creation (official)",
+   "source_date": null,
+   "source_id": "ch-epfl-creation",
+   "source_sectors": [
+    "deeptech",
+    "ai_sw",
+    "robotics"
+   ],
+   "source_url": "https://www.epfl.ch/innovation/startup/wp-content/uploads/2025/02/InSituMetrix_January_2025.pdf",
+   "src_quality": 2,
+   "twins": [
+    "Tabular"
+   ],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is",
+    "Possible portfolio twin(s): Tabular → run conflict check",
+    "EPFL startup in creation (official pre-company list)"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "ch-epfl-creation"
+   ],
+   "archetype_hits": [],
+   "bootstrap_source": true,
+   "category": "Engineering",
+   "country": "Switzerland",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "new",
+   "description": "Category: Engineering. A groundbreaking self-deployable scaffolding system that assembles, reconfigures, and disassembles automatically with minimal manual labor. Project leader(s): Jan Petrš and Thomas Estier.",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "CH"
+   ],
+   "geo_scope": "country",
+   "id": "bd70fadd05f0",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "Lausanne, Switzerland",
+   "name": "Déploya",
+   "noise": false,
+   "notes": "",
+   "priority": 5,
+   "q_found": [
+    "ch-epfl-creation"
+   ],
+   "quality_source_id": "ch-epfl-creation",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "EPFL - startups in creation (official)",
+   "source_date": null,
+   "source_id": "ch-epfl-creation",
+   "source_sectors": [
+    "deeptech",
+    "ai_sw",
+    "robotics"
+   ],
+   "source_url": "https://www.epfl.ch/innovation/startup/wp-content/uploads/2025/09/Deploya_September2025.pdf",
+   "src_quality": 2,
+   "twins": [],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is",
+    "EPFL startup in creation (official pre-company list)"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "ch-epfl-creation"
+   ],
+   "archetype_hits": [],
+   "bootstrap_source": true,
+   "category": "Engineering",
+   "country": "Switzerland",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "new",
+   "description": "Category: Engineering. Revolutionize safety and efficiency in extreme temperature environment operations. Project leader(s): Fabian Wiesemüller and David Häusermann.",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "CH"
+   ],
+   "geo_scope": "country",
+   "id": "ca84f343a23a",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "Lausanne, Switzerland",
+   "name": "Firedrone",
+   "noise": false,
+   "notes": "",
+   "priority": 5,
+   "q_found": [
+    "ch-epfl-creation"
+   ],
+   "quality_source_id": "ch-epfl-creation",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "EPFL - startups in creation (official)",
+   "source_date": null,
+   "source_id": "ch-epfl-creation",
+   "source_sectors": [
+    "deeptech",
+    "ai_sw",
+    "robotics"
+   ],
+   "source_url": "https://www.epfl.ch/innovation/startup/wp-content/uploads/2025/05/FireDrone_May2025.pdf",
+   "src_quality": 2,
+   "twins": [],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is",
+    "EPFL startup in creation (official pre-company list)"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "ch-epfl-creation"
+   ],
+   "archetype_hits": [],
+   "bootstrap_source": true,
+   "category": "Cleantech",
+   "country": "Switzerland",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "new",
+   "description": "Category: Cleantech. A process to store carbon dioxide by turning it into a solid mineral. Project leader(s): Luc Bondaz and Suhas Nuggehalli Sampathkumar.",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "CH"
+   ],
+   "geo_scope": "country",
+   "id": "e79298c88987",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "Lausanne, Switzerland",
+   "name": "DeltaSpark",
+   "noise": false,
+   "notes": "",
+   "priority": 5,
+   "q_found": [
+    "ch-epfl-creation"
+   ],
+   "quality_source_id": "ch-epfl-creation",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [
+    "climate"
+   ],
+   "seen_runs": 1,
+   "source": "EPFL - startups in creation (official)",
+   "source_date": null,
+   "source_id": "ch-epfl-creation",
+   "source_sectors": [
+    "deeptech",
+    "ai_sw",
+    "robotics"
+   ],
+   "source_url": "https://www.epfl.ch/innovation/startup/wp-content/uploads/2025/05/DeltaSpark_April2025.pdf",
+   "src_quality": 2,
+   "twins": [],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is",
+    "EPFL startup in creation (official pre-company list)"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "ch-epfl-creation"
+   ],
+   "archetype_hits": [],
+   "bootstrap_source": true,
+   "category": "ICT",
+   "country": "Switzerland",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "new",
+   "description": "Category: ICT. Feedback. is SaaS solution that coaches hotel and restaurant managers on what truly matters to their customers while reducing daily operational tasks. Project leader(s): Valentin Garnier.",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "CH"
+   ],
+   "geo_scope": "country",
+   "id": "f772902608e9",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "Lausanne, Switzerland",
+   "name": "Ranova",
+   "noise": true,
+   "notes": "auto-rejected: looks like noise — bring back if wrong",
+   "priority": -5,
+   "q_found": [
+    "ch-epfl-creation"
+   ],
+   "quality_source_id": "ch-epfl-creation",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [
+    "ai_sw"
+   ],
+   "seen_runs": 1,
+   "source": "EPFL - startups in creation (official)",
+   "source_date": null,
+   "source_id": "ch-epfl-creation",
+   "source_sectors": [
+    "deeptech",
+    "ai_sw",
+    "robotics"
+   ],
+   "source_url": "https://www.epfl.ch/innovation/startup/wp-content/uploads/2025/05/Ranova_April2025.pdf",
+   "src_quality": 2,
+   "twins": [],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is",
+    "⚠ Looks like holding/consulting/services — likely noise",
+    "EPFL startup in creation (official pre-company list)"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "uk-gtr"
+   ],
+   "also_seen": [],
+   "archetype_hits": [
+    6
+   ],
+   "country": "UK",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "new",
+   "description": "UKRI project participant: Autonomous Systems in collaboration with Thales UK (Studentship)",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "grant",
+   "entity_ids": {
+    "org_id": "gtr-0201741C-3D32-4068-8B53-2D3A69EA5044"
+   },
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "UK"
+   ],
+   "geo_scope": "country",
+   "id": "0294fcc227ec",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "UK",
+   "name": "THALES UK LIMITED",
+   "noise": false,
+   "notes": "",
+   "priority": 5,
+   "q_found": [
+    "uk-gtr"
+   ],
+   "quality_source_id": "uk-gtr",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [
+    "robotics"
+   ],
+   "seen_runs": 1,
+   "source": "UKRI Gateway to Research (Innovate UK)",
+   "source_date": null,
+   "source_id": "uk-gtr",
+   "source_sectors": [
+    "deeptech",
+    "ai_sw",
+    "climate"
+   ],
+   "source_url": "https://gtr.ukri.org/api/search/project",
+   "src_quality": 2,
+   "twins": [],
+   "why": [
+    "Archetype keyword match: #6 Dual-use autonomous platforms with a fleet/software brain"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "uk-gtr"
+   ],
+   "archetype_hits": [],
+   "country": "UK",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "new",
+   "description": "UKRI project participant: Multi-Platform Inspection Maintenance &amp; Repair In Extreme Environment (MIMRee) (Collaborative R&D)",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "grant",
+   "entity_ids": {
+    "org_id": "gtr-96342594-A807-4755-86AD-472DCD59CA8F"
+   },
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "UK"
+   ],
+   "geo_scope": "country",
+   "id": "2ad13d2a589c",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "UK",
+   "name": "WOOTZANO LIMITED",
+   "noise": false,
+   "notes": "",
+   "priority": 4,
+   "q_found": [
+    "uk-gtr"
+   ],
+   "quality_source_id": "uk-gtr",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "UKRI Gateway to Research (Innovate UK)",
+   "source_date": null,
+   "source_id": "uk-gtr",
+   "source_sectors": [
+    "deeptech",
+    "ai_sw",
+    "climate"
+   ],
+   "source_url": "https://gtr.ukri.org/api/search/project",
+   "src_quality": 2,
+   "twins": [
+    "Nettle"
+   ],
+   "why": [
+    "Possible portfolio twin(s): Nettle → run conflict check"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "uk-gtr"
+   ],
+   "also_seen": [],
+   "archetype_hits": [],
+   "country": "UK",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "new",
+   "description": "UKRI project participant: Safe Flight (Collaborative R&D)",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "grant",
+   "entity_ids": {
+    "org_id": "gtr-AF5A1541-D454-4E94-8117-8C5254C79ED2"
+   },
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "UK"
+   ],
+   "geo_scope": "country",
+   "id": "43a6232f8d25",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "UK",
+   "name": "GKN AEROSPACE SERVICES LIMITED",
+   "noise": false,
+   "notes": "",
+   "priority": 3,
+   "q_found": [
+    "uk-gtr"
+   ],
+   "quality_source_id": "uk-gtr",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "UKRI Gateway to Research (Innovate UK)",
+   "source_date": null,
+   "source_id": "uk-gtr",
+   "source_sectors": [
+    "deeptech",
+    "ai_sw",
+    "climate"
+   ],
+   "source_url": "https://gtr.ukri.org/api/search/project",
+   "src_quality": 2,
+   "twins": [],
+   "why": []
+  },
+  {
+   "all_source_ids": [
+    "uk-gtr"
+   ],
+   "archetype_hits": [],
+   "country": "UK",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "new",
+   "description": "UKRI project participant: Project Sunflower (Feasibility Studies)",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "grant",
+   "entity_ids": {
+    "org_id": "gtr-51F2FAA7-7359-44DA-BA5D-B6B4EBC9F252"
+   },
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "UK"
+   ],
+   "geo_scope": "country",
+   "id": "54236017d963",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "UK",
+   "name": "BELFAST CONTAINER TERMINAL (BCT) LIMITED",
+   "noise": false,
+   "notes": "",
+   "priority": 3,
+   "q_found": [
+    "uk-gtr"
+   ],
+   "quality_source_id": "uk-gtr",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "UKRI Gateway to Research (Innovate UK)",
+   "source_date": null,
+   "source_id": "uk-gtr",
+   "source_sectors": [
+    "deeptech",
+    "ai_sw",
+    "climate"
+   ],
+   "source_url": "https://gtr.ukri.org/api/search/project",
+   "src_quality": 2,
+   "twins": [],
+   "why": []
+  },
+  {
+   "all_source_ids": [
+    "uk-gtr"
+   ],
+   "also_seen": [],
+   "archetype_hits": [
+    8,
+    6
+   ],
+   "country": "UK",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "new",
+   "description": "UKRI project participant: SDAUCC: Standards Development for Autonomous Underbody Conductive Charging (Collaborative R&D)",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "grant",
+   "entity_ids": {
+    "org_id": "gtr-E372B388-83AC-41A5-AD7B-AE17E9069062"
+   },
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "UK"
+   ],
+   "geo_scope": "country",
+   "id": "5ec628e8cabc",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "UK",
+   "name": "GAMMA ENERGY LIMITED",
+   "noise": false,
+   "notes": "",
+   "priority": 8,
+   "q_found": [
+    "uk-gtr"
+   ],
+   "q_milestones": [
+    "attention_queue"
+   ],
+   "quality_source_id": "uk-gtr",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "UKRI Gateway to Research (Innovate UK)",
+   "source_date": null,
+   "source_id": "uk-gtr",
+   "source_sectors": [
+    "deeptech",
+    "ai_sw",
+    "climate"
+   ],
+   "source_url": "https://gtr.ukri.org/api/search/project",
+   "src_quality": 2,
+   "twins": [
+    "Avoltra",
+    "Enapi"
+   ],
+   "why": [
+    "Archetype keyword match: #8 Energy & critical-infrastructure intelligence; #6 Dual-use autonomous platforms with a fleet/software brain",
+    "Possible portfolio twin(s): Avoltra, Enapi → run conflict check"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "uk-gtr"
+   ],
+   "archetype_hits": [],
+   "country": "UK",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "new",
+   "description": "UKRI project participant: Project Sunflower (Feasibility Studies)",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "grant",
+   "entity_ids": {
+    "org_id": "gtr-E4C2E948-81F7-469B-BC35-1D6620161E9A"
+   },
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "UK"
+   ],
+   "geo_scope": "country",
+   "id": "7f8a7cf09d8d",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "UK",
+   "name": "AIDRIVERS LTD",
+   "noise": false,
+   "notes": "",
+   "priority": 3,
+   "q_found": [
+    "uk-gtr"
+   ],
+   "quality_source_id": "uk-gtr",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "UKRI Gateway to Research (Innovate UK)",
+   "source_date": null,
+   "source_id": "uk-gtr",
+   "source_sectors": [
+    "deeptech",
+    "ai_sw",
+    "climate"
+   ],
+   "source_url": "https://gtr.ukri.org/api/search/project",
+   "src_quality": 2,
+   "twins": [],
+   "why": []
+  },
+  {
+   "all_source_ids": [
+    "uk-gtr"
+   ],
+   "archetype_hits": [
+    6
+   ],
+   "country": "UK",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "new",
+   "description": "UKRI project participant: Scrutable Autonomous Systems (Research Grant)",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "grant",
+   "entity_ids": {
+    "org_id": "gtr-C0DF82F0-9A24-46AE-9EFC-A1174276E9C2"
+   },
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "UK"
+   ],
+   "geo_scope": "country",
+   "id": "a92666829152",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "UK",
+   "name": "Schlumberger Limited",
+   "noise": false,
+   "notes": "",
+   "priority": 5,
+   "q_found": [
+    "uk-gtr"
+   ],
+   "quality_source_id": "uk-gtr",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [
+    "robotics"
+   ],
+   "seen_runs": 1,
+   "source": "UKRI Gateway to Research (Innovate UK)",
+   "source_date": null,
+   "source_id": "uk-gtr",
+   "source_sectors": [
+    "deeptech",
+    "ai_sw",
+    "climate"
+   ],
+   "source_url": "https://gtr.ukri.org/api/search/project",
+   "src_quality": 2,
+   "twins": [],
+   "why": [
+    "Archetype keyword match: #6 Dual-use autonomous platforms with a fleet/software brain"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "uk-gtr"
+   ],
+   "archetype_hits": [],
+   "country": "UK",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "new",
+   "description": "UKRI project participant: Teesside University and Modus Seabed Intervention Limited (Knowledge Transfer Partnership)",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "grant",
+   "entity_ids": {
+    "org_id": "gtr-FED57A0C-E73B-4F31-B755-419DA6B7B3C4"
+   },
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "UK"
+   ],
+   "geo_scope": "country",
+   "id": "b876325c4a84",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "UK",
+   "name": "MODUS SEABED INTERVENTION LIMITED",
+   "noise": false,
+   "notes": "",
+   "priority": 3,
+   "q_found": [
+    "uk-gtr"
+   ],
+   "quality_source_id": "uk-gtr",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "UKRI Gateway to Research (Innovate UK)",
+   "source_date": null,
+   "source_id": "uk-gtr",
+   "source_sectors": [
+    "deeptech",
+    "ai_sw",
+    "climate"
+   ],
+   "source_url": "https://gtr.ukri.org/api/search/project",
+   "src_quality": 2,
+   "twins": [],
+   "why": []
+  },
+  {
+   "all_source_ids": [
+    "uk-gtr"
+   ],
+   "also_seen": [],
+   "archetype_hits": [],
+   "country": "UK",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "new",
+   "description": "UKRI project participant: Enabling Affordable Autonomy Using Hybrid Dense Vision (Feasibility Studies)",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "grant",
+   "entity_ids": {
+    "org_id": "gtr-F308604F-390F-48E1-B52D-AB3614A90CB2"
+   },
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "UK"
+   ],
+   "geo_scope": "country",
+   "id": "d17036fa3814",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "UK",
+   "name": "OXA AUTONOMY LTD",
+   "noise": false,
+   "notes": "",
+   "priority": 3,
+   "q_found": [
+    "uk-gtr"
+   ],
+   "quality_source_id": "uk-gtr",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "UKRI Gateway to Research (Innovate UK)",
+   "source_date": null,
+   "source_id": "uk-gtr",
+   "source_sectors": [
+    "deeptech",
+    "ai_sw",
+    "climate"
+   ],
+   "source_url": "https://gtr.ukri.org/api/search/project",
+   "src_quality": 2,
+   "twins": [],
+   "why": []
+  },
+  {
+   "all_source_ids": [
+    "uk-gtr"
+   ],
+   "archetype_hits": [
+    6
+   ],
+   "country": "UK",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "new",
+   "description": "UKRI project participant: Simulation of Complex Off-Road Environments for Autonomous Vehicle Development (Collaborative R&D)",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "grant",
+   "entity_ids": {
+    "org_id": "gtr-1FBC8CC2-3F61-496D-944E-5B3A8F03F80F"
+   },
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "UK"
+   ],
+   "geo_scope": "country",
+   "id": "d9c9aaf6a528",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "UK",
+   "name": "OXON.TECH LTD",
+   "noise": false,
+   "notes": "",
+   "priority": 5,
+   "q_found": [
+    "uk-gtr"
+   ],
+   "quality_source_id": "uk-gtr",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [
+    "robotics"
+   ],
+   "seen_runs": 1,
+   "source": "UKRI Gateway to Research (Innovate UK)",
+   "source_date": null,
+   "source_id": "uk-gtr",
+   "source_sectors": [
+    "deeptech",
+    "ai_sw",
+    "climate"
+   ],
+   "source_url": "https://gtr.ukri.org/api/search/project",
+   "src_quality": 2,
+   "twins": [],
+   "why": [
+    "Archetype keyword match: #6 Dual-use autonomous platforms with a fleet/software brain"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "uk-gtr"
+   ],
+   "also_seen": [],
+   "archetype_hits": [
+    6
+   ],
+   "country": "UK",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "new",
+   "description": "UKRI project participant: Autonomous Valet Parking (Collaborative R&D)",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "grant",
+   "entity_ids": {
+    "org_id": "gtr-973D07AA-25AE-446F-A821-BBC3EB851904"
+   },
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "UK"
+   ],
+   "geo_scope": "country",
+   "id": "f3d26e6d131b",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "UK",
+   "name": "PARKOPEDIA LIMITED",
+   "noise": false,
+   "notes": "",
+   "priority": 5,
+   "q_found": [
+    "uk-gtr"
+   ],
+   "quality_source_id": "uk-gtr",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "UKRI Gateway to Research (Innovate UK)",
+   "source_date": null,
+   "source_id": "uk-gtr",
+   "source_sectors": [
+    "deeptech",
+    "ai_sw",
+    "climate"
+   ],
+   "source_url": "https://gtr.ukri.org/api/search/project",
+   "src_quality": 2,
+   "twins": [],
+   "why": [
+    "Archetype keyword match: #6 Dual-use autonomous platforms with a fleet/software brain"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "uk-gtr"
+   ],
+   "also_seen": [],
+   "archetype_hits": [
+    6
+   ],
+   "country": "UK",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "new",
+   "description": "UKRI project participant: Simulation of Complex Off-Road Environments for Autonomous Vehicle Development (Collaborative R&D)",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "grant",
+   "entity_ids": {
+    "org_id": "gtr-72EFC0CA-1C28-4615-9E6A-57A6C43E4FAE"
+   },
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "UK"
+   ],
+   "geo_scope": "country",
+   "id": "ff33f3866d84",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "UK",
+   "name": "OXFORD ROBOTICS LTD",
+   "noise": false,
+   "notes": "",
+   "priority": 5,
+   "q_found": [
+    "uk-gtr"
+   ],
+   "quality_source_id": "uk-gtr",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [
+    "robotics"
+   ],
+   "seen_runs": 1,
+   "source": "UKRI Gateway to Research (Innovate UK)",
+   "source_date": null,
+   "source_id": "uk-gtr",
+   "source_sectors": [
+    "deeptech",
+    "ai_sw",
+    "climate"
+   ],
+   "source_url": "https://gtr.ukri.org/api/search/project",
+   "src_quality": 2,
+   "twins": [],
+   "why": [
+    "Archetype keyword match: #6 Dual-use autonomous platforms with a fleet/software brain"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "us-nih"
+   ],
+   "archetype_hits": [],
+   "country": "USA",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "new",
+   "description": "NIH SBIR: Minimizing myocardial damage and loss of cardiac function post myocardial infarction using Targeted PKC inhibitors 002 a",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "grant",
+   "entity_ids": {
+    "duns": "031274354"
+   },
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "US"
+   ],
+   "geo_scope": "country",
+   "id": "07ae781d4c2e",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "USA",
+   "name": "Young Therapeutics, Llc",
+   "noise": false,
+   "notes": "",
+   "opportunistic": true,
+   "priority": 3,
+   "q_found": [
+    "us-nih"
+   ],
+   "quality_source_id": "us-nih",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [
+    "bio"
+   ],
+   "seen_runs": 1,
+   "source": "NIH RePORTER (SBIR R43/R44)",
+   "source_date": null,
+   "source_id": "us-nih",
+   "source_sectors": [
+    "bio"
+   ],
+   "source_url": "https://api.reporter.nih.gov/v2/projects/search",
+   "src_quality": 2,
+   "twins": [],
+   "why": [
+    "OPPORTUNISTIC — candidate text is bio/pharma; outside core themes, #15 outlier route only"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "us-nih"
+   ],
+   "archetype_hits": [
+    1
+   ],
+   "country": "USA",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "new",
+   "description": "NIH SBIR: Beyond SPE: Automated Nanoparticle Workflow with Photo-Elution for High-Throughput, Scalable PFAS Monitoring",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "grant",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "US"
+   ],
+   "geo_scope": "country",
+   "id": "0fbb9498e7cf",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "USA",
+   "name": "Biota Inc.",
+   "noise": false,
+   "notes": "",
+   "priority": 5,
+   "q_found": [
+    "us-nih"
+   ],
+   "q_milestones": [
+    "attention_queue"
+   ],
+   "quality_source_id": "us-nih",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "NIH RePORTER (SBIR R43/R44)",
+   "source_date": null,
+   "source_id": "us-nih",
+   "source_sectors": [
+    "bio"
+   ],
+   "source_url": "https://api.reporter.nih.gov/v2/projects/search",
+   "src_quality": 2,
+   "twins": [],
+   "why": [
+    "Archetype keyword match: #1 Vertical AI agent for a paper-heavy operational job in a traditional European B2B industry"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "us-nih"
+   ],
+   "archetype_hits": [],
+   "country": "USA",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "new",
+   "description": "NIH SBIR: MetaDx: Rapid Diagnosis of Fungal, Bacterial, and Viral Infections Using Whole Metagenomic Sequencing",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "grant",
+   "entity_ids": {
+    "duns": "828881305"
+   },
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "US"
+   ],
+   "geo_scope": "country",
+   "id": "15dc5d92595b",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "USA",
+   "name": "Parabon Nanolabs, Inc.",
+   "noise": false,
+   "notes": "",
+   "priority": 3,
+   "q_found": [
+    "us-nih"
+   ],
+   "quality_source_id": "us-nih",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "NIH RePORTER (SBIR R43/R44)",
+   "source_date": null,
+   "source_id": "us-nih",
+   "source_sectors": [
+    "bio"
+   ],
+   "source_url": "https://api.reporter.nih.gov/v2/projects/search",
+   "src_quality": 2,
+   "twins": [],
+   "why": []
+  },
+  {
+   "all_source_ids": [
+    "us-nih"
+   ],
+   "archetype_hits": [],
+   "country": "USA",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "new",
+   "description": "NIH SBIR: Developing an AI-Powered Speech Annotation and Transcription Enhancer Tool",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "grant",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "US"
+   ],
+   "geo_scope": "country",
+   "id": "1c47f99a250c",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "USA",
+   "name": "Auspex Medix, Llc",
+   "noise": false,
+   "notes": "",
+   "priority": 3,
+   "q_found": [
+    "us-nih"
+   ],
+   "quality_source_id": "us-nih",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [
+    "ai_sw"
+   ],
+   "seen_runs": 1,
+   "source": "NIH RePORTER (SBIR R43/R44)",
+   "source_date": null,
+   "source_id": "us-nih",
+   "source_sectors": [
+    "bio"
+   ],
+   "source_url": "https://api.reporter.nih.gov/v2/projects/search",
+   "src_quality": 2,
+   "twins": [],
+   "why": []
+  },
+  {
+   "all_source_ids": [
+    "us-nih"
+   ],
+   "archetype_hits": [],
+   "country": "USA",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "new",
+   "description": "NIH SBIR: Multiplexed Assay for Point-of-Care UTI Diagnosis (ID/AMR)",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "grant",
+   "entity_ids": {
+    "duns": "117339867"
+   },
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "US"
+   ],
+   "geo_scope": "country",
+   "id": "2a97ee1caa61",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "USA",
+   "name": "Nanopathdx, Inc.",
+   "noise": false,
+   "notes": "",
+   "priority": 3,
+   "q_found": [
+    "us-nih"
+   ],
+   "quality_source_id": "us-nih",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "NIH RePORTER (SBIR R43/R44)",
+   "source_date": null,
+   "source_id": "us-nih",
+   "source_sectors": [
+    "bio"
+   ],
+   "source_url": "https://api.reporter.nih.gov/v2/projects/search",
+   "src_quality": 2,
+   "twins": [],
+   "why": []
+  },
+  {
+   "all_source_ids": [
+    "us-nih"
+   ],
+   "archetype_hits": [],
+   "country": "USA",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "new",
+   "description": "NIH SBIR: Next-generation Brillouin ocular scanner",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "grant",
+   "entity_ids": {
+    "duns": "078427708"
+   },
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "US"
+   ],
+   "geo_scope": "country",
+   "id": "35b3d9ae13bc",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "USA",
+   "name": "Intelon Optics, Inc.",
+   "noise": false,
+   "notes": "",
+   "priority": 3,
+   "q_found": [
+    "us-nih"
+   ],
+   "quality_source_id": "us-nih",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "NIH RePORTER (SBIR R43/R44)",
+   "source_date": null,
+   "source_id": "us-nih",
+   "source_sectors": [
+    "bio"
+   ],
+   "source_url": "https://api.reporter.nih.gov/v2/projects/search",
+   "src_quality": 2,
+   "twins": [],
+   "why": []
+  },
+  {
+   "all_source_ids": [
+    "us-nih"
+   ],
+   "archetype_hits": [],
+   "country": "USA",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "new",
+   "description": "NIH SBIR: Developing and Evaluating Visual, Auditory, and Tactile and Text Digital Thematic Map Viewer to Provide Blind and Low Vi",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "grant",
+   "entity_ids": {
+    "duns": "121574147"
+   },
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "US"
+   ],
+   "geo_scope": "country",
+   "id": "3a86b327b796",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "USA",
+   "name": "Xr Navigation Inc.",
+   "noise": false,
+   "notes": "",
+   "priority": 3,
+   "q_found": [
+    "us-nih"
+   ],
+   "quality_source_id": "us-nih",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "NIH RePORTER (SBIR R43/R44)",
+   "source_date": null,
+   "source_id": "us-nih",
+   "source_sectors": [
+    "bio"
+   ],
+   "source_url": "https://api.reporter.nih.gov/v2/projects/search",
+   "src_quality": 2,
+   "twins": [],
+   "why": []
+  },
+  {
+   "all_source_ids": [
+    "us-nih"
+   ],
+   "archetype_hits": [],
+   "country": "USA",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "new",
+   "description": "NIH SBIR: Integrated assays of single-cell dynamics and molecular phenotype for cell therapy manufacturing",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "grant",
+   "entity_ids": {
+    "duns": "117792665"
+   },
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "US"
+   ],
+   "geo_scope": "country",
+   "id": "3c3e9189c213",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "USA",
+   "name": "Cellchorus Inc.",
+   "noise": false,
+   "notes": "",
+   "opportunistic": true,
+   "priority": 4,
+   "q_found": [
+    "us-nih"
+   ],
+   "q_milestones": [
+    "attention_queue"
+   ],
+   "quality_source_id": "us-nih",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [
+    "bio"
+   ],
+   "seen_runs": 1,
+   "source": "NIH RePORTER (SBIR R43/R44)",
+   "source_date": null,
+   "source_id": "us-nih",
+   "source_sectors": [
+    "bio"
+   ],
+   "source_url": "https://api.reporter.nih.gov/v2/projects/search",
+   "src_quality": 2,
+   "twins": [
+    "Resourcly",
+    "Linexa"
+   ],
+   "why": [
+    "Possible portfolio twin(s): Resourcly, Linexa → run conflict check",
+    "OPPORTUNISTIC — candidate text is bio/pharma; outside core themes, #15 outlier route only"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "us-nih"
+   ],
+   "archetype_hits": [],
+   "country": "USA",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "new",
+   "description": "NIH SBIR: Bridging Healthcare Disparities: Real-Time AI Assessment for Preterm Labor Risk",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "grant",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "US"
+   ],
+   "geo_scope": "country",
+   "id": "453fea2a79f3",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "USA",
+   "name": "Ciconia Medical Inc",
+   "noise": false,
+   "notes": "",
+   "priority": 3,
+   "q_found": [
+    "us-nih"
+   ],
+   "quality_source_id": "us-nih",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [
+    "ai_sw"
+   ],
+   "seen_runs": 1,
+   "source": "NIH RePORTER (SBIR R43/R44)",
+   "source_date": null,
+   "source_id": "us-nih",
+   "source_sectors": [
+    "bio"
+   ],
+   "source_url": "https://api.reporter.nih.gov/v2/projects/search",
+   "src_quality": 2,
+   "twins": [],
+   "why": []
+  },
+  {
+   "all_source_ids": [
+    "us-nih"
+   ],
+   "archetype_hits": [],
+   "country": "USA",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "new",
+   "description": "NIH SBIR: In-vivo study of KSP/QRH heptapeptide dimer for detection of biliary intra-epithelial neoplasia",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "grant",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "US"
+   ],
+   "geo_scope": "country",
+   "id": "497f95243c55",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "USA",
+   "name": "In Vivo Microsystems Technologies, Llc",
+   "noise": false,
+   "notes": "",
+   "priority": 3,
+   "q_found": [
+    "us-nih"
+   ],
+   "quality_source_id": "us-nih",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "NIH RePORTER (SBIR R43/R44)",
+   "source_date": null,
+   "source_id": "us-nih",
+   "source_sectors": [
+    "bio"
+   ],
+   "source_url": "https://api.reporter.nih.gov/v2/projects/search",
+   "src_quality": 2,
+   "twins": [],
+   "why": []
+  },
+  {
+   "all_source_ids": [
+    "us-nih"
+   ],
+   "archetype_hits": [],
+   "country": "USA",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "new",
+   "description": "NIH SBIR: EPIPHANY (machinE PredIction of Prolonged mecHAnical ventilatioN and tracheostomY)",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "grant",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "US"
+   ],
+   "geo_scope": "country",
+   "id": "52025c641926",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "USA",
+   "name": "Bauhealth, Inc.",
+   "noise": false,
+   "notes": "",
+   "priority": 4,
+   "q_found": [
+    "us-nih"
+   ],
+   "q_milestones": [
+    "attention_queue"
+   ],
+   "quality_source_id": "us-nih",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "NIH RePORTER (SBIR R43/R44)",
+   "source_date": null,
+   "source_id": "us-nih",
+   "source_sectors": [
+    "bio"
+   ],
+   "source_url": "https://api.reporter.nih.gov/v2/projects/search",
+   "src_quality": 2,
+   "twins": [
+    "Vestigas"
+   ],
+   "why": [
+    "Possible portfolio twin(s): Vestigas → run conflict check"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "us-nih"
+   ],
+   "archetype_hits": [],
+   "country": "USA",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "new",
+   "description": "NIH SBIR: Improving Human Hematopoietic Progenitor Cell Cryopreservation using Anti-aging, Nature-inspired and Stress Modulation F",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "grant",
+   "entity_ids": {
+    "duns": "150225337"
+   },
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "US"
+   ],
+   "geo_scope": "country",
+   "id": "6658612c2ca0",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "USA",
+   "name": "Cell Preservation Services, Inc.",
+   "noise": false,
+   "notes": "",
+   "priority": 4,
+   "q_found": [
+    "us-nih"
+   ],
+   "q_milestones": [
+    "attention_queue"
+   ],
+   "quality_source_id": "us-nih",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "NIH RePORTER (SBIR R43/R44)",
+   "source_date": null,
+   "source_id": "us-nih",
+   "source_sectors": [
+    "bio"
+   ],
+   "source_url": "https://api.reporter.nih.gov/v2/projects/search",
+   "src_quality": 2,
+   "twins": [
+    "Tabular"
+   ],
+   "why": [
+    "Possible portfolio twin(s): Tabular → run conflict check"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "us-nih"
+   ],
+   "archetype_hits": [],
+   "country": "USA",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "new",
+   "description": "NIH SBIR: Team-Based Virtual HAZMAT Field Exercises - Phase II",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "grant",
+   "entity_ids": {
+    "duns": "831353029"
+   },
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "US"
+   ],
+   "geo_scope": "country",
+   "id": "69e6bd09dcef",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "USA",
+   "name": "Cell Podium",
+   "noise": false,
+   "notes": "",
+   "priority": 3,
+   "q_found": [
+    "us-nih"
+   ],
+   "quality_source_id": "us-nih",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "NIH RePORTER (SBIR R43/R44)",
+   "source_date": null,
+   "source_id": "us-nih",
+   "source_sectors": [
+    "bio"
+   ],
+   "source_url": "https://api.reporter.nih.gov/v2/projects/search",
+   "src_quality": 2,
+   "twins": [],
+   "why": []
+  },
+  {
+   "all_source_ids": [
+    "us-nih"
+   ],
+   "archetype_hits": [],
+   "country": "USA",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "new",
+   "description": "NIH SBIR: Novel Nucleotide HNF4α Transcriptional Modulation for End Stage Liver Disease with Cirrhosis",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "grant",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "US"
+   ],
+   "geo_scope": "country",
+   "id": "6e345ad197d8",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "USA",
+   "name": "Masterswitch, Inc.",
+   "noise": false,
+   "notes": "",
+   "priority": 3,
+   "q_found": [
+    "us-nih"
+   ],
+   "quality_source_id": "us-nih",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "NIH RePORTER (SBIR R43/R44)",
+   "source_date": null,
+   "source_id": "us-nih",
+   "source_sectors": [
+    "bio"
+   ],
+   "source_url": "https://api.reporter.nih.gov/v2/projects/search",
+   "src_quality": 2,
+   "twins": [],
+   "why": []
+  },
+  {
+   "all_source_ids": [
+    "us-nih"
+   ],
+   "archetype_hits": [],
+   "country": "USA",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "new",
+   "description": "NIH SBIR: Triage of Developmental and Reproductive Toxicants using an In vitro to In Vivo Extrapolation (IVIVE)-Toxicokinetic Comp",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "grant",
+   "entity_ids": {
+    "duns": "080183506"
+   },
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "US"
+   ],
+   "geo_scope": "country",
+   "id": "79ba21ca9a35",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "USA",
+   "name": "Scitovation, Llc",
+   "noise": false,
+   "notes": "",
+   "priority": 4,
+   "q_found": [
+    "us-nih"
+   ],
+   "quality_source_id": "us-nih",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "NIH RePORTER (SBIR R43/R44)",
+   "source_date": null,
+   "source_id": "us-nih",
+   "source_sectors": [
+    "bio"
+   ],
+   "source_url": "https://api.reporter.nih.gov/v2/projects/search",
+   "src_quality": 2,
+   "twins": [
+    "Tabular"
+   ],
+   "why": [
+    "Possible portfolio twin(s): Tabular → run conflict check"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "us-nih"
+   ],
+   "archetype_hits": [],
+   "country": "USA",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "new",
+   "description": "NIH SBIR: A device to treat high tone pelvic floor dysfunction in women",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "grant",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "US"
+   ],
+   "geo_scope": "country",
+   "id": "83cb2062973e",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "USA",
+   "name": "Bold Type Llc",
+   "noise": false,
+   "notes": "",
+   "priority": 3,
+   "q_found": [
+    "us-nih"
+   ],
+   "quality_source_id": "us-nih",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "NIH RePORTER (SBIR R43/R44)",
+   "source_date": null,
+   "source_id": "us-nih",
+   "source_sectors": [
+    "bio"
+   ],
+   "source_url": "https://api.reporter.nih.gov/v2/projects/search",
+   "src_quality": 2,
+   "twins": [],
+   "why": []
+  },
+  {
+   "all_source_ids": [
+    "us-nih"
+   ],
+   "archetype_hits": [],
+   "country": "USA",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "new",
+   "description": "NIH SBIR: A NOVEL PRECISION MEDICINE APPROACH FOR OBESITY: A RANDOMIZED, MULTI-CENTER TRIAL",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "grant",
+   "entity_ids": {
+    "duns": "080836659"
+   },
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "US"
+   ],
+   "geo_scope": "country",
+   "id": "8e05f7d04ca7",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "USA",
+   "name": "Phenomix Sciences, Llc",
+   "noise": false,
+   "notes": "",
+   "priority": 3,
+   "q_found": [
+    "us-nih"
+   ],
+   "quality_source_id": "us-nih",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "NIH RePORTER (SBIR R43/R44)",
+   "source_date": null,
+   "source_id": "us-nih",
+   "source_sectors": [
+    "bio"
+   ],
+   "source_url": "https://api.reporter.nih.gov/v2/projects/search",
+   "src_quality": 2,
+   "twins": [],
+   "why": []
+  },
+  {
+   "all_source_ids": [
+    "us-nih"
+   ],
+   "archetype_hits": [],
+   "country": "USA",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "new",
+   "description": "NIH SBIR: Gene Therapy for Idiopathic Parkinson's Disease: In Vivo Validation",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "grant",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "US"
+   ],
+   "geo_scope": "country",
+   "id": "963e224d2fe3",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "USA",
+   "name": "Mark Therapeutics, Inc.",
+   "noise": false,
+   "notes": "",
+   "opportunistic": true,
+   "priority": 3,
+   "q_found": [
+    "us-nih"
+   ],
+   "quality_source_id": "us-nih",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [
+    "bio"
+   ],
+   "seen_runs": 1,
+   "source": "NIH RePORTER (SBIR R43/R44)",
+   "source_date": null,
+   "source_id": "us-nih",
+   "source_sectors": [
+    "bio"
+   ],
+   "source_url": "https://api.reporter.nih.gov/v2/projects/search",
+   "src_quality": 2,
+   "twins": [],
+   "why": [
+    "OPPORTUNISTIC — candidate text is bio/pharma; outside core themes, #15 outlier route only"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "us-nih"
+   ],
+   "archetype_hits": [],
+   "country": "USA",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "new",
+   "description": "NIH SBIR: Novel Gene Therapy, Techniques, and Devices to Prevent Ventricular Tachycardia",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "grant",
+   "entity_ids": {
+    "duns": "080333039"
+   },
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "US"
+   ],
+   "geo_scope": "country",
+   "id": "98257a7a43cf",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "USA",
+   "name": "Rithim Biologics, Inc.",
+   "noise": false,
+   "notes": "",
+   "priority": 3,
+   "q_found": [
+    "us-nih"
+   ],
+   "quality_source_id": "us-nih",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "NIH RePORTER (SBIR R43/R44)",
+   "source_date": null,
+   "source_id": "us-nih",
+   "source_sectors": [
+    "bio"
+   ],
+   "source_url": "https://api.reporter.nih.gov/v2/projects/search",
+   "src_quality": 2,
+   "twins": [],
+   "why": []
+  },
+  {
+   "all_source_ids": [
+    "us-nih"
+   ],
+   "archetype_hits": [],
+   "country": "USA",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "new",
+   "description": "NIH SBIR: Use of a virtual reality headset to test the untestable patients with glaucoma",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "grant",
+   "entity_ids": {
+    "duns": "079561826"
+   },
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "US"
+   ],
+   "geo_scope": "country",
+   "id": "9e0efa4f3e14",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "USA",
+   "name": "Vivid Vision, Inc.",
+   "noise": false,
+   "notes": "",
+   "priority": 3,
+   "q_found": [
+    "us-nih"
+   ],
+   "quality_source_id": "us-nih",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "NIH RePORTER (SBIR R43/R44)",
+   "source_date": null,
+   "source_id": "us-nih",
+   "source_sectors": [
+    "bio"
+   ],
+   "source_url": "https://api.reporter.nih.gov/v2/projects/search",
+   "src_quality": 2,
+   "twins": [],
+   "why": []
+  },
+  {
+   "all_source_ids": [
+    "us-nih"
+   ],
+   "archetype_hits": [],
+   "country": "USA",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "new",
+   "description": "NIH SBIR: A wearable device for at-home sleep studies that merges comfort with clinical-grade insights",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "grant",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "US"
+   ],
+   "geo_scope": "country",
+   "id": "a8585b216700",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "USA",
+   "name": "Fascia Sleep Incorporated",
+   "noise": false,
+   "notes": "",
+   "opportunistic": true,
+   "priority": 3,
+   "q_found": [
+    "us-nih"
+   ],
+   "quality_source_id": "us-nih",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [
+    "bio"
+   ],
+   "seen_runs": 1,
+   "source": "NIH RePORTER (SBIR R43/R44)",
+   "source_date": null,
+   "source_id": "us-nih",
+   "source_sectors": [
+    "bio"
+   ],
+   "source_url": "https://api.reporter.nih.gov/v2/projects/search",
+   "src_quality": 2,
+   "twins": [],
+   "why": [
+    "OPPORTUNISTIC — candidate text is bio/pharma; outside core themes, #15 outlier route only"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "us-nih"
+   ],
+   "archetype_hits": [],
+   "country": "USA",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "new",
+   "description": "NIH SBIR: A platform for serum antibody repertoire analysis for autoimmune disease diagnosis",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "grant",
+   "entity_ids": {
+    "duns": "031092123"
+   },
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "US"
+   ],
+   "geo_scope": "country",
+   "id": "b48cbb2690e5",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "USA",
+   "name": "Abterra Biosciences, Inc.",
+   "noise": false,
+   "notes": "",
+   "opportunistic": true,
+   "priority": 3,
+   "q_found": [
+    "us-nih"
+   ],
+   "quality_source_id": "us-nih",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [
+    "bio"
+   ],
+   "seen_runs": 1,
+   "source": "NIH RePORTER (SBIR R43/R44)",
+   "source_date": null,
+   "source_id": "us-nih",
+   "source_sectors": [
+    "bio"
+   ],
+   "source_url": "https://api.reporter.nih.gov/v2/projects/search",
+   "src_quality": 2,
+   "twins": [],
+   "why": [
+    "OPPORTUNISTIC — candidate text is bio/pharma; outside core themes, #15 outlier route only"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "us-nih"
+   ],
+   "archetype_hits": [],
+   "country": "USA",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "new",
+   "description": "NIH SBIR: A FIRST IN CLASS TREATMENT FOR LIVER CIRRHOSIS",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "grant",
+   "entity_ids": {
+    "duns": "078673608"
+   },
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "US"
+   ],
+   "geo_scope": "country",
+   "id": "b9e51adc0232",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "USA",
+   "name": "Xfibra, Inc.",
+   "noise": false,
+   "notes": "",
+   "priority": 3,
+   "q_found": [
+    "us-nih"
+   ],
+   "quality_source_id": "us-nih",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "NIH RePORTER (SBIR R43/R44)",
+   "source_date": null,
+   "source_id": "us-nih",
+   "source_sectors": [
+    "bio"
+   ],
+   "source_url": "https://api.reporter.nih.gov/v2/projects/search",
+   "src_quality": 2,
+   "twins": [],
+   "why": []
+  },
+  {
+   "all_source_ids": [
+    "us-nih"
+   ],
+   "archetype_hits": [],
+   "country": "USA",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "new",
+   "description": "NIH SBIR: IND-enabling studies of a USP30 inhibitor for acute kidney injury",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "grant",
+   "entity_ids": {
+    "duns": "081362786"
+   },
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "US"
+   ],
+   "geo_scope": "country",
+   "id": "c01e22523526",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "USA",
+   "name": "Vincere Biosciences, Inc.",
+   "noise": false,
+   "notes": "",
+   "priority": 3,
+   "q_found": [
+    "us-nih"
+   ],
+   "quality_source_id": "us-nih",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "NIH RePORTER (SBIR R43/R44)",
+   "source_date": null,
+   "source_id": "us-nih",
+   "source_sectors": [
+    "bio"
+   ],
+   "source_url": "https://api.reporter.nih.gov/v2/projects/search",
+   "src_quality": 2,
+   "twins": [],
+   "why": []
+  },
+  {
+   "all_source_ids": [
+    "us-nih"
+   ],
+   "archetype_hits": [],
+   "country": "USA",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "new",
+   "description": "NIH SBIR: An intracorporeal hemodialysis system (iHemo) enabling home hemodialysis",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "grant",
+   "entity_ids": {
+    "duns": "966332822"
+   },
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "US"
+   ],
+   "geo_scope": "country",
+   "id": "c4df10dfdeed",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "USA",
+   "name": "Silicon Kidney, Llc",
+   "noise": false,
+   "notes": "",
+   "priority": 3,
+   "q_found": [
+    "us-nih"
+   ],
+   "quality_source_id": "us-nih",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "NIH RePORTER (SBIR R43/R44)",
+   "source_date": null,
+   "source_id": "us-nih",
+   "source_sectors": [
+    "bio"
+   ],
+   "source_url": "https://api.reporter.nih.gov/v2/projects/search",
+   "src_quality": 2,
+   "twins": [],
+   "why": []
+  },
+  {
+   "all_source_ids": [
+    "us-nih"
+   ],
+   "also_seen": [],
+   "archetype_hits": [],
+   "country": "USA",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "new",
+   "description": "NIH SBIR: PK, tolerability, and toxicology studies for eCD4-Ig as a long-acting recombinant protein therapeutic",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "grant",
+   "entity_ids": {
+    "duns": "079628064"
+   },
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "US"
+   ],
+   "geo_scope": "country",
+   "id": "c9a5c571688c",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "USA",
+   "name": "Emmune, Inc",
+   "noise": false,
+   "notes": "",
+   "opportunistic": true,
+   "priority": 3,
+   "q_found": [
+    "us-nih"
+   ],
+   "quality_source_id": "us-nih",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [
+    "bio"
+   ],
+   "seen_runs": 1,
+   "source": "NIH RePORTER (SBIR R43/R44)",
+   "source_date": null,
+   "source_id": "us-nih",
+   "source_sectors": [
+    "bio"
+   ],
+   "source_url": "https://api.reporter.nih.gov/v2/projects/search",
+   "src_quality": 2,
+   "twins": [],
+   "why": [
+    "OPPORTUNISTIC — candidate text is bio/pharma; outside core themes, #15 outlier route only"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "us-nih"
+   ],
+   "archetype_hits": [],
+   "country": "USA",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "new",
+   "description": "NIH SBIR: Cue-induced drug craving monitoring for opioid use disorder with visual evoked potentials",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "grant",
+   "entity_ids": {
+    "duns": "117177174"
+   },
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "US"
+   ],
+   "geo_scope": "country",
+   "id": "d4f1e7e90f8c",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "USA",
+   "name": "Neurotype Inc.",
+   "noise": false,
+   "notes": "",
+   "opportunistic": true,
+   "priority": 3,
+   "q_found": [
+    "us-nih"
+   ],
+   "quality_source_id": "us-nih",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [
+    "bio"
+   ],
+   "seen_runs": 1,
+   "source": "NIH RePORTER (SBIR R43/R44)",
+   "source_date": null,
+   "source_id": "us-nih",
+   "source_sectors": [
+    "bio"
+   ],
+   "source_url": "https://api.reporter.nih.gov/v2/projects/search",
+   "src_quality": 2,
+   "twins": [],
+   "why": [
+    "OPPORTUNISTIC — candidate text is bio/pharma; outside core themes, #15 outlier route only"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "us-nih"
+   ],
+   "archetype_hits": [],
+   "country": "USA",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "new",
+   "description": "NIH SBIR: RadBot: Next-Generation Drug Discovery for Environmental Stress Resistance Using Longevity Biology",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "grant",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "US"
+   ],
+   "geo_scope": "country",
+   "id": "e0f3c48ecda2",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "USA",
+   "name": "Ora Biomedical, Inc.",
+   "noise": false,
+   "notes": "",
+   "opportunistic": true,
+   "priority": 3,
+   "q_found": [
+    "us-nih"
+   ],
+   "quality_source_id": "us-nih",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [
+    "bio"
+   ],
+   "seen_runs": 1,
+   "source": "NIH RePORTER (SBIR R43/R44)",
+   "source_date": null,
+   "source_id": "us-nih",
+   "source_sectors": [
+    "bio"
+   ],
+   "source_url": "https://api.reporter.nih.gov/v2/projects/search",
+   "src_quality": 2,
+   "twins": [],
+   "why": [
+    "OPPORTUNISTIC — candidate text is bio/pharma; outside core themes, #15 outlier route only"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "us-nih"
+   ],
+   "archetype_hits": [],
+   "country": "USA",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "new",
+   "description": "NIH SBIR: Development of preschool speech-to-print curricula with online gaming technology for early language development.",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "grant",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "US"
+   ],
+   "geo_scope": "country",
+   "id": "e7b9a35eed18",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "USA",
+   "name": "Finnegan The Dragon, Inc",
+   "noise": false,
+   "notes": "",
+   "priority": 3,
+   "q_found": [
+    "us-nih"
+   ],
+   "quality_source_id": "us-nih",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "NIH RePORTER (SBIR R43/R44)",
+   "source_date": null,
+   "source_id": "us-nih",
+   "source_sectors": [
+    "bio"
+   ],
+   "source_url": "https://api.reporter.nih.gov/v2/projects/search",
+   "src_quality": 2,
+   "twins": [],
+   "why": []
+  },
+  {
+   "all_source_ids": [
+    "us-nih"
+   ],
+   "archetype_hits": [],
+   "country": "USA",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "new",
+   "description": "NIH SBIR: Treatment of GM1 gangliosidosis CNS manifestations by AAV systemic expression of lectin-enhanced enzyme",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "grant",
+   "entity_ids": {
+    "duns": "621026140"
+   },
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "US"
+   ],
+   "geo_scope": "country",
+   "id": "eab702339cbc",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "USA",
+   "name": "Biostrategies, Lc",
+   "noise": false,
+   "notes": "",
+   "priority": 3,
+   "q_found": [
+    "us-nih"
+   ],
+   "quality_source_id": "us-nih",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "NIH RePORTER (SBIR R43/R44)",
+   "source_date": null,
+   "source_id": "us-nih",
+   "source_sectors": [
+    "bio"
+   ],
+   "source_url": "https://api.reporter.nih.gov/v2/projects/search",
+   "src_quality": 2,
+   "twins": [],
+   "why": []
+  },
+  {
+   "all_source_ids": [
+    "us-nih"
+   ],
+   "archetype_hits": [],
+   "country": "USA",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "new",
+   "description": "NIH SBIR: SBIR Phase II: Multi-probe minimally invasive endomicroscope",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "grant",
+   "entity_ids": {
+    "duns": "118087432"
+   },
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "US"
+   ],
+   "geo_scope": "country",
+   "id": "f068925dcb6f",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "USA",
+   "name": "Modendo Inc.",
+   "noise": false,
+   "notes": "",
+   "priority": 3,
+   "q_found": [
+    "us-nih"
+   ],
+   "quality_source_id": "us-nih",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "NIH RePORTER (SBIR R43/R44)",
+   "source_date": null,
+   "source_id": "us-nih",
+   "source_sectors": [
+    "bio"
+   ],
+   "source_url": "https://api.reporter.nih.gov/v2/projects/search",
+   "src_quality": 2,
+   "twins": [],
+   "why": []
+  },
+  {
+   "all_source_ids": [
+    "us-nih"
+   ],
+   "archetype_hits": [],
+   "country": "USA",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "new",
+   "description": "NIH SBIR: Efficacy of a Virtual Reality Neuroscience-based Therapy for Chronic Low Back Pain",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "grant",
+   "entity_ids": {
+    "duns": "080566224"
+   },
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "US"
+   ],
+   "geo_scope": "country",
+   "id": "f560e01327d0",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "USA",
+   "name": "Cognifisense, Inc.",
+   "noise": false,
+   "notes": "",
+   "priority": 3,
+   "q_found": [
+    "us-nih"
+   ],
+   "quality_source_id": "us-nih",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "NIH RePORTER (SBIR R43/R44)",
+   "source_date": null,
+   "source_id": "us-nih",
+   "source_sectors": [
+    "bio"
+   ],
+   "source_url": "https://api.reporter.nih.gov/v2/projects/search",
+   "src_quality": 2,
+   "twins": [],
+   "why": []
+  },
+  {
+   "all_source_ids": [
+    "us-nih"
+   ],
+   "also_seen": [],
+   "archetype_hits": [],
+   "country": "USA",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "new",
+   "description": "NIH SBIR: Development of a Novel Pediatric LVAD for Home Discharge of Children Awaiting Heart Transplant",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "grant",
+   "entity_ids": {
+    "duns": "016345165"
+   },
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "US"
+   ],
+   "geo_scope": "country",
+   "id": "fe144cebf6ef",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "USA",
+   "name": "Corvion, Inc.",
+   "noise": false,
+   "notes": "",
+   "priority": 3,
+   "q_found": [
+    "us-nih"
+   ],
+   "quality_source_id": "us-nih",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "NIH RePORTER (SBIR R43/R44)",
+   "source_date": null,
+   "source_id": "us-nih",
+   "source_sectors": [
+    "bio"
+   ],
+   "source_url": "https://api.reporter.nih.gov/v2/projects/search",
+   "src_quality": 2,
+   "twins": [],
+   "why": []
+  },
+  {
+   "all_source_ids": [
+    "us-nsf"
+   ],
+   "archetype_hits": [],
+   "country": "USA",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "new",
+   "description": "NSF SBIR Fast-Track: SBIR Fast-Track: Scalable Robotic Skill Learning via Generative Embodied Twins and Vision-Language-Action Models for Tas",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "grant",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "US"
+   ],
+   "geo_scope": "country",
+   "id": "e89915c7a805",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "USA",
+   "name": "AI SCOPE INC",
+   "noise": false,
+   "notes": "",
+   "priority": 3,
+   "q_found": [
+    "us-nsf"
+   ],
+   "quality_source_id": "us-nsf",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [
+    "robotics",
+    "ai_sw"
+   ],
+   "seen_runs": 1,
+   "source": "NSF Awards API (SBIR + deeptech)",
+   "source_date": null,
+   "source_id": "us-nsf",
+   "source_sectors": [
+    "deeptech",
+    "robotics",
+    "semis_quantum",
+    "ai_sw"
+   ],
+   "source_url": "https://api.nsf.gov/services/v1/awards.json",
+   "src_quality": 2,
+   "twins": [],
+   "why": []
+  },
+  {
+   "all_source_ids": [
+    "legacy-12f411f4f3c6"
+   ],
+   "archetype_hits": [],
+   "country": "EU",
+   "date": "Fri, 25 Sep 2026 17:13:00 GMT",
+   "date_kind": "published",
+   "decision": "new",
+   "description": "European Founder Report: Europas Startup-Boom hat ein Finanzierungsproblem — Rekordsummen für wenige, weniger Finanzierungen für viele: Der Antler Founder Report zeigt, warum Europas Startup-Boom den Nachwuchs nicht mitzieht.",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "announcement",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "DACH"
+   ],
+   "geo_scope": "country",
+   "id": "cff24afccfd7",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "Europe",
+   "name": "European Founder Report",
+   "noise": false,
+   "notes": "",
+   "priority": 1,
+   "q_found": [
+    "legacy-12f411f4f3c6"
+   ],
+   "quality_source_id": "legacy-12f411f4f3c6",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "Munich Startup (feed)",
+   "source_date": "2026-09-25",
+   "source_id": "legacy-12f411f4f3c6",
+   "source_sectors": [
+    "ai_sw",
+    "deeptech"
+   ],
+   "source_url": "https://www.munich-startup.de/news/european-founder-report-europas-startup-boom-hat-ein-finanzierungsproblem",
+   "src_quality": 0,
+   "twins": [],
+   "why": [
+    "Announcement feed — discovery only; probably recently funded"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "legacy-6f728e482c4b"
+   ],
+   "archetype_hits": [],
+   "country": "EU",
+   "date": "Thu, 24 Sep 2026 08:26:46 +0000",
+   "date_kind": "published",
+   "decision": "new",
+   "description": "Verda becomes Finland’s latest AI unicorn with $189M funding round — Helsinki-founded AI infrastructure company Verda has raised $189 million in an oversubscribed Series B and additional investment, reaching unicorn status as it scales its full-stack AI cloud. The round was led by Emergence Capital, with participation from MUFG Innovation Partners, Supermicro, Varma ",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "announcement",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "NORD"
+   ],
+   "geo_scope": "country",
+   "id": "7d843d86c7b4",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "Europe",
+   "name": "Verda",
+   "noise": false,
+   "notes": "",
+   "priority": 2,
+   "q_found": [
+    "legacy-6f728e482c4b"
+   ],
+   "q_milestones": [
+    "attention_queue"
+   ],
+   "quality_source_id": "legacy-6f728e482c4b",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [
+    "ai_sw"
+   ],
+   "seen_runs": 1,
+   "source": "ArcticStartup (feed)",
+   "source_date": "2026-09-24",
+   "source_id": "legacy-6f728e482c4b",
+   "source_sectors": [
+    "ai_sw",
+    "deeptech"
+   ],
+   "source_url": "https://arcticstartup.com/verda-raises-189-million/",
+   "src_quality": 0,
+   "twins": [
+    "Tabular"
+   ],
+   "why": [
+    "Announcement feed — discovery only; probably recently funded",
+    "Possible portfolio twin(s): Tabular → run conflict check"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "legacy-c43631719c75"
+   ],
+   "archetype_hits": [],
+   "country": "EU",
+   "date": "Thu, 24 Sep 2026 10:00:00 +0000",
+   "date_kind": "published",
+   "decision": "new",
+   "description": "Crux Analytics raises €1.9M to help banks win and retain small business customers — Crux Analytics, a fintech fixing the relationship between financial services companies and the small businesses they serve, has raised €1.9 million in seed funding to help institutions engage, acquire...",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "announcement",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "EU"
+   ],
+   "geo_scope": "country",
+   "id": "0be92331592b",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "Europe",
+   "name": "Crux Analytics",
+   "noise": false,
+   "notes": "",
+   "priority": 1,
+   "q_found": [
+    "legacy-c43631719c75"
+   ],
+   "quality_source_id": "legacy-c43631719c75",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "Tech.eu (feed)",
+   "source_date": "2026-09-24",
+   "source_id": "legacy-c43631719c75",
+   "source_sectors": [
+    "ai_sw",
+    "deeptech"
+   ],
+   "source_url": "https://tech.eu/2026/09/24/crux-analytics-raises-eur19m-to-help-banks-win-and-retain-small-business-customers/",
+   "src_quality": 0,
+   "twins": [],
+   "why": [
+    "Announcement feed — discovery only; probably recently funded"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "legacy-c43631719c75",
+    "legacy-fbc7d0ab37b6"
+   ],
+   "also_seen": [
+    {
+     "discovery_tier": "announcement",
+     "first_seen": "2026-09-27 19:50:11",
+     "source": "EU-Startups (feed)",
+     "source_date": "2026-09-24",
+     "source_id": "legacy-fbc7d0ab37b6",
+     "url": "https://www.eu-startups.com/2026/09/reykjavik-based-50skills-raises-e5-3-million-to-scale-its-ai-powered-hr-workflow-automation-platform/"
+    }
+   ],
+   "archetype_hits": [],
+   "country": "EU",
+   "date": "Thu, 24 Sep 2026 05:19:04 +0000",
+   "date_kind": "published",
+   "decision": "new",
+   "description": "50skills raises $6M to scale its AI operating system for people workflows — 50skills, the AI operating systemfor people workflows, has raised $6 millionin funding to expand its platform for automating HR and people workflows. Theround was co-led by Frumtak Ventures, Swiss Pos...",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "announcement",
+   "entity_ids": {},
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "EU"
+   ],
+   "geo_scope": "country",
+   "id": "36be1c52f89a",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "Europe",
+   "name": "50skills",
+   "noise": false,
+   "notes": "",
+   "priority": 3,
+   "q_found": [
+    "legacy-c43631719c75",
+    "legacy-fbc7d0ab37b6"
+   ],
+   "q_milestones": [
+    "attention_queue"
+   ],
+   "quality_source_id": "legacy-c43631719c75",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [
+    "ai_sw"
+   ],
+   "seen_runs": 1,
+   "source": "Tech.eu (feed)",
+   "source_date": "2026-09-24",
+   "source_id": "legacy-c43631719c75",
+   "source_sectors": [
+    "ai_sw",
+    "deeptech"
+   ],
+   "source_url": "https://tech.eu/2026/09/24/50skills-raises-6m-to-scale-its-ai-operating-system-for-people-workflows/",
+   "src_quality": 0,
+   "twins": [],
+   "why": [
+    "Announcement feed — discovery only; probably recently funded",
+    "Cross-source signal: also seen on EU-Startups (feed)"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "legacy-c43631719c75"
+   ],
+   "archetype_hits": [
+    2
+   ],
+   "country": "EU",
+   "date": "Wed, 23 Sep 2026 12:36:44 +0000",
+   "date_kind": "published",
+   "decision": "new",
+   "description": "London traveltech Stasher secures £3M for global expansion — London-founded traveltech companyStasher has secured £3 million in new funding to expand its global luggagestorage marketplace and smart locker network. The funding comprisesapproximately £2 million i...",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "announcement",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "EU"
+   ],
+   "geo_scope": "country",
+   "id": "a38ada440784",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "Europe",
+   "name": "UNKNOWN",
+   "noise": false,
+   "notes": "",
+   "priority": 3,
+   "q_found": [
+    "legacy-c43631719c75"
+   ],
+   "q_milestones": [
+    "attention_queue"
+   ],
+   "quality_source_id": "legacy-c43631719c75",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "Tech.eu (feed)",
+   "source_date": "2026-09-23",
+   "source_id": "legacy-c43631719c75",
+   "source_sectors": [
+    "ai_sw",
+    "deeptech"
+   ],
+   "source_url": "https://tech.eu/2026/09/23/london-traveltech-stasher-secures-ps3m-for-global-expansion/",
+   "src_quality": 0,
+   "twins": [],
+   "why": [
+    "Archetype keyword match: #2 Cross-border industrial trade or procurement platform for a fragmented physical commodity, with embedded financing, logistics or pricing intelligence",
+    "Announcement feed — discovery only; probably recently funded",
+    "Company name not extractable from the headline — read the source before judging"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "be-imec"
+   ],
+   "archetype_hits": [],
+   "country": "Belgium",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "Startup news",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "BNL"
+   ],
+   "geo_scope": "country",
+   "id": "38511868815f",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "Leuven, Belgium",
+   "name": "Startup news",
+   "noise": false,
+   "notes": "",
+   "priority": 4,
+   "q_found": [
+    "be-imec"
+   ],
+   "quality_source_id": "be-imec",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "imec.istart portfolio (semiconductors)",
+   "source_date": null,
+   "source_id": "be-imec",
+   "source_sectors": [
+    "semis_quantum",
+    "deeptech"
+   ],
+   "source_url": "https://www.imecistart.com/en/portfolio",
+   "src_quality": 1,
+   "twins": [],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "ca-cdl"
+   ],
+   "archetype_hits": [],
+   "country": "",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "Alpine Quantum Technologies",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "CA"
+   ],
+   "geo_scope": "global",
+   "id": "040dc16fb80a",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "",
+   "name": "Alpine Quantum Technologies",
+   "noise": false,
+   "notes": "",
+   "priority": 4,
+   "q_found": [
+    "ca-cdl"
+   ],
+   "quality_source_id": "ca-cdl",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [
+    "semis_quantum"
+   ],
+   "seen_runs": 1,
+   "source": "Creative Destruction Lab companies (international)",
+   "source_date": null,
+   "source_id": "ca-cdl",
+   "source_sectors": [
+    "deeptech",
+    "ai_sw",
+    "space",
+    "bio"
+   ],
+   "source_url": "https://creativedestructionlab.com/companies/",
+   "src_quality": 1,
+   "twins": [],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "ca-cdl"
+   ],
+   "archetype_hits": [],
+   "country": "",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "Boston Quantum",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "CA"
+   ],
+   "geo_scope": "global",
+   "id": "13d0f15816f7",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "",
+   "name": "Boston Quantum",
+   "noise": false,
+   "notes": "",
+   "priority": 4,
+   "q_found": [
+    "ca-cdl"
+   ],
+   "quality_source_id": "ca-cdl",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [
+    "semis_quantum"
+   ],
+   "seen_runs": 1,
+   "source": "Creative Destruction Lab companies (international)",
+   "source_date": null,
+   "source_id": "ca-cdl",
+   "source_sectors": [
+    "deeptech",
+    "ai_sw",
+    "space",
+    "bio"
+   ],
+   "source_url": "https://creativedestructionlab.com/companies/",
+   "src_quality": 1,
+   "twins": [],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "ca-cdl"
+   ],
+   "archetype_hits": [],
+   "country": "",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "Healthcare Robotics",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "CA"
+   ],
+   "geo_scope": "global",
+   "id": "226b10c05171",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "",
+   "name": "Healthcare Robotics",
+   "noise": false,
+   "notes": "",
+   "priority": 4,
+   "q_found": [
+    "ca-cdl"
+   ],
+   "quality_source_id": "ca-cdl",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [
+    "robotics"
+   ],
+   "seen_runs": 1,
+   "source": "Creative Destruction Lab companies (international)",
+   "source_date": null,
+   "source_id": "ca-cdl",
+   "source_sectors": [
+    "deeptech",
+    "ai_sw",
+    "space",
+    "bio"
+   ],
+   "source_url": "https://creativedestructionlab.com/companies/",
+   "src_quality": 1,
+   "twins": [],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "ca-cdl"
+   ],
+   "archetype_hits": [],
+   "country": "",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "2S Water Inc.",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "CA"
+   ],
+   "geo_scope": "global",
+   "id": "3a84eba79c9d",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "",
+   "name": "2S Water Inc.",
+   "noise": false,
+   "notes": "",
+   "priority": 4,
+   "q_found": [
+    "ca-cdl"
+   ],
+   "quality_source_id": "ca-cdl",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "Creative Destruction Lab companies (international)",
+   "source_date": null,
+   "source_id": "ca-cdl",
+   "source_sectors": [
+    "deeptech",
+    "ai_sw",
+    "space",
+    "bio"
+   ],
+   "source_url": "https://creativedestructionlab.com/companies/",
+   "src_quality": 1,
+   "twins": [],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "ca-cdl"
+   ],
+   "archetype_hits": [],
+   "country": "",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "CapIntel Inc",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "CA"
+   ],
+   "geo_scope": "global",
+   "id": "48332178672f",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "",
+   "name": "CapIntel Inc",
+   "noise": false,
+   "notes": "",
+   "priority": 4,
+   "q_found": [
+    "ca-cdl"
+   ],
+   "quality_source_id": "ca-cdl",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "Creative Destruction Lab companies (international)",
+   "source_date": null,
+   "source_id": "ca-cdl",
+   "source_sectors": [
+    "deeptech",
+    "ai_sw",
+    "space",
+    "bio"
+   ],
+   "source_url": "https://creativedestructionlab.com/companies/",
+   "src_quality": 1,
+   "twins": [],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "ca-cdl"
+   ],
+   "archetype_hits": [],
+   "country": "",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "Accelerate Wind, Inc.",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "CA"
+   ],
+   "geo_scope": "global",
+   "id": "5fdc58a56fe6",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "",
+   "name": "Accelerate Wind, Inc.",
+   "noise": false,
+   "notes": "",
+   "priority": 4,
+   "q_found": [
+    "ca-cdl"
+   ],
+   "quality_source_id": "ca-cdl",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "Creative Destruction Lab companies (international)",
+   "source_date": null,
+   "source_id": "ca-cdl",
+   "source_sectors": [
+    "deeptech",
+    "ai_sw",
+    "space",
+    "bio"
+   ],
+   "source_url": "https://creativedestructionlab.com/companies/",
+   "src_quality": 1,
+   "twins": [],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "ca-cdl"
+   ],
+   "archetype_hits": [],
+   "country": "",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "Cambrian Works Inc.",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "CA"
+   ],
+   "geo_scope": "global",
+   "id": "89fef78a2201",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "",
+   "name": "Cambrian Works Inc.",
+   "noise": false,
+   "notes": "",
+   "priority": 4,
+   "q_found": [
+    "ca-cdl"
+   ],
+   "quality_source_id": "ca-cdl",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "Creative Destruction Lab companies (international)",
+   "source_date": null,
+   "source_id": "ca-cdl",
+   "source_sectors": [
+    "deeptech",
+    "ai_sw",
+    "space",
+    "bio"
+   ],
+   "source_url": "https://creativedestructionlab.com/companies/",
+   "src_quality": 1,
+   "twins": [],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "ca-cdl"
+   ],
+   "archetype_hits": [],
+   "country": "",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "Adaptive Insurance",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "CA"
+   ],
+   "geo_scope": "global",
+   "id": "934df913bca9",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "",
+   "name": "Adaptive Insurance",
+   "noise": false,
+   "notes": "",
+   "priority": 5,
+   "q_found": [
+    "ca-cdl"
+   ],
+   "quality_source_id": "ca-cdl",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "Creative Destruction Lab companies (international)",
+   "source_date": null,
+   "source_id": "ca-cdl",
+   "source_sectors": [
+    "deeptech",
+    "ai_sw",
+    "space",
+    "bio"
+   ],
+   "source_url": "https://creativedestructionlab.com/companies/",
+   "src_quality": 1,
+   "twins": [
+    "Nettle"
+   ],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is",
+    "Possible portfolio twin(s): Nettle → run conflict check"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "ca-cdl"
+   ],
+   "archetype_hits": [],
+   "country": "",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "Axtion Independence Mobility Inc.",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "CA"
+   ],
+   "geo_scope": "global",
+   "id": "99df875c9e75",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "",
+   "name": "Axtion Independence Mobility Inc.",
+   "noise": false,
+   "notes": "",
+   "priority": 4,
+   "q_found": [
+    "ca-cdl"
+   ],
+   "quality_source_id": "ca-cdl",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "Creative Destruction Lab companies (international)",
+   "source_date": null,
+   "source_id": "ca-cdl",
+   "source_sectors": [
+    "deeptech",
+    "ai_sw",
+    "space",
+    "bio"
+   ],
+   "source_url": "https://creativedestructionlab.com/companies/",
+   "src_quality": 1,
+   "twins": [],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "ca-cdl"
+   ],
+   "archetype_hits": [],
+   "country": "",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "Ardra Inc.",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "CA"
+   ],
+   "geo_scope": "global",
+   "id": "b14f3c4962ad",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "",
+   "name": "Ardra Inc.",
+   "noise": false,
+   "notes": "",
+   "priority": 4,
+   "q_found": [
+    "ca-cdl"
+   ],
+   "quality_source_id": "ca-cdl",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "Creative Destruction Lab companies (international)",
+   "source_date": null,
+   "source_id": "ca-cdl",
+   "source_sectors": [
+    "deeptech",
+    "ai_sw",
+    "space",
+    "bio"
+   ],
+   "source_url": "https://creativedestructionlab.com/companies/",
+   "src_quality": 1,
+   "twins": [],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "ca-cdl",
+    "ca-velocity"
+   ],
+   "also_seen": [
+    {
+     "discovery_tier": "pre_company",
+     "first_seen": "2026-09-27 19:50:11",
+     "source": "Velocity (Waterloo)",
+     "source_date": "",
+     "source_id": "ca-velocity",
+     "url": "https://www.velocityincubator.com/companies"
+    }
+   ],
+   "archetype_hits": [],
+   "country": "",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "Aqua-Cell Energy Inc.",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "entity_ids": {},
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "CA"
+   ],
+   "geo_scope": "global",
+   "id": "c4b7e570fb55",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "",
+   "name": "Aqua-Cell Energy Inc.",
+   "noise": false,
+   "notes": "",
+   "priority": 7,
+   "q_found": [
+    "ca-cdl",
+    "ca-velocity"
+   ],
+   "quality_source_id": "ca-cdl",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "Creative Destruction Lab companies (international)",
+   "source_date": null,
+   "source_id": "ca-cdl",
+   "source_sectors": [
+    "deeptech",
+    "ai_sw",
+    "space",
+    "bio"
+   ],
+   "source_url": "https://creativedestructionlab.com/companies/",
+   "src_quality": 1,
+   "twins": [
+    "Avoltra"
+   ],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is",
+    "Possible portfolio twin(s): Avoltra → run conflict check",
+    "Cross-source signal: also seen on Velocity (Waterloo)"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "ca-cdl"
+   ],
+   "archetype_hits": [],
+   "country": "",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "Ayrton Energy",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "CA"
+   ],
+   "geo_scope": "global",
+   "id": "c96b02ab8a00",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "",
+   "name": "Ayrton Energy",
+   "noise": false,
+   "notes": "",
+   "priority": 5,
+   "q_found": [
+    "ca-cdl"
+   ],
+   "quality_source_id": "ca-cdl",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "Creative Destruction Lab companies (international)",
+   "source_date": null,
+   "source_id": "ca-cdl",
+   "source_sectors": [
+    "deeptech",
+    "ai_sw",
+    "space",
+    "bio"
+   ],
+   "source_url": "https://creativedestructionlab.com/companies/",
+   "src_quality": 1,
+   "twins": [
+    "Avoltra"
+   ],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is",
+    "Possible portfolio twin(s): Avoltra → run conflict check"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "ca-cdl"
+   ],
+   "archetype_hits": [],
+   "country": "",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "AOA Dx, Inc",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "CA"
+   ],
+   "geo_scope": "global",
+   "id": "d0a4bb403b18",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "",
+   "name": "AOA Dx, Inc",
+   "noise": false,
+   "notes": "",
+   "priority": 4,
+   "q_found": [
+    "ca-cdl"
+   ],
+   "quality_source_id": "ca-cdl",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "Creative Destruction Lab companies (international)",
+   "source_date": null,
+   "source_id": "ca-cdl",
+   "source_sectors": [
+    "deeptech",
+    "ai_sw",
+    "space",
+    "bio"
+   ],
+   "source_url": "https://creativedestructionlab.com/companies/",
+   "src_quality": 1,
+   "twins": [],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "ca-cdl"
+   ],
+   "archetype_hits": [],
+   "country": "",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "Blumind Inc.",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "CA"
+   ],
+   "geo_scope": "global",
+   "id": "d5e4cc3ffebd",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "",
+   "name": "Blumind Inc.",
+   "noise": false,
+   "notes": "",
+   "priority": 4,
+   "q_found": [
+    "ca-cdl"
+   ],
+   "quality_source_id": "ca-cdl",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "Creative Destruction Lab companies (international)",
+   "source_date": null,
+   "source_id": "ca-cdl",
+   "source_sectors": [
+    "deeptech",
+    "ai_sw",
+    "space",
+    "bio"
+   ],
+   "source_url": "https://creativedestructionlab.com/companies/",
+   "src_quality": 1,
+   "twins": [],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "ca-cdl"
+   ],
+   "archetype_hits": [],
+   "country": "",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "Acumino, Inc.",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "CA"
+   ],
+   "geo_scope": "global",
+   "id": "da5a6ab3a94b",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "",
+   "name": "Acumino, Inc.",
+   "noise": false,
+   "notes": "",
+   "priority": 4,
+   "q_found": [
+    "ca-cdl"
+   ],
+   "quality_source_id": "ca-cdl",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "Creative Destruction Lab companies (international)",
+   "source_date": null,
+   "source_id": "ca-cdl",
+   "source_sectors": [
+    "deeptech",
+    "ai_sw",
+    "space",
+    "bio"
+   ],
+   "source_url": "https://creativedestructionlab.com/companies/",
+   "src_quality": 1,
+   "twins": [],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "ca-velocity"
+   ],
+   "archetype_hits": [],
+   "country": "Canada",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "Insurance",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "CA"
+   ],
+   "geo_scope": "country",
+   "id": "2188e13472f5",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "Waterloo, Canada",
+   "name": "Insurance",
+   "noise": false,
+   "notes": "",
+   "priority": 5,
+   "q_found": [
+    "ca-velocity"
+   ],
+   "quality_source_id": "ca-velocity",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "Velocity (Waterloo)",
+   "source_date": null,
+   "source_id": "ca-velocity",
+   "source_sectors": [
+    "deeptech",
+    "ai_sw"
+   ],
+   "source_url": "https://www.velocityincubator.com/companies",
+   "src_quality": 1,
+   "twins": [
+    "Nettle"
+   ],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is",
+    "Possible portfolio twin(s): Nettle → run conflict check"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "ca-velocity"
+   ],
+   "archetype_hits": [],
+   "country": "Canada",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "Founder and company directory.",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "CA"
+   ],
+   "geo_scope": "country",
+   "id": "4bfef270698a",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "Waterloo, Canada",
+   "name": "Founder and company directory.",
+   "noise": false,
+   "notes": "",
+   "priority": 4,
+   "q_found": [
+    "ca-velocity"
+   ],
+   "quality_source_id": "ca-velocity",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "Velocity (Waterloo)",
+   "source_date": null,
+   "source_id": "ca-velocity",
+   "source_sectors": [
+    "deeptech",
+    "ai_sw"
+   ],
+   "source_url": "https://www.velocityincubator.com/companies",
+   "src_quality": 1,
+   "twins": [],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "ca-velocity"
+   ],
+   "archetype_hits": [],
+   "country": "Canada",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "Aurora Quantum Technologies",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "CA"
+   ],
+   "geo_scope": "country",
+   "id": "74253d58f184",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "Waterloo, Canada",
+   "name": "Aurora Quantum Technologies",
+   "noise": false,
+   "notes": "",
+   "priority": 4,
+   "q_found": [
+    "ca-velocity"
+   ],
+   "quality_source_id": "ca-velocity",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [
+    "semis_quantum"
+   ],
+   "seen_runs": 1,
+   "source": "Velocity (Waterloo)",
+   "source_date": null,
+   "source_id": "ca-velocity",
+   "source_sectors": [
+    "deeptech",
+    "ai_sw"
+   ],
+   "source_url": "https://www.velocityincubator.com/companies",
+   "src_quality": 1,
+   "twins": [],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "ca-velocity"
+   ],
+   "archetype_hits": [],
+   "country": "Canada",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "a pair of eye tracking glasses to control computers",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "CA"
+   ],
+   "geo_scope": "country",
+   "id": "94aa20ce2e4a",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "Waterloo, Canada",
+   "name": "a pair of eye tracking glasses to control",
+   "noise": false,
+   "notes": "",
+   "priority": 4,
+   "q_found": [
+    "ca-velocity"
+   ],
+   "quality_source_id": "ca-velocity",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "Velocity (Waterloo)",
+   "source_date": null,
+   "source_id": "ca-velocity",
+   "source_sectors": [
+    "deeptech",
+    "ai_sw"
+   ],
+   "source_url": "https://www.velocityincubator.com/companies",
+   "src_quality": 1,
+   "twins": [],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "ca-velocity"
+   ],
+   "archetype_hits": [],
+   "country": "Canada",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "Construction/Maintenance",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "CA"
+   ],
+   "geo_scope": "country",
+   "id": "b4202f0fed49",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "Waterloo, Canada",
+   "name": "Construction/Maintenance",
+   "noise": false,
+   "notes": "",
+   "priority": 5,
+   "q_found": [
+    "ca-velocity"
+   ],
+   "quality_source_id": "ca-velocity",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "Velocity (Waterloo)",
+   "source_date": null,
+   "source_id": "ca-velocity",
+   "source_sectors": [
+    "deeptech",
+    "ai_sw"
+   ],
+   "source_url": "https://www.velocityincubator.com/companies",
+   "src_quality": 1,
+   "twins": [
+    "Vestigas"
+   ],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is",
+    "Possible portfolio twin(s): Vestigas → run conflict check"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "ca-velocity"
+   ],
+   "archetype_hits": [],
+   "country": "Canada",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "Advanced Materials",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "CA"
+   ],
+   "geo_scope": "country",
+   "id": "d3e9489f983e",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "Waterloo, Canada",
+   "name": "Advanced Materials",
+   "noise": false,
+   "notes": "",
+   "priority": 4,
+   "q_found": [
+    "ca-velocity"
+   ],
+   "quality_source_id": "ca-velocity",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [
+    "deeptech"
+   ],
+   "seen_runs": 1,
+   "source": "Velocity (Waterloo)",
+   "source_date": null,
+   "source_id": "ca-velocity",
+   "source_sectors": [
+    "deeptech",
+    "ai_sw"
+   ],
+   "source_url": "https://www.velocityincubator.com/companies",
+   "src_quality": 1,
+   "twins": [],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "ca-velocity"
+   ],
+   "archetype_hits": [],
+   "country": "Canada",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "Acerta is an AI based diagnostics & failure prediction for (automotive) manufacturing. A machine learning platform that detects anomalies in vehicle data to decrease manufacturing costs, and improve quality.",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "CA"
+   ],
+   "geo_scope": "country",
+   "id": "ec91f86ac8cf",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "Waterloo, Canada",
+   "name": "Acerta is an AI based diagnostics & failure",
+   "noise": false,
+   "notes": "",
+   "opportunistic": true,
+   "priority": 5,
+   "q_found": [
+    "ca-velocity"
+   ],
+   "quality_source_id": "ca-velocity",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [
+    "bio",
+    "ai_sw"
+   ],
+   "seen_runs": 1,
+   "source": "Velocity (Waterloo)",
+   "source_date": null,
+   "source_id": "ca-velocity",
+   "source_sectors": [
+    "deeptech",
+    "ai_sw"
+   ],
+   "source_url": "https://www.velocityincubator.com/companies",
+   "src_quality": 1,
+   "twins": [
+    "Resourcly",
+    "Linexa"
+   ],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is",
+    "Possible portfolio twin(s): Resourcly, Linexa → run conflict check",
+    "OPPORTUNISTIC — candidate text is bio/pharma; outside core themes, #15 outlier route only"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "ch-eth-dinfk"
+   ],
+   "archetype_hits": [],
+   "country": "Switzerland",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "Kapanu AG (acquired by Ivoclar Vivadent)",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "CH"
+   ],
+   "geo_scope": "country",
+   "id": "05aa485e9fc5",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "Zurich, Switzerland",
+   "name": "Kapanu AG (acquired by Ivoclar Vivadent)",
+   "noise": false,
+   "notes": "",
+   "priority": 4,
+   "q_found": [
+    "ch-eth-dinfk"
+   ],
+   "quality_source_id": "ch-eth-dinfk",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "ETH D-INFK spin-offs (static departmental list)",
+   "source_date": null,
+   "source_id": "ch-eth-dinfk",
+   "source_sectors": [
+    "ai_sw",
+    "deeptech",
+    "robotics"
+   ],
+   "source_url": "https://inf.ethz.ch/department/spin-offs/spin-offs-list.html",
+   "src_quality": 1,
+   "twins": [],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "ch-eth-dinfk"
+   ],
+   "archetype_hits": [],
+   "country": "Switzerland",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "Koubachi AG (acquired by Husqvarna Group)",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "CH"
+   ],
+   "geo_scope": "country",
+   "id": "12b7b4bf842e",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "Zurich, Switzerland",
+   "name": "Koubachi AG (acquired by Husqvarna Group)",
+   "noise": false,
+   "notes": "",
+   "priority": 4,
+   "q_found": [
+    "ch-eth-dinfk"
+   ],
+   "quality_source_id": "ch-eth-dinfk",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "ETH D-INFK spin-offs (static departmental list)",
+   "source_date": null,
+   "source_id": "ch-eth-dinfk",
+   "source_sectors": [
+    "ai_sw",
+    "deeptech",
+    "robotics"
+   ],
+   "source_url": "https://inf.ethz.ch/department/spin-offs/spin-offs-list.html",
+   "src_quality": 1,
+   "twins": [],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "ch-eth-dinfk"
+   ],
+   "archetype_hits": [],
+   "country": "Switzerland",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "Dybuster AG",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "CH"
+   ],
+   "geo_scope": "country",
+   "id": "23f3b119eaab",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "Zurich, Switzerland",
+   "name": "Dybuster AG",
+   "noise": false,
+   "notes": "",
+   "priority": 4,
+   "q_found": [
+    "ch-eth-dinfk"
+   ],
+   "quality_source_id": "ch-eth-dinfk",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "ETH D-INFK spin-offs (static departmental list)",
+   "source_date": null,
+   "source_id": "ch-eth-dinfk",
+   "source_sectors": [
+    "ai_sw",
+    "deeptech",
+    "robotics"
+   ],
+   "source_url": "https://inf.ethz.ch/department/spin-offs/spin-offs-list.html",
+   "src_quality": 1,
+   "twins": [],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "ch-eth-dinfk"
+   ],
+   "archetype_hits": [],
+   "country": "Switzerland",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "Synacts GmbH",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "CH"
+   ],
+   "geo_scope": "country",
+   "id": "3fcfb0c71eb2",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "Zurich, Switzerland",
+   "name": "Synacts GmbH",
+   "noise": false,
+   "notes": "",
+   "priority": 4,
+   "q_found": [
+    "ch-eth-dinfk"
+   ],
+   "quality_source_id": "ch-eth-dinfk",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "ETH D-INFK spin-offs (static departmental list)",
+   "source_date": null,
+   "source_id": "ch-eth-dinfk",
+   "source_sectors": [
+    "ai_sw",
+    "deeptech",
+    "robotics"
+   ],
+   "source_url": "https://inf.ethz.ch/department/spin-offs/spin-offs-list.html",
+   "src_quality": 1,
+   "twins": [],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "ch-eth-dinfk"
+   ],
+   "archetype_hits": [],
+   "country": "Switzerland",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "DIRAC AG",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "CH"
+   ],
+   "geo_scope": "country",
+   "id": "4d94b6755991",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "Zurich, Switzerland",
+   "name": "DIRAC AG",
+   "noise": false,
+   "notes": "",
+   "priority": 4,
+   "q_found": [
+    "ch-eth-dinfk"
+   ],
+   "quality_source_id": "ch-eth-dinfk",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "ETH D-INFK spin-offs (static departmental list)",
+   "source_date": null,
+   "source_id": "ch-eth-dinfk",
+   "source_sectors": [
+    "ai_sw",
+    "deeptech",
+    "robotics"
+   ],
+   "source_url": "https://inf.ethz.ch/department/spin-offs/spin-offs-list.html",
+   "src_quality": 1,
+   "twins": [],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "ch-eth-dinfk"
+   ],
+   "archetype_hits": [],
+   "country": "Switzerland",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "Beekeeper AG",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "CH"
+   ],
+   "geo_scope": "country",
+   "id": "60ba4848b000",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "Zurich, Switzerland",
+   "name": "Beekeeper AG",
+   "noise": false,
+   "notes": "",
+   "priority": 4,
+   "q_found": [
+    "ch-eth-dinfk"
+   ],
+   "quality_source_id": "ch-eth-dinfk",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "ETH D-INFK spin-offs (static departmental list)",
+   "source_date": null,
+   "source_id": "ch-eth-dinfk",
+   "source_sectors": [
+    "ai_sw",
+    "deeptech",
+    "robotics"
+   ],
+   "source_url": "https://inf.ethz.ch/department/spin-offs/spin-offs-list.html",
+   "src_quality": 1,
+   "twins": [],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "ch-eth-dinfk"
+   ],
+   "archetype_hits": [],
+   "country": "Switzerland",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "Perceptiko AG",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "CH"
+   ],
+   "geo_scope": "country",
+   "id": "7dfc69adf035",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "Zurich, Switzerland",
+   "name": "Perceptiko AG",
+   "noise": false,
+   "notes": "",
+   "priority": 4,
+   "q_found": [
+    "ch-eth-dinfk"
+   ],
+   "quality_source_id": "ch-eth-dinfk",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "ETH D-INFK spin-offs (static departmental list)",
+   "source_date": null,
+   "source_id": "ch-eth-dinfk",
+   "source_sectors": [
+    "ai_sw",
+    "deeptech",
+    "robotics"
+   ],
+   "source_url": "https://inf.ethz.ch/department/spin-offs/spin-offs-list.html",
+   "src_quality": 1,
+   "twins": [],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "ch-eth-dinfk"
+   ],
+   "archetype_hits": [],
+   "country": "Switzerland",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "Enlightware GmbH",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "CH"
+   ],
+   "geo_scope": "country",
+   "id": "8b429fce348b",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "Zurich, Switzerland",
+   "name": "Enlightware GmbH",
+   "noise": false,
+   "notes": "",
+   "priority": 4,
+   "q_found": [
+    "ch-eth-dinfk"
+   ],
+   "quality_source_id": "ch-eth-dinfk",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "ETH D-INFK spin-offs (static departmental list)",
+   "source_date": null,
+   "source_id": "ch-eth-dinfk",
+   "source_sectors": [
+    "ai_sw",
+    "deeptech",
+    "robotics"
+   ],
+   "source_url": "https://inf.ethz.ch/department/spin-offs/spin-offs-list.html",
+   "src_quality": 1,
+   "twins": [],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "ch-eth-dinfk"
+   ],
+   "archetype_hits": [],
+   "country": "Switzerland",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "staila technologies GmbH",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "CH"
+   ],
+   "geo_scope": "country",
+   "id": "a321b472f438",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "Zurich, Switzerland",
+   "name": "staila technologies GmbH",
+   "noise": false,
+   "notes": "",
+   "priority": 4,
+   "q_found": [
+    "ch-eth-dinfk"
+   ],
+   "quality_source_id": "ch-eth-dinfk",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "ETH D-INFK spin-offs (static departmental list)",
+   "source_date": null,
+   "source_id": "ch-eth-dinfk",
+   "source_sectors": [
+    "ai_sw",
+    "deeptech",
+    "robotics"
+   ],
+   "source_url": "https://inf.ethz.ch/department/spin-offs/spin-offs-list.html",
+   "src_quality": 1,
+   "twins": [],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "ch-eth-dinfk"
+   ],
+   "archetype_hits": [],
+   "country": "Switzerland",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "thenti GmbH",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "CH"
+   ],
+   "geo_scope": "country",
+   "id": "b63a8518d56e",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "Zurich, Switzerland",
+   "name": "thenti GmbH",
+   "noise": false,
+   "notes": "",
+   "priority": 4,
+   "q_found": [
+    "ch-eth-dinfk"
+   ],
+   "quality_source_id": "ch-eth-dinfk",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "ETH D-INFK spin-offs (static departmental list)",
+   "source_date": null,
+   "source_id": "ch-eth-dinfk",
+   "source_sectors": [
+    "ai_sw",
+    "deeptech",
+    "robotics"
+   ],
+   "source_url": "https://inf.ethz.ch/department/spin-offs/spin-offs-list.html",
+   "src_quality": 1,
+   "twins": [],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "ch-eth-dinfk"
+   ],
+   "archetype_hits": [],
+   "country": "Switzerland",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "GetYourGuide AG",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "CH"
+   ],
+   "geo_scope": "country",
+   "id": "c8d9db54d509",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "Zurich, Switzerland",
+   "name": "Fybit GmbH",
+   "noise": false,
+   "notes": "",
+   "priority": 4,
+   "q_found": [
+    "ch-eth-dinfk"
+   ],
+   "quality_source_id": "ch-eth-dinfk",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "ETH D-INFK spin-offs (static departmental list)",
+   "source_date": null,
+   "source_id": "ch-eth-dinfk",
+   "source_sectors": [
+    "ai_sw",
+    "deeptech",
+    "robotics"
+   ],
+   "source_url": "https://inf.ethz.ch/department/spin-offs/spin-offs-list.html",
+   "src_quality": 1,
+   "twins": [],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "ch-eth-dinfk"
+   ],
+   "archetype_hits": [],
+   "country": "Switzerland",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "Indoor Astronaut GmbH",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "CH"
+   ],
+   "geo_scope": "country",
+   "id": "db692d0ed25e",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "Zurich, Switzerland",
+   "name": "Indoor Astronaut GmbH",
+   "noise": false,
+   "notes": "",
+   "priority": 4,
+   "q_found": [
+    "ch-eth-dinfk"
+   ],
+   "quality_source_id": "ch-eth-dinfk",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "ETH D-INFK spin-offs (static departmental list)",
+   "source_date": null,
+   "source_id": "ch-eth-dinfk",
+   "source_sectors": [
+    "ai_sw",
+    "deeptech",
+    "robotics"
+   ],
+   "source_url": "https://inf.ethz.ch/department/spin-offs/spin-offs-list.html",
+   "src_quality": 1,
+   "twins": [],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "ch-eth-dinfk"
+   ],
+   "archetype_hits": [],
+   "country": "Switzerland",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "mtSystems GmbH",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "CH"
+   ],
+   "geo_scope": "country",
+   "id": "edd355f5e27e",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "Zurich, Switzerland",
+   "name": "mtSystems GmbH",
+   "noise": false,
+   "notes": "",
+   "priority": 4,
+   "q_found": [
+    "ch-eth-dinfk"
+   ],
+   "quality_source_id": "ch-eth-dinfk",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "ETH D-INFK spin-offs (static departmental list)",
+   "source_date": null,
+   "source_id": "ch-eth-dinfk",
+   "source_sectors": [
+    "ai_sw",
+    "deeptech",
+    "robotics"
+   ],
+   "source_url": "https://inf.ethz.ch/department/spin-offs/spin-offs-list.html",
+   "src_quality": 1,
+   "twins": [],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "de-esa-bic"
+   ],
+   "archetype_hits": [],
+   "country": "Germany",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "Not founded or",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "DACH"
+   ],
+   "geo_scope": "country",
+   "id": "29d58e1ce36d",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "",
+   "name": "Not founded or",
+   "noise": false,
+   "notes": "",
+   "priority": 4,
+   "q_found": [
+    "de-esa-bic"
+   ],
+   "quality_source_id": "de-esa-bic",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "ESA BIC Germany",
+   "source_date": null,
+   "source_id": "de-esa-bic",
+   "source_sectors": [
+    "space"
+   ],
+   "source_url": "https://www.esa-bic.de/",
+   "src_quality": 1,
+   "twins": [],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "eu-eic-acc"
+   ],
+   "archetype_hits": [],
+   "country": "",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "The third edition of Women TechEU(2026-2028), an EU-funded project supporting women leading deep tech startup companies from Europe, has been launched and opened its call for applications.",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "EU"
+   ],
+   "geo_scope": "region-eu",
+   "id": "19f5e85154e2",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "",
+   "name": "The third edition of Women TechEU(2026-2028), an EU-funded",
+   "noise": false,
+   "notes": "",
+   "priority": 4,
+   "q_found": [
+    "eu-eic-acc"
+   ],
+   "quality_source_id": "eu-eic-acc",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "EIC news — funded rounds (Accelerator / Pathfinder / Transition)",
+   "source_date": null,
+   "source_id": "eu-eic-acc",
+   "source_sectors": [
+    "deeptech",
+    "climate",
+    "semis_quantum",
+    "bio"
+   ],
+   "source_url": "https://eic.ec.europa.eu/news_en",
+   "src_quality": 1,
+   "twins": [],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "eu-eic-acc"
+   ],
+   "archetype_hits": [
+    11
+   ],
+   "country": "",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "Following a competitive and rapid evaluation, 20 projects have been selected to enter the first stage of the pilot.",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "EU"
+   ],
+   "geo_scope": "region-eu",
+   "id": "8771d6ae8a85",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "",
+   "name": "Following a competitive and rapid evaluation, 20 projects",
+   "noise": false,
+   "notes": "",
+   "priority": 6,
+   "q_found": [
+    "eu-eic-acc"
+   ],
+   "quality_source_id": "eu-eic-acc",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "EIC news — funded rounds (Accelerator / Pathfinder / Transition)",
+   "source_date": null,
+   "source_id": "eu-eic-acc",
+   "source_sectors": [
+    "deeptech",
+    "climate",
+    "semis_quantum",
+    "bio"
+   ],
+   "source_url": "https://eic.ec.europa.eu/news_en",
+   "src_quality": 1,
+   "twins": [],
+   "why": [
+    "Archetype keyword match: #11 Agent-infrastructure with a sharp wedge from repeat/technical founders",
+    "Pre-company channel — this is where the sourcing edge is"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "eu-esa-bic"
+   ],
+   "archetype_hits": [],
+   "country": "",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "Israel",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "EU"
+   ],
+   "geo_scope": "region-eu",
+   "id": "7f9047307236",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "",
+   "name": "Israel",
+   "noise": false,
+   "notes": "",
+   "priority": 4,
+   "q_found": [
+    "eu-esa-bic"
+   ],
+   "quality_source_id": "eu-esa-bic",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "ESA Business Incubation Centres (hub)",
+   "source_date": null,
+   "source_id": "eu-esa-bic",
+   "source_sectors": [
+    "space"
+   ],
+   "source_url": "https://commercialisation.esa.int/esa-business-incubation-centres/",
+   "src_quality": 1,
+   "twins": [],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "legacy-2c762fa36f98"
+   ],
+   "archetype_hits": [],
+   "country": "DE",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "Quantum Entrepreneurship Laboratory",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "DACH"
+   ],
+   "geo_scope": "country",
+   "id": "04a36f4bfc92",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "Munich",
+   "name": "Quantum Entrepreneurship Laboratory",
+   "noise": false,
+   "notes": "",
+   "priority": 4,
+   "q_found": [
+    "legacy-2c762fa36f98"
+   ],
+   "quality_source_id": "legacy-2c762fa36f98",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [
+    "semis_quantum"
+   ],
+   "seen_runs": 1,
+   "source": "TUM Venture Labs",
+   "source_date": null,
+   "source_id": "legacy-2c762fa36f98",
+   "source_sectors": [
+    "deeptech",
+    "defence",
+    "ai_sw"
+   ],
+   "source_url": "https://www.tum-venture-labs.de/",
+   "src_quality": 1,
+   "twins": [],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "legacy-2c762fa36f98"
+   ],
+   "archetype_hits": [],
+   "country": "DE",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "Accelerate your founder journey with open and free tools, powered by",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "DACH"
+   ],
+   "geo_scope": "country",
+   "id": "237e3e4768ad",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "Munich",
+   "name": "Accelerate your founder journey with open and free",
+   "noise": false,
+   "notes": "",
+   "priority": 4,
+   "q_found": [
+    "legacy-2c762fa36f98"
+   ],
+   "quality_source_id": "legacy-2c762fa36f98",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "TUM Venture Labs",
+   "source_date": null,
+   "source_id": "legacy-2c762fa36f98",
+   "source_sectors": [
+    "deeptech",
+    "defence",
+    "ai_sw"
+   ],
+   "source_url": "https://www.tum-venture-labs.de/",
+   "src_quality": 1,
+   "twins": [],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "legacy-2c762fa36f98"
+   ],
+   "also_seen": [],
+   "archetype_hits": [],
+   "country": "DE",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "\"From Science to Start-up\" – BioM on Tour at TUM Klinikum",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "entity_ids": {},
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "DACH"
+   ],
+   "geo_scope": "country",
+   "id": "444e4909bdc9",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "Munich",
+   "name": "\"From Science to Start-up\"",
+   "noise": false,
+   "notes": "",
+   "priority": 4,
+   "q_found": [
+    "legacy-2c762fa36f98"
+   ],
+   "quality_source_id": "legacy-2c762fa36f98",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "TUM Venture Labs",
+   "source_date": null,
+   "source_id": "legacy-2c762fa36f98",
+   "source_sectors": [
+    "deeptech",
+    "defence",
+    "ai_sw"
+   ],
+   "source_url": "https://www.tum-venture-labs.de/",
+   "src_quality": 1,
+   "twins": [],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "legacy-2c762fa36f98"
+   ],
+   "archetype_hits": [],
+   "country": "DE",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "Quantum Innovation Lab",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "DACH"
+   ],
+   "geo_scope": "country",
+   "id": "5aba99f3631f",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "Munich",
+   "name": "Quantum Innovation Lab",
+   "noise": false,
+   "notes": "",
+   "priority": 5,
+   "q_found": [
+    "legacy-2c762fa36f98"
+   ],
+   "quality_source_id": "legacy-2c762fa36f98",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [
+    "semis_quantum"
+   ],
+   "seen_runs": 1,
+   "source": "TUM Venture Labs",
+   "source_date": null,
+   "source_id": "legacy-2c762fa36f98",
+   "source_sectors": [
+    "deeptech",
+    "defence",
+    "ai_sw"
+   ],
+   "source_url": "https://www.tum-venture-labs.de/",
+   "src_quality": 1,
+   "twins": [
+    "Tabular"
+   ],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is",
+    "Possible portfolio twin(s): Tabular → run conflict check"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "legacy-2c762fa36f98"
+   ],
+   "archetype_hits": [],
+   "country": "DE",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "Student Thesis in the field of Additive Manufacturing",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "DACH"
+   ],
+   "geo_scope": "country",
+   "id": "7ba7cfa5e114",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "Munich",
+   "name": "Student Thesis in the field of Additive Manufacturing",
+   "noise": false,
+   "notes": "",
+   "priority": 5,
+   "q_found": [
+    "legacy-2c762fa36f98"
+   ],
+   "quality_source_id": "legacy-2c762fa36f98",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [
+    "deeptech"
+   ],
+   "seen_runs": 1,
+   "source": "TUM Venture Labs",
+   "source_date": null,
+   "source_id": "legacy-2c762fa36f98",
+   "source_sectors": [
+    "deeptech",
+    "defence",
+    "ai_sw"
+   ],
+   "source_url": "https://www.tum-venture-labs.de/",
+   "src_quality": 1,
+   "twins": [
+    "Resourcly",
+    "Linexa"
+   ],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is",
+    "Possible portfolio twin(s): Resourcly, Linexa → run conflict check"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "legacy-2c762fa36f98"
+   ],
+   "archetype_hits": [],
+   "country": "DE",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "Singapore Defense Tech Hackathon",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "DACH"
+   ],
+   "geo_scope": "country",
+   "id": "e2affc00e33e",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "Munich",
+   "name": "Singapore Defense Tech Hackathon",
+   "noise": false,
+   "notes": "",
+   "priority": 4,
+   "q_found": [
+    "legacy-2c762fa36f98"
+   ],
+   "quality_source_id": "legacy-2c762fa36f98",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [
+    "defence"
+   ],
+   "seen_runs": 1,
+   "source": "TUM Venture Labs",
+   "source_date": null,
+   "source_id": "legacy-2c762fa36f98",
+   "source_sectors": [
+    "deeptech",
+    "defence",
+    "ai_sw"
+   ],
+   "source_url": "https://www.tum-venture-labs.de/",
+   "src_quality": 1,
+   "twins": [],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "legacy-3c0cb0a2d7b2"
+   ],
+   "archetype_hits": [
+    5
+   ],
+   "country": "EU",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "Language selection | EU Defence Innovation Scheme (EUDIS)",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "EU"
+   ],
+   "geo_scope": "region-eu",
+   "id": "3b2ad80a08c5",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "EU",
+   "name": "Language selection",
+   "noise": false,
+   "notes": "",
+   "priority": 7,
+   "q_found": [
+    "legacy-3c0cb0a2d7b2"
+   ],
+   "quality_source_id": "legacy-3c0cb0a2d7b2",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [
+    "defence"
+   ],
+   "seen_runs": 1,
+   "source": "EUDIS — EU Defence Innovation Scheme",
+   "source_date": null,
+   "source_id": "legacy-3c0cb0a2d7b2",
+   "source_sectors": [
+    "deeptech",
+    "defence",
+    "ai_sw"
+   ],
+   "source_url": "https://eudis.europa.eu/",
+   "src_quality": 1,
+   "twins": [
+    "Tabular"
+   ],
+   "why": [
+    "Archetype keyword match: #5 Defence software layer",
+    "Pre-company channel — this is where the sourcing edge is",
+    "Possible portfolio twin(s): Tabular → run conflict check"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "legacy-48f1e93a816f"
+   ],
+   "archetype_hits": [],
+   "country": "",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "Startup Radar",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "CH"
+   ],
+   "geo_scope": "country",
+   "id": "89b8897c11aa",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "",
+   "name": "Startup Radar",
+   "noise": false,
+   "notes": "",
+   "priority": 3,
+   "q_found": [
+    "legacy-48f1e93a816f"
+   ],
+   "quality_source_id": "legacy-48f1e93a816f",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "startupticker.ch — news page (Swiss)",
+   "source_date": null,
+   "source_id": "legacy-48f1e93a816f",
+   "source_sectors": [
+    "ai_sw",
+    "deeptech"
+   ],
+   "source_url": "https://www.startupticker.ch/en/news",
+   "src_quality": 0,
+   "twins": [],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "legacy-48f1e93a816f"
+   ],
+   "archetype_hits": [],
+   "country": "",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "All Trainings",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "CH"
+   ],
+   "geo_scope": "country",
+   "id": "af224816a1f8",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "",
+   "name": "Trainings",
+   "noise": false,
+   "notes": "",
+   "priority": 4,
+   "q_found": [
+    "legacy-48f1e93a816f"
+   ],
+   "quality_source_id": "legacy-48f1e93a816f",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "startupticker.ch — news page (Swiss)",
+   "source_date": null,
+   "source_id": "legacy-48f1e93a816f",
+   "source_sectors": [
+    "ai_sw",
+    "deeptech"
+   ],
+   "source_url": "https://www.startupticker.ch/en/news",
+   "src_quality": 0,
+   "twins": [
+    "Montamo"
+   ],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is",
+    "Possible portfolio twin(s): Montamo → run conflict check"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "legacy-48f1e93a816f"
+   ],
+   "archetype_hits": [],
+   "country": "",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "50 current job ads from start-ups and enterpreneurial projects.",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "CH"
+   ],
+   "geo_scope": "country",
+   "id": "e1f017952528",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "",
+   "name": "50 current job ads from start-ups and enterpreneurial",
+   "noise": false,
+   "notes": "",
+   "priority": 3,
+   "q_found": [
+    "legacy-48f1e93a816f"
+   ],
+   "quality_source_id": "legacy-48f1e93a816f",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "startupticker.ch — news page (Swiss)",
+   "source_date": null,
+   "source_id": "legacy-48f1e93a816f",
+   "source_sectors": [
+    "ai_sw",
+    "deeptech"
+   ],
+   "source_url": "https://www.startupticker.ch/en/news",
+   "src_quality": 0,
+   "twins": [],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "legacy-6f0ff0ae4246"
+   ],
+   "archetype_hits": [],
+   "country": "DE",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "If you're a visionary deep tech founder ready to raise your next round, land your first customers, and scale fast - we’re here to get you there!",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "DACH"
+   ],
+   "geo_scope": "country",
+   "id": "00648e1b27bc",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "Munich",
+   "name": "If you're a visionary deep tech founder ready",
+   "noise": false,
+   "notes": "",
+   "priority": 4,
+   "q_found": [
+    "legacy-6f0ff0ae4246"
+   ],
+   "quality_source_id": "legacy-6f0ff0ae4246",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "UnternehmerTUM / XPRENEURS",
+   "source_date": null,
+   "source_id": "legacy-6f0ff0ae4246",
+   "source_sectors": [
+    "deeptech",
+    "defence",
+    "ai_sw"
+   ],
+   "source_url": "https://xpreneurs.io/",
+   "src_quality": 1,
+   "twins": [],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "legacy-6f0ff0ae4246"
+   ],
+   "archetype_hits": [
+    8
+   ],
+   "country": "DE",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "Proxima Fusion is building the first generation of fusion power plants using quasi-isodynamic (QI) stellarators - the clearest, most robust path to putting fusion on the grid.",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "DACH"
+   ],
+   "geo_scope": "country",
+   "id": "3586b81e8bd1",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "Munich",
+   "name": "Proxima Fusion is building the first generation of",
+   "noise": false,
+   "notes": "",
+   "priority": 6,
+   "q_found": [
+    "legacy-6f0ff0ae4246"
+   ],
+   "quality_source_id": "legacy-6f0ff0ae4246",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [
+    "climate"
+   ],
+   "seen_runs": 1,
+   "source": "UnternehmerTUM / XPRENEURS",
+   "source_date": null,
+   "source_id": "legacy-6f0ff0ae4246",
+   "source_sectors": [
+    "deeptech",
+    "defence",
+    "ai_sw"
+   ],
+   "source_url": "https://xpreneurs.io/",
+   "src_quality": 1,
+   "twins": [],
+   "why": [
+    "Archetype keyword match: #8 Energy & critical-infrastructure intelligence",
+    "Pre-company channel — this is where the sourcing edge is"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "legacy-6f0ff0ae4246"
+   ],
+   "archetype_hits": [],
+   "country": "DE",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "“Europe’s Leading Start-up Hubs”",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "DACH"
+   ],
+   "geo_scope": "country",
+   "id": "5f4edf3b4bbd",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "Munich",
+   "name": "“Europe’s Leading Start-up Hubs”",
+   "noise": false,
+   "notes": "",
+   "priority": 4,
+   "q_found": [
+    "legacy-6f0ff0ae4246"
+   ],
+   "quality_source_id": "legacy-6f0ff0ae4246",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "UnternehmerTUM / XPRENEURS",
+   "source_date": null,
+   "source_id": "legacy-6f0ff0ae4246",
+   "source_sectors": [
+    "deeptech",
+    "defence",
+    "ai_sw"
+   ],
+   "source_url": "https://xpreneurs.io/",
+   "src_quality": 1,
+   "twins": [],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "legacy-6f0ff0ae4246"
+   ],
+   "archetype_hits": [],
+   "country": "DE",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "Co-founder and Chief Strategy Officer of OroraTech, CEO of OroraTech US",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "DACH"
+   ],
+   "geo_scope": "country",
+   "id": "b03fff7e4bdc",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "Munich",
+   "name": "Co-founder and Chief Strategy Officer of OroraTech, CEO",
+   "noise": false,
+   "notes": "",
+   "priority": 4,
+   "q_found": [
+    "legacy-6f0ff0ae4246"
+   ],
+   "quality_source_id": "legacy-6f0ff0ae4246",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "UnternehmerTUM / XPRENEURS",
+   "source_date": null,
+   "source_id": "legacy-6f0ff0ae4246",
+   "source_sectors": [
+    "deeptech",
+    "defence",
+    "ai_sw"
+   ],
+   "source_url": "https://xpreneurs.io/",
+   "src_quality": 1,
+   "twins": [],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "legacy-6f0ff0ae4246"
+   ],
+   "archetype_hits": [],
+   "country": "DE",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "Alumni, vote now! Help UnternehmerTUM rank #1 as Europe’s Leading Startup Hub in 2 minutes",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "DACH"
+   ],
+   "geo_scope": "country",
+   "id": "e34028d611d2",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "Munich",
+   "name": "Alumni, vote now! Help UnternehmerTUM rank #1 as",
+   "noise": false,
+   "notes": "",
+   "priority": 4,
+   "q_found": [
+    "legacy-6f0ff0ae4246"
+   ],
+   "quality_source_id": "legacy-6f0ff0ae4246",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "UnternehmerTUM / XPRENEURS",
+   "source_date": null,
+   "source_id": "legacy-6f0ff0ae4246",
+   "source_sectors": [
+    "deeptech",
+    "defence",
+    "ai_sw"
+   ],
+   "source_url": "https://xpreneurs.io/",
+   "src_quality": 1,
+   "twins": [],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "legacy-7d7c8e3a6ea2"
+   ],
+   "archetype_hits": [],
+   "country": "DE",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "Entscheidend sind ein Bezug zu einer Hochschule oder Forschungseinrichtung, ein überzeugendes Innovations- oder Problemlösungspotenzial und der Wille euer Vorhaben gemeinsam mit einem Gründungsnetzwerk voranzutreiben.",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "DACH"
+   ],
+   "geo_scope": "country",
+   "id": "5b94072c1d86",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "Germany",
+   "name": "Entscheidend sind ein Bezug zu einer Hochschule oder",
+   "noise": false,
+   "notes": "",
+   "priority": 5,
+   "q_found": [
+    "legacy-7d7c8e3a6ea2"
+   ],
+   "quality_source_id": "legacy-7d7c8e3a6ea2",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "EXIST — news",
+   "source_date": null,
+   "source_id": "legacy-7d7c8e3a6ea2",
+   "source_sectors": [
+    "deeptech",
+    "defence",
+    "ai_sw"
+   ],
+   "source_url": "https://www.exist.de/EXIST/Navigation/DE/Aktuelles/Meldungen/meldungen.html",
+   "src_quality": 1,
+   "twins": [
+    "Tabular"
+   ],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is",
+    "Possible portfolio twin(s): Tabular → run conflict check"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "legacy-7d7c8e3a6ea2"
+   ],
+   "archetype_hits": [],
+   "country": "DE",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "Gründungsnetzwerk kontaktieren",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "DACH"
+   ],
+   "geo_scope": "country",
+   "id": "ddfbe7f1b6a9",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "Germany",
+   "name": "Gründungsnetzwerk kontaktieren",
+   "noise": false,
+   "notes": "",
+   "priority": 4,
+   "q_found": [
+    "legacy-7d7c8e3a6ea2"
+   ],
+   "quality_source_id": "legacy-7d7c8e3a6ea2",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "EXIST — news",
+   "source_date": null,
+   "source_id": "legacy-7d7c8e3a6ea2",
+   "source_sectors": [
+    "deeptech",
+    "defence",
+    "ai_sw"
+   ],
+   "source_url": "https://www.exist.de/EXIST/Navigation/DE/Aktuelles/Meldungen/meldungen.html",
+   "src_quality": 1,
+   "twins": [],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "legacy-a05051b3d452"
+   ],
+   "archetype_hits": [],
+   "country": "DE",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "Forschungsinstitut Cyber Defence (»FI CODE«)",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "DACH"
+   ],
+   "geo_scope": "country",
+   "id": "669c592e4934",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "Munich",
+   "name": "Forschungsinstitut Cyber Defence (»FI CODE«)",
+   "noise": false,
+   "notes": "",
+   "priority": 4,
+   "q_found": [
+    "legacy-a05051b3d452"
+   ],
+   "quality_source_id": "legacy-a05051b3d452",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [
+    "defence"
+   ],
+   "seen_runs": 1,
+   "source": "Palladion Defence Accelerator (UniBw Munich)",
+   "source_date": null,
+   "source_id": "legacy-a05051b3d452",
+   "source_sectors": [
+    "deeptech",
+    "defence",
+    "ai_sw"
+   ],
+   "source_url": "https://www.unibw.de/diana",
+   "src_quality": 1,
+   "twins": [],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "legacy-a05051b3d452"
+   ],
+   "archetype_hits": [],
+   "country": "DE",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "Zur DIANA-Website >",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "DACH"
+   ],
+   "geo_scope": "country",
+   "id": "e76931496e6b",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "Munich",
+   "name": "Zur DIANA-Website >",
+   "noise": false,
+   "notes": "",
+   "priority": 4,
+   "q_found": [
+    "legacy-a05051b3d452"
+   ],
+   "quality_source_id": "legacy-a05051b3d452",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "Palladion Defence Accelerator (UniBw Munich)",
+   "source_date": null,
+   "source_id": "legacy-a05051b3d452",
+   "source_sectors": [
+    "deeptech",
+    "defence",
+    "ai_sw"
+   ],
+   "source_url": "https://www.unibw.de/diana",
+   "src_quality": 1,
+   "twins": [],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "legacy-b1131d197935"
+   ],
+   "archetype_hits": [],
+   "country": "DE",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "Durch die Lösungen von PE-Systems, werden Systeme für die Energie- und Verkehrswende bezahlbar, effizient und verfügbar!",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "DACH"
+   ],
+   "geo_scope": "country",
+   "id": "0bb56bc2745c",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "Darmstadt",
+   "name": "PE-Systems GmbH",
+   "noise": false,
+   "notes": "",
+   "priority": 4,
+   "q_found": [
+    "legacy-b1131d197935"
+   ],
+   "quality_source_id": "legacy-b1131d197935",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "HIGHEST (TU Darmstadt registry)",
+   "source_date": null,
+   "source_id": "legacy-b1131d197935",
+   "source_sectors": [
+    "deeptech",
+    "defence",
+    "ai_sw"
+   ],
+   "source_url": "https://highest-darmstadt.de/en/fuer-unternehmen/start-ups-1/",
+   "src_quality": 1,
+   "twins": [],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "legacy-b1131d197935"
+   ],
+   "archetype_hits": [],
+   "country": "DE",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "Queryella GmbH",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "DACH"
+   ],
+   "geo_scope": "country",
+   "id": "13d2283d2afa",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "Darmstadt",
+   "name": "TwineTic GmbH",
+   "noise": false,
+   "notes": "",
+   "priority": 4,
+   "q_found": [
+    "legacy-b1131d197935"
+   ],
+   "quality_source_id": "legacy-b1131d197935",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "HIGHEST (TU Darmstadt registry)",
+   "source_date": null,
+   "source_id": "legacy-b1131d197935",
+   "source_sectors": [
+    "deeptech",
+    "defence",
+    "ai_sw"
+   ],
+   "source_url": "https://highest-darmstadt.de/en/fuer-unternehmen/start-ups-1/",
+   "src_quality": 1,
+   "twins": [],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "legacy-b1131d197935"
+   ],
+   "archetype_hits": [],
+   "country": "DE",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "LIV Systems GmbH",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "DACH"
+   ],
+   "geo_scope": "country",
+   "id": "1da87854adbd",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "Darmstadt",
+   "name": "LIV Systems GmbH",
+   "noise": false,
+   "notes": "",
+   "priority": 4,
+   "q_found": [
+    "legacy-b1131d197935"
+   ],
+   "quality_source_id": "legacy-b1131d197935",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "HIGHEST (TU Darmstadt registry)",
+   "source_date": null,
+   "source_id": "legacy-b1131d197935",
+   "source_sectors": [
+    "deeptech",
+    "defence",
+    "ai_sw"
+   ],
+   "source_url": "https://highest-darmstadt.de/en/fuer-unternehmen/start-ups-1/",
+   "src_quality": 1,
+   "twins": [],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "legacy-b1131d197935"
+   ],
+   "archetype_hits": [],
+   "country": "DE",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "Claneo GmbH, Berlin",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "DACH"
+   ],
+   "geo_scope": "country",
+   "id": "43ce35b34bc8",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "Darmstadt",
+   "name": "Claneo GmbH, Berlin",
+   "noise": false,
+   "notes": "",
+   "priority": 4,
+   "q_found": [
+    "legacy-b1131d197935"
+   ],
+   "quality_source_id": "legacy-b1131d197935",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "HIGHEST (TU Darmstadt registry)",
+   "source_date": null,
+   "source_id": "legacy-b1131d197935",
+   "source_sectors": [
+    "deeptech",
+    "defence",
+    "ai_sw"
+   ],
+   "source_url": "https://highest-darmstadt.de/en/fuer-unternehmen/start-ups-1/",
+   "src_quality": 1,
+   "twins": [],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "legacy-b1131d197935"
+   ],
+   "archetype_hits": [],
+   "country": "DE",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "Xelera GmbH (F-Technologies), Darmstadt",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "DACH"
+   ],
+   "geo_scope": "country",
+   "id": "4ac69d4e201f",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "Darmstadt",
+   "name": "Xelera GmbH (F-Technologies), Darmstadt",
+   "noise": false,
+   "notes": "",
+   "priority": 4,
+   "q_found": [
+    "legacy-b1131d197935"
+   ],
+   "quality_source_id": "legacy-b1131d197935",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "HIGHEST (TU Darmstadt registry)",
+   "source_date": null,
+   "source_id": "legacy-b1131d197935",
+   "source_sectors": [
+    "deeptech",
+    "defence",
+    "ai_sw"
+   ],
+   "source_url": "https://highest-darmstadt.de/en/fuer-unternehmen/start-ups-1/",
+   "src_quality": 1,
+   "twins": [],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "legacy-b1131d197935"
+   ],
+   "archetype_hits": [],
+   "country": "DE",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "Lylu GmbH, Darmstadt",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "DACH"
+   ],
+   "geo_scope": "country",
+   "id": "5f00d21be977",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "Darmstadt",
+   "name": "Lylu GmbH, Darmstadt",
+   "noise": false,
+   "notes": "",
+   "priority": 4,
+   "q_found": [
+    "legacy-b1131d197935"
+   ],
+   "quality_source_id": "legacy-b1131d197935",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "HIGHEST (TU Darmstadt registry)",
+   "source_date": null,
+   "source_id": "legacy-b1131d197935",
+   "source_sectors": [
+    "deeptech",
+    "defence",
+    "ai_sw"
+   ],
+   "source_url": "https://highest-darmstadt.de/en/fuer-unternehmen/start-ups-1/",
+   "src_quality": 1,
+   "twins": [],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "legacy-b1131d197935"
+   ],
+   "archetype_hits": [],
+   "country": "DE",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "PolyCrypt ist ein Spin-off der TU Darmstadt mit der Aufgabe Blockchainanwendungen skalierbar, vertraulich und interoperabel zum machen, ohne an Sicherheit oder Dezentralität einbüßen zu müssen.",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "DACH"
+   ],
+   "geo_scope": "country",
+   "id": "622343c56521",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "Darmstadt",
+   "name": "PolyCrypt ist ein Spin-off der TU Darmstadt mit",
+   "noise": false,
+   "notes": "",
+   "priority": 4,
+   "q_found": [
+    "legacy-b1131d197935"
+   ],
+   "quality_source_id": "legacy-b1131d197935",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "HIGHEST (TU Darmstadt registry)",
+   "source_date": null,
+   "source_id": "legacy-b1131d197935",
+   "source_sectors": [
+    "deeptech",
+    "defence",
+    "ai_sw"
+   ],
+   "source_url": "https://highest-darmstadt.de/en/fuer-unternehmen/start-ups-1/",
+   "src_quality": 1,
+   "twins": [],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "legacy-b1131d197935"
+   ],
+   "archetype_hits": [],
+   "country": "DE",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "dianovi GmbH",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "DACH"
+   ],
+   "geo_scope": "country",
+   "id": "76bab90a554f",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "Darmstadt",
+   "name": "dianovi GmbH",
+   "noise": false,
+   "notes": "",
+   "priority": 4,
+   "q_found": [
+    "legacy-b1131d197935"
+   ],
+   "quality_source_id": "legacy-b1131d197935",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "HIGHEST (TU Darmstadt registry)",
+   "source_date": null,
+   "source_id": "legacy-b1131d197935",
+   "source_sectors": [
+    "deeptech",
+    "defence",
+    "ai_sw"
+   ],
+   "source_url": "https://highest-darmstadt.de/en/fuer-unternehmen/start-ups-1/",
+   "src_quality": 1,
+   "twins": [],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "legacy-b1131d197935"
+   ],
+   "archetype_hits": [],
+   "country": "DE",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "Digitales Shopfloor Management zur Gestaltung der vernetzten Produktion von Morgen",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "DACH"
+   ],
+   "geo_scope": "country",
+   "id": "8530c374d2d9",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "Darmstadt",
+   "name": "Digitales Shopfloor Management zur Gestaltung der vernetzten Produktion",
+   "noise": false,
+   "notes": "",
+   "priority": 4,
+   "q_found": [
+    "legacy-b1131d197935"
+   ],
+   "quality_source_id": "legacy-b1131d197935",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "HIGHEST (TU Darmstadt registry)",
+   "source_date": null,
+   "source_id": "legacy-b1131d197935",
+   "source_sectors": [
+    "deeptech",
+    "defence",
+    "ai_sw"
+   ],
+   "source_url": "https://highest-darmstadt.de/en/fuer-unternehmen/start-ups-1/",
+   "src_quality": 1,
+   "twins": [],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "legacy-b1131d197935"
+   ],
+   "archetype_hits": [],
+   "country": "DE",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "Small World Vision GmbH",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "DACH"
+   ],
+   "geo_scope": "country",
+   "id": "92d43f22945b",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "Darmstadt",
+   "name": "reLi Energy GmbH",
+   "noise": false,
+   "notes": "",
+   "priority": 5,
+   "q_found": [
+    "legacy-b1131d197935"
+   ],
+   "quality_source_id": "legacy-b1131d197935",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "HIGHEST (TU Darmstadt registry)",
+   "source_date": null,
+   "source_id": "legacy-b1131d197935",
+   "source_sectors": [
+    "deeptech",
+    "defence",
+    "ai_sw"
+   ],
+   "source_url": "https://highest-darmstadt.de/en/fuer-unternehmen/start-ups-1/",
+   "src_quality": 1,
+   "twins": [
+    "Avoltra"
+   ],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is",
+    "Possible portfolio twin(s): Avoltra → run conflict check"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "legacy-b1131d197935"
+   ],
+   "archetype_hits": [],
+   "country": "DE",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "Entwicklung, Vermarktung und Verkauf von medizintechnischen Produkten wie z.B. smarte Einlegesohlen für Gangtraining im Alltag (Parkinson).",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "DACH"
+   ],
+   "geo_scope": "country",
+   "id": "aa018e0b3d0f",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "Darmstadt",
+   "name": "Nova Pace GmbH, Darmstadt",
+   "noise": false,
+   "notes": "",
+   "priority": 5,
+   "q_found": [
+    "legacy-b1131d197935"
+   ],
+   "quality_source_id": "legacy-b1131d197935",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "HIGHEST (TU Darmstadt registry)",
+   "source_date": null,
+   "source_id": "legacy-b1131d197935",
+   "source_sectors": [
+    "deeptech",
+    "defence",
+    "ai_sw"
+   ],
+   "source_url": "https://highest-darmstadt.de/en/fuer-unternehmen/start-ups-1/",
+   "src_quality": 1,
+   "twins": [
+    "Montamo"
+   ],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is",
+    "Possible portfolio twin(s): Montamo → run conflict check"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "legacy-b1131d197935"
+   ],
+   "archetype_hits": [],
+   "country": "DE",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "Learning Management System zur Begleitung von Trainings & Coachingprozessen",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "DACH"
+   ],
+   "geo_scope": "country",
+   "id": "b4d7d4e4ded7",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "Darmstadt",
+   "name": "blink.it GmbH & Co. KG, Darmstadt",
+   "noise": false,
+   "notes": "",
+   "priority": 5,
+   "q_found": [
+    "legacy-b1131d197935"
+   ],
+   "quality_source_id": "legacy-b1131d197935",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "HIGHEST (TU Darmstadt registry)",
+   "source_date": null,
+   "source_id": "legacy-b1131d197935",
+   "source_sectors": [
+    "deeptech",
+    "defence",
+    "ai_sw"
+   ],
+   "source_url": "https://highest-darmstadt.de/en/fuer-unternehmen/start-ups-1/",
+   "src_quality": 1,
+   "twins": [
+    "Montamo"
+   ],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is",
+    "Possible portfolio twin(s): Montamo → run conflict check"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "legacy-b1131d197935"
+   ],
+   "archetype_hits": [],
+   "country": "DE",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "Casble ist ein junges EdTech Software Startup, durch dessen Service Coaches anpassungsfähige und zielgruppenspezifische Online-Kurse erstellen können.",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "DACH"
+   ],
+   "geo_scope": "country",
+   "id": "bc3f1dc7b516",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "Darmstadt",
+   "name": "Casble ist ein junges EdTech Software Startup, durch",
+   "noise": false,
+   "notes": "",
+   "priority": 4,
+   "q_found": [
+    "legacy-b1131d197935"
+   ],
+   "quality_source_id": "legacy-b1131d197935",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [
+    "ai_sw"
+   ],
+   "seen_runs": 1,
+   "source": "HIGHEST (TU Darmstadt registry)",
+   "source_date": null,
+   "source_id": "legacy-b1131d197935",
+   "source_sectors": [
+    "deeptech",
+    "defence",
+    "ai_sw"
+   ],
+   "source_url": "https://highest-darmstadt.de/en/fuer-unternehmen/start-ups-1/",
+   "src_quality": 1,
+   "twins": [],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "legacy-b1131d197935"
+   ],
+   "archetype_hits": [],
+   "country": "DE",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "SuperVision Earth GmbH, Darmstadt",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "DACH"
+   ],
+   "geo_scope": "country",
+   "id": "d4b1698214ff",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "Darmstadt",
+   "name": "PE Sytems GmbH, Darmstadt",
+   "noise": false,
+   "notes": "",
+   "priority": 4,
+   "q_found": [
+    "legacy-b1131d197935"
+   ],
+   "quality_source_id": "legacy-b1131d197935",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "HIGHEST (TU Darmstadt registry)",
+   "source_date": null,
+   "source_id": "legacy-b1131d197935",
+   "source_sectors": [
+    "deeptech",
+    "defence",
+    "ai_sw"
+   ],
+   "source_url": "https://highest-darmstadt.de/en/fuer-unternehmen/start-ups-1/",
+   "src_quality": 1,
+   "twins": [],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "legacy-b1131d197935"
+   ],
+   "archetype_hits": [],
+   "country": "DE",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "HOSTmi GmbH, Darmstadt",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "DACH"
+   ],
+   "geo_scope": "country",
+   "id": "f983d2df6a06",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "Darmstadt",
+   "name": "HOSTmi GmbH, Darmstadt",
+   "noise": false,
+   "notes": "",
+   "priority": 4,
+   "q_found": [
+    "legacy-b1131d197935"
+   ],
+   "quality_source_id": "legacy-b1131d197935",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "HIGHEST (TU Darmstadt registry)",
+   "source_date": null,
+   "source_id": "legacy-b1131d197935",
+   "source_sectors": [
+    "deeptech",
+    "defence",
+    "ai_sw"
+   ],
+   "source_url": "https://highest-darmstadt.de/en/fuer-unternehmen/start-ups-1/",
+   "src_quality": 1,
+   "twins": [],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "legacy-f1e4229b86ca"
+   ],
+   "archetype_hits": [],
+   "country": "DE",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "Das Fraunhofer-Netzwerk für Gründer",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "DACH"
+   ],
+   "geo_scope": "country",
+   "id": "d02f438e9391",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "Germany",
+   "name": "Das Fraunhofer-Netzwerk für Gründer",
+   "noise": false,
+   "notes": "",
+   "priority": 4,
+   "q_found": [
+    "legacy-f1e4229b86ca"
+   ],
+   "quality_source_id": "legacy-f1e4229b86ca",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "Fraunhofer Venture",
+   "source_date": null,
+   "source_id": "legacy-f1e4229b86ca",
+   "source_sectors": [
+    "deeptech",
+    "defence",
+    "ai_sw"
+   ],
+   "source_url": "https://www.fraunhoferventure.de/",
+   "src_quality": 1,
+   "twins": [],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "us-afwerx"
+   ],
+   "archetype_hits": [],
+   "country": "USA",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "Looking to connect and collaborate to find innovative commercial solutions to accelerate U.S. defense capabilities?",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "US"
+   ],
+   "geo_scope": "country",
+   "id": "9a81a1c018c9",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "USA",
+   "name": "Looking to connect and collaborate to find innovative",
+   "noise": false,
+   "notes": "",
+   "priority": 5,
+   "q_found": [
+    "us-afwerx"
+   ],
+   "quality_source_id": "us-afwerx",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [
+    "defence"
+   ],
+   "seen_runs": 1,
+   "source": "AFWERX",
+   "source_date": null,
+   "source_id": "us-afwerx",
+   "source_sectors": [
+    "defence",
+    "space"
+   ],
+   "source_url": "https://afwerx.com/",
+   "src_quality": 1,
+   "twins": [
+    "Tabular"
+   ],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is",
+    "Possible portfolio twin(s): Tabular → run conflict check"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "us-spacewerx"
+   ],
+   "archetype_hits": [],
+   "country": "USA",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "Join SpaceWERX and national security leaders for the Defense Curious Forum to explore defense contracting, acquisition pathways, dual-use technology, and critical space capability needs.",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "pre_company",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "US"
+   ],
+   "geo_scope": "country",
+   "id": "8686c745b5d0",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "USA",
+   "name": "SpaceWERX hosts the Defense Curious Forum",
+   "noise": false,
+   "notes": "",
+   "priority": 4,
+   "q_found": [
+    "us-spacewerx"
+   ],
+   "quality_source_id": "us-spacewerx",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [
+    "space",
+    "defence"
+   ],
+   "seen_runs": 1,
+   "source": "SpaceWERX",
+   "source_date": null,
+   "source_id": "us-spacewerx",
+   "source_sectors": [
+    "space",
+    "defence"
+   ],
+   "source_url": "https://spacewerx.us/",
+   "src_quality": 1,
+   "twins": [],
+   "why": [
+    "Pre-company channel — this is where the sourcing edge is"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "de-mpg-startups"
+   ],
+   "archetype_hits": [],
+   "country": "Germany",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "The Max Planck Startup Accelerator supports deep tech startups with a connection to Max Planck – for example, through patents, licences or alumni – with a tailored programme during the initial growth phase, including financing.",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "announcement",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "DACH"
+   ],
+   "geo_scope": "country",
+   "id": "1aad7b168ea1",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "Germany",
+   "name": "Startup-Accelerator",
+   "noise": false,
+   "notes": "",
+   "priority": 3,
+   "q_found": [
+    "de-mpg-startups"
+   ],
+   "quality_source_id": "de-mpg-startups",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "Max Planck - start-ups & entrepreneurs (official)",
+   "source_date": null,
+   "source_id": "de-mpg-startups",
+   "source_sectors": [
+    "deeptech"
+   ],
+   "source_url": "https://mpfxlr8.com/",
+   "src_quality": 2,
+   "twins": [],
+   "why": [
+    "Announcement feed — discovery only; probably recently funded",
+    "Max Planck start-up list: mixed/announcement tier deeptech signal"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "de-mpg-startups"
+   ],
+   "archetype_hits": [],
+   "country": "Germany",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "Max Planck Innovation GmbH supports scientists at the Max Planck Society in taking this step: from the initial idea to the implementation of a research-based business model – with comprehensive advice, targeted funding and access to a strong network of investor companies, businesses and industry partners.",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "announcement",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "DACH"
+   ],
+   "geo_scope": "country",
+   "id": "aab2da329d22",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "Germany",
+   "name": "Become a MAXpreneur",
+   "noise": false,
+   "notes": "",
+   "priority": 4,
+   "q_found": [
+    "de-mpg-startups"
+   ],
+   "quality_source_id": "de-mpg-startups",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "Max Planck - start-ups & entrepreneurs (official)",
+   "source_date": null,
+   "source_id": "de-mpg-startups",
+   "source_sectors": [
+    "deeptech"
+   ],
+   "source_url": "https://www.mpg.de/24759717/start-ups-entrepreneurs#become-a-maxpreneur",
+   "src_quality": 2,
+   "twins": [
+    "Tabular"
+   ],
+   "why": [
+    "Announcement feed — discovery only; probably recently funded",
+    "Possible portfolio twin(s): Tabular → run conflict check",
+    "Max Planck start-up list: mixed/announcement tier deeptech signal"
+   ]
+  },
+  {
+   "all_source_ids": [
+    "de-mpg-startups"
+   ],
+   "archetype_hits": [],
+   "country": "Germany",
+   "date": "2026-09-27",
+   "date_kind": "detected",
+   "decision": "baseline",
+   "description": "The Planck Academy offers researchers interested in founding a company an initial insight into knowledge and technology transfer with its Industry Track. Those who wish to explore the topic of founding a company further can participate in the MaxPreneurs Start-up Journey, which includes start-up schools, information events and networking opportunities provided by the Max Planck Foundation.",
+   "detected_on": "2026-09-27",
+   "discovery_tier": "announcement",
+   "first_seen": "2026-09-27",
+   "first_seen_run": "2026-09-27 19:50:11",
+   "geo": [
+    "DACH"
+   ],
+   "geo_scope": "country",
+   "id": "eb0ebb1b6920",
+   "last_observed": "2026-09-27 19:50:11",
+   "location": "Germany",
+   "name": "Starting a business as a career option through MAXpreneurs",
+   "noise": false,
+   "notes": "",
+   "priority": 3,
+   "q_found": [
+    "de-mpg-startups"
+   ],
+   "quality_source_id": "de-mpg-startups",
+   "run_id": "2026-09-27 19:50:11",
+   "sectors": [],
+   "seen_runs": 1,
+   "source": "Max Planck - start-ups & entrepreneurs (official)",
+   "source_date": null,
+   "source_id": "de-mpg-startups",
+   "source_sectors": [
+    "deeptech"
+   ],
+   "source_url": "https://www.mpg.de/14267434/training-career-development",
+   "src_quality": 2,
+   "twins": [],
+   "why": [
+    "Announcement feed — discovery only; probably recently funded",
+    "Max Planck start-up list: mixed/announcement tier deeptech signal"
+   ]
+  }
+ ],
+ "last_run": "2026-09-27 19:50:11"
+}

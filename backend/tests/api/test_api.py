@@ -147,3 +147,8 @@ def test_decision_body_is_validated_with_the_error_contract(client: TestClient) 
     response = client.post("/api/deal-flow/candidates/x/decision", json={})
     assert response.status_code == 422
     assert response.json()["ok"] is False and any("status" in i for i in response.json()["issues"])
+
+
+def test_settings_never_show_the_database_url() -> None:
+    secret = Settings(db_url="postgresql://user:SuperSecret123@host:5432/db", schema="pz")
+    assert "SuperSecret123" not in repr(secret) and "SuperSecret123" not in str(secret)

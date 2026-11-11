@@ -1,0 +1,32 @@
+{
+  "oracle": {
+    "candidates": 1366,
+    "last_run": "2026-11-08 19:09:09",
+    "ledgers": [
+      "empty",
+      "frozen"
+    ],
+    "old_domain_dirty": false,
+    "old_revision": "6c739b9cb6ca2517b845e381d39a36c50eccc59e"
+  },
+  "snapshot": {
+    "inbox_sha256": "6fe449c88cbed88484b459c8189a09ac5d72f0d473cbce5e0d0d3cc3d3d78bf9",
+    "feedback_sha256": "4c3629a65b1a72d50ab28f9fef455348bdd7e54f7f2c9c6e6921e801be5a9def",
+    "inbox_bytes": 2115446,
+    "last_run": "2026-11-08 19:09:09",
+    "capture_attempts": 1
+  },
+  "candidates": 1366,
+  "distinct_ids": 1366,
+  "duplicate_ids": 0,
+  "missing_ids": 0,
+  "compared_keys": 1366,
+  "differences": 0,
+  "feedback_adjustments": {
+    "positive": 0,
+    "negative": 0,
+    "zero": 1366
+  },
+  "gated": 240,
+  "digest_of_outputs": "d8d57ce021805fab93e4144c9d99411cdcd56f7c9ed6d15c268d701462fc7c32"
+}

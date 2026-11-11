@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import os
 import re
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 
 from projectzero.core.paths import REPO_ROOT
@@ -25,7 +25,7 @@ def load_dotenv(path: Path = REPO_ROOT / ".env") -> None:
 
 @dataclass(frozen=True)
 class Settings:
-    db_url: str
+    db_url: str = field(repr=False)  # contains the database password: never in repr, logs or test failure output
     schema: str = "pz"
     host: str = "127.0.0.1"
     port: int = 8177

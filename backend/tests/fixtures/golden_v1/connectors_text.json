@@ -1,0 +1,1878 @@
+{
+ "00648e1b27bc": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "nm:if you re a visionary"
+  ],
+  "extract_company": "If",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "if you re a visionary",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "0294fcc227ec": {
+  "classify_sectors": [
+   "robotics"
+  ],
+  "entity_keys": [
+   "org_id:gtr-0201741c-3d32-4068-8b53-2d3a69ea5044",
+   "nm:thales uk"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "thales uk",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": [
+   [
+    6,
+    "Dual-use autonomous platforms with a fleet/software brain",
+    1
+   ]
+  ]
+ },
+ "040dc16fb80a": {
+  "classify_sectors": [
+   "semis_quantum"
+  ],
+  "entity_keys": [
+   "nm:alpine quantum technologies"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "alpine quantum technologies",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "04a36f4bfc92": {
+  "classify_sectors": [
+   "semis_quantum"
+  ],
+  "entity_keys": [
+   "nm:quantum entrepreneurship laboratory"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "quantum entrepreneurship laboratory",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "05aa485e9fc5": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "nm:kapanu ag acquired by ivoclar"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "kapanu ag acquired by ivoclar",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "07ae781d4c2e": {
+  "classify_sectors": [
+   "bio"
+  ],
+  "entity_keys": [
+   "duns:031274354",
+   "nm:young therapeutics"
+  ],
+  "extract_company": "NIH SBIR",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "young therapeutics",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "0bb56bc2745c": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "nm:pe systems"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "pe systems",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "0be92331592b": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "nm:crux analytics"
+  ],
+  "extract_company": "Crux Analytics",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "crux analytics",
+  "parse_source_date": "2026-09-24",
+  "strong_archetypes": []
+ },
+ "0ec6b6cb83a3": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "nm:alblooms"
+  ],
+  "extract_company": "Category",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "alblooms",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "0fbb9498e7cf": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "nm:biota"
+  ],
+  "extract_company": "NIH SBIR",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "biota",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": [
+   [
+    1,
+    "Vertical AI agent for a paper-heavy operational job in a traditional European B2B industry",
+    1
+   ]
+  ]
+ },
+ "12b7b4bf842e": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "nm:koubachi ag acquired by husqvarna"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "koubachi ag acquired by husqvarna",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "13d0f15816f7": {
+  "classify_sectors": [
+   "semis_quantum"
+  ],
+  "entity_keys": [
+   "nm:boston quantum"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "boston quantum",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "13d2283d2afa": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "nm:twinetic"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "twinetic",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "15dc5d92595b": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "duns:828881305",
+   "nm:parabon nanolabs"
+  ],
+  "extract_company": "NIH SBIR",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "parabon nanolabs",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "19f5e85154e2": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "nm:the third edition of women"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "the third edition of women",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "1aad7b168ea1": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "nm:startup accelerator"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "startup accelerator",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "1c47f99a250c": {
+  "classify_sectors": [
+   "ai_sw"
+  ],
+  "entity_keys": [
+   "nm:auspex medix"
+  ],
+  "extract_company": "NIH SBIR",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "auspex medix",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "1da87854adbd": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "nm:liv systems"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "liv systems",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "2188e13472f5": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "nm:insurance"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "insurance",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "226b10c05171": {
+  "classify_sectors": [
+   "robotics"
+  ],
+  "entity_keys": [
+   "nm:healthcare robotics"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "healthcare robotics",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "237e3e4768ad": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "nm:accelerate your founder journey with"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "accelerate your founder journey with",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "23f3b119eaab": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "nm:dybuster"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "dybuster",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "29d58e1ce36d": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "nm:not founded or"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "not founded or",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "2a97ee1caa61": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "duns:117339867",
+   "nm:nanopathdx"
+  ],
+  "extract_company": "NIH SBIR",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "nanopathdx",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "2ad13d2a589c": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "org_id:gtr-96342594-a807-4755-86ad-472dcd59ca8f",
+   "nm:wootzano"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "wootzano",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "2e1a867bdf2b": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "nm:simorgh"
+  ],
+  "extract_company": "Category",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "simorgh",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "3586b81e8bd1": {
+  "classify_sectors": [
+   "climate"
+  ],
+  "entity_keys": [
+   "nm:proxima fusion is building the"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "proxima fusion is building the",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": [
+   [
+    8,
+    "Energy & critical-infrastructure intelligence",
+    2
+   ]
+  ]
+ },
+ "35b3d9ae13bc": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "duns:078427708",
+   "nm:intelon optics"
+  ],
+  "extract_company": "NIH SBIR",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "intelon optics",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "36be1c52f89a": {
+  "classify_sectors": [
+   "ai_sw"
+  ],
+  "entity_keys": [
+   "nm:50skills"
+  ],
+  "extract_company": "50skills",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "50skills",
+  "parse_source_date": "2026-09-24",
+  "strong_archetypes": []
+ },
+ "38511868815f": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "nm:startup news"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "startup news",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "3a84eba79c9d": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "nm:2s water"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "2s water",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "3a86b327b796": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "duns:121574147",
+   "nm:xr navigation"
+  ],
+  "extract_company": "NIH SBIR",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "xr navigation",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "3b2ad80a08c5": {
+  "classify_sectors": [
+   "defence"
+  ],
+  "entity_keys": [
+   "nm:language selection"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "language selection",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": [
+   [
+    5,
+    "Defence software layer",
+    2
+   ]
+  ]
+ },
+ "3c3e9189c213": {
+  "classify_sectors": [
+   "bio"
+  ],
+  "entity_keys": [
+   "duns:117792665",
+   "nm:cellchorus"
+  ],
+  "extract_company": "NIH SBIR",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "cellchorus",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "3fcfb0c71eb2": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "nm:synacts"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "synacts",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "40c592c3839d": {
+  "classify_sectors": [
+   "ai_sw"
+  ],
+  "entity_keys": [
+   "nm:actualia"
+  ],
+  "extract_company": "Category",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "actualia",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "43a6232f8d25": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "org_id:gtr-af5a1541-d454-4e94-8117-8c5254c79ed2",
+   "nm:gkn aerospace services"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "gkn aerospace services",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "43ce35b34bc8": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "nm:claneo gmbh berlin"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "claneo gmbh berlin",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "444e4909bdc9": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "nm:from science to start up"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "from science to start up",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "453fea2a79f3": {
+  "classify_sectors": [
+   "ai_sw"
+  ],
+  "entity_keys": [
+   "nm:ciconia medical"
+  ],
+  "extract_company": "NIH SBIR",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "ciconia medical",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "48332178672f": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "nm:capintel"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "capintel",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "497f95243c55": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "nm:in vivo microsystems technologies"
+  ],
+  "extract_company": "NIH SBIR",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "in vivo microsystems technologies",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "4ac69d4e201f": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "nm:xelera gmbh f technologies darmstadt"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "xelera gmbh f technologies darmstadt",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "4bfef270698a": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "nm:founder and company directory"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "founder and company directory",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "4d94b6755991": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "nm:dirac"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "dirac",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "51c8d0f4416b": {
+  "classify_sectors": [
+   "bio"
+  ],
+  "entity_keys": [
+   "nm:biolnp innovation"
+  ],
+  "extract_company": "Category",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "biolnp innovation",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "52025c641926": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "nm:bauhealth"
+  ],
+  "extract_company": "NIH SBIR",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "bauhealth",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "54236017d963": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "org_id:gtr-51f2faa7-7359-44da-ba5d-b6b4ebc9f252",
+   "nm:belfast container terminal bct"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "belfast container terminal bct",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "5aba99f3631f": {
+  "classify_sectors": [
+   "semis_quantum"
+  ],
+  "entity_keys": [
+   "nm:quantum innovation lab"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "quantum innovation lab",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "5b94072c1d86": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "nm:entscheidend sind ein bezug zu"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "entscheidend sind ein bezug zu",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "5ec628e8cabc": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "org_id:gtr-e372b388-83ac-41a5-ad7b-ae17e9069062",
+   "nm:gamma energy"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "gamma energy",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": [
+   [
+    8,
+    "Energy & critical-infrastructure intelligence",
+    2
+   ],
+   [
+    6,
+    "Dual-use autonomous platforms with a fleet/software brain",
+    1
+   ]
+  ]
+ },
+ "5f00d21be977": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "nm:lylu gmbh darmstadt"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "lylu gmbh darmstadt",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "5f4edf3b4bbd": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "nm:europe s leading start up"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "europe s leading start up",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "5fdc58a56fe6": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "nm:accelerate wind"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "accelerate wind",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "60ba4848b000": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "nm:beekeeper"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "beekeeper",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "622343c56521": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "nm:polycrypt ist ein spin off"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "polycrypt ist ein spin off",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "6658612c2ca0": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "duns:150225337",
+   "nm:cell preservation services"
+  ],
+  "extract_company": "NIH SBIR",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "cell preservation services",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "669c592e4934": {
+  "classify_sectors": [
+   "defence"
+  ],
+  "entity_keys": [
+   "nm:forschungsinstitut cyber defence fi code"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "forschungsinstitut cyber defence fi code",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "69e6bd09dcef": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "duns:831353029",
+   "nm:cell podium"
+  ],
+  "extract_company": "NIH SBIR",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "cell podium",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "6e345ad197d8": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "nm:masterswitch"
+  ],
+  "extract_company": "NIH SBIR",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "masterswitch",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "74253d58f184": {
+  "classify_sectors": [
+   "semis_quantum"
+  ],
+  "entity_keys": [
+   "nm:aurora quantum technologies"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "aurora quantum technologies",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "76bab90a554f": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "nm:dianovi"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "dianovi",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "79ba21ca9a35": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "duns:080183506",
+   "nm:scitovation"
+  ],
+  "extract_company": "NIH SBIR",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "scitovation",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "7ba7cfa5e114": {
+  "classify_sectors": [
+   "deeptech"
+  ],
+  "entity_keys": [
+   "nm:student thesis in the field"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "student thesis in the field",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "7d843d86c7b4": {
+  "classify_sectors": [
+   "ai_sw"
+  ],
+  "entity_keys": [
+   "nm:verda"
+  ],
+  "extract_company": "Verda",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "verda",
+  "parse_source_date": "2026-09-24",
+  "strong_archetypes": []
+ },
+ "7dfc69adf035": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "nm:perceptiko"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "perceptiko",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "7f8a7cf09d8d": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "org_id:gtr-e4c2e948-81f7-469b-bc35-1d6620161e9a",
+   "nm:aidrivers"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "aidrivers",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "7f9047307236": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "nm:israel"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "israel",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "809238251bf6": {
+  "classify_sectors": [
+   "defence"
+  ],
+  "entity_keys": [
+   "nm:safeshore"
+  ],
+  "extract_company": "Category",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "safeshore",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "83cb2062973e": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "nm:bold type"
+  ],
+  "extract_company": "NIH SBIR",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "bold type",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "8530c374d2d9": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "nm:digitales shopfloor management zur gestaltung"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "digitales shopfloor management zur gestaltung",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "8686c745b5d0": {
+  "classify_sectors": [
+   "space",
+   "defence"
+  ],
+  "entity_keys": [
+   "nm:spacewerx hosts the defense curious"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "spacewerx hosts the defense curious",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "8771d6ae8a85": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "nm:following a competitive and rapid"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "following a competitive and rapid",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": [
+   [
+    11,
+    "Agent-infrastructure with a sharp wedge from repeat/technical founders",
+    1
+   ]
+  ]
+ },
+ "89b8897c11aa": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "nm:startup radar"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "startup radar",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "89fef78a2201": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "nm:cambrian works"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "cambrian works",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "8b429fce348b": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "nm:enlightware"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "enlightware",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "8e05f7d04ca7": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "duns:080836659",
+   "nm:phenomix sciences"
+  ],
+  "extract_company": "NIH SBIR",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "phenomix sciences",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "92d43f22945b": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "nm:reli energy"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "reli energy",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "934df913bca9": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "nm:adaptive insurance"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "adaptive insurance",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "94aa20ce2e4a": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "nm:a pair of eye tracking"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "a pair of eye tracking",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "963e224d2fe3": {
+  "classify_sectors": [
+   "bio"
+  ],
+  "entity_keys": [
+   "nm:mark therapeutics"
+  ],
+  "extract_company": "NIH SBIR",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "mark therapeutics",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "98257a7a43cf": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "duns:080333039",
+   "nm:rithim biologics"
+  ],
+  "extract_company": "NIH SBIR",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "rithim biologics",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "99df875c9e75": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "nm:axtion independence mobility"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "axtion independence mobility",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "9a81a1c018c9": {
+  "classify_sectors": [
+   "defence"
+  ],
+  "entity_keys": [
+   "nm:looking to connect and collaborate"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "looking to connect and collaborate",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "9e0efa4f3e14": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "duns:079561826",
+   "nm:vivid vision"
+  ],
+  "extract_company": "NIH SBIR",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "vivid vision",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "a321b472f438": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "nm:staila technologies"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "staila technologies",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "a38ada440784": {
+  "classify_sectors": [],
+  "entity_keys": [],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "unknown",
+  "parse_source_date": "2026-09-23",
+  "strong_archetypes": [
+   [
+    2,
+    "Cross-border industrial trade or procurement platform for a fragmented physical commodity, with embedded financing, logistics or pricing intelligence",
+    1
+   ]
+  ]
+ },
+ "a663b5a40ac8": {
+  "classify_sectors": [
+   "climate"
+  ],
+  "entity_keys": [
+   "nm:insitumetrix"
+  ],
+  "extract_company": "Category",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "insitumetrix",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "a8585b216700": {
+  "classify_sectors": [
+   "bio"
+  ],
+  "entity_keys": [
+   "nm:fascia sleep incorporated"
+  ],
+  "extract_company": "NIH SBIR",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "fascia sleep incorporated",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "a92666829152": {
+  "classify_sectors": [
+   "robotics"
+  ],
+  "entity_keys": [
+   "org_id:gtr-c0df82f0-9a24-46ae-9efc-a1174276e9c2",
+   "nm:schlumberger"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "schlumberger",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": [
+   [
+    6,
+    "Dual-use autonomous platforms with a fleet/software brain",
+    1
+   ]
+  ]
+ },
+ "aa018e0b3d0f": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "nm:nova pace gmbh darmstadt"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "nova pace gmbh darmstadt",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "aab2da329d22": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "nm:become a maxpreneur"
+  ],
+  "extract_company": "Max Planck Innovation GmbH",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "become a maxpreneur",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "af224816a1f8": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "nm:trainings"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "trainings",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "b03fff7e4bdc": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "nm:co founder and chief strategy"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "co founder and chief strategy",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "b14f3c4962ad": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "nm:ardra"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "ardra",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "b4202f0fed49": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "nm:construction maintenance"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "construction maintenance",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "b48cbb2690e5": {
+  "classify_sectors": [
+   "bio"
+  ],
+  "entity_keys": [
+   "duns:031092123",
+   "nm:abterra biosciences"
+  ],
+  "extract_company": "NIH SBIR",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "abterra biosciences",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "b4d7d4e4ded7": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "nm:blink it gmbh co kg"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "blink it gmbh co kg",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "b63a8518d56e": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "nm:thenti"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "thenti",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "b876325c4a84": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "org_id:gtr-fed57a0c-e73b-4f31-b755-419da6b7b3c4",
+   "nm:modus seabed intervention"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "modus seabed intervention",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "b9e51adc0232": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "duns:078673608",
+   "nm:xfibra"
+  ],
+  "extract_company": "NIH SBIR",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "xfibra",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "bc3f1dc7b516": {
+  "classify_sectors": [
+   "ai_sw"
+  ],
+  "entity_keys": [
+   "nm:casble ist ein junges edtech"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "casble ist ein junges edtech",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "bd70fadd05f0": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "nm:d ploya"
+  ],
+  "extract_company": "Category",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "d ploya",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "c01e22523526": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "duns:081362786",
+   "nm:vincere biosciences"
+  ],
+  "extract_company": "NIH SBIR",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "vincere biosciences",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "c4b7e570fb55": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "nm:aqua cell energy"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "aqua cell energy",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "c4df10dfdeed": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "duns:966332822",
+   "nm:silicon kidney"
+  ],
+  "extract_company": "NIH SBIR",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "silicon kidney",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "c8d9db54d509": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "nm:fybit"
+  ],
+  "extract_company": "GetYourGuide AG",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "fybit",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "c96b02ab8a00": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "nm:ayrton energy"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "ayrton energy",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "c9a5c571688c": {
+  "classify_sectors": [
+   "bio"
+  ],
+  "entity_keys": [
+   "duns:079628064",
+   "nm:emmune"
+  ],
+  "extract_company": "NIH SBIR",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "emmune",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "ca84f343a23a": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "nm:firedrone"
+  ],
+  "extract_company": "Category",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "firedrone",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "cff24afccfd7": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "nm:european founder report"
+  ],
+  "extract_company": "European Founder Report",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "european founder report",
+  "parse_source_date": "2026-09-25",
+  "strong_archetypes": []
+ },
+ "d02f438e9391": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "nm:das fraunhofer netzwerk f r"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": true,
+  "is_interstitial": false,
+  "norm_company": "das fraunhofer netzwerk f r",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "d0a4bb403b18": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "nm:aoa dx"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "aoa dx",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "d17036fa3814": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "org_id:gtr-f308604f-390f-48e1-b52d-ab3614a90cb2",
+   "nm:oxa autonomy"
+  ],
+  "extract_company": "UKRI",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "oxa autonomy",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "d3e9489f983e": {
+  "classify_sectors": [
+   "deeptech"
+  ],
+  "entity_keys": [
+   "nm:advanced materials"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "advanced materials",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "d4b1698214ff": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "nm:pe sytems gmbh darmstadt"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "pe sytems gmbh darmstadt",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "d4f1e7e90f8c": {
+  "classify_sectors": [
+   "bio"
+  ],
+  "entity_keys": [
+   "duns:117177174",
+   "nm:neurotype"
+  ],
+  "extract_company": "NIH SBIR",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "neurotype",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "d5e4cc3ffebd": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "nm:blumind"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "blumind",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "d9c9aaf6a528": {
+  "classify_sectors": [
+   "robotics"
+  ],
+  "entity_keys": [
+   "org_id:gtr-1fbc8cc2-3f61-496d-944e-5b3a8f03f80f",
+   "nm:oxon tech"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "oxon tech",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": [
+   [
+    6,
+    "Dual-use autonomous platforms with a fleet/software brain",
+    1
+   ]
+  ]
+ },
+ "da5a6ab3a94b": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "nm:acumino"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "acumino",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "db692d0ed25e": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "nm:indoor astronaut"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "indoor astronaut",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "ddfbe7f1b6a9": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "nm:gr ndungsnetzwerk kontaktieren"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "gr ndungsnetzwerk kontaktieren",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "e0f3c48ecda2": {
+  "classify_sectors": [
+   "bio"
+  ],
+  "entity_keys": [
+   "nm:ora biomedical"
+  ],
+  "extract_company": "NIH SBIR",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "ora biomedical",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "e1f017952528": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "nm:50 current job ads from"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "50 current job ads from",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "e2affc00e33e": {
+  "classify_sectors": [
+   "defence"
+  ],
+  "entity_keys": [
+   "nm:singapore defense tech hackathon"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "singapore defense tech hackathon",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "e34028d611d2": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "nm:alumni vote now help unternehmertum"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "alumni vote now help unternehmertum",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "e76931496e6b": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "nm:zur diana website"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "zur diana website",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "e79298c88987": {
+  "classify_sectors": [
+   "climate"
+  ],
+  "entity_keys": [
+   "nm:deltaspark"
+  ],
+  "extract_company": "Category",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "deltaspark",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "e7b9a35eed18": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "nm:finnegan the dragon"
+  ],
+  "extract_company": "NIH SBIR",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "finnegan the dragon",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "e89915c7a805": {
+  "classify_sectors": [
+   "robotics",
+   "ai_sw"
+  ],
+  "entity_keys": [
+   "nm:ai scope"
+  ],
+  "extract_company": "NSF SBIR Fast-Track",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "ai scope",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "eab702339cbc": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "duns:621026140",
+   "nm:biostrategies lc"
+  ],
+  "extract_company": "NIH SBIR",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "biostrategies lc",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "eb0ebb1b6920": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "nm:starting a business as a"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "starting a business as a",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "ec91f86ac8cf": {
+  "classify_sectors": [
+   "bio",
+   "ai_sw"
+  ],
+  "entity_keys": [
+   "nm:acerta is an ai based"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "acerta is an ai based",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "edd355f5e27e": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "nm:mtsystems"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "mtsystems",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "f068925dcb6f": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "duns:118087432",
+   "nm:modendo"
+  ],
+  "extract_company": "NIH SBIR",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "modendo",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "f3d26e6d131b": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "org_id:gtr-973d07aa-25ae-446f-a821-bbc3eb851904",
+   "nm:parkopedia"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "parkopedia",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": [
+   [
+    6,
+    "Dual-use autonomous platforms with a fleet/software brain",
+    1
+   ]
+  ]
+ },
+ "f560e01327d0": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "duns:080566224",
+   "nm:cognifisense"
+  ],
+  "extract_company": "NIH SBIR",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "cognifisense",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "f772902608e9": {
+  "classify_sectors": [
+   "ai_sw"
+  ],
+  "entity_keys": [
+   "nm:ranova"
+  ],
+  "extract_company": "Category",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "ranova",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "f983d2df6a06": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "nm:hostmi gmbh darmstadt"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "hostmi gmbh darmstadt",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "fe144cebf6ef": {
+  "classify_sectors": [],
+  "entity_keys": [
+   "duns:016345165",
+   "nm:corvion"
+  ],
+  "extract_company": "NIH SBIR",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "corvion",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": []
+ },
+ "ff33f3866d84": {
+  "classify_sectors": [
+   "robotics"
+  ],
+  "entity_keys": [
+   "org_id:gtr-72efc0ca-1c28-4615-9e6a-57a6c43e4fae",
+   "nm:oxford robotics"
+  ],
+  "extract_company": "UNKNOWN",
+  "is_academic": false,
+  "is_interstitial": false,
+  "norm_company": "oxford robotics",
+  "parse_source_date": "2026-09-27",
+  "strong_archetypes": [
+   [
+    6,
+    "Dual-use autonomous platforms with a fleet/software brain",
+    1
+   ]
+  ]
+ }
+}

@@ -3,6 +3,9 @@ Native Scout, manual).
 
 * ``list_candidates`` — filters (status, origin, text), counts per status and origin, keyset paging. Default order is
   last observed first. The old attention ranking (Taste Map rules) is ported separately and will replace this order.
+* Every list item and the detail carry ``ranking`` (attention_v2, themes, lens, feedback, inputs), computed on read
+  by the protected rules (``dealflow.ranking``) with ONE context per request, so list and detail agree (review 006).
+  The order is still the client's job, as in the old app.
 * ``get_candidate`` — one candidate with its company, identifiers, observations, events, machine proposals, routing,
   committee reviews and every id it is known by. Any old id resolves (``candidate`` / ``scout_intake`` /
   ``native_scout`` namespaces), so legacy deep links keep working.
@@ -26,6 +29,7 @@ from psycopg.rows import dict_row
 from psycopg.types.json import Jsonb
 
 from projectzero.core.db import schema_ident
+from projectzero.dealflow.ranking.service import RankingContext, rank
 
 STATUSES = ("new", "reviewing", "watch", "baseline", "rejected", "archived", "kept")
 OPERATOR_STATUSES = frozenset({"new", "reviewing", "watch", "baseline", "rejected", "archived"})
@@ -92,6 +96,16 @@ class DealFlowStore:
     def __init__(self, conn: psycopg.Connection[Any], schema: str = "pz") -> None:
         self.conn = conn
         self.s = schema_ident(schema)
+        self._schema = schema
+
+    @staticmethod
+    def _ranking_row(item: dict[str, Any]) -> dict[str, Any]:
+        """A list item carries the adapter's inputs under private keys; the detail row has them as real columns."""
+        return item | {
+            "legacy": item["_legacy"],
+            "attrs": item["_attrs"],
+            "primary_source_id": item["_primary_source_id"],
+        }
 
     def _rows(self, query: str, params: Any = ()) -> list[dict[str, Any]]:
         with self.conn.cursor(row_factory=dict_row) as cur:
@@ -128,6 +142,7 @@ class DealFlowStore:
             select c.id, c.name, c.subject_kind, c.status, c.legacy_status, c.origins, c.country, c.location,
                    c.description, c.why, c.key_fact, c.key_unknown, c.recommended_object_type, c.sectors,
                    c.first_seen_at, c.last_observed_at, c.decided_at, c.attrs->>'identity' as identity,
+                   c.legacy as _legacy, c.attrs as _attrs, c.primary_source_id as _primary_source_id,
                    case when co.id is null then null else jsonb_build_object(
                      'id', co.id, 'name', co.name, 'website', co.website, 'country', co.country) end as company,
                    (select count(*) from {{s}}.observations o where o.candidate_id = c.id) as observations,
@@ -146,6 +161,11 @@ class DealFlowStore:
         )
         more = len(items) > q.limit
         items = items[: q.limit]
+        ctx = RankingContext.load(self.conn, self._schema)
+        for item in items:
+            item["ranking"] = rank(self._ranking_row(item), ctx)
+            for private in ("_legacy", "_attrs", "_primary_source_id"):
+                item.pop(private)
         counts = self._rows(
             f"""
             select 'status' as kind, c.status as key, count(*) as n
@@ -172,7 +192,11 @@ class DealFlowStore:
             raise DecisionError(400, f"unknown id namespace {namespace!r}", allowed=list(ALIAS_NAMESPACES))
         rows = self._rows("select {s}.resolve_candidate(%s, %s) as id", (namespace, alias_id))
         resolved = rows[0]["id"] if rows else None
-        return str(resolved) if resolved else None
+        if resolved:
+            return str(resolved)
+        if namespace == "candidate" and self._first("select id from {s}.candidates where id = %s", (alias_id,)):
+            return alias_id  # a current id always resolves, even if its own alias row was never written
+        return None
 
     def get_candidate(self, candidate_id: str) -> dict[str, Any] | None:
         found = self._rows("select * from {s}.candidates where id = %s", (candidate_id,))
@@ -181,6 +205,7 @@ class DealFlowStore:
         candidate = found[0]
         company_id = candidate["company_id"]
         detail: dict[str, Any] = {"candidate": candidate}
+        detail["ranking"] = rank(candidate, RankingContext.load(self.conn, self._schema))
         detail["company"] = (
             self._first("select * from {s}.companies where id = %s", (company_id,)) if company_id else None
         )
