@@ -1,0 +1,280 @@
+{
+  "generated_at": "2026-11-11T01:48:28.015633+00:00",
+  "reconciliation": {
+    "real_data.json signals": {
+      "in": 10,
+      "conviction_entries": 10
+    },
+    "inbox.json candidates": {
+      "in": 1366
+    },
+    "scout_intake.json": {
+      "cycles": 7,
+      "items": 39,
+      "events": 40,
+      "events_home": "documents (scout_intake.json#rest)"
+    },
+    "native_scout.json signals": {
+      "in": 150,
+      "planner_leads_as_candidates": 19,
+      "theme_hypotheses_kept_as_documents": 131
+    },
+    "unresolved_candidates": {
+      "unresolved_name": 39
+    },
+    "candidates": {
+      "legacy_records": 1424,
+      "inserted": 1420,
+      "merged_into_survivor": 4
+    },
+    "triage_proposals.json": {
+      "in": 1005,
+      "rows": 1005,
+      "orphans_dropped_to_rest": 0
+    },
+    "queue_routing.json routes": {
+      "in": 470,
+      "rows": 470,
+      "not_rows_kept_in_legacy_archive": 0
+    },
+    "committee.json": {
+      "in": 215,
+      "rows": 215
+    },
+    "people.json": {
+      "in": 247,
+      "rows": 247,
+      "duplicate_identifiers_not_stored": [],
+      "company_links": "kept in people.attrs (legacy links are by name; company_people waits for confirmation)"
+    },
+    "events.json": {
+      "events": 543,
+      "leads_home": "documents (events.json#rest)"
+    },
+    "bridge_jobs.json": {
+      "jobs": 4,
+      "rows": 4
+    },
+    "inference_ledger.jsonl": {
+      "lines": 2279,
+      "rows": 2279
+    },
+    "schedule": {
+      "jobs": 15,
+      "runs": 238
+    }
+  },
+  "notes": [
+    "job_runs.started_at holds the legacy 'at' (recording time); finished_at unknown"
+  ],
+  "inventory": {
+    "inbox.json": {
+      "present": true,
+      "parseable": true,
+      "collection": "candidates",
+      "records": 1366
+    },
+    "real_data.json": {
+      "present": true,
+      "parseable": true,
+      "collection": "signals",
+      "records": 10
+    },
+    "people.json": {
+      "present": true,
+      "parseable": true,
+      "collection": "people",
+      "records": 247
+    },
+    "events.json": {
+      "present": true,
+      "parseable": true,
+      "collection": "events",
+      "records": 543
+    },
+    "sources.json": {
+      "present": true,
+      "parseable": true,
+      "collection": "sources",
+      "records": 46
+    },
+    "scout_intake.json": {
+      "present": true,
+      "parseable": true,
+      "collection": "items",
+      "records": 39
+    },
+    "native_scout.json": {
+      "present": true,
+      "parseable": true,
+      "collection": "signals",
+      "records": 150
+    },
+    "triage_proposals.json": {
+      "present": true,
+      "parseable": true,
+      "collection": "proposals",
+      "records": 1005
+    },
+    "queue_routing.json": {
+      "present": true,
+      "parseable": true,
+      "collection": "routes",
+      "records": 470
+    },
+    "committee.json": {
+      "present": true,
+      "parseable": true,
+      "collection": "second_pass",
+      "records": 215
+    },
+    "bridge_jobs.json": {
+      "present": true,
+      "parseable": true,
+      "collection": "jobs",
+      "records": 4
+    },
+    "schedule/jobs.json": {
+      "present": true,
+      "parseable": true,
+      "collection": null,
+      "records": 15
+    },
+    "inference_ledger.jsonl": {
+      "present": true,
+      "parseable": true,
+      "collection": null,
+      "records": 2279
+    },
+    "schedule/runs.jsonl": {
+      "present": true,
+      "parseable": true,
+      "collection": null,
+      "records": 238
+    }
+  },
+  "snapshot": {
+    "files": 2192,
+    "capture_attempts": 1
+  },
+  "identity": {
+    "companies": 1390,
+    "merge_suggestions": 2,
+    "merge_suggested_events": 4,
+    "strong_key_conflicts": [],
+    "cross_origin_name_merges": [
+      {
+        "normalized_name": "kontext",
+        "company": "d4a5478c-245e-502c-b182-acda5c88c164",
+        "absorbed_groups": [
+          "scout_intake:si-002-kontext"
+        ],
+        "origins": [
+          "inbox",
+          "scout_intake"
+        ],
+        "basis": "same_name_cross_origin",
+        "name": "Kontext"
+      },
+      {
+        "normalized_name": "rhymeq",
+        "company": "cf6fec6a-8b36-5830-af22-c5eeaf90e9b0",
+        "absorbed_groups": [
+          "scout_intake:si-006-rhymeq"
+        ],
+        "origins": [
+          "inbox",
+          "scout_intake"
+        ],
+        "basis": "same_name_cross_origin",
+        "name": "RhymeQ"
+      },
+      {
+        "normalized_name": "elvio robotics",
+        "company": "35fdc0e8-985c-5965-a2e1-bc0aac441161",
+        "absorbed_groups": [
+          "scout_intake:si-005-elvio-robotics"
+        ],
+        "origins": [
+          "inbox",
+          "scout_intake"
+        ],
+        "basis": "same_name_cross_origin",
+        "name": "Elvio Robotics"
+      },
+      {
+        "normalized_name": "bleu robotics",
+        "company": "447d282a-cfe5-5772-aef2-f308ac6d5bc7",
+        "absorbed_groups": [
+          "native_scout:sig-09b2457dd7"
+        ],
+        "origins": [
+          "native_scout",
+          "scout_intake"
+        ],
+        "basis": "same_name_cross_origin",
+        "name": "Bleu Robotics"
+      }
+    ],
+    "merge_suggestion_detail": [
+      {
+        "normalized_name": "namespace",
+        "companies": [
+          {
+            "id": "8d651b77-7c0c-5a51-8d88-06d0d30971ec",
+            "name": "Namespace",
+            "seed": "inbox:d69fda1848de"
+          },
+          {
+            "id": "8a663a0f-e674-51c7-a4f8-2ae5c53d18be",
+            "name": "Namespace",
+            "seed": "inbox:fb3d77ce4940"
+          }
+        ],
+        "reason": "same origin on both sides (ambiguous)"
+      },
+      {
+        "normalized_name": "arthur bražinskas unnamed stealth",
+        "companies": [
+          {
+            "id": "15881e57-91e8-5385-8f91-48f1ab597278",
+            "name": "Arthur Bražinskas — unnamed stealth",
+            "seed": "scout_intake:si-004-arthur-brazinskas-unnamed-stealth"
+          },
+          {
+            "id": "437f1657-f73a-5ba5-8ef8-fb30ffcd42ad",
+            "name": "Arthur Bražinskas — unnamed stealth",
+            "seed": "scout_intake:si-005-arthur-brazinskas-unnamed-stealth"
+          }
+        ],
+        "reason": "same origin on both sides (ambiguous)"
+      }
+    ]
+  },
+  "counts": {
+    "sources": 46,
+    "companies": 1390,
+    "company_identifiers": 1648,
+    "people": 247,
+    "person_identifiers": 639,
+    "intake_submissions": 7,
+    "candidates": 1420,
+    "candidate_aliases": 1479,
+    "observations": 1474,
+    "candidate_events": 1428,
+    "triage_proposals": 1005,
+    "candidate_routing": 470,
+    "committee_reviews": 215,
+    "conviction_entries": 10,
+    "events": 543,
+    "research_jobs": 4,
+    "model_ledger": 2279,
+    "job_state": 15,
+    "job_runs": 238,
+    "documents": 77,
+    "legacy_documents": 2192
+  },
+  "archive_bytes": 20198070,
+  "blockers": [],
+  "secrets_found": []
+}

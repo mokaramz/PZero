@@ -1,0 +1,775 @@
+{
+  "contract_version": "1.0",
+  "origin": "grok",
+  "external_ref": "008",
+  "submitted_at": "2026-11-10T21:13:36Z",
+  "cadence": "monday_hunt",
+  "summary": "# CHIEF SCOUT — CYCLE 008 MOHAMED BRIEF\n**Date:** Monday 9 Nov 2026 · Window: 2 Nov → 9 Nov 2026 (the 5 Nov pulse is folded in)\n\n## CHIEF SCOUT — WHAT YOU NEED TO KNOW\n- **One genuinely exciting find: Déploya Robotics (Lausanne).** It's an EPFL robotics team that turns building scaffolding into a track for robots. They incorporated as a company on 28 Oct, and the registry notice went public this week. No professional investor has backed them yet.\n- **Two more worth a look, both in quantum hardware:** QMunicate (Munich, a Max Planck spin-off that links quantum computers together) and Rhonexum (Lausanne, chips that run at ultra-cold temperatures inside quantum computers). Rhonexum has just landed its first commercial order and is raising its next round now.\n- **Updates on names you know:** Dream Machines' founder says a demo turned into a likely paid pilot. PolaSight won a CHF 100k loan, and its CTO won his Falling Walls Lab category. Linque didn't win at Falling Walls, and Herakles is still not a GmbH.\n- **What to do:** if you only do one thing this week, research Déploya's founders and check it against Project A's pipeline. It's the cleanest \"before the first round\" case we've had in weeks.\n- **Overall: a solid cycle, better than last week.** All three new cards came from primary sources (company registries, university news and grant pages), not funding headlines. Most funding news this week was already too late for us (for example microagi's $55m seed).\n\n---\n\n## INVESTIGATE NOW\n\n### 1. Déploya Robotics Sàrl (Ecublens/Lausanne, Switzerland)\n- **What do they do?** Putting up scaffolding and fitting building façades (the outer wall panels) is slow, manual and dangerous. Déploya builds a fold-out grid, inspired by origami, that goes up a building quickly. Small robots then ride along it, project the architect's drawings onto the wall and show workers exactly where to drill. Later, the robots are meant to do the drilling and panel fitting themselves.\n- **Why did you find them?** Through the Swiss company register. \"Déploya Robotics Sàrl\" was newly registered at EPFL Innovation Park (statutes dated 28 Oct 2026, CHF 20k capital), with a well-known EPFL robotics professor among its shareholders.\n- **Why is this interesting?** Façade work is about 35–60% of total façade cost, according to EPFL's write-up. About 500 Swiss workers are seriously hurt each year in scaffolding-related accidents (also EPFL's figure). Construction is one of the least automated big industries, and Déploya enters through a narrow first task (layout projection and checks) that it can sell before full automation works.\n- **Why might Mohamed be early?** So far they have only grants and prizes: an EPFL Ignition Grant (2025), Venture Kick stages 1 and 2 (CHF 50k in total, May 2026) and an EPFL InnoGrant (CHF 100k). There's no professional VC money yet. They only just formed a company, which is usually the step right before a first round. They told Venture Kick they already have letters of intent (non-binding interest from customers) and \"early investor discussions\".\n- **Why might Project A care?** It's B2B robotics in a huge, under-automated market, with a product that can grow from one task into a platform. That fits Project A's Industrial Autonomy theme.\n- **What is special about the founders?** Thomas Estier (business and fundraising) co-founded two Swiss robotics companies, BlueBotics (2001) and Rovenso (2016). He was also EPFL's deputy vice-president for innovation. Dr Jan Petrš (technology) is an architect turned roboticist, with a PhD in construction robotics and a postdoc at EPFL. Prof. Dario Floreano, whose lab spun out senseFly and Flyability, is an adviser and holds 5% of the company.\n- **What evidence do we actually have?**\n  - ✅ Registry entry (SOGC, CHE-215.188.652): shareholders Petrš 57%, Estier 38%, Floreano 5%. EPFL news confirms the InnoGrant, Venture Kick confirms its grants, and the company website lists the team.\n  - ⚠️ The \"10x faster\" and \"zero errors\" claims are marketing, not tested. Estier's earlier exits (what happened to BlueBotics and Rovenso) are not verified here.\n  - ❓ Round size and timing, who the investors in those \"discussions\" are, and whether any pilot customer is named. The first industrial pilot is planned for 2027.\n- **What could be wrong with the case?** Construction is slow to buy new technology, and robots on building sites have humbled many teams. It's still a prototype, and real use is about a year away.\n- **Project A fit:** Industrial Autonomy · likely about to raise a first round, no lead announced (strongest timing signal) · CH (lower Project A base rate) · B2B · the portfolio has construction software (Vestigas, Copay) but no construction robotics. No direct product overlap was found, but this isn't a conflict clearance.\n- **Chief Scout verdict: 🔥 VERY INTERESTING.** It has an experienced repeat founder, a top robotics lab behind it and a company formed only days ago, all before any VC money.\n- **What should Mohamed do?** → Research founder (start with Thomas Estier), then check for a Project A conflict.\n\n### 2. QMunicate GmbH (Garching/Munich, Germany)\n- **What do they do?** Today's quantum computers are small. Instead of building one giant machine, QMunicate builds the hardware that links many smaller ones, using single atoms and particles of light, so they work like one bigger computer. Think of it as networking cables and routers, but for quantum computers.\n- **Why did you find them?** By checking Munich quantum and Max Planck spin-offs, a gap I promised to cover after we missed Quint. It's listed as a 2026 startup at gate Garching, a local startup centre, and pitched at the Quantum World Congress on 1 Oct.\n- **Why is this interesting?** It comes out of about 25 years of research in Prof. Gerhard Rempe's group at the Max Planck Institute of Quantum Optics, one of the world's leading groups in this area. The CTO says there's a pilot lined up with an unnamed company that builds quantum computers from atoms, plus a planned long-distance trial with Deutsche Telekom.\n- **Why might Mohamed be early?** They've raised only about €330k so far, according to the CTO on stage, and he said they'll seek more investment. That makes it pre-institutional, with a round coming.\n- **Why might Project A care?** It's Munich (the highest-weight city) with world-class science. If quantum computers scale by being linked together, the company that owns the link becomes very valuable.\n- **What is special about the founders?** Maya Büki (CEO) and Dr Gianvito Chiarella (CTO), both from the Rempe group. Prof. Rempe is the scientific adviser.\n- **What evidence do we actually have?**\n  - ✅ gate Garching lists the company (founded 2026, the two founders, Max Planck origin), and the conference write-up quotes the CTO.\n  - ⚠️ The €330k raised, the pilot and the Deutsche Telekom trial are all the CTO's own statements.\n  - ❓ Who put in the €330k, the GmbH registration details, and when the round happens.\n- **What could be wrong with the case?** It's very long-term: the next big technical milestone is about two years out. Paris-based Welinq and others are already funded in the same space. Quantum is also a field where Project A isn't active, so it may be off-thesis for them.\n- **Project A fit:** Frontier Technologies · possible first round coming (company says it will raise; no lead) · Munich (highest weight) · B2B · no public overlap found.\n- **Chief Scout verdict: 🟢 WORTH INVESTIGATING.** It has top-tier science and the right timing, but it's a deep, slow market.\n- **What should Mohamed do?** → Research founder (check the Max Planck/Rempe links and who funded the €330k).\n\n### 3. Rhonexum (Lausanne, Switzerland)\n- **What do they do?** Quantum computers have to be kept colder than outer space, and today thousands of cables carry control signals in from room temperature. Rhonexum designs chips that work inside the freezer, which cuts the wiring and makes bigger machines possible.\n- **Why did you find them?** It announced on 2 Nov a multi-year supply deal with ZuriQ (an ETH quantum spin-off), with a first order to be delivered by end-2026. Its Slush profile says it's raising a seed round.\n- **Why is this interesting?** A paying customer this early is rare for quantum hardware. It comes out of EPFL's AQUA Lab, which is known for cold-temperature chip research.\n- **Why might Mohamed be early?** It's partly early. They already raised a $1M pre-seed (Mar 2026, led by QDNL Participations) and got Venture Kick's full CHF 150k. The seed round now forming is the one to watch. A seed is the next, bigger round, here probably €2–5m (my estimate).\n- **Why might Project A care?** It sells \"picks and shovels\" (parts every quantum-computer builder needs) whichever quantum approach wins.\n- **What is special about the founders?** Vicente Carbon (CEO) and Dr Hung-Chi Han, both from EPFL's AQUA Lab.\n- **What evidence do we actually have?** ✅ The ZuriQ deal (GGBa release), the $1M pre-seed (tech.eu), Venture Kick CHF 150k and the \"raising seed\" listing in the Swiss Slush kit. ⚠️ The order size is unknown. ❓ Who leads the seed and when.\n- **What could be wrong with the case?** ZuriQ is a small startup itself, so one deal is thin proof. The quantum market is still early.\n- **Project A fit:** Frontier Technologies · pre-seed done (QDNL lead), seed forming now, so watch this round · CH (lower Project A base rate) · B2B · no public overlap found.\n- **Chief Scout verdict: 🟢 WORTH INVESTIGATING.** A real customer and a live round, but quantum is outside Project A's usual map.\n- **What should Mohamed do?** → Monitor until funding signal (Slush, 17–19 Nov, is the natural moment).\n\n---\n\n## PROJECT ZERO INTAKE SUMMARY\n- **CREATE NOW (3):** Déploya Robotics, QMunicate, Rhonexum.\n- **UPDATE (2):** Dream Machines (the founder says a demo became a likely paid pilot within 24 hours; company claim, still angels only) and PolaSight (FIT CHF 100k loan aimed at CE marking by early 2027; CTO Davide Scandella won Falling Walls Lab Emerging Talents on 6 Nov).\n- **MONITOR (2):** 4QT (Swiss electric drivetrains moving into military and construction ground robots; raising a seed) and Endobotica (an EPFL robot for stroke clot removal; FIT CHF 100k grant; no company yet).\n- **Archived (not in the packet):** microagi ($55m seed), Physicl ($10M seed), MuRay (€7.1m), Octopath AI, Marble Cognition, Project-S, Viridi, DC Reason AG and Generative Alchemy. These are either too late (round already done) or too thin to act on.\n- The packet is below and has been delivered to Drive. No scores, no approvals: Project Zero decides.\n\n## FOUNDER OUTREACH (recommendation only, I contact no one)\n- Déploya: Thomas Estier is the natural first contact (he handles business and fundraising). Best done before the round gets a lead.\n- QMunicate and Rhonexum: no outreach yet. Research first.\n\n## EVENTS / GROUND ACTION (you decide; I register for nothing)\n- **Swiss Robotics Day**, Zurich, 13 Nov: a dense robotics crowd.\n- **e-conversion Start-Up Day**, Garching, 16 Nov: a Munich science-startup pitch event.\n- **Slush**, Helsinki, 17–19 Nov: Rhonexum, 4QT and Bleu Robotics are listed in the delegation kits.\n- **Bpifrance Deeptech Demo Day**, Paris, 23 Nov · **EPFL Investor Day**, Lausanne, 25 Nov (likely Déploya territory) · **CNRS RISE results**, 27 Nov · **Big Berlin Hack**, 28–29 Nov.\n\n## WATCH / IGNORE (with triggers)\n- **Linque:** didn't win at Falling Walls. Keep watching for a funding announcement. Your conflict check against Black Semiconductor is still open.\n- **Herakles:** still a GbR (a German partnership, not yet a company). The trigger is the GmbH registration.\n- **Veltist, Ultravionix, Caudion, Snap Fusion:** nothing material. Elvio placed 2nd at a Munich health-congress pitch (minor).\n- **Ignore:** most AI-agent seed rounds this week (enterprise software that's already funded).\n\n## SOURCE / COVERAGE (new this week)\n- Swiss register sweeps keep paying off: Veltist last week, Déploya this week.\n- The Swiss Slush delegation PDF was a good one-off source (it shows who is raising).\n- The tech-momentum lane (arXiv/GitHub) found nothing for the 8th cycle in a row. My proposal to reshape it (P2) is still waiting for you.\n- **Correction carried from Thursday:** we flagged Gallium 12 days before its *announcement*, not before its round. The round actually closed around June. From now on I record close dates.\n\n## THIS WEEK — MOHAMED\n| Priority | What | Why | Mohamed action |\n|---|---|---|---|\n| 1 | Déploya Robotics | Company formed 28 Oct, experienced founder, no VC yet | Research Estier + Project A conflict check |\n| 2 | QMunicate | Munich Max Planck spin-off, ~€330k raised, round coming | Research founders |\n| 3 | Rhonexum | First order + seed forming now | Watch at Slush (17–19 Nov) |\n| 4 | Dream Machines | Likely paid pilot; conflict check (Micropsi/Linexa) still open | Do the conflict check |\n| 5 | Accounting C004–C008 | Cycles stay open until you approve | Approve or comment when ready |\n\n\n---\n## LOSS REPORT (Grok, mapping Cycle 008 packet -> intake contract v1.0)\n- Mapped: 7 of 7 packet entities (3 CREATE NOW, 2 UPDATE, 2 MONITOR) and 6 of 6 events. Nothing refused. The 9 archived names were never in the packet's entities and are not submitted.\n- external_id: the living packet has no stable entity key, so ids were minted as pz-scout:<slug> and pz-event:<slug>. Future packets will carry them from the start.\n- recommended_action (contract enum): INVESTIGATE NOW + \"research founder\" -> research; UPDATE with a founder/conflict check -> review; MONITOR or \"watch at Slush\" -> watch. The verbatim packet values are kept in scout_assessment.\n- intent: CREATE NOW -> create, UPDATE -> update; MONITOR entities have no intent (the contract enum has no monitor value).\n- stage: the packet's free-text stage is kept verbatim in scout_assessment.stage_note; the enum is a lossy best fit (Rhonexum and 4QT set to pre_seed because their seed is still forming).\n- claims: FACT/INFERENCE/UNKNOWN were reconstructed from the brief's evidence ticks; the packet does not label claims itself.\n- Déploya SOGC evidence is the shab.ch homepage, not a deep link to the notice (the packet stored only the homepage).\n- Dream Machines: the HRB court is not stated in the packet, so the Handelsregister id is sent without a court name. Location sent as Munich (registered seat); Zurich operations remain in the scout_assessment text only.\n- 4QT: city unknown (country only); no signal_date in the packet.\n- Events: start dates only (no times evidenced). End dates for Slush (19 Nov) and Big Berlin Hack (29 Nov) come from the brief. Event source_scouts are not recorded in the packet. The CNRS RISE results (27 Nov) appear in the brief but not in the packet's events and are not submitted.\n- Envelope summary fields (unique_entities, convergence_count, zero_finding_lanes, the registry-completion notes) have no structured home; they are only in this text.\n\n## PACKET SUMMARY NOTES (verbatim)\nAutonomous Chief Scout mode Cycle 008 (window 2–9 Nov 2026; MW-2026-11-05 folded in). CREATE NOW: Déploya Robotics Sàrl (VE-0; L01 SOGC registry-first + L04/L05 EPFL/Venture Kick), QMunicate GmbH (VE-0; L04 MPQ/Munich Quantum Valley watcher from MW-11-05 adjustment; system-new, public since ~1 Oct), Rhonexum (VE-1; ZuriQ framework agreement 2 Nov + seed forming). UPDATE: Dream Machines (likely paid pilot, company claim), PolaSight (FIT CHF 100k loan; Falling Walls Lab win). MONITOR: 4QT GmbH, Endobotica. ARCHIVE excluded from entities: microagi ($55M seed), Physicl ($10M seed), MuRay (€7.1M), Octopath AI, Marble Cognition, Project-S (Sep, OOW), Viridi, DC Reason AG (registry, thin), Generative Alchemy (stealth exit, thin). Registry completion: CH SOGC HR01 6+9 Nov 415/432 machine-screened (~96%; 3–5 Nov covered by pulse); UK Companies House 5–9 Nov SIC 72190/26511/26110/28990/72110/26200/30300/26701 100%, 62012 ~3 pages sampled; 0 TTO corporate PSC. FR/DE registries not swept this cycle (gap). L02 spend $0 (built-in reads). L03 zero (8th). L08 0 cards. AHEAD OF THE MAP: 0 cards (EU Space Act→SSA weighed; Project-S already funded). Fit tags in project_a_thesis_fit. Second opinion = self red-team, not independent. Cycles 004–008 accounting pending; Cycle 008 open.",
+  "entities": [
+    {
+      "kind": "company",
+      "name": "Déploya Robotics Sàrl",
+      "external_id": "pz-scout:deploya-robotics",
+      "source_scouts": [
+        "Lane 01",
+        "Lane 04",
+        "Lane 05"
+      ],
+      "scout_assessment": {
+        "system_novelty": "CYCLE-NEW",
+        "entity_convergence": "YES",
+        "independent_signal_convergence": "PARTIAL — registry (SOGC) and EPFL/Venture Kick grant pages are independent publishers but both downstream of the same founding activity",
+        "duplicate_signal": "NO",
+        "venture_exposure": "VE-0",
+        "funding_visibility": "Grants only (Ignition, Venture Kick CHF 50k, InnoGrant CHF 100k); no VC disclosed",
+        "company_status": "Prototype / initial demonstrator (company-reported)",
+        "attention_state": "INVESTIGATE NOW",
+        "recommended_action": "CREATE NOW",
+        "recommended_object_type": "research spinout",
+        "stage_note": "Sàrl incorporated (statutes 28 Oct 2026, CHF 20k); grants only: EPFL Ignition Grant 2025, Venture Kick Stage I+II (CHF 50k, May 2026), EPFL InnoGrant CHF 100k (2026)"
+      },
+      "signal_types": [
+        "registry_entry",
+        "research_spinout",
+        "grant_award"
+      ],
+      "key_fact": "EPFL LIS spin-off; origami-inspired deployable façade grid carrying rail-mounted robots that project CAD layouts and run AI scaffolding checks, roadmap to marking/drilling and panel installation; SOGC shareholders Petrš 114/200 parts, Estier 76/200, Prof. Dario Floreano 10/200 (adviser); Estier co-founded BlueBotics (2001) and Rovenso (2016), ex-EPFL Deputy VP Innovation; first industrial pilot planned 2027; LOIs and early investor discussions (company-reported to Venture Kick).",
+      "key_unknown": "Round size/timing and investors in discussion; named pilot customers; outcome of Estier's prior companies (not verified here); performance claims ('10x faster', mm accuracy) untested",
+      "thesis_fit": "Industrial Autonomy · likely about to raise first round, no lead announced (strongest signal; INFERENCE from fresh incorporation + 'early investor discussions') · CH lower Project A base rate · B2B · construction-software adjacency only (Vestigas, Copay), no robotics overlap found — not a conflict clearance",
+      "flags": [
+        "spinout"
+      ],
+      "intent": "create",
+      "website": "https://deploya.ch/",
+      "aliases": [
+        "Déploya",
+        "Deploya Robotics"
+      ],
+      "registry_ids": {
+        "che_uid": "CHE-215.188.652"
+      },
+      "founders": [
+        {
+          "name": "Jan Petrš",
+          "role": "Co-founder, technology"
+        },
+        {
+          "name": "Thomas Estier",
+          "role": "Co-founder, business and fundraising"
+        }
+      ],
+      "location": {
+        "city": "Ecublens",
+        "country": "CH"
+      },
+      "stage": "pre_seed",
+      "sectors": [
+        "Industrial Autonomy",
+        "construction robotics"
+      ],
+      "signal_date": "2026-10-28",
+      "recommended_action": "research",
+      "confidence": "high",
+      "claims": [
+        {
+          "text": "Registered in the Swiss commercial register (SOGC) as Déploya Robotics Sàrl, CHE-215.188.652, statutes dated 28 Oct 2026, CHF 20k capital; shareholders Petrš 114/200, Estier 76/200, Floreano 10/200 parts.",
+          "label": "FACT",
+          "evidence_urls": [
+            "https://www.shab.ch/"
+          ]
+        },
+        {
+          "text": "Awarded an EPFL InnoGrant (CHF 100k) in 2026.",
+          "label": "FACT",
+          "evidence_urls": [
+            "https://actu.epfl.ch/news/alpion-deploya-and-feedback-intuitive-awarded-inno/"
+          ]
+        },
+        {
+          "text": "Received Venture Kick Stage I and II funding (CHF 50k in total, May 2026).",
+          "label": "FACT",
+          "evidence_urls": [
+            "https://www.venturekick.ch/Deploya-receives-CHF-40000-from-Venture-Kick-to-scale-robotic-facade-automation-deployment"
+          ]
+        },
+        {
+          "text": "A first institutional round is likely imminent, based on the fresh incorporation and company-reported early investor discussions.",
+          "label": "INFERENCE"
+        },
+        {
+          "text": "Performance claims such as '10x faster' and millimetre accuracy are company marketing and untested.",
+          "label": "UNKNOWN"
+        },
+        {
+          "text": "Outcomes of Estier's prior companies BlueBotics and Rovenso are not verified here.",
+          "label": "UNKNOWN"
+        }
+      ],
+      "evidence": [
+        {
+          "url": "https://deploya.ch/"
+        },
+        {
+          "url": "https://actu.epfl.ch/news/alpion-deploya-and-feedback-intuitive-awarded-inno/"
+        },
+        {
+          "url": "https://www.venturekick.ch/Deploya-receives-CHF-40000-from-Venture-Kick-to-scale-robotic-facade-automation-deployment"
+        },
+        {
+          "url": "https://www.shab.ch/",
+          "title": "SOGC / SHAB (Swiss Official Gazette of Commerce): registry notice; homepage only, notice not deep-linked"
+        },
+        {
+          "url": "https://www.robottalk.org/2026/10/23/episode-167-jan-petrs/",
+          "published_at": "2026-10-23",
+          "title": "Robot Talk episode 167: Jan Petrš"
+        }
+      ]
+    },
+    {
+      "kind": "company",
+      "name": "QMunicate GmbH",
+      "external_id": "pz-scout:qmunicate",
+      "source_scouts": [
+        "Lane 04",
+        "Lane 10"
+      ],
+      "scout_assessment": {
+        "system_novelty": "CYCLE-NEW",
+        "entity_convergence": "NO",
+        "independent_signal_convergence": "NO",
+        "duplicate_signal": "NO",
+        "venture_exposure": "VE-0",
+        "funding_visibility": "~€330k (CTO statement); no institutional lead disclosed",
+        "company_status": "Pre-product prototyping (company-reported)",
+        "attention_state": "INVESTIGATE NOW",
+        "recommended_action": "CREATE NOW",
+        "recommended_object_type": "research spinout",
+        "stage_note": "Founded 2026; ~€330k raised to date (CTO statement, investors UNKNOWN); says it will seek additional investment"
+      },
+      "signal_types": [
+        "research_spinout",
+        "event_pitch",
+        "incubator_listing"
+      ],
+      "key_fact": "Max Planck Institute of Quantum Optics (Rempe group) spin-off building atom-cavity quantum interconnect hardware to network quantum processors, then networked QPU and quantum repeaters; prototyping at MPQ while building own Munich lab; pilot with an unnamed neutral-atom QC company and planned repeater pilot with Deutsche Telekom (CTO statements at Quantum World Congress, 1 Oct 2026).",
+      "key_unknown": "Source of €330k; Handelsregister details; round timing/lead; pilot partner identity; competitive position vs Welinq and others",
+      "thesis_fit": "Frontier Technologies · possible first round forming (company says it will raise; no lead) · Munich (highest weight) · B2B · no public overlap found",
+      "flags": [
+        "spinout"
+      ],
+      "intent": "create",
+      "website": "https://www.qmunicate.de/",
+      "aliases": [
+        "QMunicate"
+      ],
+      "founders": [
+        {
+          "name": "Maya Büki",
+          "role": "CEO"
+        },
+        {
+          "name": "Gianvito Chiarella",
+          "role": "CTO"
+        }
+      ],
+      "location": {
+        "city": "Garching",
+        "country": "DE"
+      },
+      "stage": "pre_seed",
+      "sectors": [
+        "Frontier Technologies",
+        "quantum networking"
+      ],
+      "signal_date": "2026-10-01",
+      "recommended_action": "research",
+      "confidence": "medium",
+      "claims": [
+        {
+          "text": "Listed by gate Garching as a 2026 startup from the Max Planck Institute of Quantum Optics, with founders Maya Büki and Gianvito Chiarella.",
+          "label": "FACT",
+          "evidence_urls": [
+            "https://www.gategarching.com/blog/startup/qmunicate-gmbh/"
+          ]
+        },
+        {
+          "text": "Has raised about €330k and will seek more investment (CTO statement at Quantum World Congress, 1 Oct 2026).",
+          "label": "FACT",
+          "evidence_urls": [
+            "https://qwcbrand.com/news/qmunicate-wants-to-scale-quantum-computing-by-connecting-machines-not-enlarging-them"
+          ]
+        },
+        {
+          "text": "Pilot with an unnamed neutral-atom quantum computer company and a planned repeater pilot with Deutsche Telekom are CTO statements, not independently confirmed.",
+          "label": "INFERENCE"
+        },
+        {
+          "text": "Who supplied the €330k, the Handelsregister details and the round timing are unknown.",
+          "label": "UNKNOWN"
+        }
+      ],
+      "evidence": [
+        {
+          "url": "https://www.qmunicate.de/"
+        },
+        {
+          "url": "https://www.gategarching.com/blog/startup/qmunicate-gmbh/"
+        },
+        {
+          "url": "https://qwcbrand.com/news/qmunicate-wants-to-scale-quantum-computing-by-connecting-machines-not-enlarging-them"
+        }
+      ]
+    },
+    {
+      "kind": "company",
+      "name": "Rhonexum",
+      "external_id": "pz-scout:rhonexum",
+      "source_scouts": [
+        "Lane 06",
+        "Lane 09",
+        "Lane 07"
+      ],
+      "scout_assessment": {
+        "system_novelty": "CYCLE-NEW",
+        "entity_convergence": "YES",
+        "independent_signal_convergence": "INDEPENDENCE UNCERTAIN — GGBa release and Slush kit both company-supplied",
+        "duplicate_signal": "NO",
+        "venture_exposure": "VE-1",
+        "funding_visibility": "$1M pre-seed (QDNL lead) + Venture Kick CHF 150k",
+        "company_status": "First product order (company-reported)",
+        "attention_state": "INVESTIGATE NOW",
+        "recommended_action": "CREATE NOW",
+        "recommended_object_type": "company",
+        "stage_note": "Pre-seed $1M closed (Mar 2026, QDNL Participations lead); Venture Kick CHF 150k; seed round being raised (Slush 2026 kit)"
+      },
+      "signal_types": [
+        "commercial_agreement",
+        "round_forming",
+        "event_exhibitor"
+      ],
+      "key_fact": "2025 EPFL AQUA Lab spin-off making cryogenic integrated circuits for quantum computers; multi-year framework agreement with ZuriQ (ETH spin-off) announced 2 Nov 2026 with first order of inaugural product for delivery by end-2026; listed as seeking seed investors in Swiss Slush 2026 delegation kit.",
+      "key_unknown": "Order value; seed size/lead/timing; other customers",
+      "thesis_fit": "Frontier Technologies · pre-seed done (QDNL lead) → watch this seed round · CH lower Project A base rate · B2B · no public overlap found",
+      "flags": [
+        "spinout"
+      ],
+      "intent": "create",
+      "founders": [
+        {
+          "name": "Vicente Carbon",
+          "role": "CEO"
+        },
+        {
+          "name": "Hung-Chi Han",
+          "role": "Co-founder"
+        }
+      ],
+      "location": {
+        "city": "Lausanne",
+        "country": "CH"
+      },
+      "stage": "pre_seed",
+      "sectors": [
+        "Frontier Technologies",
+        "quantum hardware",
+        "cryogenic electronics"
+      ],
+      "signal_date": "2026-11-02",
+      "recommended_action": "watch",
+      "confidence": "medium",
+      "claims": [
+        {
+          "text": "Announced a multi-year framework agreement with ZuriQ on 2 Nov 2026, with a first order for delivery by end-2026.",
+          "label": "FACT",
+          "evidence_urls": [
+            "https://ggba.swiss/en/rhonexum-and-zuriq-sign-a-multi-year-agreement-to-advance-trapped-ion-quantum-computing/"
+          ]
+        },
+        {
+          "text": "Raised a $1M pre-seed in March 2026 led by QDNL Participations.",
+          "label": "FACT",
+          "evidence_urls": [
+            "https://tech.eu/2026/03/18/rhonexum-raises-1m-to-advance-cryogenic-electronics-for-quantum-computing/"
+          ]
+        },
+        {
+          "text": "Listed as seeking seed investors in the Swiss Slush 2026 delegation kit.",
+          "label": "FACT",
+          "evidence_urls": [
+            "https://swiss.tech/sites/default/files/2026-10/SLUSH2026_InfoKit.pdf"
+          ]
+        },
+        {
+          "text": "The seed round is probably €2–5m (Chief Scout estimate).",
+          "label": "INFERENCE"
+        },
+        {
+          "text": "Order value, seed lead and timing, and other customers are unknown.",
+          "label": "UNKNOWN"
+        }
+      ],
+      "evidence": [
+        {
+          "url": "https://ggba.swiss/en/rhonexum-and-zuriq-sign-a-multi-year-agreement-to-advance-trapped-ion-quantum-computing/",
+          "published_at": "2026-11-02"
+        },
+        {
+          "url": "https://tech.eu/2026/03/18/rhonexum-raises-1m-to-advance-cryogenic-electronics-for-quantum-computing/",
+          "published_at": "2026-03-18"
+        },
+        {
+          "url": "https://swiss.tech/sites/default/files/2026-10/SLUSH2026_InfoKit.pdf"
+        }
+      ]
+    },
+    {
+      "kind": "company",
+      "name": "Dream Machines",
+      "external_id": "pz-scout:dream-machines",
+      "source_scouts": [
+        "Lane 02"
+      ],
+      "scout_assessment": {
+        "system_novelty": "KNOWN — MATERIAL UPDATE (C007 CREATE NOW)",
+        "entity_convergence": "NO",
+        "independent_signal_convergence": "NO",
+        "duplicate_signal": "NO",
+        "venture_exposure": "VE-0",
+        "funding_visibility": "Angel round only",
+        "company_status": "Operating; likely paid pilot (company-reported)",
+        "attention_state": "INVESTIGATE NOW",
+        "recommended_action": "UPDATE",
+        "recommended_object_type": "company",
+        "stage_note": "Angel round (Apr 2026); no institutional round known"
+      },
+      "signal_types": [
+        "seed_account_post"
+      ],
+      "key_fact": "Founder post 6 Nov 2026: a live prospect demo became a likely next paid pilot within 24h of first data collection (company claim); founder attending CoRL (Austin) 9 Nov.",
+      "key_unknown": "Pilot customer identity and terms; institutional raise timing",
+      "thesis_fit": "Industrial Autonomy · about to raise first round, no lead announced · Munich-registered, Zurich-operated · adjacent, needs Mohamed's conflict check: Micropsi, Linexa",
+      "flags": [
+        "re_report"
+      ],
+      "intent": "update",
+      "website": "https://dream-machines.eu/",
+      "registry_ids": {
+        "handelsregister": "HRB 311581",
+        "che_uid": "CHE-350.786.404"
+      },
+      "founders": [
+        {
+          "name": "Dominique Crispin Alexander Paul",
+          "role": "Founder",
+          "profile_urls": [
+            "https://x.com/DominiqueCAPaul"
+          ]
+        }
+      ],
+      "location": {
+        "city": "Munich",
+        "country": "DE"
+      },
+      "stage": "pre_seed",
+      "sectors": [
+        "Industrial Autonomy"
+      ],
+      "signal_date": "2026-11-06",
+      "recommended_action": "review",
+      "confidence": "low",
+      "claims": [
+        {
+          "text": "Founder post on 6 Nov 2026 says a live prospect demo became a likely next paid pilot within 24 hours of first data collection.",
+          "label": "FACT",
+          "evidence_urls": [
+            "https://x.com/DominiqueCAPaul/status/2118853542412718524"
+          ]
+        },
+        {
+          "text": "The pilot itself is a company claim; customer identity and terms are unknown.",
+          "label": "UNKNOWN"
+        }
+      ],
+      "evidence": [
+        {
+          "url": "https://x.com/DominiqueCAPaul/status/2118853542412718524",
+          "published_at": "2026-11-06"
+        },
+        {
+          "url": "https://dream-machines.eu/"
+        }
+      ]
+    },
+    {
+      "kind": "company",
+      "name": "PolaSight",
+      "external_id": "pz-scout:polasight",
+      "source_scouts": [
+        "Lane 05",
+        "Lane 07"
+      ],
+      "scout_assessment": {
+        "system_novelty": "KNOWN — MATERIAL UPDATE (MW-2026-11-05 MONITOR)",
+        "entity_convergence": "NO",
+        "independent_signal_convergence": "NO",
+        "duplicate_signal": "NO",
+        "venture_exposure": "VE-1",
+        "funding_visibility": "FIT loan CHF 100k; prior small cheques",
+        "company_status": "Research-use installations (company-reported)",
+        "attention_state": "MONITOR",
+        "recommended_action": "UPDATE",
+        "recommended_object_type": "company",
+        "stage_note": "Grants/loans + small angel/VC cheque (FIT loan, Venture Kick Stage 2, Constructor Capital $100k per prior notes)"
+      },
+      "signal_types": [
+        "grant_award",
+        "event_award"
+      ],
+      "key_fact": "FIT Tech Seed loan CHF 100k (startupnews.ch, 3 Nov 2026) to reach CE marking for PolaOne by early 2027; PolaOne maps whole fresh tissue samples in ~60 s without staining, used for research in several pathology labs; CTO Davide Scandella won Falling Walls Lab Emerging Talents (6 Nov 2026).",
+      "key_unknown": "Founding team beyond CTO; round plans; clinical validation",
+      "thesis_fit": "Regulated Industries (MedTech) · round status unclear · CH lower Project A base rate · no public overlap found",
+      "flags": [
+        "spinout",
+        "re_report"
+      ],
+      "intent": "update",
+      "website": "https://www.polasight.com/",
+      "founders": [
+        {
+          "name": "Davide Scandella",
+          "role": "CTO and co-founder"
+        }
+      ],
+      "location": {
+        "city": "Bern",
+        "country": "CH"
+      },
+      "stage": "pre_seed",
+      "sectors": [
+        "Regulated Industries",
+        "MedTech",
+        "digital pathology"
+      ],
+      "signal_date": "2026-11-03",
+      "recommended_action": "watch",
+      "confidence": "medium",
+      "claims": [
+        {
+          "text": "Received a FIT Tech Seed loan of CHF 100k to reach CE marking for PolaOne by early 2027.",
+          "label": "FACT",
+          "evidence_urls": [
+            "https://startupnews.ch/news/foerder-ticker-kw45-2026-prismus-fit-tech-seed"
+          ]
+        },
+        {
+          "text": "CTO Davide Scandella won Falling Walls Lab Emerging Talents on 6 Nov 2026.",
+          "label": "FACT",
+          "evidence_urls": [
+            "https://falling-walls.com/lab"
+          ]
+        },
+        {
+          "text": "Founding team beyond the CTO, round plans and clinical validation are unknown.",
+          "label": "UNKNOWN"
+        }
+      ],
+      "evidence": [
+        {
+          "url": "https://startupnews.ch/news/foerder-ticker-kw45-2026-prismus-fit-tech-seed",
+          "published_at": "2026-11-03"
+        },
+        {
+          "url": "https://falling-walls.com/lab"
+        },
+        {
+          "url": "https://www.polasight.com/"
+        }
+      ]
+    },
+    {
+      "kind": "company",
+      "name": "4QT GmbH",
+      "external_id": "pz-scout:4qt",
+      "source_scouts": [
+        "Lane 07",
+        "Lane 09"
+      ],
+      "scout_assessment": {
+        "system_novelty": "CYCLE-NEW",
+        "entity_convergence": "NO",
+        "independent_signal_convergence": "NO",
+        "duplicate_signal": "NO",
+        "venture_exposure": "VE-2",
+        "funding_visibility": "CHF 1.9M prior round",
+        "company_status": "Operating; site deployment (company-reported)",
+        "attention_state": "MONITOR",
+        "recommended_action": "MONITOR — DO NOT CREATE YET",
+        "recommended_object_type": "company",
+        "stage_note": "Prior venture round (CHF 1.9M; Innosuisse, Tiny VC, Climate Capital, Unruly Capital per reports); seeking seed (Slush 2026 kit)"
+      },
+      "signal_types": [
+        "event_exhibitor",
+        "round_forming"
+      ],
+      "key_fact": "Rare-earth-free axial-flux 'Double Rotor Machine' drivetrain running in a hybrid-electric autonomy-ready dumper on construction sites; pivoting to full-stack UGV OEM for defence, construction and critical infrastructure (company description).",
+      "key_unknown": "Defence customers; seed size/lead; team",
+      "thesis_fit": "Defence Technologies / Industrial Autonomy · watch for next round · CH lower Project A base rate · adjacent, needs Mohamed's conflict check: ARX Robotics (UGVs)",
+      "website": "https://www.4qt.org/",
+      "aliases": [
+        "4QT"
+      ],
+      "founders": [
+        {
+          "name": "Christoph Lang",
+          "role": "CCO and co-founder"
+        }
+      ],
+      "location": {
+        "country": "CH"
+      },
+      "stage": "pre_seed",
+      "sectors": [
+        "Defence Technologies",
+        "Industrial Autonomy",
+        "electric drivetrains"
+      ],
+      "recommended_action": "watch",
+      "confidence": "low",
+      "claims": [
+        {
+          "text": "Raised CHF 1.9 million in a prior round, as reported by Startupticker.",
+          "label": "FACT",
+          "evidence_urls": [
+            "https://www.startupticker.ch/en/news/4qt-secures-chf-1-9-million-for-its-mission-to-electrify-heavy-duty-machines"
+          ]
+        },
+        {
+          "text": "Listed as seeking a seed round in the Swiss Slush 2026 delegation kit.",
+          "label": "FACT",
+          "evidence_urls": [
+            "https://swiss.tech/sites/default/files/2026-10/SLUSH2026_InfoKit.pdf"
+          ]
+        },
+        {
+          "text": "The pivot to a full-stack UGV OEM for defence and construction is the company's own description.",
+          "label": "INFERENCE"
+        }
+      ],
+      "evidence": [
+        {
+          "url": "https://swiss.tech/sites/default/files/2026-10/SLUSH2026_InfoKit.pdf"
+        },
+        {
+          "url": "https://www.startupticker.ch/en/news/4qt-secures-chf-1-9-million-for-its-mission-to-electrify-heavy-duty-machines"
+        },
+        {
+          "url": "https://www.4qt.org/product"
+        }
+      ]
+    },
+    {
+      "kind": "opportunity",
+      "name": "Endobotica",
+      "external_id": "pz-scout:endobotica",
+      "source_scouts": [
+        "Lane 05",
+        "Lane 04"
+      ],
+      "scout_assessment": {
+        "system_novelty": "CYCLE-NEW",
+        "entity_convergence": "NO",
+        "independent_signal_convergence": "NO",
+        "duplicate_signal": "NO",
+        "venture_exposure": "VE-0",
+        "funding_visibility": "FIT-Innogrant CHF 100k",
+        "company_status": "Prototype (in-vitro)",
+        "attention_state": "MONITOR",
+        "recommended_action": "MONITOR — DO NOT CREATE YET",
+        "recommended_object_type": "research spinout",
+        "stage_note": "Pre-company spin-off project; FIT-Innogrant CHF 100k"
+      },
+      "signal_types": [
+        "grant_award",
+        "research_spinout"
+      ],
+      "key_fact": "Teleoperated robotic platform (TREX) for mechanical thrombectomy in ischaemic stroke, from EPFL REHAssist with Geneva University Hospitals (Prof. Paolo Machi); grant funds in-vitro validation ahead of in-vivo.",
+      "key_unknown": "Incorporation; co-founders; regulatory path; competitive landscape",
+      "thesis_fit": "Regulated Industries (MedTech) · too early to label · CH lower Project A base rate · no public overlap found",
+      "flags": [
+        "spinout",
+        "pre_company"
+      ],
+      "founders": [
+        {
+          "name": "Evgenia Roussinova",
+          "role": "Project lead, envisioned CEO"
+        }
+      ],
+      "location": {
+        "city": "Lausanne",
+        "country": "CH"
+      },
+      "stage": "pre_company",
+      "sectors": [
+        "Regulated Industries",
+        "MedTech",
+        "surgical robotics"
+      ],
+      "recommended_action": "watch",
+      "confidence": "high",
+      "claims": [
+        {
+          "text": "EPFL reports a FIT-Innogrant of CHF 100k for the TREX teleoperated thrombectomy robot, funding in-vitro validation.",
+          "label": "FACT",
+          "evidence_urls": [
+            "https://actu.epfl.ch/news/endobotica-wins-fit-grant-to-bring-robotic-stroke/"
+          ]
+        },
+        {
+          "text": "No company has been incorporated yet; co-founders and regulatory path are unknown.",
+          "label": "UNKNOWN"
+        }
+      ],
+      "evidence": [
+        {
+          "url": "https://actu.epfl.ch/news/endobotica-wins-fit-grant-to-bring-robotic-stroke/"
+        }
+      ]
+    },
+    {
+      "kind": "event",
+      "name": "Swiss Robotics Day",
+      "external_id": "pz-event:swiss-robotics-day-2026",
+      "key_fact": "Swiss Robotics Day takes place in Zurich on 2026-11-13. Dense robotics room.",
+      "recommended_action": "review",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "url": "https://swissroboticsday.ch/"
+        }
+      ],
+      "event": {
+        "starts_on": "2026-11-13",
+        "city": "Zurich",
+        "ev_class": "EV-A",
+        "ax_class": "AX-1",
+        "p_class": "P2",
+        "why_it_matters": "Dense robotics room",
+        "required_action": "Mohamed decides (paid); no registration by Chief Scout"
+      }
+    },
+    {
+      "kind": "event",
+      "name": "e-conversion Start-Up Day 2026",
+      "external_id": "pz-event:e-conversion-start-up-day-2026",
+      "key_fact": "e-conversion Start-Up Day 2026 takes place in Garching (Munich) on 2026-11-16. Munich science-startup pitch competition.",
+      "recommended_action": "review",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "url": "https://www.e-conversion.de/start-up-day-2026-en/"
+        }
+      ],
+      "event": {
+        "starts_on": "2026-11-16",
+        "city": "Garching (Munich)",
+        "ev_class": "EV-B",
+        "ax_class": "AX-1",
+        "p_class": "P2",
+        "why_it_matters": "Munich science-startup pitch competition",
+        "required_action": "Mohamed decides; no registration by Chief Scout"
+      }
+    },
+    {
+      "kind": "event",
+      "name": "Slush 2026",
+      "external_id": "pz-event:slush-2026",
+      "key_fact": "Slush 2026 takes place in Helsinki on 2026-11-17. Rhonexum (raising seed), 4QT, Bleu Robotics in delegation kits.",
+      "recommended_action": "review",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "url": "https://swiss.tech/sites/default/files/2026-10/SLUSH2026_InfoKit.pdf"
+        }
+      ],
+      "event": {
+        "starts_on": "2026-11-17",
+        "city": "Helsinki",
+        "ev_class": "EV-A",
+        "ax_class": "AX-2",
+        "p_class": "P2",
+        "why_it_matters": "Rhonexum (raising seed), 4QT, Bleu Robotics in delegation kits",
+        "required_action": "Awareness; Mohamed decides",
+        "ends_on": "2026-11-19"
+      }
+    },
+    {
+      "kind": "event",
+      "name": "Bpifrance Demo Day Deeptech Seed",
+      "external_id": "pz-event:bpifrance-demo-day-deeptech-seed-2026",
+      "key_fact": "Bpifrance Demo Day Deeptech Seed takes place in Paris on 2026-11-23. 20 pre-round deeptech startups.",
+      "recommended_action": "review",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "url": "https://evenements.bpifrance.fr/e/demo-day-23-novembre-2026/en"
+        }
+      ],
+      "event": {
+        "starts_on": "2026-11-23",
+        "city": "Paris",
+        "ev_class": "EV-A",
+        "ax_class": "AX-1",
+        "p_class": "P1",
+        "why_it_matters": "20 pre-round deeptech startups",
+        "required_action": "Mohamed checks access"
+      }
+    },
+    {
+      "kind": "event",
+      "name": "EPFL Investor Day 2026",
+      "external_id": "pz-event:epfl-investor-day-2026",
+      "key_fact": "EPFL Investor Day 2026 takes place in Lausanne on 2026-11-25. EPFL deeptech pitches; likely Déploya/Rhonexum ecosystem.",
+      "recommended_action": "review",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "url": "https://ventures.swisscom.com/meet-us-here/epfl/"
+        }
+      ],
+      "event": {
+        "starts_on": "2026-11-25",
+        "city": "Lausanne",
+        "ev_class": "EV-A",
+        "ax_class": "AX-1",
+        "p_class": "P1",
+        "why_it_matters": "EPFL deeptech pitches; likely Déploya/Rhonexum ecosystem",
+        "required_action": "Mohamed decides; no registration by Chief Scout"
+      }
+    },
+    {
+      "kind": "event",
+      "name": "Big Berlin Hack",
+      "external_id": "pz-event:big-berlin-hack-2026",
+      "key_fact": "Big Berlin Hack takes place in Berlin on 2026-11-28. 350+ builders; pre-company team formation.",
+      "recommended_action": "review",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "url": "https://luma.com/bbh"
+        }
+      ],
+      "event": {
+        "starts_on": "2026-11-28",
+        "city": "Berlin",
+        "ev_class": "EV-B",
+        "ax_class": "AX-1",
+        "p_class": "P3",
+        "why_it_matters": "350+ builders; pre-company team formation",
+        "required_action": "Optional scouting visit; no registration by Chief Scout",
+        "ends_on": "2026-11-29"
+      }
+    }
+  ]
+}

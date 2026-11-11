@@ -1,0 +1,27 @@
+# Secrets — never commit
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Node / frontend
+node_modules/
+frontend/dist/
+
+# Local runtime / caches
+.cache/
+*.log
+supabase/.temp/
+supabase/.branches/
+
+# Local test temp folders (e.g. reviewers running pytest with --basetemp)
+.pytest-*/
+**/.pytest-*/
+*pytest-review*/

@@ -1,0 +1,13 @@
+{
+  "name": "pz-schema-tests",
+  "private": true,
+  "type": "module",
+  "description": "Schema tests: every migration applied to PGlite (Postgres compiled to WASM, in-process). No Docker, no hosted project.",
+  "scripts": {
+    "test": "node --test"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "0.5.12",
+    "supabase": "2.122.0"
+  }
+}
