@@ -203,6 +203,16 @@ def stated(raw: Any, *, today: date) -> Stated:
     return Stated("timed" if hhmm else "date_only", d0, hhmm or None, free_text=bool(free))
 
 
+def free_text_form(raw: Any) -> bool:
+    """A non-blank text value in none of the structured forms (ISO date / date-time, ``D.M.Y``): the free-text fallback
+    reads it, and its year (or whether it is a date at all: "Feb 29") depends on the clock. Decided by FORM only, so it
+    never changes with the date it is read on (review 015, Codex H-103)."""
+    if not isinstance(raw, str) or not raw.strip():
+        return False
+    text = raw.strip()
+    return not (_ISO_DT.match(text) or _ISO_D.match(text) or _DMY.match(text))
+
+
 def span_of(start: Stated, end: Stated) -> tuple[datetime | None, datetime | None]:
     """``starts_at`` / ``ends_at``: the old ``event_span`` over the stated values. No start, no span; an absent or
     unparseable end is the start's span (the end of the start day); ``ends_at`` is exclusive."""
