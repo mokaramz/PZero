@@ -1,0 +1,3991 @@
+{
+ "expected": {
+  "fields": [
+   "name",
+   "location",
+   "company",
+   "university",
+   "role",
+   "expertise",
+   "why_interesting",
+   "discovery",
+   "introduced_by",
+   "recommended",
+   "startups",
+   "founder_potential",
+   "linkedin",
+   "x",
+   "email",
+   "relationship_strength",
+   "last_interaction",
+   "next_action",
+   "next_action_date",
+   "notes",
+   "created",
+   "provenance",
+   "watch",
+   "last_checked",
+   "github",
+   "aliases",
+   "identity_status",
+   "identity_evidence",
+   "former_roles",
+   "founder_status",
+   "country",
+   "institutions",
+   "profile_urls",
+   "github_id",
+   "openalex_id",
+   "orcid",
+   "patent_inventor_id",
+   "companies",
+   "events",
+   "ecosystems",
+   "sources",
+   "evidence",
+   "signal_categories",
+   "evidence_confidence",
+   "last_signal",
+   "radar_state",
+   "state_history",
+   "intro_route",
+   "relationship_owner",
+   "contact_channel",
+   "machine_research",
+   "human_judgment",
+   "boardy",
+   "opportunities",
+   "updated",
+   "why_surfaced",
+   "signal",
+   "dismissed_reason",
+   "introduced_by_name",
+   "identity_verified_by",
+   "region",
+   "invalid_record",
+   "identity_verified_on"
+  ],
+  "potential": {
+   "building": "Building now",
+   "high": "High",
+   "maybe": "Maybe",
+   "none": "—"
+  },
+  "sets": {
+   "dates": {
+    "2026-11-11T12:00:00": {
+     "listing": {
+      "ok": [
+       {
+        "chain": [],
+        "days_since_touch": null,
+        "due": true,
+        "id": "p-due-today",
+        "introduced_by_name": "",
+        "name": "Dana Today",
+        "next_action": "Call back",
+        "next_action_date": "2026-11-11",
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": null,
+        "due": true,
+        "id": "p-due-yesterday",
+        "introduced_by_name": "",
+        "name": "Yara Yester",
+        "next_action": "Call back",
+        "next_action_date": "2026-11-10",
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": null,
+        "due": true,
+        "id": "p-no-date",
+        "introduced_by_name": "",
+        "name": "Nora Nodate",
+        "next_action": "Call back",
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": null,
+        "due": true,
+        "id": "p-empty-date",
+        "introduced_by_name": "",
+        "name": "Emil Empty",
+        "next_action": "Call back",
+        "next_action_date": "",
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": null,
+        "due": true,
+        "id": "p-null-date",
+        "introduced_by_name": "",
+        "name": "Nils Null",
+        "next_action": "Call back",
+        "next_action_date": null,
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": null,
+        "due": true,
+        "id": "p-compact-date",
+        "introduced_by_name": "",
+        "name": "Cora Compact",
+        "next_action": "Call back",
+        "next_action_date": "20261111",
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": null,
+        "due": true,
+        "id": "p-week-date",
+        "introduced_by_name": "",
+        "name": "Wes Week",
+        "next_action": "Call back",
+        "next_action_date": "2026-W46-3",
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": null,
+        "due": true,
+        "id": "p-action-list",
+        "introduced_by_name": "",
+        "name": "Lia List",
+        "next_action": [
+         "x"
+        ],
+        "next_action_date": "2026-11-11",
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": null,
+        "due": true,
+        "id": "p-watch-false",
+        "introduced_by_name": "",
+        "name": "Wim Nowatch",
+        "next_action": "Call back",
+        "recommended_names": [],
+        "watch": false
+       },
+       {
+        "chain": [],
+        "days_since_touch": 30,
+        "due": true,
+        "id": "p-due-touched",
+        "introduced_by_name": "",
+        "last_interaction": "2026-10-12",
+        "name": "Dora Both",
+        "next_action": "Call back",
+        "next_action_date": "2026-11-08",
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-due-tomorrow",
+        "introduced_by_name": "",
+        "name": "Tom Morrow",
+        "next_action": "Call back",
+        "next_action_date": "2026-11-12",
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-bad-date",
+        "introduced_by_name": "",
+        "name": "Bea Bad",
+        "next_action": "Call back",
+        "next_action_date": "11/12/2026",
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-datetime-date",
+        "introduced_by_name": "",
+        "name": "Tim Stamp",
+        "next_action": "Call back",
+        "next_action_date": "2026-11-11T09:00",
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-int-date",
+        "introduced_by_name": "",
+        "name": "Ivo Int",
+        "next_action": "Call back",
+        "next_action_date": 20261111,
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-no-action",
+        "introduced_by_name": "",
+        "name": "Nina Noaction",
+        "next_action": "",
+        "next_action_date": "2026-11-06",
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-action-none",
+        "introduced_by_name": "",
+        "name": "Otto None",
+        "next_action": null,
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-touch-empty",
+        "introduced_by_name": "",
+        "last_interaction": "",
+        "name": "Elsa Empty",
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-touch-null",
+        "introduced_by_name": "",
+        "last_interaction": null,
+        "name": "Ned Null",
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-touch-garbage",
+        "introduced_by_name": "",
+        "last_interaction": "last week",
+        "name": "Gus Garbage",
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-touch-int",
+        "introduced_by_name": "",
+        "last_interaction": 5,
+        "name": "Ina Int",
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-touch-stamp",
+        "introduced_by_name": "",
+        "last_interaction": "2026-11-09 10:00",
+        "name": "Sam Stamp",
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-watch-str",
+        "introduced_by_name": "",
+        "name": "Walt Watch",
+        "recommended_names": [],
+        "watch": "yes"
+       },
+       {
+        "chain": [],
+        "days_since_touch": 10,
+        "due": false,
+        "id": "p-touch-10",
+        "introduced_by_name": "",
+        "last_interaction": "2026-11-01",
+        "name": "Tara Ten",
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": 9,
+        "due": false,
+        "id": "p-touch-week",
+        "introduced_by_name": "",
+        "last_interaction": "2026-W45-1",
+        "name": "Will Week",
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": 4,
+        "due": false,
+        "id": "p-watch",
+        "introduced_by_name": "",
+        "last_interaction": "2026-11-07",
+        "name": "Wanda Watch",
+        "recommended_names": [],
+        "watch": true
+       },
+       {
+        "chain": [],
+        "days_since_touch": 0,
+        "due": false,
+        "id": "p-touch-today",
+        "introduced_by_name": "",
+        "last_interaction": "2026-11-11",
+        "name": "Theo Touch",
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": -3,
+        "due": false,
+        "id": "p-touch-future",
+        "introduced_by_name": "",
+        "last_interaction": "2026-11-14",
+        "name": "Finn Future",
+        "recommended_names": []
+       }
+      ]
+     },
+     "tree": {
+      "ok": [
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-due-today",
+        "name": "Dana Today",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       },
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-due-tomorrow",
+        "name": "Tom Morrow",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       },
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-due-yesterday",
+        "name": "Yara Yester",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       },
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-no-date",
+        "name": "Nora Nodate",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       },
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-empty-date",
+        "name": "Emil Empty",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       },
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-null-date",
+        "name": "Nils Null",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       },
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-bad-date",
+        "name": "Bea Bad",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       },
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-datetime-date",
+        "name": "Tim Stamp",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       },
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-compact-date",
+        "name": "Cora Compact",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       },
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-week-date",
+        "name": "Wes Week",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       },
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-int-date",
+        "name": "Ivo Int",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       },
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-no-action",
+        "name": "Nina Noaction",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       },
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-action-none",
+        "name": "Otto None",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       },
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-action-list",
+        "name": "Lia List",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       },
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-touch-today",
+        "name": "Theo Touch",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       },
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-touch-10",
+        "name": "Tara Ten",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       },
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-touch-future",
+        "name": "Finn Future",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       },
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-touch-empty",
+        "name": "Elsa Empty",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       },
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-touch-null",
+        "name": "Ned Null",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       },
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-touch-garbage",
+        "name": "Gus Garbage",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       },
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-touch-int",
+        "name": "Ina Int",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       },
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-touch-stamp",
+        "name": "Sam Stamp",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       },
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-touch-week",
+        "name": "Will Week",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       },
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-due-touched",
+        "name": "Dora Both",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       },
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-watch",
+        "name": "Wanda Watch",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": true
+       },
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-watch-str",
+        "name": "Walt Watch",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": true
+       },
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-watch-false",
+        "name": "Wim Nowatch",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       }
+      ]
+     },
+     "watchlist": {
+      "ok": {
+       "people": [
+        {
+         "chain": [],
+         "days_since_touch": null,
+         "due": false,
+         "id": "p-watch-str",
+         "introduced_by_name": "",
+         "name": "Walt Watch",
+         "recommended_names": [],
+         "watch": "yes"
+        },
+        {
+         "chain": [],
+         "days_since_touch": 4,
+         "due": false,
+         "id": "p-watch",
+         "introduced_by_name": "",
+         "last_interaction": "2026-11-07",
+         "name": "Wanda Watch",
+         "recommended_names": [],
+         "watch": true
+        }
+       ]
+      }
+     }
+    },
+    "2026-11-12T00:30:00": {
+     "listing": {
+      "ok": [
+       {
+        "chain": [],
+        "days_since_touch": null,
+        "due": true,
+        "id": "p-due-today",
+        "introduced_by_name": "",
+        "name": "Dana Today",
+        "next_action": "Call back",
+        "next_action_date": "2026-11-11",
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": null,
+        "due": true,
+        "id": "p-due-tomorrow",
+        "introduced_by_name": "",
+        "name": "Tom Morrow",
+        "next_action": "Call back",
+        "next_action_date": "2026-11-12",
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": null,
+        "due": true,
+        "id": "p-due-yesterday",
+        "introduced_by_name": "",
+        "name": "Yara Yester",
+        "next_action": "Call back",
+        "next_action_date": "2026-11-10",
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": null,
+        "due": true,
+        "id": "p-no-date",
+        "introduced_by_name": "",
+        "name": "Nora Nodate",
+        "next_action": "Call back",
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": null,
+        "due": true,
+        "id": "p-empty-date",
+        "introduced_by_name": "",
+        "name": "Emil Empty",
+        "next_action": "Call back",
+        "next_action_date": "",
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": null,
+        "due": true,
+        "id": "p-null-date",
+        "introduced_by_name": "",
+        "name": "Nils Null",
+        "next_action": "Call back",
+        "next_action_date": null,
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": null,
+        "due": true,
+        "id": "p-compact-date",
+        "introduced_by_name": "",
+        "name": "Cora Compact",
+        "next_action": "Call back",
+        "next_action_date": "20261111",
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": null,
+        "due": true,
+        "id": "p-week-date",
+        "introduced_by_name": "",
+        "name": "Wes Week",
+        "next_action": "Call back",
+        "next_action_date": "2026-W46-3",
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": null,
+        "due": true,
+        "id": "p-action-list",
+        "introduced_by_name": "",
+        "name": "Lia List",
+        "next_action": [
+         "x"
+        ],
+        "next_action_date": "2026-11-11",
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": null,
+        "due": true,
+        "id": "p-watch-false",
+        "introduced_by_name": "",
+        "name": "Wim Nowatch",
+        "next_action": "Call back",
+        "recommended_names": [],
+        "watch": false
+       },
+       {
+        "chain": [],
+        "days_since_touch": 31,
+        "due": true,
+        "id": "p-due-touched",
+        "introduced_by_name": "",
+        "last_interaction": "2026-10-12",
+        "name": "Dora Both",
+        "next_action": "Call back",
+        "next_action_date": "2026-11-08",
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-bad-date",
+        "introduced_by_name": "",
+        "name": "Bea Bad",
+        "next_action": "Call back",
+        "next_action_date": "11/12/2026",
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-datetime-date",
+        "introduced_by_name": "",
+        "name": "Tim Stamp",
+        "next_action": "Call back",
+        "next_action_date": "2026-11-11T09:00",
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-int-date",
+        "introduced_by_name": "",
+        "name": "Ivo Int",
+        "next_action": "Call back",
+        "next_action_date": 20261111,
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-no-action",
+        "introduced_by_name": "",
+        "name": "Nina Noaction",
+        "next_action": "",
+        "next_action_date": "2026-11-06",
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-action-none",
+        "introduced_by_name": "",
+        "name": "Otto None",
+        "next_action": null,
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-touch-empty",
+        "introduced_by_name": "",
+        "last_interaction": "",
+        "name": "Elsa Empty",
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-touch-null",
+        "introduced_by_name": "",
+        "last_interaction": null,
+        "name": "Ned Null",
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-touch-garbage",
+        "introduced_by_name": "",
+        "last_interaction": "last week",
+        "name": "Gus Garbage",
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-touch-int",
+        "introduced_by_name": "",
+        "last_interaction": 5,
+        "name": "Ina Int",
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-touch-stamp",
+        "introduced_by_name": "",
+        "last_interaction": "2026-11-09 10:00",
+        "name": "Sam Stamp",
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-watch-str",
+        "introduced_by_name": "",
+        "name": "Walt Watch",
+        "recommended_names": [],
+        "watch": "yes"
+       },
+       {
+        "chain": [],
+        "days_since_touch": 11,
+        "due": false,
+        "id": "p-touch-10",
+        "introduced_by_name": "",
+        "last_interaction": "2026-11-01",
+        "name": "Tara Ten",
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": 10,
+        "due": false,
+        "id": "p-touch-week",
+        "introduced_by_name": "",
+        "last_interaction": "2026-W45-1",
+        "name": "Will Week",
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": 5,
+        "due": false,
+        "id": "p-watch",
+        "introduced_by_name": "",
+        "last_interaction": "2026-11-07",
+        "name": "Wanda Watch",
+        "recommended_names": [],
+        "watch": true
+       },
+       {
+        "chain": [],
+        "days_since_touch": 1,
+        "due": false,
+        "id": "p-touch-today",
+        "introduced_by_name": "",
+        "last_interaction": "2026-11-11",
+        "name": "Theo Touch",
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": -2,
+        "due": false,
+        "id": "p-touch-future",
+        "introduced_by_name": "",
+        "last_interaction": "2026-11-14",
+        "name": "Finn Future",
+        "recommended_names": []
+       }
+      ]
+     },
+     "tree": {
+      "ok": [
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-due-today",
+        "name": "Dana Today",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       },
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-due-tomorrow",
+        "name": "Tom Morrow",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       },
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-due-yesterday",
+        "name": "Yara Yester",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       },
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-no-date",
+        "name": "Nora Nodate",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       },
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-empty-date",
+        "name": "Emil Empty",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       },
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-null-date",
+        "name": "Nils Null",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       },
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-bad-date",
+        "name": "Bea Bad",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       },
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-datetime-date",
+        "name": "Tim Stamp",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       },
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-compact-date",
+        "name": "Cora Compact",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       },
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-week-date",
+        "name": "Wes Week",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       },
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-int-date",
+        "name": "Ivo Int",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       },
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-no-action",
+        "name": "Nina Noaction",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       },
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-action-none",
+        "name": "Otto None",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       },
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-action-list",
+        "name": "Lia List",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       },
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-touch-today",
+        "name": "Theo Touch",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       },
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-touch-10",
+        "name": "Tara Ten",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       },
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-touch-future",
+        "name": "Finn Future",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       },
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-touch-empty",
+        "name": "Elsa Empty",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       },
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-touch-null",
+        "name": "Ned Null",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       },
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-touch-garbage",
+        "name": "Gus Garbage",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       },
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-touch-int",
+        "name": "Ina Int",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       },
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-touch-stamp",
+        "name": "Sam Stamp",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       },
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-touch-week",
+        "name": "Will Week",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       },
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-due-touched",
+        "name": "Dora Both",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       },
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-watch",
+        "name": "Wanda Watch",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": true
+       },
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-watch-str",
+        "name": "Walt Watch",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": true
+       },
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-watch-false",
+        "name": "Wim Nowatch",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       }
+      ]
+     },
+     "watchlist": {
+      "ok": {
+       "people": [
+        {
+         "chain": [],
+         "days_since_touch": null,
+         "due": false,
+         "id": "p-watch-str",
+         "introduced_by_name": "",
+         "name": "Walt Watch",
+         "recommended_names": [],
+         "watch": "yes"
+        },
+        {
+         "chain": [],
+         "days_since_touch": 5,
+         "due": false,
+         "id": "p-watch",
+         "introduced_by_name": "",
+         "last_interaction": "2026-11-07",
+         "name": "Wanda Watch",
+         "recommended_names": [],
+         "watch": true
+        }
+       ]
+      }
+     }
+    }
+   },
+   "dict_collection": {
+    "2026-11-11T12:00:00": {
+     "listing": {
+      "ok": [
+       {
+        "chain": [],
+        "company": "Alpha Labs",
+        "days_since_touch": null,
+        "due": false,
+        "founder_potential": "high",
+        "id": "p-root-a",
+        "introduced_by_name": "",
+        "name": "Root Alpha",
+        "recommended": [
+         "p-kid-1",
+         "p-kid-2",
+         "p-unknown",
+         "p-kid-1"
+        ],
+        "recommended_names": [
+         "Kid One",
+         "Kid One"
+        ],
+        "relationship_strength": "warm",
+        "role": "CTO",
+        "startups": [
+         "Alpha Labs"
+        ],
+        "watch": true
+       },
+       {
+        "chain": [
+         "Root Alpha"
+        ],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-kid-1",
+        "introduced_by": "p-root-a",
+        "introduced_by_name": "Root Alpha",
+        "name": "Kid One",
+        "recommended": [
+         "p-shared"
+        ],
+        "recommended_names": []
+       }
+      ]
+     },
+     "tree": {
+      "ok": [
+       {
+        "children": [
+         {
+          "children": [],
+          "company": "",
+          "founder_potential": "none",
+          "id": "p-kid-1",
+          "name": "Kid One",
+          "role": "",
+          "startups": [],
+          "strength": "",
+          "watch": false
+         }
+        ],
+        "company": "Alpha Labs",
+        "founder_potential": "high",
+        "id": "p-root-a",
+        "name": "Root Alpha",
+        "role": "CTO",
+        "startups": [
+         "Alpha Labs"
+        ],
+        "strength": "warm",
+        "watch": true
+       }
+      ]
+     },
+     "watchlist": {
+      "ok": {
+       "people": [
+        {
+         "chain": [],
+         "company": "Alpha Labs",
+         "days_since_touch": null,
+         "due": false,
+         "founder_potential": "high",
+         "id": "p-root-a",
+         "introduced_by_name": "",
+         "name": "Root Alpha",
+         "recommended": [
+          "p-kid-1",
+          "p-kid-2",
+          "p-unknown",
+          "p-kid-1"
+         ],
+         "recommended_names": [
+          "Kid One",
+          "Kid One"
+         ],
+         "relationship_strength": "warm",
+         "role": "CTO",
+         "startups": [
+          "Alpha Labs"
+         ],
+         "watch": true
+        }
+       ]
+      }
+     }
+    },
+    "2026-11-12T00:30:00": {
+     "listing": {
+      "ok": [
+       {
+        "chain": [],
+        "company": "Alpha Labs",
+        "days_since_touch": null,
+        "due": false,
+        "founder_potential": "high",
+        "id": "p-root-a",
+        "introduced_by_name": "",
+        "name": "Root Alpha",
+        "recommended": [
+         "p-kid-1",
+         "p-kid-2",
+         "p-unknown",
+         "p-kid-1"
+        ],
+        "recommended_names": [
+         "Kid One",
+         "Kid One"
+        ],
+        "relationship_strength": "warm",
+        "role": "CTO",
+        "startups": [
+         "Alpha Labs"
+        ],
+        "watch": true
+       },
+       {
+        "chain": [
+         "Root Alpha"
+        ],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-kid-1",
+        "introduced_by": "p-root-a",
+        "introduced_by_name": "Root Alpha",
+        "name": "Kid One",
+        "recommended": [
+         "p-shared"
+        ],
+        "recommended_names": []
+       }
+      ]
+     },
+     "tree": {
+      "ok": [
+       {
+        "children": [
+         {
+          "children": [],
+          "company": "",
+          "founder_potential": "none",
+          "id": "p-kid-1",
+          "name": "Kid One",
+          "role": "",
+          "startups": [],
+          "strength": "",
+          "watch": false
+         }
+        ],
+        "company": "Alpha Labs",
+        "founder_potential": "high",
+        "id": "p-root-a",
+        "name": "Root Alpha",
+        "role": "CTO",
+        "startups": [
+         "Alpha Labs"
+        ],
+        "strength": "warm",
+        "watch": true
+       }
+      ]
+     },
+     "watchlist": {
+      "ok": {
+       "people": [
+        {
+         "chain": [],
+         "company": "Alpha Labs",
+         "days_since_touch": null,
+         "due": false,
+         "founder_potential": "high",
+         "id": "p-root-a",
+         "introduced_by_name": "",
+         "name": "Root Alpha",
+         "recommended": [
+          "p-kid-1",
+          "p-kid-2",
+          "p-unknown",
+          "p-kid-1"
+         ],
+         "recommended_names": [
+          "Kid One",
+          "Kid One"
+         ],
+         "relationship_strength": "warm",
+         "role": "CTO",
+         "startups": [
+          "Alpha Labs"
+         ],
+         "watch": true
+        }
+       ]
+      }
+     }
+    }
+   },
+   "graph": {
+    "2026-11-11T12:00:00": {
+     "listing": {
+      "ok": [
+       {
+        "chain": [],
+        "company": "Alpha Labs",
+        "days_since_touch": null,
+        "due": false,
+        "founder_potential": "high",
+        "id": "p-root-a",
+        "introduced_by_name": "",
+        "name": "Root Alpha",
+        "recommended": [
+         "p-kid-1",
+         "p-kid-2",
+         "p-unknown",
+         "p-kid-1"
+        ],
+        "recommended_names": [
+         "Kid One",
+         "Kid Two",
+         "Kid One"
+        ],
+        "relationship_strength": "warm",
+        "role": "CTO",
+        "startups": [
+         "Alpha Labs"
+        ],
+        "watch": true
+       },
+       {
+        "chain": [
+         "Root Alpha"
+        ],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-kid-1",
+        "introduced_by": "p-root-a",
+        "introduced_by_name": "Root Alpha",
+        "name": "Kid One",
+        "recommended": [
+         "p-shared"
+        ],
+        "recommended_names": [
+         "Shared Grandkid"
+        ]
+       },
+       {
+        "chain": [
+         "Root Alpha"
+        ],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-kid-2",
+        "introduced_by": "p-root-a",
+        "introduced_by_name": "Root Alpha",
+        "name": "Kid Two",
+        "recommended": [
+         "p-shared",
+         "p-root-a"
+        ],
+        "recommended_names": [
+         "Shared Grandkid",
+         "Root Alpha"
+        ]
+       },
+       {
+        "chain": [
+         "Kid One",
+         "Root Alpha"
+        ],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-shared",
+        "introduced_by": "p-kid-1",
+        "introduced_by_name": "Kid One",
+        "name": "Shared Grandkid",
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-root-b",
+        "introduced_by_name": "",
+        "name": "Root Beta",
+        "recommended": [
+         "p-shared"
+        ],
+        "recommended_names": [
+         "Shared Grandkid"
+        ]
+       },
+       {
+        "chain": [
+         "Cycle Two"
+        ],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-cyc-1",
+        "introduced_by": "p-cyc-2",
+        "introduced_by_name": "Cycle Two",
+        "name": "Cycle One",
+        "recommended_names": []
+       },
+       {
+        "chain": [
+         "Cycle One"
+        ],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-cyc-2",
+        "introduced_by": "p-cyc-1",
+        "introduced_by_name": "Cycle One",
+        "name": "Cycle Two",
+        "recommended": [
+         "p-cyc-3"
+        ],
+        "recommended_names": [
+         "Cycle Three"
+        ]
+       },
+       {
+        "chain": [
+         "Cycle Two",
+         "Cycle One"
+        ],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-cyc-3",
+        "introduced_by": "p-cyc-2",
+        "introduced_by_name": "Cycle Two",
+        "name": "Cycle Three",
+        "recommended_names": []
+       },
+       {
+        "chain": [
+         "Self Intro"
+        ],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-self",
+        "introduced_by": "p-self",
+        "introduced_by_name": "Self Intro",
+        "name": "Self Intro",
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-orphan",
+        "introduced_by": "p-gone",
+        "introduced_by_name": "",
+        "name": "Orphan Kid",
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-free",
+        "introduced_by": "",
+        "introduced_by_name": "Someone At A Meetup",
+        "name": "Free Text",
+        "recommended_names": []
+       },
+       {
+        "chain": [
+         "Root Beta"
+        ],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-noname-intro",
+        "introduced_by": "p-root-b",
+        "introduced_by_name": "Root Beta",
+        "recommended_names": []
+       },
+       {
+        "chain": [
+         "?",
+         "Root Beta"
+        ],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-intro-by-noname",
+        "introduced_by": "p-noname-intro",
+        "introduced_by_name": null,
+        "name": "Has Nameless Parent",
+        "recommended_names": []
+       },
+       {
+        "chain": [
+         "Root Beta"
+        ],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-null-name",
+        "introduced_by": "p-root-b",
+        "introduced_by_name": "Root Beta",
+        "name": null,
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-depth-0",
+        "introduced_by_name": "",
+        "name": "Depth 0",
+        "recommended_names": []
+       },
+       {
+        "chain": [
+         "Depth 0"
+        ],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-depth-1",
+        "introduced_by": "p-depth-0",
+        "introduced_by_name": "Depth 0",
+        "name": "Depth 1",
+        "recommended_names": []
+       },
+       {
+        "chain": [
+         "Depth 1",
+         "Depth 0"
+        ],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-depth-2",
+        "introduced_by": "p-depth-1",
+        "introduced_by_name": "Depth 1",
+        "name": "Depth 2",
+        "recommended_names": []
+       },
+       {
+        "chain": [
+         "Depth 2",
+         "Depth 1",
+         "Depth 0"
+        ],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-depth-3",
+        "introduced_by": "p-depth-2",
+        "introduced_by_name": "Depth 2",
+        "name": "Depth 3",
+        "recommended_names": []
+       },
+       {
+        "chain": [
+         "Depth 3",
+         "Depth 2",
+         "Depth 1",
+         "Depth 0"
+        ],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-depth-4",
+        "introduced_by": "p-depth-3",
+        "introduced_by_name": "Depth 3",
+        "name": "Depth 4",
+        "recommended_names": []
+       },
+       {
+        "chain": [
+         "Depth 4",
+         "Depth 3",
+         "Depth 2",
+         "Depth 1",
+         "Depth 0"
+        ],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-depth-5",
+        "introduced_by": "p-depth-4",
+        "introduced_by_name": "Depth 4",
+        "name": "Depth 5",
+        "recommended_names": []
+       },
+       {
+        "chain": [
+         "Depth 5",
+         "Depth 4",
+         "Depth 3",
+         "Depth 2",
+         "Depth 1",
+         "Depth 0"
+        ],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-depth-6",
+        "introduced_by": "p-depth-5",
+        "introduced_by_name": "Depth 5",
+        "name": "Depth 6",
+        "recommended_names": []
+       },
+       {
+        "chain": [
+         "Depth 6",
+         "Depth 5",
+         "Depth 4",
+         "Depth 3",
+         "Depth 2",
+         "Depth 1"
+        ],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-depth-7",
+        "introduced_by": "p-depth-6",
+        "introduced_by_name": "Depth 6",
+        "name": "Depth 7",
+        "recommended_names": []
+       },
+       {
+        "chain": [
+         "Depth 7",
+         "Depth 6",
+         "Depth 5",
+         "Depth 4",
+         "Depth 3",
+         "Depth 2"
+        ],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-depth-8",
+        "introduced_by": "p-depth-7",
+        "introduced_by_name": "Depth 7",
+        "name": "Depth 8",
+        "recommended_names": []
+       },
+       {
+        "chain": [
+         "Depth 8",
+         "Depth 7",
+         "Depth 6",
+         "Depth 5",
+         "Depth 4",
+         "Depth 3"
+        ],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-depth-9",
+        "introduced_by": "p-depth-8",
+        "introduced_by_name": "Depth 8",
+        "name": "Depth 9",
+        "recommended_names": []
+       }
+      ]
+     },
+     "tree": {
+      "ok": [
+       {
+        "children": [
+         {
+          "children": [
+           {
+            "children": [],
+            "company": "",
+            "founder_potential": "none",
+            "id": "p-shared",
+            "name": "Shared Grandkid",
+            "role": "",
+            "startups": [],
+            "strength": "",
+            "watch": false
+           }
+          ],
+          "company": "",
+          "founder_potential": "none",
+          "id": "p-kid-1",
+          "name": "Kid One",
+          "role": "",
+          "startups": [],
+          "strength": "",
+          "watch": false
+         },
+         {
+          "children": [],
+          "company": "",
+          "founder_potential": "none",
+          "id": "p-kid-2",
+          "name": "Kid Two",
+          "role": "",
+          "startups": [],
+          "strength": "",
+          "watch": false
+         }
+        ],
+        "company": "Alpha Labs",
+        "founder_potential": "high",
+        "id": "p-root-a",
+        "name": "Root Alpha",
+        "role": "CTO",
+        "startups": [
+         "Alpha Labs"
+        ],
+        "strength": "warm",
+        "watch": true
+       },
+       {
+        "children": [
+         {
+          "children": [],
+          "company": "",
+          "founder_potential": "none",
+          "id": "p-shared",
+          "name": "Shared Grandkid",
+          "role": "",
+          "startups": [],
+          "strength": "",
+          "watch": false
+         },
+         {
+          "children": [
+           {
+            "children": [],
+            "company": "",
+            "founder_potential": "none",
+            "id": "p-intro-by-noname",
+            "name": "Has Nameless Parent",
+            "role": "",
+            "startups": [],
+            "strength": "",
+            "watch": false
+           }
+          ],
+          "company": "",
+          "founder_potential": "none",
+          "id": "p-noname-intro",
+          "name": "?",
+          "role": "",
+          "startups": [],
+          "strength": "",
+          "watch": false
+         },
+         {
+          "children": [],
+          "company": "",
+          "founder_potential": "none",
+          "id": "p-null-name",
+          "name": null,
+          "role": "",
+          "startups": [],
+          "strength": "",
+          "watch": false
+         }
+        ],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-root-b",
+        "name": "Root Beta",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       },
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-free",
+        "name": "Free Text",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       },
+       {
+        "children": [
+         {
+          "children": [
+           {
+            "children": [
+             {
+              "children": [
+               {
+                "children": [
+                 {
+                  "children": [
+                   {
+                    "children": [],
+                    "company": "",
+                    "founder_potential": "none",
+                    "id": "p-depth-6",
+                    "name": "Depth 6",
+                    "role": "",
+                    "startups": [],
+                    "strength": "",
+                    "watch": false
+                   }
+                  ],
+                  "company": "",
+                  "founder_potential": "none",
+                  "id": "p-depth-5",
+                  "name": "Depth 5",
+                  "role": "",
+                  "startups": [],
+                  "strength": "",
+                  "watch": false
+                 }
+                ],
+                "company": "",
+                "founder_potential": "none",
+                "id": "p-depth-4",
+                "name": "Depth 4",
+                "role": "",
+                "startups": [],
+                "strength": "",
+                "watch": false
+               }
+              ],
+              "company": "",
+              "founder_potential": "none",
+              "id": "p-depth-3",
+              "name": "Depth 3",
+              "role": "",
+              "startups": [],
+              "strength": "",
+              "watch": false
+             }
+            ],
+            "company": "",
+            "founder_potential": "none",
+            "id": "p-depth-2",
+            "name": "Depth 2",
+            "role": "",
+            "startups": [],
+            "strength": "",
+            "watch": false
+           }
+          ],
+          "company": "",
+          "founder_potential": "none",
+          "id": "p-depth-1",
+          "name": "Depth 1",
+          "role": "",
+          "startups": [],
+          "strength": "",
+          "watch": false
+         }
+        ],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-depth-0",
+        "name": "Depth 0",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       }
+      ]
+     },
+     "watchlist": {
+      "ok": {
+       "people": [
+        {
+         "chain": [],
+         "company": "Alpha Labs",
+         "days_since_touch": null,
+         "due": false,
+         "founder_potential": "high",
+         "id": "p-root-a",
+         "introduced_by_name": "",
+         "name": "Root Alpha",
+         "recommended": [
+          "p-kid-1",
+          "p-kid-2",
+          "p-unknown",
+          "p-kid-1"
+         ],
+         "recommended_names": [
+          "Kid One",
+          "Kid Two",
+          "Kid One"
+         ],
+         "relationship_strength": "warm",
+         "role": "CTO",
+         "startups": [
+          "Alpha Labs"
+         ],
+         "watch": true
+        }
+       ]
+      }
+     }
+    },
+    "2026-11-12T00:30:00": {
+     "listing": {
+      "ok": [
+       {
+        "chain": [],
+        "company": "Alpha Labs",
+        "days_since_touch": null,
+        "due": false,
+        "founder_potential": "high",
+        "id": "p-root-a",
+        "introduced_by_name": "",
+        "name": "Root Alpha",
+        "recommended": [
+         "p-kid-1",
+         "p-kid-2",
+         "p-unknown",
+         "p-kid-1"
+        ],
+        "recommended_names": [
+         "Kid One",
+         "Kid Two",
+         "Kid One"
+        ],
+        "relationship_strength": "warm",
+        "role": "CTO",
+        "startups": [
+         "Alpha Labs"
+        ],
+        "watch": true
+       },
+       {
+        "chain": [
+         "Root Alpha"
+        ],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-kid-1",
+        "introduced_by": "p-root-a",
+        "introduced_by_name": "Root Alpha",
+        "name": "Kid One",
+        "recommended": [
+         "p-shared"
+        ],
+        "recommended_names": [
+         "Shared Grandkid"
+        ]
+       },
+       {
+        "chain": [
+         "Root Alpha"
+        ],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-kid-2",
+        "introduced_by": "p-root-a",
+        "introduced_by_name": "Root Alpha",
+        "name": "Kid Two",
+        "recommended": [
+         "p-shared",
+         "p-root-a"
+        ],
+        "recommended_names": [
+         "Shared Grandkid",
+         "Root Alpha"
+        ]
+       },
+       {
+        "chain": [
+         "Kid One",
+         "Root Alpha"
+        ],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-shared",
+        "introduced_by": "p-kid-1",
+        "introduced_by_name": "Kid One",
+        "name": "Shared Grandkid",
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-root-b",
+        "introduced_by_name": "",
+        "name": "Root Beta",
+        "recommended": [
+         "p-shared"
+        ],
+        "recommended_names": [
+         "Shared Grandkid"
+        ]
+       },
+       {
+        "chain": [
+         "Cycle Two"
+        ],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-cyc-1",
+        "introduced_by": "p-cyc-2",
+        "introduced_by_name": "Cycle Two",
+        "name": "Cycle One",
+        "recommended_names": []
+       },
+       {
+        "chain": [
+         "Cycle One"
+        ],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-cyc-2",
+        "introduced_by": "p-cyc-1",
+        "introduced_by_name": "Cycle One",
+        "name": "Cycle Two",
+        "recommended": [
+         "p-cyc-3"
+        ],
+        "recommended_names": [
+         "Cycle Three"
+        ]
+       },
+       {
+        "chain": [
+         "Cycle Two",
+         "Cycle One"
+        ],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-cyc-3",
+        "introduced_by": "p-cyc-2",
+        "introduced_by_name": "Cycle Two",
+        "name": "Cycle Three",
+        "recommended_names": []
+       },
+       {
+        "chain": [
+         "Self Intro"
+        ],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-self",
+        "introduced_by": "p-self",
+        "introduced_by_name": "Self Intro",
+        "name": "Self Intro",
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-orphan",
+        "introduced_by": "p-gone",
+        "introduced_by_name": "",
+        "name": "Orphan Kid",
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-free",
+        "introduced_by": "",
+        "introduced_by_name": "Someone At A Meetup",
+        "name": "Free Text",
+        "recommended_names": []
+       },
+       {
+        "chain": [
+         "Root Beta"
+        ],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-noname-intro",
+        "introduced_by": "p-root-b",
+        "introduced_by_name": "Root Beta",
+        "recommended_names": []
+       },
+       {
+        "chain": [
+         "?",
+         "Root Beta"
+        ],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-intro-by-noname",
+        "introduced_by": "p-noname-intro",
+        "introduced_by_name": null,
+        "name": "Has Nameless Parent",
+        "recommended_names": []
+       },
+       {
+        "chain": [
+         "Root Beta"
+        ],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-null-name",
+        "introduced_by": "p-root-b",
+        "introduced_by_name": "Root Beta",
+        "name": null,
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-depth-0",
+        "introduced_by_name": "",
+        "name": "Depth 0",
+        "recommended_names": []
+       },
+       {
+        "chain": [
+         "Depth 0"
+        ],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-depth-1",
+        "introduced_by": "p-depth-0",
+        "introduced_by_name": "Depth 0",
+        "name": "Depth 1",
+        "recommended_names": []
+       },
+       {
+        "chain": [
+         "Depth 1",
+         "Depth 0"
+        ],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-depth-2",
+        "introduced_by": "p-depth-1",
+        "introduced_by_name": "Depth 1",
+        "name": "Depth 2",
+        "recommended_names": []
+       },
+       {
+        "chain": [
+         "Depth 2",
+         "Depth 1",
+         "Depth 0"
+        ],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-depth-3",
+        "introduced_by": "p-depth-2",
+        "introduced_by_name": "Depth 2",
+        "name": "Depth 3",
+        "recommended_names": []
+       },
+       {
+        "chain": [
+         "Depth 3",
+         "Depth 2",
+         "Depth 1",
+         "Depth 0"
+        ],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-depth-4",
+        "introduced_by": "p-depth-3",
+        "introduced_by_name": "Depth 3",
+        "name": "Depth 4",
+        "recommended_names": []
+       },
+       {
+        "chain": [
+         "Depth 4",
+         "Depth 3",
+         "Depth 2",
+         "Depth 1",
+         "Depth 0"
+        ],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-depth-5",
+        "introduced_by": "p-depth-4",
+        "introduced_by_name": "Depth 4",
+        "name": "Depth 5",
+        "recommended_names": []
+       },
+       {
+        "chain": [
+         "Depth 5",
+         "Depth 4",
+         "Depth 3",
+         "Depth 2",
+         "Depth 1",
+         "Depth 0"
+        ],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-depth-6",
+        "introduced_by": "p-depth-5",
+        "introduced_by_name": "Depth 5",
+        "name": "Depth 6",
+        "recommended_names": []
+       },
+       {
+        "chain": [
+         "Depth 6",
+         "Depth 5",
+         "Depth 4",
+         "Depth 3",
+         "Depth 2",
+         "Depth 1"
+        ],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-depth-7",
+        "introduced_by": "p-depth-6",
+        "introduced_by_name": "Depth 6",
+        "name": "Depth 7",
+        "recommended_names": []
+       },
+       {
+        "chain": [
+         "Depth 7",
+         "Depth 6",
+         "Depth 5",
+         "Depth 4",
+         "Depth 3",
+         "Depth 2"
+        ],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-depth-8",
+        "introduced_by": "p-depth-7",
+        "introduced_by_name": "Depth 7",
+        "name": "Depth 8",
+        "recommended_names": []
+       },
+       {
+        "chain": [
+         "Depth 8",
+         "Depth 7",
+         "Depth 6",
+         "Depth 5",
+         "Depth 4",
+         "Depth 3"
+        ],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-depth-9",
+        "introduced_by": "p-depth-8",
+        "introduced_by_name": "Depth 8",
+        "name": "Depth 9",
+        "recommended_names": []
+       }
+      ]
+     },
+     "tree": {
+      "ok": [
+       {
+        "children": [
+         {
+          "children": [
+           {
+            "children": [],
+            "company": "",
+            "founder_potential": "none",
+            "id": "p-shared",
+            "name": "Shared Grandkid",
+            "role": "",
+            "startups": [],
+            "strength": "",
+            "watch": false
+           }
+          ],
+          "company": "",
+          "founder_potential": "none",
+          "id": "p-kid-1",
+          "name": "Kid One",
+          "role": "",
+          "startups": [],
+          "strength": "",
+          "watch": false
+         },
+         {
+          "children": [],
+          "company": "",
+          "founder_potential": "none",
+          "id": "p-kid-2",
+          "name": "Kid Two",
+          "role": "",
+          "startups": [],
+          "strength": "",
+          "watch": false
+         }
+        ],
+        "company": "Alpha Labs",
+        "founder_potential": "high",
+        "id": "p-root-a",
+        "name": "Root Alpha",
+        "role": "CTO",
+        "startups": [
+         "Alpha Labs"
+        ],
+        "strength": "warm",
+        "watch": true
+       },
+       {
+        "children": [
+         {
+          "children": [],
+          "company": "",
+          "founder_potential": "none",
+          "id": "p-shared",
+          "name": "Shared Grandkid",
+          "role": "",
+          "startups": [],
+          "strength": "",
+          "watch": false
+         },
+         {
+          "children": [
+           {
+            "children": [],
+            "company": "",
+            "founder_potential": "none",
+            "id": "p-intro-by-noname",
+            "name": "Has Nameless Parent",
+            "role": "",
+            "startups": [],
+            "strength": "",
+            "watch": false
+           }
+          ],
+          "company": "",
+          "founder_potential": "none",
+          "id": "p-noname-intro",
+          "name": "?",
+          "role": "",
+          "startups": [],
+          "strength": "",
+          "watch": false
+         },
+         {
+          "children": [],
+          "company": "",
+          "founder_potential": "none",
+          "id": "p-null-name",
+          "name": null,
+          "role": "",
+          "startups": [],
+          "strength": "",
+          "watch": false
+         }
+        ],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-root-b",
+        "name": "Root Beta",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       },
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-free",
+        "name": "Free Text",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       },
+       {
+        "children": [
+         {
+          "children": [
+           {
+            "children": [
+             {
+              "children": [
+               {
+                "children": [
+                 {
+                  "children": [
+                   {
+                    "children": [],
+                    "company": "",
+                    "founder_potential": "none",
+                    "id": "p-depth-6",
+                    "name": "Depth 6",
+                    "role": "",
+                    "startups": [],
+                    "strength": "",
+                    "watch": false
+                   }
+                  ],
+                  "company": "",
+                  "founder_potential": "none",
+                  "id": "p-depth-5",
+                  "name": "Depth 5",
+                  "role": "",
+                  "startups": [],
+                  "strength": "",
+                  "watch": false
+                 }
+                ],
+                "company": "",
+                "founder_potential": "none",
+                "id": "p-depth-4",
+                "name": "Depth 4",
+                "role": "",
+                "startups": [],
+                "strength": "",
+                "watch": false
+               }
+              ],
+              "company": "",
+              "founder_potential": "none",
+              "id": "p-depth-3",
+              "name": "Depth 3",
+              "role": "",
+              "startups": [],
+              "strength": "",
+              "watch": false
+             }
+            ],
+            "company": "",
+            "founder_potential": "none",
+            "id": "p-depth-2",
+            "name": "Depth 2",
+            "role": "",
+            "startups": [],
+            "strength": "",
+            "watch": false
+           }
+          ],
+          "company": "",
+          "founder_potential": "none",
+          "id": "p-depth-1",
+          "name": "Depth 1",
+          "role": "",
+          "startups": [],
+          "strength": "",
+          "watch": false
+         }
+        ],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-depth-0",
+        "name": "Depth 0",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       }
+      ]
+     },
+     "watchlist": {
+      "ok": {
+       "people": [
+        {
+         "chain": [],
+         "company": "Alpha Labs",
+         "days_since_touch": null,
+         "due": false,
+         "founder_potential": "high",
+         "id": "p-root-a",
+         "introduced_by_name": "",
+         "name": "Root Alpha",
+         "recommended": [
+          "p-kid-1",
+          "p-kid-2",
+          "p-unknown",
+          "p-kid-1"
+         ],
+         "recommended_names": [
+          "Kid One",
+          "Kid Two",
+          "Kid One"
+         ],
+         "relationship_strength": "warm",
+         "role": "CTO",
+         "startups": [
+          "Alpha Labs"
+         ],
+         "watch": true
+        }
+       ]
+      }
+     }
+    }
+   },
+   "quirks": {
+    "2026-11-11T12:00:00": {
+     "listing": {
+      "ok": [
+       {
+        "chain": [],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-q-host",
+        "introduced_by_name": "",
+        "name": "Quirk Host",
+        "recommended": [
+         "p-q-a",
+         {
+          "id": "p-q-a"
+         },
+         null
+        ],
+        "recommended_names": [
+         "Quirk A"
+        ]
+       },
+       {
+        "chain": [
+         "Quirk Host"
+        ],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-q-a",
+        "introduced_by": "p-q-host",
+        "introduced_by_name": "Quirk Host",
+        "name": "Quirk A",
+        "recommended": "p-q-host",
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-q-int",
+        "introduced_by_name": "",
+        "name": "Quirk Int",
+        "recommended": 5,
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-q-none",
+        "introduced_by_name": "",
+        "name": "Quirk None",
+        "recommended": null,
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-q-list-intro",
+        "introduced_by": [
+         "p-q-host"
+        ],
+        "introduced_by_name": "",
+        "name": "Quirk List Intro",
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-q-dict",
+        "introduced_by_name": "",
+        "name": "Quirk Dict",
+        "recommended": {
+         "p-q-a": true
+        },
+        "recommended_names": [
+         "Quirk A"
+        ]
+       }
+      ]
+     },
+     "tree": {
+      "raises": "TypeError"
+     },
+     "watchlist": {
+      "ok": {
+       "people": []
+      }
+     }
+    },
+    "2026-11-12T00:30:00": {
+     "listing": {
+      "ok": [
+       {
+        "chain": [],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-q-host",
+        "introduced_by_name": "",
+        "name": "Quirk Host",
+        "recommended": [
+         "p-q-a",
+         {
+          "id": "p-q-a"
+         },
+         null
+        ],
+        "recommended_names": [
+         "Quirk A"
+        ]
+       },
+       {
+        "chain": [
+         "Quirk Host"
+        ],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-q-a",
+        "introduced_by": "p-q-host",
+        "introduced_by_name": "Quirk Host",
+        "name": "Quirk A",
+        "recommended": "p-q-host",
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-q-int",
+        "introduced_by_name": "",
+        "name": "Quirk Int",
+        "recommended": 5,
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-q-none",
+        "introduced_by_name": "",
+        "name": "Quirk None",
+        "recommended": null,
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-q-list-intro",
+        "introduced_by": [
+         "p-q-host"
+        ],
+        "introduced_by_name": "",
+        "name": "Quirk List Intro",
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-q-dict",
+        "introduced_by_name": "",
+        "name": "Quirk Dict",
+        "recommended": {
+         "p-q-a": true
+        },
+        "recommended_names": [
+         "Quirk A"
+        ]
+       }
+      ]
+     },
+     "tree": {
+      "raises": "TypeError"
+     },
+     "watchlist": {
+      "ok": {
+       "people": []
+      }
+     }
+    }
+   },
+   "ties": {
+    "2026-11-11T12:00:00": {
+     "listing": {
+      "ok": [
+       {
+        "chain": [],
+        "days_since_touch": 7,
+        "due": true,
+        "id": "p-tie-due-4",
+        "introduced_by_name": "",
+        "last_interaction": "2026-11-04",
+        "name": "Zoe Due",
+        "next_action": "Ping",
+        "next_action_date": "2026-11-09",
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": 7,
+        "due": true,
+        "id": "p-tie-due-3",
+        "introduced_by_name": "",
+        "last_interaction": "2026-11-04",
+        "name": "Adam Due",
+        "next_action": "Ping",
+        "next_action_date": "2026-11-09",
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": 7,
+        "due": true,
+        "id": "p-tie-due-2",
+        "introduced_by_name": "",
+        "last_interaction": "2026-11-04",
+        "name": "Mia Due",
+        "next_action": "Ping",
+        "next_action_date": "2026-11-09",
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": 7,
+        "due": true,
+        "id": "p-tie-due-1",
+        "introduced_by_name": "",
+        "last_interaction": "2026-11-04",
+        "name": "Ben Due",
+        "next_action": "Ping",
+        "next_action_date": "2026-11-09",
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": 7,
+        "due": true,
+        "id": "p-new-due",
+        "introduced_by_name": "",
+        "last_interaction": "2026-11-04",
+        "name": "Due New",
+        "next_action": "Ping",
+        "next_action_date": "2026-11-09",
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-tie-none-3",
+        "introduced_by_name": "",
+        "name": "Yan Undated",
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-tie-none-2",
+        "introduced_by_name": "",
+        "name": "Bob Undated",
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-tie-none-1",
+        "introduced_by_name": "",
+        "name": "Kai Undated",
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "created": "2026-11-11",
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-new-zed",
+        "introduced_by_name": "",
+        "name": "Zed New",
+        "provenance": "user_provided",
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "created": "2026-11-11",
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-new-amy",
+        "introduced_by_name": "",
+        "name": "Amy New",
+        "provenance": "user_provided",
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": 7,
+        "due": false,
+        "id": "p-tie-mid",
+        "introduced_by_name": "",
+        "last_interaction": "2026-11-04",
+        "name": "Mid Seven",
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": 7,
+        "due": false,
+        "id": "p-tie-mid-b",
+        "introduced_by_name": "",
+        "last_interaction": "2026-11-04",
+        "name": "Abe Seven",
+        "recommended_names": []
+       }
+      ]
+     },
+     "tree": {
+      "ok": [
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-tie-due-4",
+        "name": "Zoe Due",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       },
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-tie-due-3",
+        "name": "Adam Due",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       },
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-tie-due-2",
+        "name": "Mia Due",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       },
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-tie-due-1",
+        "name": "Ben Due",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       },
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-tie-none-3",
+        "name": "Yan Undated",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       },
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-tie-none-2",
+        "name": "Bob Undated",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       },
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-tie-none-1",
+        "name": "Kai Undated",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       },
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-tie-mid",
+        "name": "Mid Seven",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       },
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-tie-mid-b",
+        "name": "Abe Seven",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       },
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-new-zed",
+        "name": "Zed New",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       },
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-new-amy",
+        "name": "Amy New",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       },
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-new-due",
+        "name": "Due New",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       }
+      ]
+     },
+     "watchlist": {
+      "ok": {
+       "people": []
+      }
+     }
+    },
+    "2026-11-12T00:30:00": {
+     "listing": {
+      "ok": [
+       {
+        "chain": [],
+        "days_since_touch": 8,
+        "due": true,
+        "id": "p-tie-due-4",
+        "introduced_by_name": "",
+        "last_interaction": "2026-11-04",
+        "name": "Zoe Due",
+        "next_action": "Ping",
+        "next_action_date": "2026-11-09",
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": 8,
+        "due": true,
+        "id": "p-tie-due-3",
+        "introduced_by_name": "",
+        "last_interaction": "2026-11-04",
+        "name": "Adam Due",
+        "next_action": "Ping",
+        "next_action_date": "2026-11-09",
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": 8,
+        "due": true,
+        "id": "p-tie-due-2",
+        "introduced_by_name": "",
+        "last_interaction": "2026-11-04",
+        "name": "Mia Due",
+        "next_action": "Ping",
+        "next_action_date": "2026-11-09",
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": 8,
+        "due": true,
+        "id": "p-tie-due-1",
+        "introduced_by_name": "",
+        "last_interaction": "2026-11-04",
+        "name": "Ben Due",
+        "next_action": "Ping",
+        "next_action_date": "2026-11-09",
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": 8,
+        "due": true,
+        "id": "p-new-due",
+        "introduced_by_name": "",
+        "last_interaction": "2026-11-04",
+        "name": "Due New",
+        "next_action": "Ping",
+        "next_action_date": "2026-11-09",
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-tie-none-3",
+        "introduced_by_name": "",
+        "name": "Yan Undated",
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-tie-none-2",
+        "introduced_by_name": "",
+        "name": "Bob Undated",
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-tie-none-1",
+        "introduced_by_name": "",
+        "name": "Kai Undated",
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "created": "2026-11-11",
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-new-zed",
+        "introduced_by_name": "",
+        "name": "Zed New",
+        "provenance": "user_provided",
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "created": "2026-11-11",
+        "days_since_touch": null,
+        "due": false,
+        "id": "p-new-amy",
+        "introduced_by_name": "",
+        "name": "Amy New",
+        "provenance": "user_provided",
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": 8,
+        "due": false,
+        "id": "p-tie-mid",
+        "introduced_by_name": "",
+        "last_interaction": "2026-11-04",
+        "name": "Mid Seven",
+        "recommended_names": []
+       },
+       {
+        "chain": [],
+        "days_since_touch": 8,
+        "due": false,
+        "id": "p-tie-mid-b",
+        "introduced_by_name": "",
+        "last_interaction": "2026-11-04",
+        "name": "Abe Seven",
+        "recommended_names": []
+       }
+      ]
+     },
+     "tree": {
+      "ok": [
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-tie-due-4",
+        "name": "Zoe Due",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       },
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-tie-due-3",
+        "name": "Adam Due",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       },
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-tie-due-2",
+        "name": "Mia Due",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       },
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-tie-due-1",
+        "name": "Ben Due",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       },
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-tie-none-3",
+        "name": "Yan Undated",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       },
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-tie-none-2",
+        "name": "Bob Undated",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       },
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-tie-none-1",
+        "name": "Kai Undated",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       },
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-tie-mid",
+        "name": "Mid Seven",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       },
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-tie-mid-b",
+        "name": "Abe Seven",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       },
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-new-zed",
+        "name": "Zed New",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       },
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-new-amy",
+        "name": "Amy New",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       },
+       {
+        "children": [],
+        "company": "",
+        "founder_potential": "none",
+        "id": "p-new-due",
+        "name": "Due New",
+        "role": "",
+        "startups": [],
+        "strength": "",
+        "watch": false
+       }
+      ]
+     },
+     "watchlist": {
+      "ok": {
+       "people": []
+      }
+     }
+    }
+   }
+  },
+  "slugs": [
+   "p-ada-lovelace",
+   "p-juergen-gross",
+   "p-uenal-oeztuerk-aerger",
+   "p-mile-zola",
+   "p-person",
+   "p-person",
+   "p-person",
+   "p-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+   "p-dr-ada-o-brien",
+   "p-ada-lovelace-2",
+   "p-strasse",
+   "p-aeoeue-aeoeue-ss",
+   "p-ada-lovelace",
+   "p-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-"
+  ],
+  "strengths": {
+   "close": "Close",
+   "met_once": "Met once",
+   "strong": "Strong",
+   "warm": "Warm"
+  }
+ },
+ "input": {
+  "clocks": [
+   "2026-11-11T12:00:00",
+   "2026-11-12T00:30:00"
+  ],
+  "sets": [
+   {
+    "doc": {
+     "people": [
+      {
+       "id": "p-due-today",
+       "name": "Dana Today",
+       "next_action": "Call back",
+       "next_action_date": "2026-11-11"
+      },
+      {
+       "id": "p-due-tomorrow",
+       "name": "Tom Morrow",
+       "next_action": "Call back",
+       "next_action_date": "2026-11-12"
+      },
+      {
+       "id": "p-due-yesterday",
+       "name": "Yara Yester",
+       "next_action": "Call back",
+       "next_action_date": "2026-11-10"
+      },
+      {
+       "id": "p-no-date",
+       "name": "Nora Nodate",
+       "next_action": "Call back"
+      },
+      {
+       "id": "p-empty-date",
+       "name": "Emil Empty",
+       "next_action": "Call back",
+       "next_action_date": ""
+      },
+      {
+       "id": "p-null-date",
+       "name": "Nils Null",
+       "next_action": "Call back",
+       "next_action_date": null
+      },
+      {
+       "id": "p-bad-date",
+       "name": "Bea Bad",
+       "next_action": "Call back",
+       "next_action_date": "11/12/2026"
+      },
+      {
+       "id": "p-datetime-date",
+       "name": "Tim Stamp",
+       "next_action": "Call back",
+       "next_action_date": "2026-11-11T09:00"
+      },
+      {
+       "id": "p-compact-date",
+       "name": "Cora Compact",
+       "next_action": "Call back",
+       "next_action_date": "20261111"
+      },
+      {
+       "id": "p-week-date",
+       "name": "Wes Week",
+       "next_action": "Call back",
+       "next_action_date": "2026-W46-3"
+      },
+      {
+       "id": "p-int-date",
+       "name": "Ivo Int",
+       "next_action": "Call back",
+       "next_action_date": 20261111
+      },
+      {
+       "id": "p-no-action",
+       "name": "Nina Noaction",
+       "next_action": "",
+       "next_action_date": "2026-11-06"
+      },
+      {
+       "id": "p-action-none",
+       "name": "Otto None",
+       "next_action": null
+      },
+      {
+       "id": "p-action-list",
+       "name": "Lia List",
+       "next_action": [
+        "x"
+       ],
+       "next_action_date": "2026-11-11"
+      },
+      {
+       "id": "p-touch-today",
+       "last_interaction": "2026-11-11",
+       "name": "Theo Touch"
+      },
+      {
+       "id": "p-touch-10",
+       "last_interaction": "2026-11-01",
+       "name": "Tara Ten"
+      },
+      {
+       "id": "p-touch-future",
+       "last_interaction": "2026-11-14",
+       "name": "Finn Future"
+      },
+      {
+       "id": "p-touch-empty",
+       "last_interaction": "",
+       "name": "Elsa Empty"
+      },
+      {
+       "id": "p-touch-null",
+       "last_interaction": null,
+       "name": "Ned Null"
+      },
+      {
+       "id": "p-touch-garbage",
+       "last_interaction": "last week",
+       "name": "Gus Garbage"
+      },
+      {
+       "id": "p-touch-int",
+       "last_interaction": 5,
+       "name": "Ina Int"
+      },
+      {
+       "id": "p-touch-stamp",
+       "last_interaction": "2026-11-09 10:00",
+       "name": "Sam Stamp"
+      },
+      {
+       "id": "p-touch-week",
+       "last_interaction": "2026-W45-1",
+       "name": "Will Week"
+      },
+      {
+       "id": "p-due-touched",
+       "last_interaction": "2026-10-12",
+       "name": "Dora Both",
+       "next_action": "Call back",
+       "next_action_date": "2026-11-08"
+      },
+      {
+       "name": "No Id At All",
+       "next_action": "x"
+      },
+      {
+       "id": "",
+       "name": "Empty Id"
+      },
+      "not a record",
+      {
+       "id": "p-watch",
+       "last_interaction": "2026-11-07",
+       "name": "Wanda Watch",
+       "watch": true
+      },
+      {
+       "id": "p-watch-str",
+       "name": "Walt Watch",
+       "watch": "yes"
+      },
+      {
+       "id": "p-watch-false",
+       "name": "Wim Nowatch",
+       "next_action": "Call back",
+       "watch": false
+      }
+     ]
+    },
+    "name": "dates"
+   },
+   {
+    "doc": {
+     "people": [
+      {
+       "id": "p-tie-due-4",
+       "last_interaction": "2026-11-04",
+       "name": "Zoe Due",
+       "next_action": "Ping",
+       "next_action_date": "2026-11-09"
+      },
+      {
+       "id": "p-tie-due-3",
+       "last_interaction": "2026-11-04",
+       "name": "Adam Due",
+       "next_action": "Ping",
+       "next_action_date": "2026-11-09"
+      },
+      {
+       "id": "p-tie-due-2",
+       "last_interaction": "2026-11-04",
+       "name": "Mia Due",
+       "next_action": "Ping",
+       "next_action_date": "2026-11-09"
+      },
+      {
+       "id": "p-tie-due-1",
+       "last_interaction": "2026-11-04",
+       "name": "Ben Due",
+       "next_action": "Ping",
+       "next_action_date": "2026-11-09"
+      },
+      {
+       "id": "p-tie-none-3",
+       "name": "Yan Undated"
+      },
+      {
+       "id": "p-tie-none-2",
+       "name": "Bob Undated"
+      },
+      {
+       "id": "p-tie-none-1",
+       "name": "Kai Undated"
+      },
+      {
+       "id": "p-tie-mid",
+       "last_interaction": "2026-11-04",
+       "name": "Mid Seven"
+      },
+      {
+       "id": "p-tie-mid-b",
+       "last_interaction": "2026-11-04",
+       "name": "Abe Seven"
+      },
+      {
+       "created": "2026-11-11",
+       "id": "p-new-zed",
+       "name": "Zed New",
+       "provenance": "user_provided"
+      },
+      {
+       "created": "2026-11-11",
+       "id": "p-new-amy",
+       "name": "Amy New",
+       "provenance": "user_provided"
+      },
+      {
+       "id": "p-new-due",
+       "last_interaction": "2026-11-04",
+       "name": "Due New",
+       "next_action": "Ping",
+       "next_action_date": "2026-11-09"
+      }
+     ]
+    },
+    "name": "ties"
+   },
+   {
+    "doc": {
+     "people": [
+      {
+       "company": "Alpha Labs",
+       "founder_potential": "high",
+       "id": "p-root-a",
+       "name": "Root Alpha",
+       "recommended": [
+        "p-kid-1",
+        "p-kid-2",
+        "p-unknown",
+        "p-kid-1"
+       ],
+       "relationship_strength": "warm",
+       "role": "CTO",
+       "startups": [
+        "Alpha Labs"
+       ],
+       "watch": true
+      },
+      {
+       "id": "p-kid-1",
+       "introduced_by": "p-root-a",
+       "name": "Kid One",
+       "recommended": [
+        "p-shared"
+       ]
+      },
+      {
+       "id": "p-kid-2",
+       "introduced_by": "p-root-a",
+       "name": "Kid Two",
+       "recommended": [
+        "p-shared",
+        "p-root-a"
+       ]
+      },
+      {
+       "id": "p-shared",
+       "introduced_by": "p-kid-1",
+       "name": "Shared Grandkid"
+      },
+      {
+       "id": "p-root-b",
+       "name": "Root Beta",
+       "recommended": [
+        "p-shared"
+       ]
+      },
+      {
+       "id": "p-cyc-1",
+       "introduced_by": "p-cyc-2",
+       "name": "Cycle One"
+      },
+      {
+       "id": "p-cyc-2",
+       "introduced_by": "p-cyc-1",
+       "name": "Cycle Two",
+       "recommended": [
+        "p-cyc-3"
+       ]
+      },
+      {
+       "id": "p-cyc-3",
+       "introduced_by": "p-cyc-2",
+       "name": "Cycle Three"
+      },
+      {
+       "id": "p-self",
+       "introduced_by": "p-self",
+       "name": "Self Intro"
+      },
+      {
+       "id": "p-orphan",
+       "introduced_by": "p-gone",
+       "name": "Orphan Kid"
+      },
+      {
+       "id": "p-free",
+       "introduced_by": "",
+       "introduced_by_name": "Someone At A Meetup",
+       "name": "Free Text"
+      },
+      {
+       "id": "p-noname-intro",
+       "introduced_by": "p-root-b"
+      },
+      {
+       "id": "p-intro-by-noname",
+       "introduced_by": "p-noname-intro",
+       "name": "Has Nameless Parent"
+      },
+      {
+       "id": "p-null-name",
+       "introduced_by": "p-root-b",
+       "name": null
+      },
+      {
+       "id": "p-depth-0",
+       "name": "Depth 0"
+      },
+      {
+       "id": "p-depth-1",
+       "introduced_by": "p-depth-0",
+       "name": "Depth 1"
+      },
+      {
+       "id": "p-depth-2",
+       "introduced_by": "p-depth-1",
+       "name": "Depth 2"
+      },
+      {
+       "id": "p-depth-3",
+       "introduced_by": "p-depth-2",
+       "name": "Depth 3"
+      },
+      {
+       "id": "p-depth-4",
+       "introduced_by": "p-depth-3",
+       "name": "Depth 4"
+      },
+      {
+       "id": "p-depth-5",
+       "introduced_by": "p-depth-4",
+       "name": "Depth 5"
+      },
+      {
+       "id": "p-depth-6",
+       "introduced_by": "p-depth-5",
+       "name": "Depth 6"
+      },
+      {
+       "id": "p-depth-7",
+       "introduced_by": "p-depth-6",
+       "name": "Depth 7"
+      },
+      {
+       "id": "p-depth-8",
+       "introduced_by": "p-depth-7",
+       "name": "Depth 8"
+      },
+      {
+       "id": "p-depth-9",
+       "introduced_by": "p-depth-8",
+       "name": "Depth 9"
+      }
+     ]
+    },
+    "name": "graph"
+   },
+   {
+    "doc": {
+     "people": [
+      {
+       "id": "p-q-host",
+       "name": "Quirk Host",
+       "recommended": [
+        "p-q-a",
+        {
+         "id": "p-q-a"
+        },
+        null
+       ]
+      },
+      {
+       "id": "p-q-a",
+       "introduced_by": "p-q-host",
+       "name": "Quirk A",
+       "recommended": "p-q-host"
+      },
+      {
+       "id": "p-q-int",
+       "name": "Quirk Int",
+       "recommended": 5
+      },
+      {
+       "id": "p-q-none",
+       "name": "Quirk None",
+       "recommended": null
+      },
+      {
+       "id": "p-q-list-intro",
+       "introduced_by": [
+        "p-q-host"
+       ],
+       "name": "Quirk List Intro"
+      },
+      {
+       "id": "p-q-dict",
+       "name": "Quirk Dict",
+       "recommended": {
+        "p-q-a": true
+       }
+      }
+     ]
+    },
+    "name": "quirks"
+   },
+   {
+    "doc": {
+     "people": {
+      "a": {
+       "company": "Alpha Labs",
+       "founder_potential": "high",
+       "id": "p-root-a",
+       "name": "Root Alpha",
+       "recommended": [
+        "p-kid-1",
+        "p-kid-2",
+        "p-unknown",
+        "p-kid-1"
+       ],
+       "relationship_strength": "warm",
+       "role": "CTO",
+       "startups": [
+        "Alpha Labs"
+       ],
+       "watch": true
+      },
+      "b": {
+       "id": "p-kid-1",
+       "introduced_by": "p-root-a",
+       "name": "Kid One",
+       "recommended": [
+        "p-shared"
+       ]
+      }
+     }
+    },
+    "name": "dict_collection"
+   }
+  ],
+  "slugs": [
+   "Ada Lovelace",
+   "Jürgen Groß",
+   "  Ünal Öztürk-Ärger ",
+   "Émile Zola",
+   "李小龙",
+   "",
+   "!!!",
+   "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+   "Dr. Ada O'Brien",
+   "ada_lovelace 2",
+   "Straße",
+   "ÄÖÜ äöü ß",
+   "Ada\tLovelace",
+   "x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-"
+  ]
+ },
+ "provenance": {
+  "clocks": [
+   "2026-11-11T12:00:00",
+   "2026-11-12T00:30:00"
+  ],
+  "mode": "reads",
+  "old_dirty": false,
+  "old_revision": "6c739b9cb6ca2517b845e381d39a36c50eccc59e"
+ }
+}

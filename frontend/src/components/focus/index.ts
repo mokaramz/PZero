@@ -17,5 +17,6 @@ export { Kicker, type KickerTone } from "./Kicker";
 export { initials } from "./initials";
 export { Monogram } from "./Monogram";
 export { MoveButton, type Move } from "./MoveButton";
+export { PathTrace } from "./PathTrace";
 export { StatusChip, type StatusTone } from "./StatusChip";
 export { VerificationBar } from "./VerificationBar";

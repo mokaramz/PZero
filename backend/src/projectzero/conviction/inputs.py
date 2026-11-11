@@ -4,7 +4,7 @@ Where each input comes from (what the legacy import stored):
 
 | Old source | Read from | Why |
 |---|---|---|
-| ``people.json`` (founder identities, IMQ gate C) | ``people`` table: the current record (``attrs.record`` once written, else ``legacy``; ``network.people.record_of``), in the archived ``people.json`` order, then newer rows by ``created_at`` | modelled table; IMQ takes the FIRST matching person, so file order matters |
+| ``people.json`` (founder identities, IMQ gate C) | ``people`` table through ``network.store.load_people``: the current record (``attrs.record`` once written, else ``legacy``; ``network.people.record_of``), in the archived ``people.json`` order, then newer rows by ``created_at``, then ``id`` | modelled table; IMQ takes the FIRST matching person, so file order matters |
 | ``radar_companies.json`` (Founder Radar facts, IMQ gate E) | ``legacy_documents`` byte-exact, else ``documents`` | not modelled yet; the first name match wins, and jsonb loses key order |
 | ``evaluations.json`` (contradictions, gate C; founder-call filter) | ``legacy_documents`` byte-exact, else ``documents`` | not modelled; session order = blocker order |
 | ``founder_calls.json`` (calls, contact state) | ``legacy_documents`` byte-exact, else ``documents`` | not modelled; call ties keep file order |
@@ -30,25 +30,13 @@ from psycopg.rows import dict_row
 from projectzero.conviction.operator import OperatorInputs
 from projectzero.conviction.pipeline import ImqInputs, Inputs
 from projectzero.core.db import schema_ident
-from projectzero.network.people import record_of as person_record
+from projectzero.network.store import load_people  # the ONE people reader (review 013)
 
 DOCS = ("radar_companies.json", "evaluations.json", "founder_calls.json", "case_prep/cases.json", "config.json")
 TRIGGERS = "watch/triggers.jsonl"
 ACTIONS = "case_prep/actions.jsonl"
 JSONL = (TRIGGERS, ACTIONS)
 _MISSING = object()
-
-_PEOPLE = """
-    with arch as (
-        select (e.value->>'id') as id, min(e.ord) as pos
-        from {s}.legacy_documents d, jsonb_array_elements(d.parsed->'people') with ordinality as e(value, ord)
-        where d.path = 'people.json' and jsonb_typeof(d.parsed->'people') = 'array'
-        group by 1
-    )
-    select p.id, p.name, p.country, p.identity_status, p.founder_status, p.radar_state, p.attrs, p.legacy
-    from {s}.people p left join arch a on a.id = p.id
-    order by a.pos nulls last, p.created_at, p.id
-"""
 
 
 class _Unreadable:
@@ -126,12 +114,6 @@ def inputs_from(docs: dict[str, Any], people: list[dict[str, Any]]) -> Inputs:
         case_actions=_jsonl(docs.get(ACTIONS, _MISSING)),
     )
     return Inputs(imq=ImqInputs(people=people, radar_companies=comps, evaluations=evd), operator=operator)
-
-
-def load_people(conn: psycopg.Connection[Any], schema: str) -> list[dict[str, Any]]:
-    with conn.cursor(row_factory=dict_row) as cur:
-        cur.execute(sql.SQL(_PEOPLE).format(s=schema_ident(schema)))
-        return [person_record(r) for r in cur.fetchall()]
 
 
 def load_inputs(conn: psycopg.Connection[Any], schema: str) -> Inputs:

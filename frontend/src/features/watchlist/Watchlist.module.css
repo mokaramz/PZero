@@ -1,0 +1,29 @@
+/* Signal watchlist (review 013) — the people table, ported from the old view. */
+.scroll {
+  overflow-x: auto;
+}
+.table {
+  min-width: 640px;
+}
+.wChecked {
+  width: 120px;
+}
+.wLog {
+  width: 200px;
+}
+.name {
+  font-weight: 600;
+  color: var(--ink);
+}
+.sub {
+  font-size: 12px;
+  color: var(--mut);
+}
+.input {
+  width: 100%;
+  font-size: 12px;
+  padding: 5px 8px;
+}
+.logBtn {
+  margin-top: 4px;
+}

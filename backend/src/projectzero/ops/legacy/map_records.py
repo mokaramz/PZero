@@ -2,23 +2,13 @@
 
 from __future__ import annotations
 
-from collections.abc import Callable
 from typing import Any
 
-from projectzero.dealflow.identity import is_placeholder_name
-from projectzero.network.identity import (
-    canonical_github_id,
-    canonical_openalex,
-    canonical_orcid,
-    classify_profile_url,
-    fold,
-    own_accounts,
-)
+from projectzero.network.people import WEAK_KINDS, columns_of, identifiers_of
 from projectzero.ops.legacy.convert import (
     day,
     records,
     stable_uuid,
-    str_list,
     timestamp,
 )
 from projectzero.ops.legacy.source import LegacyFile
@@ -161,33 +151,24 @@ class RecordsMapper(BuilderState):
             created = day(p.get("created"))
             if created is None:
                 created_from_import_time += 1
-            name = p.get("name") if isinstance(p.get("name"), str) and p["name"].strip() else pid
             self.t["people"].append(
                 {
                     "id": pid,
-                    "name": name,
-                    "normalized_name": fold(name) or None,
-                    **{k: p.get(k) if isinstance(p.get(k), str) else None for k in _PERSON_TEXT if k != "name"},
-                    # a promoted field whose value is not text (e.g. a non-string country) stays in attrs
-                    "attrs": {
-                        k: v
-                        for k, v in p.items()
-                        # "record" is reserved for application writes (the current record, review 012, H-078):
-                        # an imported field of that name stays in legacy only
-                        if k not in ("id", "record")
-                        and (k not in _PERSON_TEXT or (v is not None and not isinstance(v, str)))
-                    },
+                    # the ONE mapping shared with the Network writes (review 013): name / fold key / text columns,
+                    # a non-text promoted value stays in attrs, and "record" (reserved for application writes,
+                    # review 012, H-078) stays in legacy only
+                    **columns_of(pid, p),
                     "legacy": p,
                     "created_at": created or self.now,
                 }
             )
             mine: set[tuple[str, str]] = set()
-            for kind, value in _person_identifiers(p):
+            for kind, value in identifiers_of(p):
                 if (kind, value) in mine:
                     repeated += 1  # the same identifier twice on one person: one row, nothing to report
                     continue
                 mine.add((kind, value))
-                if kind not in _WEAK_PERSON_KINDS:
+                if kind not in WEAK_KINDS:
                     owner = owned.setdefault((kind, value), pid)
                     if owner != pid:
                         duplicates.append({"kind": kind, "value": value, "people": [owner, pid]})
@@ -364,37 +345,6 @@ class RecordsMapper(BuilderState):
             if f.parsed is not None:
                 _redact(f.parsed, f"archive:{f.path}", secrets)
         return sorted(set(secrets))
-
-
-_PERSON_TEXT = ("name", "country", "identity_status", "founder_status", "radar_state")  # text columns of pz.people
-_WEAK_PERSON_KINDS = frozenset({"url", "alias"})  # unique per person only (migration 0005)
-
-
-def _person_identifiers(p: dict[str, Any]) -> list[tuple[str, str]]:
-    """(kind, canonical value) of every identifier a legacy person record asserts, strongest first."""
-
-    def text(value: Any, canonical: Callable[[str], str]) -> str | None:
-        return canonical(value) if isinstance(value, str) and value.strip() and not is_placeholder_name(value) else None
-
-    out: list[tuple[str, str]] = []
-    strong = (
-        ("orcid", text(p.get("orcid"), canonical_orcid)),
-        ("openalex", text(p.get("openalex_id"), canonical_openalex)),
-        ("github", canonical_github_id(p.get("github_id"))),  # the same validator as the ownership evidence (H-082)
-        ("patent_inventor", text(p.get("patent_inventor_id"), str.strip)),
-    )
-    out.extend((kind, value) for kind, value in strong if value is not None)
-    own = own_accounts(p)
-    for url in str_list(p.get("profile_urls")):
-        if not is_placeholder_name(url) and (classified := classify_profile_url(url, own)) is not None:
-            out.append(classified)
-    seen: set[str] = set()
-    for alias in str_list(p.get("aliases")):
-        value = alias.strip()
-        if value and not is_placeholder_name(value) and value.casefold() not in seen:
-            seen.add(value.casefold())  # one alias per spelling, case aside (the first spelling is kept)
-            out.append(("alias", value))
-    return out
 
 
 def _redact(value: Any, where: str, found: list[str], path: str = "") -> Any:
