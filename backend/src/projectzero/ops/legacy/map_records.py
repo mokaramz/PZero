@@ -2,10 +2,13 @@
 
 from __future__ import annotations
 
+from datetime import date, datetime
 from typing import Any
 
+from projectzero.events.columns import LEAD_DECISIONS, SPAN_PROBLEMS, event_columns, lead_columns
 from projectzero.network.people import WEAK_KINDS, columns_of, identifiers_of
 from projectzero.ops.legacy.convert import (
+    BERLIN,
     day,
     records,
     stable_uuid,
@@ -20,6 +23,8 @@ from projectzero.ops.legacy.state import (
     SECRET_KEY_PATTERN,
     BuilderState,
 )
+
+SIDES = ("start", "end")
 
 
 class RecordsMapper(BuilderState):
@@ -189,29 +194,136 @@ class RecordsMapper(BuilderState):
             "company_links": "kept in people.attrs (legacy links are by name; company_people waits for confirmation)",
         }
 
+    def _keyed(
+        self, label: str, collection: Any, title: str
+    ) -> tuple[list[tuple[str, dict[str, Any]]], list[Any], list[dict[str, Any]]]:
+        """(id, record) pairs of a legacy collection, the people rule (review 012): a record without an ``id`` (or not
+        a record) is skipped and listed; a repeated id is a blocker naming both records, and only the first is kept."""
+        items = list(collection.values()) if isinstance(collection, dict) else collection
+        items = items if isinstance(items, list) else []
+        seen: dict[str, Any] = {}
+        kept: list[tuple[str, dict[str, Any]]] = []
+        skipped: list[dict[str, Any]] = []
+        for position, r in enumerate(items):
+            if not isinstance(r, dict) or r.get("id") in (None, ""):
+                name = r.get(title) if isinstance(r, dict) else None
+                why = "no id" if isinstance(r, dict) else "not a record"
+                skipped.append({"position": position, title: name if isinstance(name, str) else None, "why": why})
+                continue
+            rid = str(r["id"])
+            if rid in seen:
+                self.identity_blockers.append(
+                    f"{label} records {seen[rid]!r} and {r.get(title)!r} share the id {rid!r}: "
+                    "the old app reached only the first; rename or merge one first"
+                )
+                continue
+            seen[rid] = r.get(title)
+            kept.append((rid, r))
+        return kept, items, skipped
+
     def events(self) -> None:
+        """``events.json`` -> events + event_leads (review 014).
+
+        Ids follow the people rule (``_keyed``). Dates are the old ``parse_when`` / ``event_span``
+        (``events.when``) at the Berlin date of the import clock; the columns are ``events.columns`` (the ONE mapping
+        the Events writes will share). ``created_at`` is the old ``created`` (a day or a timestamp), else a valid
+        ``retrieved_at`` (naive = Berlin), else the import time, each source counted. A span that overflows or does
+        not run forward in UTC (``columns.checked_span``) blocks the import, naming the event; that row is not written.
+        """
         data = self.src.json("events.json", {}) or {}
-        promoted = {"id", "name", "start", "end", "city", "country", "url", "status", "lat", "lng"}
-        for e in records(data.get("events")):
-            self.t["events"].append(
+        data = data if isinstance(data, dict) else {}
+        today = self.now.astimezone(BERLIN).date()
+        kept, items, skipped = self._keyed("events.json events", data.get("events"), "name")
+        dates = {side: dict.fromkeys(("date_only", "timed", "unparseable", "absent", "free_text"), 0) for side in SIDES}
+        why_unparseable: dict[str, int] = {}
+        coords = {axis: dict.fromkeys(("kept", "kept_from_text", "dropped", "absent"), 0) for axis in ("lat", "lng")}
+        created_from = dict.fromkeys(("created", "retrieved_at", "import_time"), 0)
+        name_from_id = end_before_start = 0
+        statuses: dict[str, int] = {}
+        span_blocked: list[str] = []
+        for eid, e in kept:
+            mapped = event_columns(eid, e, today=today)
+            notes = mapped.notes
+            if notes["span_problem"]:
+                span_blocked.append(eid)
+                self.identity_blockers.append(
+                    f"events.json event {eid!r} ({mapped.columns['name']!r}) states start {e.get('start')!r} and "
+                    f"end {e.get('end')!r}: {SPAN_PROBLEMS[notes['span_problem']]}; fix its dates in the old app first"
+                )
+                continue
+            for side in SIDES:
+                s = notes[side]
+                dates[side][s.kind] += 1
+                dates[side]["free_text"] += int(s.free_text)
+                if s.why:
+                    why_unparseable[f"{side}: {s.why}"] = why_unparseable.get(f"{side}: {s.why}", 0) + 1
+            for axis in ("lat", "lng"):
+                coords[axis][notes[axis]] += 1
+            name_from_id += int(notes["name_from_id"])
+            end_before_start += int(notes["end_before_start"])
+            status = mapped.columns["status"] if mapped.columns["status"] is not None else "(none)"
+            statuses[status] = statuses.get(status, 0) + 1
+            created, source = day(e.get("created")), "created"
+            if created is None:
+                created, source = timestamp(e.get("retrieved_at")), "retrieved_at"
+            if created is None:
+                created, source = self.now, "import_time"
+            created_from[source] += 1
+            self.t["events"].append({"id": eid, **mapped.columns, "legacy": e, "created_at": created})
+        self.report["reconciliation"]["events.json"] = {
+            "in": len(items),
+            "rows": len(self.t["events"]),
+            "skipped_without_id": skipped,
+            "duplicate_ids_blocked": len(items) - len(skipped) - len(span_blocked) - len(self.t["events"]),
+            "span_blocked": span_blocked,
+            "dates": dates,
+            "unparseable": dict(sorted(why_unparseable.items())),
+            "end_before_start": end_before_start,
+            "dates_clock": today.isoformat(),
+            "created_at_from": created_from,
+            "name_from_id": name_from_id,
+            "coordinates": coords,
+            "status": dict(sorted(statuses.items())),
+        }
+        self._leads(data.get("leads"), today)
+
+    def _leads(self, collection: Any, today: date) -> None:
+        kept, items, skipped = self._keyed("events.json leads", collection, "title")
+        dates = dict.fromkeys(("date_only", "timed", "unparseable", "absent", "free_text"), 0)
+        created_from_import_time = 0
+        decisions: dict[str, int] = {}
+        for lid, lead in kept:
+            mapped = lead_columns(lead, today=today)
+            decision = mapped.columns["decision"]
+            if decision not in LEAD_DECISIONS:
+                self.identity_blockers.append(
+                    f"events.json lead {lid!r} has the decision {decision!r}, not one of {', '.join(LEAD_DECISIONS)}: "
+                    "set it in the old app first"
+                )
+                continue
+            decisions[decision] = decisions.get(decision, 0) + 1
+            when = mapped.notes["date"]
+            dates[when.kind] += 1
+            dates["free_text"] += int(when.free_text)
+            created = mapped.columns["detected_on"]
+            created_from_import_time += int(created is None)
+            self.t["event_leads"].append(
                 {
-                    "id": e["id"],
-                    "name": e.get("name") or e["id"],
-                    "starts_at": day(e.get("start")),
-                    "ends_at": day(e.get("end")),
-                    "city": e.get("city"),
-                    "country": e.get("country") if isinstance(e.get("country"), str) else None,
-                    "url": e.get("url"),
-                    "status": e.get("status"),
-                    "lat": e.get("lat") if isinstance(e.get("lat"), int | float) else None,
-                    "lng": e.get("lng") if isinstance(e.get("lng"), int | float) else None,
-                    "attrs": {k: v for k, v in e.items() if k not in promoted},
-                    "legacy": e,
+                    "id": lid,
+                    **mapped.columns,
+                    "legacy": lead,
+                    "created_at": datetime.combine(created, datetime.min.time(), BERLIN) if created else self.now,
                 }
             )
-        self.report["reconciliation"]["events.json"] = {
-            "events": len(records(data.get("events"))),
-            "leads_home": "documents (events.json#rest)",
+        self.report["reconciliation"]["events.json leads"] = {
+            "in": len(items),
+            "rows": len(self.t["event_leads"]),
+            "open": decisions.get("new", 0),
+            "decisions": dict(sorted(decisions.items())),
+            "skipped_without_id": skipped,
+            "duplicate_ids_or_unknown_decisions_blocked": len(items) - len(skipped) - len(self.t["event_leads"]),
+            "dates": dates,
+            "created_at_from_import_time": created_from_import_time,
         }
 
     # ── research jobs, spend, scheduler ─────────────────────────────────────────────────────────────────────────
@@ -314,7 +426,7 @@ class RecordsMapper(BuilderState):
             "inbox.json": {"candidates"},
             "scout_intake.json": {"cycles", "items"},
             "native_scout.json": set(),
-            "events.json": {"events"},
+            "events.json": {"events", "leads"},
             "triage_proposals.json": {"proposals"},
             "queue_routing.json": set(),
             "committee.json": set(),
@@ -335,6 +447,8 @@ class RecordsMapper(BuilderState):
                 body = {k: v for k, v in body.items() if k not in rest_keys[f.path]}
                 if f.path == "native_scout.json":
                     body["signals"] = [s for s in records(body.get("signals")) if s.get("origin") != "planner"]
+                if f.path == "scout_intake.json":
+                    body = self._scout_event_ids(body)
                 if not body:
                     continue
                 key = f"{f.path}#rest"
@@ -345,6 +459,29 @@ class RecordsMapper(BuilderState):
             if f.parsed is not None:
                 _redact(f.parsed, f"archive:{f.path}", secrets)
         return sorted(set(secrets))
+
+    def _scout_event_ids(self, body: dict[str, Any]) -> dict[str, Any]:
+        """Scout 00 event reports stay in ``scout_intake.json#rest``, but their ``event_id`` is the plain event id
+        (review 014): the old ``events.upsert`` returned ``"<id>|merged:<name>"`` when it folded the report into an
+        existing event, and every old reader split the suffix off (``event_scout.by_event``). ``legacy_documents``
+        keeps the original bytes."""
+        stripped = 0
+
+        def plain(report: Any) -> Any:
+            nonlocal stripped
+            eid = report.get("event_id") if isinstance(report, dict) else None
+            if isinstance(eid, str) and "|" in eid:
+                stripped += 1
+                return report | {"event_id": eid.split("|")[0]}
+            return report
+
+        reports = body.get("events")
+        if isinstance(reports, dict):
+            body = body | {"events": {k: plain(v) for k, v in reports.items()}}
+        elif isinstance(reports, list):
+            body = body | {"events": [plain(v) for v in reports]}
+        self.report["reconciliation"].setdefault("scout_intake.json", {})["event_id_merge_suffixes_stripped"] = stripped
+        return body
 
 
 def _redact(value: Any, where: str, found: list[str], path: str = "") -> Any:

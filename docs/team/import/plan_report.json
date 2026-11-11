@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-11T15:07:52.243030+00:00",
+  "generated_at": "2026-11-11T18:48:12.883588+00:00",
   "reconciliation": {
     "real_data.json signals": {
       "in": 10,
@@ -12,7 +12,8 @@
       "cycles": 7,
       "items": 39,
       "events": 40,
-      "events_home": "documents (scout_intake.json#rest)"
+      "events_home": "documents (scout_intake.json#rest; event_id without the '|merged:' suffix)",
+      "event_id_merge_suffixes_stripped": 9
     },
     "native_scout.json signals": {
       "in": 150,
@@ -60,8 +61,72 @@
       "company_links": "kept in people.attrs (legacy links are by name; company_people waits for confirmation)"
     },
     "events.json": {
-      "events": 543,
-      "leads_home": "documents (events.json#rest)"
+      "in": 674,
+      "rows": 674,
+      "skipped_without_id": [],
+      "duplicate_ids_blocked": 0,
+      "span_blocked": [],
+      "dates": {
+        "start": {
+          "date_only": 27,
+          "timed": 647,
+          "unparseable": 0,
+          "absent": 0,
+          "free_text": 0
+        },
+        "end": {
+          "date_only": 0,
+          "timed": 647,
+          "unparseable": 0,
+          "absent": 27,
+          "free_text": 0
+        }
+      },
+      "unparseable": {},
+      "end_before_start": 0,
+      "dates_clock": "2026-11-11",
+      "created_at_from": {
+        "created": 10,
+        "retrieved_at": 664,
+        "import_time": 0
+      },
+      "name_from_id": 0,
+      "coordinates": {
+        "lat": {
+          "kept": 11,
+          "kept_from_text": 0,
+          "dropped": 0,
+          "absent": 663
+        },
+        "lng": {
+          "kept": 11,
+          "kept_from_text": 0,
+          "dropped": 0,
+          "absent": 663
+        }
+      },
+      "status": {
+        "new": 671,
+        "skipped": 3
+      }
+    },
+    "events.json leads": {
+      "in": 22,
+      "rows": 22,
+      "open": 22,
+      "decisions": {
+        "new": 22
+      },
+      "skipped_without_id": [],
+      "duplicate_ids_or_unknown_decisions_blocked": 0,
+      "dates": {
+        "date_only": 19,
+        "timed": 0,
+        "unparseable": 0,
+        "absent": 3,
+        "free_text": 0
+      },
+      "created_at_from_import_time": 0
     },
     "bridge_jobs.json": {
       "jobs": 4,
@@ -73,7 +138,7 @@
     },
     "schedule": {
       "jobs": 15,
-      "runs": 261
+      "runs": 268
     }
   },
   "notes": [
@@ -102,7 +167,7 @@
       "present": true,
       "parseable": true,
       "collection": "events",
-      "records": 543
+      "records": 674
     },
     "sources.json": {
       "present": true,
@@ -162,7 +227,7 @@
       "present": true,
       "parseable": true,
       "collection": null,
-      "records": 261
+      "records": 268
     }
   },
   "snapshot": {
@@ -278,15 +343,16 @@
     "candidate_routing": 470,
     "committee_reviews": 215,
     "conviction_entries": 10,
-    "events": 543,
+    "events": 674,
+    "event_leads": 22,
     "research_jobs": 4,
     "model_ledger": 2293,
     "job_state": 15,
-    "job_runs": 261,
-    "documents": 77,
+    "job_runs": 268,
+    "documents": 76,
     "legacy_documents": 2200
   },
-  "archive_bytes": 20693310,
+  "archive_bytes": 20909034,
   "blockers": [],
   "secrets_found": []
 }
