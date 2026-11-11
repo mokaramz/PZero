@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-11T13:00:32.213571+00:00",
+  "generated_at": "2026-11-11T15:07:52.243030+00:00",
   "reconciliation": {
     "real_data.json signals": {
       "in": 10,
@@ -44,7 +44,19 @@
     "people.json": {
       "in": 247,
       "rows": 247,
+      "skipped_without_id": [],
+      "duplicate_ids_blocked": 0,
+      "created_at_from_import_time": 0,
+      "identifiers": {
+        "alias": 24,
+        "github": 24,
+        "openalex": 206,
+        "orcid": 162,
+        "profile_url": 230,
+        "url": 17
+      },
       "duplicate_identifiers_not_stored": [],
+      "repeated_within_one_person": 0,
       "company_links": "kept in people.attrs (legacy links are by name; company_people waits for confirmation)"
     },
     "events.json": {
@@ -61,7 +73,7 @@
     },
     "schedule": {
       "jobs": 15,
-      "runs": 255
+      "runs": 261
     }
   },
   "notes": [
@@ -150,7 +162,7 @@
       "present": true,
       "parseable": true,
       "collection": null,
-      "records": 255
+      "records": 261
     }
   },
   "snapshot": {
@@ -256,7 +268,7 @@
     "companies": 1390,
     "company_identifiers": 1648,
     "people": 247,
-    "person_identifiers": 639,
+    "person_identifiers": 663,
     "intake_submissions": 7,
     "candidates": 1420,
     "candidate_aliases": 1479,
@@ -270,11 +282,11 @@
     "research_jobs": 4,
     "model_ledger": 2293,
     "job_state": 15,
-    "job_runs": 255,
+    "job_runs": 261,
     "documents": 77,
     "legacy_documents": 2200
   },
-  "archive_bytes": 20662622,
+  "archive_bytes": 20693310,
   "blockers": [],
   "secrets_found": []
 }

@@ -4,7 +4,7 @@ Where each input comes from (what the legacy import stored):
 
 | Old source | Read from | Why |
 |---|---|---|
-| ``people.json`` (founder identities, IMQ gate C) | ``people`` table (``legacy`` = the old record), in the archived ``people.json`` order, then newer rows by ``created_at`` | modelled table; IMQ takes the FIRST matching person, so file order matters |
+| ``people.json`` (founder identities, IMQ gate C) | ``people`` table: the current record (``attrs.record`` once written, else ``legacy``; ``network.people.record_of``), in the archived ``people.json`` order, then newer rows by ``created_at`` | modelled table; IMQ takes the FIRST matching person, so file order matters |
 | ``radar_companies.json`` (Founder Radar facts, IMQ gate E) | ``legacy_documents`` byte-exact, else ``documents`` | not modelled yet; the first name match wins, and jsonb loses key order |
 | ``evaluations.json`` (contradictions, gate C; founder-call filter) | ``legacy_documents`` byte-exact, else ``documents`` | not modelled; session order = blocker order |
 | ``founder_calls.json`` (calls, contact state) | ``legacy_documents`` byte-exact, else ``documents`` | not modelled; call ties keep file order |
@@ -30,6 +30,7 @@ from psycopg.rows import dict_row
 from projectzero.conviction.operator import OperatorInputs
 from projectzero.conviction.pipeline import ImqInputs, Inputs
 from projectzero.core.db import schema_ident
+from projectzero.network.people import record_of as person_record
 
 DOCS = ("radar_companies.json", "evaluations.json", "founder_calls.json", "case_prep/cases.json", "config.json")
 TRIGGERS = "watch/triggers.jsonl"
@@ -49,8 +50,6 @@ _PEOPLE = """
     order by a.pos nulls last, p.created_at, p.id
 """
 
-_PROMOTED_PEOPLE = ("id", "name", "country", "identity_status", "founder_status", "radar_state")
-
 
 class _Unreadable:
     """A file that exists but does not parse (the old ``load_json`` raised, or fell back when tolerant)."""
@@ -64,13 +63,6 @@ def _parse(raw: bytes | memoryview) -> Any:
         return json.loads(bytes(raw).decode("utf-8"))  # the old json.load(encoding="utf-8"): a BOM is unreadable
     except (UnicodeDecodeError, ValueError):
         return UNREADABLE
-
-
-def _person(row: dict[str, Any]) -> dict[str, Any]:
-    legacy = row.get("legacy")
-    if isinstance(legacy, dict):
-        return legacy
-    return {**(row.get("attrs") or {}), **{k: row[k] for k in _PROMOTED_PEOPLE if row.get(k) is not None}}
 
 
 def load_documents(conn: psycopg.Connection[Any], schema: str) -> dict[str, Any]:
@@ -139,7 +131,7 @@ def inputs_from(docs: dict[str, Any], people: list[dict[str, Any]]) -> Inputs:
 def load_people(conn: psycopg.Connection[Any], schema: str) -> list[dict[str, Any]]:
     with conn.cursor(row_factory=dict_row) as cur:
         cur.execute(sql.SQL(_PEOPLE).format(s=schema_ident(schema)))
-        return [_person(r) for r in cur.fetchall()]
+        return [person_record(r) for r in cur.fetchall()]
 
 
 def load_inputs(conn: psycopg.Connection[Any], schema: str) -> Inputs:

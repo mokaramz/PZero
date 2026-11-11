@@ -1,0 +1,300 @@
+{
+ "provenance": {
+  "old_revision": "6c739b9cb6ca2517b845e381d39a36c50eccc59e",
+  "old_dirty": false
+ },
+ "cases": [
+  {
+   "value": "Ada Lovelace",
+   "folded": "ada lovelace"
+  },
+  {
+   "value": "  ada   LOVELACE  ",
+   "folded": "ada lovelace"
+  },
+  {
+   "value": "Jürgen Groß",
+   "folded": "jurgen gross"
+  },
+  {
+   "value": "JÜRGEN GROẞ",
+   "folded": "jurgen gross"
+  },
+  {
+   "value": "Straße",
+   "folded": "strasse"
+  },
+  {
+   "value": "Müller-Lüdenscheidt",
+   "folded": "muller ludenscheidt"
+  },
+  {
+   "value": "Dr. Ada Lovelace",
+   "folded": "ada lovelace"
+  },
+  {
+   "value": "Dr Ada Lovelace",
+   "folded": "ada lovelace"
+  },
+  {
+   "value": "dr. ada lovelace",
+   "folded": "ada lovelace"
+  },
+  {
+   "value": "Prof. Dr. Jürgen Groß",
+   "folded": "jurgen gross"
+  },
+  {
+   "value": "Prof Dr Hans Meier",
+   "folded": "hans meier"
+  },
+  {
+   "value": "Prof. Dr.-Ing. Hans Meier",
+   "folded": "hans meier"
+  },
+  {
+   "value": "Dr.-Ing. Anna Schmidt",
+   "folded": "anna schmidt"
+  },
+  {
+   "value": "Dr.-ing Anna Schmidt",
+   "folded": "anna schmidt"
+  },
+  {
+   "value": "Dipl.-Ing. Lena Weiß",
+   "folded": "lena weiss"
+  },
+  {
+   "value": "Dipl. Ing. Lena Weiß",
+   "folded": "lena weiss"
+  },
+  {
+   "value": "Mag. Eva Bauer",
+   "folded": "eva bauer"
+  },
+  {
+   "value": "MBA Jane Roe",
+   "folded": "jane roe"
+  },
+  {
+   "value": "PhD Jane Roe",
+   "folded": "jane roe"
+  },
+  {
+   "value": "phd. jane roe",
+   "folded": "jane roe"
+  },
+  {
+   "value": "Jane Roe, PhD",
+   "folded": "jane roe phd"
+  },
+  {
+   "value": "Jane Roe PhD",
+   "folded": "jane roe phd"
+  },
+  {
+   "value": "Jane Roe (Dr.)",
+   "folded": "jane roe dr"
+  },
+  {
+   "value": "Dr.Ada Lovelace",
+   "folded": "dr ada lovelace"
+  },
+  {
+   "value": "Drake Bell",
+   "folded": "drake bell"
+  },
+  {
+   "value": "Ingrid Ing",
+   "folded": "ingrid ing"
+  },
+  {
+   "value": "Mba Diallo",
+   "folded": "diallo"
+  },
+  {
+   "value": "Prof.",
+   "folded": "prof"
+  },
+  {
+   "value": "Dr. ",
+   "folded": "dr"
+  },
+  {
+   "value": "Dr. Dr. Ada",
+   "folded": "ada"
+  },
+  {
+   "value": "Prof. Prof. Dr. Ada",
+   "folded": "ada"
+  },
+  {
+   "value": "Dr. med. Ada Lovelace",
+   "folded": "med ada lovelace"
+  },
+  {
+   "value": "Ada Dr. Lovelace",
+   "folded": "ada dr lovelace"
+  },
+  {
+   "value": "Hans Prof Meier",
+   "folded": "hans prof meier"
+  },
+  {
+   "value": "Alexandr Ivanov",
+   "folded": "alexandr ivanov"
+  },
+  {
+   "value": "Sing Song",
+   "folded": "sing song"
+  },
+  {
+   "value": "Ada Lovelace phd",
+   "folded": "ada lovelace phd"
+  },
+  {
+   "value": "Ayşe Yıldız Kaya",
+   "folded": "ayse yldz kaya"
+  },
+  {
+   "value": "João Brás da Costa",
+   "folded": "joao bras da costa"
+  },
+  {
+   "value": "Søren Kierkegaard",
+   "folded": "sren kierkegaard"
+  },
+  {
+   "value": "Łukasz Żółć",
+   "folded": "ukasz zoc"
+  },
+  {
+   "value": "Đorđe Novak",
+   "folded": "ore novak"
+  },
+  {
+   "value": "Æsa Ødegaard",
+   "folded": "sa degaard"
+  },
+  {
+   "value": "ﬁona Ligature",
+   "folded": "fiona ligature"
+  },
+  {
+   "value": "Ｆｕｌｌ Ｗｉｄｔｈ",
+   "folded": "full width"
+  },
+  {
+   "value": "José María",
+   "folded": "jose maria"
+  },
+  {
+   "value": "Zoë\tO'Brien",
+   "folded": "zoe o brien"
+  },
+  {
+   "value": "Jean-Luc Picard",
+   "folded": "jean luc picard"
+  },
+  {
+   "value": "O'Neil",
+   "folded": "o neil"
+  },
+  {
+   "value": "Ada Lovelace 3rd",
+   "folded": "ada lovelace rd"
+  },
+  {
+   "value": "R2-D2",
+   "folded": "r d"
+  },
+  {
+   "value": "Ada_Lovelace",
+   "folded": "ada lovelace"
+  },
+  {
+   "value": "ada.lovelace@example.com",
+   "folded": "ada lovelace example com"
+  },
+  {
+   "value": "@adalove",
+   "folded": "adalove"
+  },
+  {
+   "value": "李小龙",
+   "folded": ""
+  },
+  {
+   "value": "Владимир Путинцев",
+   "folded": ""
+  },
+  {
+   "value": "محمد كرم",
+   "folded": ""
+  },
+  {
+   "value": "Μαρία Κάλλας",
+   "folded": ""
+  },
+  {
+   "value": "",
+   "folded": ""
+  },
+  {
+   "value": " ",
+   "folded": ""
+  },
+  {
+   "value": "-",
+   "folded": ""
+  },
+  {
+   "value": "?",
+   "folded": ""
+  },
+  {
+   "value": "UNKNOWN",
+   "folded": "unknown"
+  },
+  {
+   "value": null,
+   "folded": ""
+  },
+  {
+   "value": 0,
+   "folded": ""
+  },
+  {
+   "value": 1,
+   "folded": ""
+  },
+  {
+   "value": 42,
+   "folded": ""
+  },
+  {
+   "value": 3.5,
+   "folded": ""
+  },
+  {
+   "value": true,
+   "folded": "true"
+  },
+  {
+   "value": false,
+   "folded": ""
+  },
+  {
+   "value": [
+    "Ada"
+   ],
+   "folded": "ada"
+  },
+  {
+   "value": {
+    "name": "Ada"
+   },
+   "folded": "name ada"
+  }
+ ]
+}

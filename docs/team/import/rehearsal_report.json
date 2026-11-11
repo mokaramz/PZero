@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-11T13:01:04.924980+00:00",
+  "generated_at": "2026-11-11T16:05:44.015110+00:00",
   "reconciliation": {
     "real_data.json signals": {
       "in": 10,
@@ -44,7 +44,19 @@
     "people.json": {
       "in": 247,
       "rows": 247,
+      "skipped_without_id": [],
+      "duplicate_ids_blocked": 0,
+      "created_at_from_import_time": 0,
+      "identifiers": {
+        "alias": 24,
+        "github": 24,
+        "openalex": 206,
+        "orcid": 162,
+        "profile_url": 230,
+        "url": 17
+      },
       "duplicate_identifiers_not_stored": [],
+      "repeated_within_one_person": 0,
       "company_links": "kept in people.attrs (legacy links are by name; company_people waits for confirmation)"
     },
     "events.json": {
@@ -61,7 +73,7 @@
     },
     "schedule": {
       "jobs": 15,
-      "runs": 255
+      "runs": 263
     }
   },
   "notes": [
@@ -150,7 +162,7 @@
       "present": true,
       "parseable": true,
       "collection": null,
-      "records": 255
+      "records": 263
     }
   },
   "snapshot": {
@@ -256,7 +268,7 @@
     "companies": 1390,
     "company_identifiers": 1648,
     "people": 247,
-    "person_identifiers": 639,
+    "person_identifiers": 663,
     "intake_submissions": 7,
     "candidates": 1420,
     "candidate_aliases": 1479,
@@ -270,18 +282,18 @@
     "research_jobs": 4,
     "model_ledger": 2293,
     "job_state": 15,
-    "job_runs": 255,
+    "job_runs": 263,
     "documents": 77,
     "legacy_documents": 2200
   },
-  "archive_bytes": 20662622,
+  "archive_bytes": 20695183,
   "blockers": [],
   "secrets_found": [],
   "rehearsal": {
-    "schema": "pz_rehearse_65789367",
+    "schema": "pz_rehearse_d3d0d9b8",
     "first_apply": {
       "applied": true,
-      "fingerprint": "407bd275440c8e99a00cf1e8f8a238e80364b0926a0a4875f6f69366e7e370f1"
+      "fingerprint": "0505752d0823cfd4b26e09ecd531f654bffcf088af3bca9bf00a0f454dea4356"
     },
     "counts": {
       "all_match": true,
@@ -291,7 +303,7 @@
         "companies": 1390,
         "company_identifiers": 1648,
         "people": 247,
-        "person_identifiers": 639,
+        "person_identifiers": 663,
         "intake_submissions": 7,
         "candidates": 1420,
         "candidate_aliases": 1479,
@@ -305,14 +317,14 @@
         "research_jobs": 4,
         "model_ledger": 2293,
         "job_state": 15,
-        "job_runs": 255,
+        "job_runs": 263,
         "documents": 78,
         "legacy_documents": 2200
       }
     },
     "archive": {
       "files": 2200,
-      "restored_bytes": 20662622,
+      "restored_bytes": 20695183,
       "mismatched": [],
       "all_match": true
     },
@@ -330,7 +342,7 @@
         "companies": 1390,
         "company_identifiers": 1648,
         "people": 247,
-        "person_identifiers": 639,
+        "person_identifiers": 663,
         "intake_submissions": 7,
         "candidates": 1420,
         "candidate_aliases": 1479,
@@ -344,14 +356,14 @@
         "research_jobs": 4,
         "model_ledger": 2293,
         "job_state": 15,
-        "job_runs": 255,
+        "job_runs": 263,
         "documents": 78,
         "legacy_documents": 2200
       }
     },
     "scratch_schema_dropped": true,
     "conflict_existing_row": {
-      "schema": "pz_conflict_be9eda63",
+      "schema": "pz_conflict_15d286b0",
       "kind": "row",
       "preexisting": "candidates.id = 4225c719f2f2",
       "outcome": "aborted: unique violation on candidates_pkey",
@@ -365,7 +377,7 @@
       "scratch_schema_dropped": true
     },
     "conflict_existing_archive_path": {
-      "schema": "pz_conflict_77db79be",
+      "schema": "pz_conflict_b373f02e",
       "kind": "archive",
       "preexisting": "legacy_documents.path = .browser_opened",
       "outcome": "aborted: unique violation on legacy_documents_pkey",

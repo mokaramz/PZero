@@ -86,3 +86,9 @@ target named) or archived-only (with a reason).
   merge before insert or it will fail loudly (intended).
 - People link to companies and events by *name* today; `company_people` is filled only where resolution is strong,
   the rest stays in `people.attrs` until confirmed.
+- People (review [012](team/reviews/012-import-people-fixes.md)): `people.legacy` is the imported record, never
+  changed; `people.attrs.record` holds the whole current record (old `people.json` shape) once the new app writes the
+  person, as for `conviction_entries`. `normalized_name` is the old person key `fold` (titles stripped, ß → ss, ASCII).
+  `person_identifiers`: `orcid`, `openalex`, `github`, `patent_inventor` and `profile_url` (a page naming one person:
+  LinkedIn `/in/`, GitHub user, ORCID, OpenAlex author, Scholar, X) are strong; `url` (any other link, e.g. the
+  GitHub `blog` site) and `alias` are weak (migration 0005).

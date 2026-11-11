@@ -30,33 +30,39 @@ const signature = (page: Page) =>
 test.describe.configure({ mode: "serial" });
 test.skip(!OLD || !DIR, "set PZ_OLD_URL and PZ_CAPTURE_DIR");
 
+const VIEWS = [
+  { key: "deal-flow", path: "/deal-flow", ready: (p: Page) => rows(p).first(), detail: "cand-detail" },
+  { key: "conviction", path: "/conviction?company=kyrok", ready: (p: Page) => p.locator("[data-slug=kyrok]"), detail: "operator-view" },
+] as const;
+
+for (const view of VIEWS)
 for (const width of [1366, 1920])
   for (const theme of ["light", "dark"] as const)
-    test(`capture ${width} ${theme}`, async ({ browser }) => {
+    test(`capture ${view.key} ${width} ${theme}`, async ({ browser }) => {
       mkdirSync(DIR!, { recursive: true });
       const sigs: Record<string, Record<string, number>> = {};
       for (const [app, base] of [["old", OLD!], ["new", NEW]] as const) {
         const ctx = await browser.newContext({ viewport: { width, height: 1000 }, colorScheme: theme, reducedMotion: "reduce" });
         await ctx.addInitScript((t) => localStorage.setItem("pz.theme", t), theme);
         const page = await ctx.newPage();
-        await page.goto(`${base}/deal-flow`);
-        await expect(rows(page).first()).toBeVisible({ timeout: 90_000 });
-        await expect(page.getByTestId("cand-detail")).toBeVisible({ timeout: 30_000 });
+        await page.goto(`${base}${view.path}`);
+        await expect(view.ready(page)).toBeVisible({ timeout: 90_000 });
+        await expect(page.getByTestId(view.detail).first()).toBeVisible({ timeout: 30_000 });
         await page.waitForTimeout(1500);
         expect(await page.evaluate(() => document.documentElement.dataset.theme ?? "light")).toBe(theme === "dark" ? "dark" : "light");
         await expectNoHorizontalOverflow(page);
-        await page.screenshot({ path: join(DIR!, `${app}-${width}-${theme}.png`) });
+        await page.screenshot({ path: join(DIR!, `${view.key}-${app}-${width}-${theme}.png`) });
         sigs[app] = await signature(page);
         if (width === 1366 && theme === "light") {
           await page.setViewportSize({ width: Math.round(1366 / 1.5), height: Math.round(768 / 1.5) });
           await page.waitForTimeout(500);
           await expectNoHorizontalOverflow(page);
-          await page.screenshot({ path: join(DIR!, `${app}-zoom150.png`) });
+          await page.screenshot({ path: join(DIR!, `${view.key}-${app}-zoom150.png`) });
         }
         await ctx.close();
       }
       // report structural differences (the scan report and the disabled-reason elements are expected)
       const keys = [...new Set([...Object.keys(sigs.old), ...Object.keys(sigs.new)])].sort();
       const delta = keys.filter((k) => (sigs.old[k] ?? 0) !== (sigs.new[k] ?? 0)).map((k) => `${k}: ${sigs.old[k] ?? 0} -> ${sigs.new[k] ?? 0}`);
-      console.log(`[${width} ${theme}] signature differences: ${delta.length ? delta.join(", ") : "none"}`);
+      console.log(`[${view.key} ${width} ${theme}] signature differences: ${delta.length ? delta.join(", ") : "none"}`);
     });

@@ -47,6 +47,7 @@ from projectzero.dealflow.ranking.service import ranking_input
 
 DUPLICATE = "a company with this name already exists — open it in Conviction to edit it"
 KEEP_REASON = "Keep — scored in Conviction"
+CONFLICTING_LINK = "this Conviction entry belongs to another Deal Flow lead or company — nothing was changed"
 
 _ENTRIES = """
     with arch as (
@@ -213,6 +214,23 @@ class ConvictionStore:
             )
         return company_id
 
+    @staticmethod
+    def _refuse_conflicting_link(row: dict[str, Any], candidate_id: str, locked: dict[str, Any] | None) -> None:
+        """An existing entry edited with an ``inbox_id`` may only Keep ITS lead (review 011, Codex H-074).
+
+        * linked entry: the resolved survivor must be the stored link (a repeat of its own Keep is fine);
+        * unlinked entry: the candidate must belong to the entry's company.
+        Anything else would decide another company's lead and credit its feedback to the wrong entry, so it is
+        refused before the candidate, the ledger or the entry change.
+        """
+        linked = row.get("candidate_id")
+        if linked:
+            if str(linked) != candidate_id:
+                raise ConvictionError(409, CONFLICTING_LINK, slug=row["slug"], linked_candidate=str(linked))
+            return
+        if (locked or {}).get("company_id") != row.get("company_id"):
+            raise ConvictionError(409, CONFLICTING_LINK, slug=row["slug"])
+
     def save(self, body: dict[str, Any], now: datetime) -> dict[str, Any]:
         """Create or update an entry (Keep form / edit / checklist). Returns the old ``{ok, slug}`` (+ ``keep``)."""
         problems = entries.validate_entry(body, now.date())
@@ -228,6 +246,8 @@ class ConvictionStore:
                 raise ConvictionError(404, "unknown Deal Flow candidate — nothing was saved")
             locked = dealflow.lock_for_keep(candidate_id)  # company row, then candidate row
         row = self._entry_by_slug(str(body["slug"])) if body.get("slug") else None
+        if row is not None and candidate_id is not None:
+            self._refuse_conflicting_link(row, candidate_id, locked)  # before any status change or event (H-074)
         new_entry = row is None
         if row is None and body.get("company"):  # an existing company is never duplicated by a slug-less save
             dup_slug = radar_slug(str(body["company"]))

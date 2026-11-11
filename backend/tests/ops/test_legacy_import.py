@@ -11,6 +11,7 @@ from typing import Any
 
 import pytest
 
+from projectzero.network.identity import canonical_openalex, canonical_orcid, classify_profile_url
 from projectzero.ops.legacy.apply import apply_plan, fingerprint
 from projectzero.ops.legacy.companies import CompanyBook
 from projectzero.ops.legacy.plan import ImportPlan, build_plan
@@ -615,3 +616,255 @@ def test_a_kept_entry_links_to_the_lead_it_came_from_through_merges(legacy: Path
     plan = plan_for(legacy)
     (entry,) = plan.tables["conviction_entries"]
     assert entry["candidate_id"] == resolve(plan, "candidate", "aaaaaaaaaaa1") == "aaaaaaaaaaa2"
+
+
+# ── review 012: people as the old app keyed them ────────────────────────────────────────────────────────────────
+
+
+def people_plan(legacy: Path, *people: Any) -> ImportPlan:
+    write(legacy, "people.json", {"people": list(people)})
+    return plan_for(legacy)
+
+
+def identifiers(plan: ImportPlan, person_id: str) -> list[tuple[str, str]]:
+    return [(i["kind"], i["value"]) for i in rows(plan, "person_identifiers", person_id=person_id)]
+
+
+def test_a_person_without_an_id_is_skipped_and_reported(legacy: Path) -> None:
+    plan = people_plan(legacy, {"name": "No Id"}, {"id": "", "name": "Empty Id"}, "not a record",
+                       {"id": "p-a", "name": "Ada"})  # fmt: skip
+    assert [p["id"] for p in plan.tables["people"]] == ["p-a"]
+    report = plan.report["reconciliation"]["people.json"]
+    assert report["in"] == 4 and report["rows"] == 1
+    assert report["skipped_without_id"] == [
+        {"position": 0, "name": "No Id", "why": "no id"},
+        {"position": 1, "name": "Empty Id", "why": "no id"},
+        {"position": 2, "name": None, "why": "not a record"},
+    ]
+    assert not plan.blockers  # the old app skipped them too
+
+
+def test_two_people_with_one_id_block_the_import(legacy: Path) -> None:
+    plan = people_plan(legacy, {"id": "p-a", "name": "Ada Lovelace"}, {"id": "p-a", "name": "Ada King"})
+    assert any("'Ada Lovelace' and 'Ada King' share the id 'p-a'" in b for b in plan.blockers)
+    assert len(rows(plan, "people", id="p-a")) == 1  # never two rows for one primary key
+    result = apply_plan(plan, schema="pz", conn=None)  # refused before any connection
+    assert result["applied"] is False and any("share the id" in b for b in result["blockers"])
+
+
+def test_created_at_is_the_old_created_day_else_the_import_time(legacy: Path) -> None:
+    plan = people_plan(legacy, {"id": "p-a", "name": "A", "created": "2026-09-12"}, {"id": "p-b", "name": "B"},
+                       {"id": "p-c", "name": "C", "created": "last week"}, {"id": "p-d", "name": "D", "created": 7})  # fmt: skip
+    by_id = {p["id"]: p["created_at"] for p in plan.tables["people"]}
+    assert by_id["p-a"].isoformat() == "2026-09-12T00:00:00+02:00"  # midnight Europe/Berlin, like other legacy days
+    assert by_id["p-b"] == by_id["p-c"] == by_id["p-d"] == NOW
+    assert plan.report["reconciliation"]["people.json"]["created_at_from_import_time"] == 3
+
+
+@pytest.mark.parametrize(
+    ("name", "key"),
+    [
+        ("Prof. Dr. Jürgen Groß", "jurgen gross"),
+        ("Dr.-Ing. Anna Weiß", "anna weiss"),
+        ("Dipl.-Ing. Lena Müller-Lüdenscheidt", "lena muller ludenscheidt"),
+        ("JÜRGEN GROẞ", "jurgen gross"),
+        ("Zoë O'Brien", "zoe o brien"),
+        ("李小龙", None),  # no ASCII letters: no key rather than an empty one
+    ],
+)
+def test_normalized_name_is_the_old_person_key(legacy: Path, name: str, key: str | None) -> None:
+    (person,) = people_plan(legacy, {"id": "p-x", "name": name}).tables["people"]
+    assert person["name"] == name and person["normalized_name"] == key
+
+
+def test_a_profile_is_strong_and_any_other_link_is_weak(legacy: Path) -> None:
+    plan = people_plan(legacy, {"id": "p-a", "name": "Ada", "github_id": "1", "aliases": ["AdaL"],
+                                "profile_urls": ["https://github.com/AdaL", "https://acme-robotics.example.com/"]},
+                       {"id": "p-b", "name": "Bea", "github_id": "2",
+                        "profile_urls": ["https://github.com/bea", "http://www.Acme-Robotics.example.com"]})  # fmt: skip
+    assert identifiers(plan, "p-a") == [("github", "1"), ("profile_url", "https://github.com/adal"),
+                                        ("url", "https://acme-robotics.example.com"), ("alias", "AdaL")]  # fmt: skip
+    assert identifiers(plan, "p-b")[-1] == ("url", "https://acme-robotics.example.com")  # a shared company site
+    assert plan.report["reconciliation"]["people.json"]["duplicate_identifiers_not_stored"] == []
+
+
+def test_profile_variants_are_one_identifier_across_people(legacy: Path) -> None:
+    plan = people_plan(legacy, {"id": "p-a", "name": "Ada", "orcid": "0000-0002-1825-0097",
+                                "profile_urls": ["https://www.linkedin.com/in/Ada-L/"]},
+                       {"id": "p-b", "name": "Bea", "orcid": "https://orcid.org/0000-0002-1825-0097",
+                        "profile_urls": ["de.linkedin.com/in/ada-l?trk=x"]})  # fmt: skip
+    assert identifiers(plan, "p-a") == [("orcid", "https://orcid.org/0000-0002-1825-0097"),
+                                        ("profile_url", "https://www.linkedin.com/in/ada-l")]  # fmt: skip
+    assert identifiers(plan, "p-b") == []
+    dups = plan.report["reconciliation"]["people.json"]["duplicate_identifiers_not_stored"]
+    assert [(d["kind"], d["people"]) for d in dups] == [("orcid", ["p-a", "p-b"]), ("profile_url", ["p-a", "p-b"])]
+
+
+def test_a_repeat_within_one_person_is_one_row_and_not_a_duplicate(legacy: Path) -> None:
+    plan = people_plan(legacy, {"id": "p-a", "name": "Ada", "openalex_id": "https://openalex.org/A123",
+                                "profile_urls": ["https://openalex.org/A123", "https://openalex.org/a123/",
+                                                 "https://ada.example.com", "https://ada.example.com/"]})  # fmt: skip
+    assert identifiers(plan, "p-a") == [("openalex", "https://openalex.org/A123"),
+                                        ("profile_url", "https://openalex.org/A123"),
+                                        ("url", "https://ada.example.com")]  # fmt: skip
+    report = plan.report["reconciliation"]["people.json"]
+    assert report["duplicate_identifiers_not_stored"] == [] and report["repeated_within_one_person"] == 2
+
+
+def test_aliases_are_weak_identifiers_deduplicated_per_person(legacy: Path) -> None:
+    plan = people_plan(legacy, {"id": "p-a", "name": "Ada", "aliases": ["adal", "AdaL", " adal ", "", "unknown"]},
+                       {"id": "p-b", "name": "Bea", "aliases": ["adal"]})  # fmt: skip
+    assert identifiers(plan, "p-a") == [("alias", "adal")]
+    assert identifiers(plan, "p-b") == [("alias", "adal")]  # weak: two people may share an alias
+    assert plan.report["reconciliation"]["people.json"]["duplicate_identifiers_not_stored"] == []
+
+
+def test_a_non_text_promoted_field_is_kept_in_attrs(legacy: Path) -> None:
+    plan = people_plan(legacy, {"id": "p-a", "name": "Ada", "country": {"code": "DE"}, "identity_status": ["x"]},
+                       {"id": "p-b", "name": "Bea", "country": "DE", "region": "BY"})  # fmt: skip
+    a, b = rows(plan, "people", id="p-a")[0], rows(plan, "people", id="p-b")[0]
+    assert a["country"] is None and a["attrs"]["country"] == {"code": "DE"}
+    assert a["identity_status"] is None and a["attrs"]["identity_status"] == ["x"]
+    assert b["country"] == "DE" and b["attrs"] == {"region": "BY"}  # a text value lives in its column only
+    assert a["legacy"]["country"] == {"code": "DE"}
+
+
+@pytest.mark.parametrize(
+    ("url", "expected"),
+    [
+        ("https://www.linkedin.com/in/Jane-Roe-123/", ("profile_url", "https://www.linkedin.com/in/jane-roe-123")),
+        ("linkedin.com/in/jane-roe-123?trk=public", ("profile_url", "https://www.linkedin.com/in/jane-roe-123")),
+        ("https://www.linkedin.com/company/acme", ("url", "https://linkedin.com/company/acme")),
+        ("https://GitHub.com/JaneRoe", ("url", "https://github.com/JaneRoe")),  # not established as this person's
+        ("https://github.com/janeroe/robot-arm", ("url", "https://github.com/janeroe/robot-arm")),
+        ("https://github.com/orgs", ("url", "https://github.com/orgs")),
+        ("https://orcid.org/0000-0002-1825-009x", ("profile_url", "https://orcid.org/0000-0002-1825-009X")),
+        ("0000-0002-1825-0097", ("profile_url", "https://orcid.org/0000-0002-1825-0097")),
+        ("https://openalex.org/A5023888391", ("profile_url", "https://openalex.org/A5023888391")),
+        ("https://api.openalex.org/authors/a5023888391", ("profile_url", "https://openalex.org/A5023888391")),
+        ("https://openalex.org/W2741809807", ("url", "https://openalex.org/W2741809807")),  # a work, not a person
+        ("https://scholar.google.de/citations?user=AbC123&hl=de",
+         ("profile_url", "https://scholar.google.com/citations?user=AbC123")),
+        ("https://twitter.com/JaneRoe", ("url", "https://twitter.com/JaneRoe")),
+        ("https://scholar.google.example/citations?user=AbC123",
+         ("url", "https://scholar.google.example/citations?user=AbC123")),  # unknown Scholar host
+        ("https://x.com/home", ("url", "https://x.com/home")),
+        ("https://x.com/janeroe/status/1", ("url", "https://x.com/janeroe/status/1")),
+        ("http://www.Acme-Robotics.example.com/", ("url", "https://acme-robotics.example.com")),
+        ("https://www.youtube.com/@JaneRoe", ("url", "https://youtube.com/@JaneRoe")),
+        ("acme.example.com/About#team", ("url", "https://acme.example.com/About")),
+        ("not a url", ("url", "not a url")),
+        ("   ", None),
+    ],
+)  # fmt: skip
+def test_profile_url_rules(url: str, expected: tuple[str, str] | None) -> None:
+    assert classify_profile_url(url) == expected
+
+
+@pytest.mark.parametrize(
+    ("value", "orcid", "openalex"),
+    [
+        ("0000-0002-1825-009x", "https://orcid.org/0000-0002-1825-009X", "0000-0002-1825-009x"),
+        ("http://www.ORCID.org/0000-0002-1825-009X/", "https://orcid.org/0000-0002-1825-009X",
+         "http://www.ORCID.org/0000-0002-1825-009X/"),
+        ("a5023888391", "a5023888391", "https://openalex.org/A5023888391"),
+        ("https://api.openalex.org/authors/A5023888391/", "https://api.openalex.org/authors/A5023888391/",
+         "https://openalex.org/A5023888391"),
+        (" 0000-1 ", "0000-1", "0000-1"),  # not an iD: kept as written (stripped)
+    ],
+)  # fmt: skip
+def test_orcid_and_openalex_ids_have_one_spelling(value: str, orcid: str, openalex: str) -> None:
+    assert (canonical_orcid(value), canonical_openalex(value)) == (orcid, openalex)
+
+
+# ── review 012, Codex H-078 ─────────────────────────────────────────────────────────────────────────────────────
+def test_an_account_is_strong_only_when_the_record_establishes_it(legacy: Path) -> None:
+    from projectzero.network.identity import classify_profile_url, own_accounts
+
+    mine = own_accounts({"github_id": "42", "aliases": ["JaneRoe"], "x": "@jroe"})
+    assert classify_profile_url("https://github.com/janeroe", mine) == ("profile_url", "https://github.com/janeroe")
+    assert classify_profile_url("https://x.com/JRoe", mine) == ("profile_url", "https://x.com/jroe")
+    assert own_accounts({"aliases": ["JaneRoe"]}) == frozenset()  # an alias without the collector's account id
+
+
+def test_two_people_listing_one_organisation_stay_weak_and_never_collide(legacy: Path) -> None:
+    plan = people_plan(legacy, {"id": "p-a", "name": "Ada", "profile_urls": ["https://github.com/acme-robotics"]},
+                       {"id": "p-b", "name": "Bea", "profile_urls": ["https://github.com/Acme-Robotics/"]},
+                       {"id": "p-c", "name": "Cy", "github_id": "7", "aliases": ["cy-dev"],
+                        "profile_urls": ["https://github.com/cy-dev"]})  # fmt: skip
+    assert identifiers(plan, "p-a") == [("url", "https://github.com/acme-robotics")]
+    assert identifiers(plan, "p-b") == [("url", "https://github.com/Acme-Robotics")]
+    assert identifiers(plan, "p-c") == [
+        ("github", "7"),
+        ("profile_url", "https://github.com/cy-dev"),
+        ("alias", "cy-dev"),
+    ]  # confirmed as this person's own account
+    assert plan.report["reconciliation"]["people.json"]["duplicate_identifiers_not_stored"] == []
+
+
+def test_record_is_reserved_for_application_writes(legacy: Path) -> None:
+    from projectzero.network.people import record_of
+
+    plan = people_plan(legacy, {"id": "p-n", "name": "Nested", "record": {"name": "not the person", "x": 1}})
+    (row,) = [r for r in plan.tables["people"] if r["id"] == "p-n"]
+    assert "record" not in row["attrs"] and row["legacy"]["record"] == {"name": "not the person", "x": 1}
+    imported = record_of(row)
+    assert imported["id"] == "p-n" and imported["name"] == "Nested"  # the imported person, not the nested field
+    written = {**row, "attrs": {**row["attrs"], "record": {"id": "p-n", "name": "Nested (edited)"}}}
+    assert record_of(written)["name"] == "Nested (edited)"  # a later application write takes precedence
+
+
+@pytest.mark.parametrize(
+    ("record", "expected"),
+    [
+        (
+            {"github_id": "42", "aliases": [1, None, {"a": 1}, "JaneRoe"]},
+            {("github", "janeroe")},
+        ),  # non-strings skipped
+        ({"github_id": "42", "aliases": "Alice"}, {("github", "alice")}),  # one string is ONE alias, not 5 letters
+        ({"github_id": "unknown", "aliases": ["JaneRoe"]}, set()),  # the source id must be numeric
+        ({"github_id": "", "aliases": ["JaneRoe"]}, set()),
+        ({"github_id": 42, "aliases": ["JaneRoe"]}, {("github", "janeroe")}),
+        ({"github_id": True, "aliases": ["JaneRoe"]}, set()),
+        ({"github_id": "42", "aliases": 7}, set()),
+        ({"x": "https://example.org/team/acme"}, set()),  # an unrelated URL authorises nothing
+        ({"x": "https://x.com/acme/status/1"}, set()),
+        ({"x": "https://x.com/home"}, set()),
+        ({"x": "https://twitter.com/JRoe"}, {("x", "jroe")}),
+        ({"x": "x.com/JRoe"}, {("x", "jroe")}),
+        ({"x": "@JRoe"}, {("x", "jroe")}),  # valid bare handles keep working
+        ({"x": "JRoe"}, {("x", "jroe")}),
+        ({"x": 123}, set()),
+    ],
+)
+def test_ownership_evidence_is_validated(record: dict[str, Any], expected: set[tuple[str, str]]) -> None:
+    from projectzero.network.identity import own_accounts
+
+    assert own_accounts(record) == frozenset(expected)
+
+
+def test_malformed_ownership_inputs_never_stop_the_plan(legacy: Path) -> None:
+    plan = people_plan(legacy, {"id": "p-a", "name": "Ada", "github_id": "42", "aliases": [1, "AdaL"],
+                                "x": "https://example.org/team/acme",
+                                "profile_urls": ["https://github.com/AdaL", "https://x.com/acme"]},
+                       {"id": "p-b", "name": "Bea", "github_id": "unknown", "aliases": "Bea",
+                        "profile_urls": ["https://github.com/bea"]})  # fmt: skip
+    a = identifiers(plan, "p-a")
+    assert ("profile_url", "https://github.com/adal") in a  # numeric id + whole-string alias: established
+    assert ("url", "https://x.com/acme") in a and ("profile_url", "https://x.com/acme") not in a
+    assert ("url", "https://github.com/bea") in identifiers(plan, "p-b")  # "unknown" id establishes nothing
+    assert plan.blockers == []
+
+
+@pytest.mark.parametrize(
+    ("github_id", "stored"),
+    [(42, "42"), ("42", "42"), (" 042 ", "42"), ("not-a-number", None), ("", None), (0, None), (True, None),
+     ("４２", None), (None, None)],
+)  # fmt: skip
+def test_the_stored_github_id_uses_the_ownership_validator(legacy: Path, github_id: Any, stored: str | None) -> None:
+    plan = people_plan(legacy, {"id": "p-g", "name": "Gil", "github_id": github_id, "aliases": ["gil-dev"],
+                                "profile_urls": ["https://github.com/gil-dev"]})  # fmt: skip
+    rows = identifiers(plan, "p-g")
+    assert [v for k, v in rows if k == "github"] == ([stored] if stored else [])
+    # the account URL is strong exactly when the same id is valid
+    assert (("profile_url", "https://github.com/gil-dev") in rows) is (stored is not None)
