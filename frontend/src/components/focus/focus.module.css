@@ -536,14 +536,22 @@
   }
 }
 
-/* ---------------------------------------------------------------- convergence trace · verification (Conviction) */
-.trace {
+/* ---------------------------------------------------------------- convergence trace · path · verification */
+.trace,
+.path {
   margin: 0;
 }
 .trace svg {
   display: block;
   width: 100%;
   max-width: 260px;
+  height: auto;
+  overflow: visible;
+}
+.path svg {
+  display: block;
+  width: 100%;
+  max-width: 320px;
   height: auto;
   overflow: visible;
 }

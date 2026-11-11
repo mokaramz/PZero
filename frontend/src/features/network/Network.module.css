@@ -1,0 +1,374 @@
+/* Network (review 013) — list | profile | rail workspace, talent graph, person forms. Ported from the old view; tokens only. */
+
+.search {
+  width: 220px;
+  max-width: 100%;
+}
+
+.ws {
+  display: grid;
+  grid-template-columns: minmax(280px, 330px) minmax(0, 1fr) 230px;
+  gap: 16px;
+  align-items: start;
+}
+.wsNarrow {
+  grid-template-columns: minmax(0, 1fr);
+}
+.left,
+.center {
+  min-width: 0;
+  background: var(--paper);
+  border: 1px solid var(--hair);
+  border-radius: var(--r-lg);
+  box-shadow: var(--sh-2);
+}
+.center {
+  padding: 18px 20px;
+}
+.segs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  padding: 12px;
+  border-bottom: 1px solid var(--hair);
+}
+.segs button {
+  padding: 3px 9px;
+  font-size: 11.5px;
+}
+.segN {
+  font-weight: 700;
+  font-size: 11px;
+}
+.red {
+  color: var(--red);
+}
+.navy {
+  color: var(--navy);
+}
+
+.list {
+  list-style: none;
+}
+.noMatch {
+  padding: 20px;
+  color: var(--mut);
+  font-size: 13px;
+}
+.row {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  text-align: left;
+  padding: 11px 12px;
+  background: none;
+  border: 0;
+  border-bottom: 1px solid var(--hair);
+  border-left: 3px solid transparent;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+}
+.row:hover {
+  background: var(--well);
+}
+/* with a person selected, the other rows recede slightly — no blur, nothing modal */
+.list[data-has-selection] .row:not(.rowSel) {
+  opacity: 0.8;
+  transition: opacity var(--dur) var(--ease-out);
+}
+.list[data-has-selection] .row:not(.rowSel):hover,
+.list[data-has-selection] .row:not(.rowSel):focus-visible {
+  opacity: 1;
+}
+.rowSel {
+  background: var(--blue-soft);
+  border-left-color: var(--blue);
+}
+.rowSel:hover {
+  background: var(--blue-soft);
+}
+.rowBody {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
+}
+.rowL1 {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.rowL3 {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.rowL4 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.avatar {
+  flex: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--ink-2);
+  background: var(--peach);
+}
+.avatarLg {
+  width: 44px;
+  height: 44px;
+  font-size: 14px;
+}
+.avatarNavy {
+  background: var(--navy);
+  color: var(--on-navy);
+}
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  flex: none;
+}
+.dot_faint {
+  background: var(--faint);
+}
+.dot_amber {
+  background: var(--amber);
+}
+.dot_green {
+  background: var(--green);
+}
+.sbar {
+  display: inline-block;
+  width: 60px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--hair-2);
+  overflow: hidden;
+}
+.sbar i {
+  display: block;
+  height: 100%;
+  background: var(--blue);
+}
+
+/* ---------- profile */
+.profile {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.profHead {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+  padding-bottom: 12px;
+}
+.profName {
+  font: 400 26px/1.15 var(--font-serif);
+}
+.sect {
+  padding: 11px 0;
+  border-top: 1px solid var(--hair);
+}
+.hd {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--mut);
+  margin-bottom: 5px;
+}
+.sectBody {
+  font-size: 13.5px;
+  line-height: 1.55;
+}
+.pre {
+  white-space: pre-wrap;
+}
+.compChip {
+  font-size: 12px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--hair-2);
+  background: var(--paper);
+}
+.tree {
+  margin: 6px 0;
+  font-size: 13px;
+}
+.treeNode {
+  margin-left: 12px;
+  padding-left: 10px;
+  border-left: 2px solid var(--hair-2);
+}
+.timeline {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 13px;
+}
+.tlDate {
+  display: inline-block;
+  min-width: 96px;
+  color: var(--mut);
+}
+
+.pairGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 8px 0;
+}
+.pairRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+  gap: 6px;
+}
+.pairRow input {
+  min-width: 0;
+}
+.ritual p {
+  margin-bottom: 4px;
+}
+
+/* ---------- rail */
+.rail {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px;
+  background: var(--blue-soft); /* flat — no gradients */
+  border: 1px solid var(--blue-line);
+  border-radius: var(--r-lg);
+  min-width: 0;
+}
+.rlBlk {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(31, 27, 22, 0.08);
+}
+.rlBlk:last-child {
+  border-bottom: 0;
+}
+.rlBlk input {
+  width: 100%;
+  min-width: 0;
+}
+.rlv {
+  font-size: 13.5px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.full {
+  width: 100%;
+}
+.btnLink {
+  display: inline-flex;
+  justify-content: center;
+  padding: 7px 13px;
+  font-size: 12.5px;
+  font-weight: 500;
+  border: 1px solid var(--hair-2);
+  border-radius: var(--r-md);
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.drawerGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 230px;
+  gap: 16px;
+  align-items: start;
+}
+@media (max-width: 700px) {
+  .drawerGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ---------- graph */
+.graph {
+  padding: 16px 18px;
+}
+.gRoot {
+  padding: 5px 0;
+}
+.gChild {
+  margin-left: 26px;
+  padding: 5px 0 5px 12px;
+  border-left: 2px solid var(--hair-2);
+}
+.linkBtn {
+  background: none;
+  border: 0;
+  padding: 0;
+  font: 600 13.5px var(--font-ui);
+  color: var(--blue);
+  cursor: pointer;
+}
+.linkBtn:hover {
+  text-decoration: underline;
+}
+
+/* ---------- form */
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px 12px;
+}
+.formGrid input,
+.formGrid select {
+  width: 100%;
+}
+.fullCol {
+  grid-column: 1 / -1;
+}
+.watchCell {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.check {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  color: var(--ink);
+}
+@media (max-width: 640px) {
+  .formGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.sectBody > div + div {
+  margin-top: 3px;
+}
+
+/* ---------- identity review (old IdentityReview.module.css .wrap): one quiet row above the network */
+.identity {
+  margin-bottom: 14px;
+  padding: 0 10px;
+  background: var(--paper);
+  border: 1px solid var(--hair);
+  border-radius: var(--r-lg);
+}

@@ -19,3 +19,7 @@ sha256 values above before comparing anything.
 `days_since` and `/api/meta` over a synthetic corpus at the fixed clock 2026-11-11 12:00.
 `oracle_people_fold.json` (review 012): the old person-identity key `services/identity.fold` over a synthetic corpus of
 72 names and non-string values (`python -m projectzero.ops.parity_people goldens`).
+`oracle_network.json` (review 013): the old `people.listing()`, `ecosys.talent_tree()` and the `/api/watchlist` body over
+five synthetic people sets (dates and the due boundary, sort ties, a graph with a cycle / shared descendant / depth
+limit, link-type quirks, a dict-shaped collection) at two clocks (2026-11-11 12:00 and 2026-11-12 00:30), plus
+`STRENGTHS`, `POTENTIAL`, `FIELDS` and `_slug` (`python -m projectzero.ops.parity_network goldens`).

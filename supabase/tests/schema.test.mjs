@@ -430,3 +430,46 @@ describe("migration 0005 — a person's non-profile link is a weak url identifie
     );
   });
 });
+
+describe("migration 0006 — every Network people write is an append-only person event", () => {
+  test("events reference the text person id, are never changed, and their action is a known one", async () => {
+    const db = await freshDb();
+    await db.query(`insert into pz.people (id, name) values ('p-ada-lovelace', 'Ada Lovelace')`);
+    await db.query(
+      `insert into pz.person_events (person_id, actor, action, before, after) values ('p-ada-lovelace', 'operator', 'save', $1, $2)`,
+      [JSON.stringify({ next_action: "" }), JSON.stringify({ next_action: "call" })],
+    );
+    const row = await db.query(`select person_id, before, after, detail from pz.person_events`);
+    assert.deepEqual(row.rows[0], {
+      person_id: "p-ada-lovelace",
+      before: { next_action: "" },
+      after: { next_action: "call" },
+      detail: {},
+    });
+    for (const action of ["create", "talented", "watch_log"]) {
+      await db.query(`insert into pz.person_events (person_id, actor, action, after) values ('p-ada-lovelace', 'operator', $1, '{}')`, [action]);
+    }
+    await rejects(db.query(`update pz.person_events set actor = 'x'`), /append-only/);
+    await rejects(db.query(`delete from pz.person_events`), /append-only/);
+    await rejects(db.query(`delete from pz.people where id = 'p-ada-lovelace'`), /append-only/); // the history keeps the person
+    await rejects(
+      db.query(`insert into pz.person_events (person_id, actor, action, after) values ('p-ada-lovelace', 'operator', 'delete', '{}')`),
+      /person_events_action_check/,
+    );
+    await rejects(
+      db.query(`insert into pz.person_events (person_id, actor, action, after) values ('p-nobody', 'operator', 'save', '{}')`),
+      /person_events_person_id_fkey/,
+    );
+    await rejects(
+      db.query(`insert into pz.person_events (person_id, actor, action) values ('p-ada-lovelace', 'operator', 'save')`),
+      /null value/,
+    );
+    const rls = await db.query(`select relrowsecurity from pg_class where relname = 'person_events'`);
+    assert.equal(rls.rows[0].relrowsecurity, true);
+    const grants = await db.query(
+      `select count(*)::int n from information_schema.role_table_grants
+        where table_schema = 'pz' and table_name = 'person_events' and grantee in ('anon', 'authenticated', 'PUBLIC')`,
+    );
+    assert.equal(grants.rows[0].n, 0);
+  });
+});

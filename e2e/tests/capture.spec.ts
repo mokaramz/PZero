@@ -33,6 +33,8 @@ test.skip(!OLD || !DIR, "set PZ_OLD_URL and PZ_CAPTURE_DIR");
 const VIEWS = [
   { key: "deal-flow", path: "/deal-flow", ready: (p: Page) => rows(p).first(), detail: "cand-detail" },
   { key: "conviction", path: "/conviction?company=kyrok", ready: (p: Page) => p.locator("[data-slug=kyrok]"), detail: "operator-view" },
+  { key: "network", path: "/network", ready: (p: Page) => p.getByTestId("person-row").first(), detail: "person-profile" },
+  { key: "watchlist", path: "/watchlist", ready: (p: Page) => p.locator("main table, main [class*=empty]").first(), detail: "" },
 ] as const;
 
 for (const view of VIEWS)
@@ -47,7 +49,7 @@ for (const width of [1366, 1920])
         const page = await ctx.newPage();
         await page.goto(`${base}${view.path}`);
         await expect(view.ready(page)).toBeVisible({ timeout: 90_000 });
-        await expect(page.getByTestId(view.detail).first()).toBeVisible({ timeout: 30_000 });
+        if (view.detail) await expect(page.getByTestId(view.detail).first()).toBeVisible({ timeout: 30_000 });
         await page.waitForTimeout(1500);
         expect(await page.evaluate(() => document.documentElement.dataset.theme ?? "light")).toBe(theme === "dark" ? "dark" : "light");
         await expectNoHorizontalOverflow(page);

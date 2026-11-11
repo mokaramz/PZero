@@ -55,8 +55,8 @@ export const NAV: NavSection[] = [
     title: "Network",
     items: [
       { path: "/founder-radar", label: "Founder Radar", icon: "target", legacyView: "founders" },
-      { path: "/network", label: "Network", icon: "people", legacyView: "people" },
-      { path: "/watchlist", label: "Watchlist", icon: "eye", legacyView: "watch" },
+      { path: "/network", label: "Network", icon: "people", legacyView: "people", page: lazy(() => import("@/features/network/NetworkPage")) },
+      { path: "/watchlist", label: "Watchlist", icon: "eye", legacyView: "watch", page: lazy(() => import("@/features/watchlist/WatchlistPage")) },
       { path: "/public-work", label: "Public work", icon: "pen", legacyView: "work" },
     ],
   },

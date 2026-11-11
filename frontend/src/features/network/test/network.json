@@ -1,0 +1,218 @@
+{
+  "people": [
+    {
+      "id": "p-mara-klein",
+      "name": "Mara Klein",
+      "location": "Karlsruhe, Germany",
+      "relationship_strength": "met_once",
+      "founder_potential": "maybe",
+      "last_interaction": "",
+      "introduced_by": "p-lena-vogt",
+      "introduced_by_name": "Lena Vogt",
+      "chain": [
+        "Lena Vogt"
+      ],
+      "recommended": [],
+      "recommended_names": [],
+      "startups": [],
+      "discovery": "Recommended by Lena Vogt ('3 most talented' ask)",
+      "why_interesting": "Best controls engineer in the lab",
+      "next_action": "SUGGESTED: reach out with a warm reference to Lena Vogt",
+      "created": "2026-09-27",
+      "days_since_touch": null,
+      "due": true
+    },
+    {
+      "id": "p-felix-ortmann",
+      "name": "Felix Ortmann",
+      "relationship_strength": "met_once",
+      "founder_potential": "maybe",
+      "introduced_by": "p-lena-vogt",
+      "introduced_by_name": "Lena Vogt",
+      "why_interesting": "Hardware whisperer",
+      "next_action": "SUGGESTED: reach out with a warm reference to Lena Vogt",
+      "created": "2026-09-27",
+      "days_since_touch": null,
+      "due": true
+    },
+    {
+      "id": "p-jonas-albrecht",
+      "name": "Jonas Albrecht",
+      "role": "CTO",
+      "company": "Aereus",
+      "startups": [
+        "Aereus"
+      ],
+      "location": "Berlin, Germany",
+      "relationship_strength": "strong",
+      "founder_potential": "none",
+      "last_interaction": "2026-08-28",
+      "days_since_touch": 75,
+      "discovery": "Met at the Hannover Messe event",
+      "why_interesting": "Built the flight stack at a drone startup",
+      "watch": true,
+      "created": "2026-08-01",
+      "due": false
+    },
+    {
+      "id": "p-tariq-haddad",
+      "name": "Tariq Haddad",
+      "role": "Founder",
+      "company": "Haddad Labs",
+      "location": "Munich, Germany",
+      "relationship_strength": "close",
+      "founder_potential": "building",
+      "last_interaction": "2026-09-11",
+      "days_since_touch": 61,
+      "introduced_by": "p-omar-hedeya",
+      "introduced_by_name": "Omar Hedeya",
+      "radar_state": "introduction requested",
+      "state_history": [
+        {
+          "to": "contacted",
+          "on": "2026-11-03"
+        }
+      ],
+      "opportunities": [
+        {
+          "kind": "intro"
+        }
+      ],
+      "created": "2026-07-01",
+      "due": false
+    },
+    {
+      "id": "p-lena-vogt",
+      "name": "Lena Vogt",
+      "role": "PhD researcher, legged robots",
+      "company": "KIT Robotics Lab",
+      "location": "Karlsruhe, Germany",
+      "relationship_strength": "warm",
+      "founder_potential": "high",
+      "last_interaction": "2026-10-01",
+      "days_since_touch": 41,
+      "recommended": [
+        "p-mara-klein",
+        "p-felix-ortmann"
+      ],
+      "recommended_names": [
+        "Mara Klein",
+        "Felix Ortmann"
+      ],
+      "startups": [
+        "Leggo Robotics"
+      ],
+      "notes": "Met at ICRA.",
+      "next_action": "Ask about the spin-out",
+      "next_action_date": "2026-11-20",
+      "linkedin": "https://www.linkedin.com/in/lena-vogt",
+      "created": "2026-09-20",
+      "due": false
+    },
+    {
+      "id": "p-omar-hedeya",
+      "name": "Omar Hedeya",
+      "role": "My Project A contact (mentor, sourcing feedback)",
+      "company": "Project A Ventures",
+      "location": "Berlin, Germany",
+      "relationship_strength": "strong",
+      "founder_potential": "none",
+      "last_interaction": "2026-11-01",
+      "days_since_touch": 10,
+      "recommended": [
+        "p-tariq-haddad"
+      ],
+      "recommended_names": [
+        "Tariq Haddad"
+      ],
+      "created": "2026-06-01",
+      "due": false
+    },
+    {
+      "id": "p-sofia-brandt",
+      "name": "Sofia Brandt",
+      "location": "Berlin, Germany",
+      "company": "Helsing",
+      "role": "Research engineer",
+      "university": "TU Munich",
+      "expertise": "Perception",
+      "why_interesting": "Ships perception models to hardware",
+      "discovery": "Boardy",
+      "founder_potential": "none",
+      "relationship_strength": "warm",
+      "last_interaction": "2026-09-12",
+      "days_since_touch": 60,
+      "linkedin": "https://www.linkedin.com/in/sofia-brandt",
+      "x": "https://x.com/sofiab",
+      "startups": [
+        "Pixel Forge",
+        "Helsing"
+      ],
+      "email": "sofia@example.org",
+      "next_action": "Coffee in December",
+      "next_action_date": "2026-12-02",
+      "notes": "Prefers email.",
+      "github": "https://github.com/sofiab",
+      "boardy": {
+        "status": "matched"
+      },
+      "watch": true,
+      "created": "2026-08-15",
+      "due": false
+    }
+  ],
+  "graph": {
+    "forest": [
+      {
+        "id": "p-omar-hedeya",
+        "name": "Omar Hedeya",
+        "role": "My Project A contact (mentor, sourcing feedback)",
+        "company": "Project A Ventures",
+        "founder_potential": "none",
+        "strength": "strong",
+        "startups": [],
+        "watch": false,
+        "children": [
+          {
+            "id": "p-tariq-haddad",
+            "name": "Tariq Haddad",
+            "role": "Founder",
+            "company": "Haddad Labs",
+            "founder_potential": "building",
+            "startups": [],
+            "children": []
+          }
+        ]
+      },
+      {
+        "id": "p-lena-vogt",
+        "name": "Lena Vogt",
+        "role": "PhD researcher, legged robots",
+        "company": "KIT Robotics Lab",
+        "founder_potential": "high",
+        "strength": "warm",
+        "startups": [
+          "Leggo Robotics"
+        ],
+        "watch": false,
+        "children": [
+          {
+            "id": "p-mara-klein",
+            "name": "Mara Klein",
+            "founder_potential": "maybe",
+            "startups": [],
+            "children": []
+          },
+          {
+            "id": "p-felix-ortmann",
+            "name": "Felix Ortmann",
+            "founder_potential": "maybe",
+            "startups": [],
+            "watch": true,
+            "children": []
+          }
+        ]
+      }
+    ]
+  }
+}

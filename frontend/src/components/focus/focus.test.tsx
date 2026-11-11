@@ -3,7 +3,7 @@ import { MemoryRouter } from "react-router-dom";
 import { describe, expect, it } from "vitest";
 
 import { DisclosureGroup } from "../attention";
-import { DecisionCard, Disclosure, fieldFor, HighlightStrip, initials } from "./index";
+import { DecisionCard, Disclosure, fieldFor, HighlightStrip, initials, PathTrace } from "./index";
 
 describe("focus primitives", () => {
   it("fieldFor picks the first matching field, neutral otherwise", () => {
@@ -62,5 +62,16 @@ describe("focus primitives", () => {
     fireEvent.click(screen.getByText("One"));
     expect(await screen.findByText("body one")).toBeInTheDocument();
     expect(screen.queryByText("body two")).not.toBeInTheDocument();
+  });
+
+  it("a path trace draws a real chain of two or more names, and nothing otherwise", () => {
+    const { container, rerender } = render(<PathTrace nodes={["Smooth Operator", " ", "Founder"]} />);
+    expect(screen.getByTestId("path-trace")).toHaveAttribute("data-signature", "data");
+    expect(screen.getByRole("img", { name: "Introduction path: Smooth Operator → Founder" })).toBeInTheDocument();
+    expect(container.querySelectorAll("circle")).toHaveLength(2);
+    rerender(<PathTrace nodes={["Smooth Operator", "An introducer with a long name", "Founder"]} testId="intro-path" />);
+    expect(screen.getByTestId("intro-path")).toHaveTextContent("An introducer wit…");
+    rerender(<PathTrace nodes={["Founder", ""]} />);
+    expect(container).toBeEmptyDOMElement();
   });
 });
