@@ -557,3 +557,61 @@ def test_company_ids_do_not_depend_on_reading_order(tmp_path: Path, legacy: Path
     key = lambda r: json.dumps(r, sort_keys=True, default=str)  # noqa: E731
     for table in ("candidates", "companies", "company_identifiers", "candidate_aliases", "conviction_entries"):
         assert sorted(map(key, a.tables[table])) == sorted(map(key, b.tables[table])), table
+
+
+# ── review 010: Conviction entries as the old app keyed them ────────────────────────────────────────────────────
+
+
+@pytest.mark.parametrize(
+    ("company", "slug"),
+    [
+        ("a68 GmbH", "a68"),
+        ("Drawcall UG", "drawcall"),
+        ("RegCheck (Softreg GmbH)", "regcheck-softreg"),
+        ("Müller Größe AG", "mueller-groesse"),
+        ("X" * 50, "x" * 40),
+    ],
+)
+def test_conviction_slug_is_the_old_radar_slug(legacy: Path, company: str, slug: str) -> None:
+    write(legacy, "real_data.json", {"signals": [{"company": company, "status": "new"}]})
+    (entry,) = plan_for(legacy).tables["conviction_entries"]
+    assert entry["slug"] == slug
+
+
+def test_two_entries_with_one_old_slug_block_the_import(legacy: Path) -> None:
+    write(legacy, "real_data.json", {"signals": [{"company": "Acme GmbH", "status": "new"},
+                                                 {"company": "Acme AG", "status": "new"}]})  # fmt: skip
+    plan = plan_for(legacy)
+    assert any("share the slug 'acme'" in b for b in plan.blockers)
+
+
+@pytest.mark.parametrize(
+    ("verified", "flags"),
+    [
+        (
+            {"founders": True, "traction": False, "funding": False},
+            {"founders": True, "traction": False, "funding": False},
+        ),
+        (
+            {"founders": False, "traction": False, "funding": False},
+            {"founders": False, "traction": False, "funding": False},
+        ),
+        (False, {}),
+        (None, {}),
+        ({"founders": "yes"}, {}),
+    ],
+)
+def test_conviction_verified_keeps_the_per_claim_record(legacy: Path, verified: Any, flags: dict[str, bool]) -> None:
+    write(legacy, "real_data.json", {"signals": [{"company": "Flagged Co", "status": "new", "verified": verified}]})
+    (entry,) = plan_for(legacy).tables["conviction_entries"]
+    assert entry["verified"] == flags  # never collapsed to one boolean, never "all verified" from a non-empty record
+
+
+def test_a_kept_entry_links_to_the_lead_it_came_from_through_merges(legacy: Path) -> None:
+    # aaaaaaaaaaa1 is merged into aaaaaaaaaaa2 by the shared DUNS: the entry must point at the survivor
+    write(
+        legacy, "real_data.json", {"signals": [{"company": "Duplex Bio", "status": "new", "inbox_id": "aaaaaaaaaaa1"}]}
+    )
+    plan = plan_for(legacy)
+    (entry,) = plan.tables["conviction_entries"]
+    assert entry["candidate_id"] == resolve(plan, "candidate", "aaaaaaaaaaa1") == "aaaaaaaaaaa2"

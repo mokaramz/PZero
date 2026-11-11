@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-11T01:48:28.015633+00:00",
+  "generated_at": "2026-11-11T13:00:32.213571+00:00",
   "reconciliation": {
     "real_data.json signals": {
       "in": 10,
@@ -56,12 +56,12 @@
       "rows": 4
     },
     "inference_ledger.jsonl": {
-      "lines": 2279,
-      "rows": 2279
+      "lines": 2293,
+      "rows": 2293
     },
     "schedule": {
       "jobs": 15,
-      "runs": 238
+      "runs": 255
     }
   },
   "notes": [
@@ -144,17 +144,17 @@
       "present": true,
       "parseable": true,
       "collection": null,
-      "records": 2279
+      "records": 2293
     },
     "schedule/runs.jsonl": {
       "present": true,
       "parseable": true,
       "collection": null,
-      "records": 238
+      "records": 255
     }
   },
   "snapshot": {
-    "files": 2192,
+    "files": 2200,
     "capture_attempts": 1
   },
   "identity": {
@@ -268,13 +268,13 @@
     "conviction_entries": 10,
     "events": 543,
     "research_jobs": 4,
-    "model_ledger": 2279,
+    "model_ledger": 2293,
     "job_state": 15,
-    "job_runs": 238,
+    "job_runs": 255,
     "documents": 77,
-    "legacy_documents": 2192
+    "legacy_documents": 2200
   },
-  "archive_bytes": 20198070,
+  "archive_bytes": 20662622,
   "blockers": [],
   "secrets_found": []
 }

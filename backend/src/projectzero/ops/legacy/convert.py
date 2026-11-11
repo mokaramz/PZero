@@ -38,10 +38,6 @@ def stable_short_id(key: str) -> str:
     return hashlib.sha256(key.encode("utf-8")).hexdigest()[:12]
 
 
-def slugify(text: str) -> str:
-    return re.sub(r"[^a-z0-9]+", "-", text.casefold()).strip("-")
-
-
 def timestamp(value: Any) -> datetime | None:
     """Legacy timestamps: ISO with or without 'T', seconds or offset; naive values are Europe/Berlin."""
     if not isinstance(value, str) or not value.strip():

@@ -5,7 +5,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { before, describe, test } from "node:test";
 
-import { FIXTURES, freshDb, rejects } from "./helpers.mjs";
+import { FIXTURES, freshDb, MIGRATIONS, rejects } from "./helpers.mjs";
 
 const sha256 = (bytes) => createHash("sha256").update(bytes).digest("hex");
 
@@ -312,5 +312,41 @@ describe("migration 0002 — names are normalised by the application", () => {
                                 where n.nspname = 'pz' and p.proname = 'normalize_name'`);
     assert.equal(fn.rows[0].n, 0);
     await db.query(`insert into pz.companies (name, normalized_name) values ('Ölwerk Süd GmbH', 'ölwerk süd')`);
+  });
+});
+
+describe("migration 0003 — a Conviction entry keeps its per-claim verification record", () => {
+  test("verified is a JSON object, defaults to {}, and refuses anything else", async () => {
+    const db = await freshDb();
+    const col = await db.query(
+      `select data_type, column_default from information_schema.columns
+        where table_schema = 'pz' and table_name = 'conviction_entries' and column_name = 'verified'`,
+    );
+    assert.equal(col.rows[0].data_type, "jsonb");
+    const co = (await db.query(`insert into pz.companies (name) values ('Flagged Co') returning id`)).rows[0].id;
+    await db.query(
+      `insert into pz.conviction_entries (company_id, slug, status, verified) values ($1, 'flagged', 'new', $2)`,
+      [co, JSON.stringify({ founders: true, traction: false, funding: false })],
+    );
+    const row = await db.query(`select verified from pz.conviction_entries where slug = 'flagged'`);
+    assert.deepEqual(row.rows[0].verified, { founders: true, traction: false, funding: false });
+    const co2 = (await db.query(`insert into pz.companies (name) values ('Other Co') returning id`)).rows[0].id;
+    await rejects(
+      db.query(`insert into pz.conviction_entries (company_id, slug, status, verified) values ($1, 'other', 'new', '[true]')`, [co2]),
+      /conviction_entries_verified_is_object/,
+    );
+  });
+
+  test("it refuses to run over existing entries instead of inventing flags", async () => {
+    const { PGlite } = await import("@electric-sql/pglite");
+    const { readdirSync } = await import("node:fs");
+    const db = new PGlite();
+    await db.exec("create role anon nologin; create role authenticated nologin;");
+    const files = readdirSync(MIGRATIONS).filter((f) => f.endsWith(".sql")).sort();
+    const third = files.find((f) => f.includes("conviction_verified_flags"));
+    for (const f of files.filter((f) => f < third)) await db.exec(readFileSync(join(MIGRATIONS, f), "utf8"));
+    const co = (await db.query(`insert into pz.companies (name) values ('Early Co') returning id`)).rows[0].id;
+    await db.query(`insert into pz.conviction_entries (company_id, slug, status, verified) values ($1, 'early', 'new', true)`, [co]);
+    await rejects(db.exec(readFileSync(join(MIGRATIONS, third), "utf8")), /conviction_entries is not empty/);
   });
 });

@@ -29,7 +29,19 @@ from projectzero.ops.legacy.plan import TABLE_ORDER, ImportPlan
 
 MARKER_KEY = "ops/legacy_import"
 JSONB_COLUMNS = frozenset(
-    {"attrs", "legacy", "payload", "evidence", "detail", "outcome_detail", "scores", "request", "result", "body"}
+    {
+        "attrs",
+        "legacy",
+        "payload",
+        "evidence",
+        "detail",
+        "outcome_detail",
+        "scores",
+        "request",
+        "result",
+        "body",
+        "verified",
+    }
 )
 BATCH = 500
 

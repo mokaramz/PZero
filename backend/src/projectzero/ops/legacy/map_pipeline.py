@@ -6,6 +6,7 @@ from collections import defaultdict
 from typing import Any
 
 from projectzero.dealflow.identity import company_domain
+from projectzero.dealflow.ranking.names import slug as company_slug
 from projectzero.dealflow.sources.registry import country_code, registry_value
 from projectzero.ops.legacy.companies import StrongKey
 from projectzero.ops.legacy.convert import (
@@ -14,7 +15,6 @@ from projectzero.ops.legacy.convert import (
     STATUS_RANK,
     day,
     records,
-    slugify,
     stable_uuid,
     str_list,
     text_or_none,
@@ -24,6 +24,13 @@ from projectzero.ops.legacy.state import (
     BuilderState,
     _Candidate,
 )
+
+
+def verified_flags(value: Any) -> dict[str, bool]:
+    """The old per-claim verification record; anything that is not one reads as nothing verified (never as all)."""
+    if not isinstance(value, dict):
+        return {}
+    return {str(k): v for k, v in value.items() if isinstance(v, bool)}
 
 
 class PipelineMapper(BuilderState):
@@ -95,9 +102,16 @@ class PipelineMapper(BuilderState):
     # ── conviction ──────────────────────────────────────────────────────────────────────────────────────────────
     def conviction(self) -> None:
         signals = records((self.src.json("real_data.json", {}) or {}).get("signals"))
+        seen_slugs: dict[str, str] = {}
         for s in signals:
             name = s.get("company") or ""
-            slug = slugify(name)
+            slug = company_slug(name)  # the old radar.slug: deep links, case and Omar keys use it (review 010)
+            if slug in seen_slugs:
+                self.identity_blockers.append(
+                    f"conviction entries {seen_slugs[slug]!r} and {name!r} share the slug {slug!r}: rename one first"
+                )
+                continue
+            seen_slugs[slug] = name
             keys: list[StrongKey] = [("legacy_key", "real_data", slug)]
             if domain := company_domain(s.get("website")):
                 keys.append(("domain", "", domain))
@@ -119,7 +133,7 @@ class PipelineMapper(BuilderState):
                 "candidate_id": None,
                 "slug": slug,
                 "status": s.get("status") or "new",
-                "verified": bool(s.get("verified")),
+                "verified": verified_flags(s.get("verified")),
                 "scores": s.get("scores") if isinstance(s.get("scores"), dict) else {"value": s.get("scores")},
                 "attrs": {k: v for k, v in s.items() if k not in promoted},
                 "legacy": s,
@@ -332,7 +346,12 @@ class PipelineMapper(BuilderState):
                     | self.book.merge_basis(self._seed(survivor), self._seed(cand)),
                 )
                 survivor.row["origins"] = sorted(set(survivor.row["origins"]) | set(cand.row["origins"]))
-        # conviction entries point at the kept candidate of their company, when there is one
+        # conviction entries point at the Deal Flow lead they were kept from (old inbox_id, through merges); otherwise
+        # at the kept candidate of their company, when there is one
+        for kept_entry in self.t["conviction_entries"]:
+            inbox_id = kept_entry["legacy"].get("inbox_id")
+            if isinstance(inbox_id, str) and inbox_id in alias_map:
+                kept_entry["candidate_id"] = alias_map[inbox_id]
         for cand in self.cands:
             entry = self.conviction_by_company.get(cand.row["company_id"] or "")
             if entry and cand.row["status"] == "kept" and absorbed_into.get(id(cand)) is None:

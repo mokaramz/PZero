@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-11T02:01:52.181042+00:00",
+  "generated_at": "2026-11-11T13:01:04.924980+00:00",
   "reconciliation": {
     "real_data.json signals": {
       "in": 10,
@@ -56,12 +56,12 @@
       "rows": 4
     },
     "inference_ledger.jsonl": {
-      "lines": 2279,
-      "rows": 2279
+      "lines": 2293,
+      "rows": 2293
     },
     "schedule": {
       "jobs": 15,
-      "runs": 238
+      "runs": 255
     }
   },
   "notes": [
@@ -144,17 +144,17 @@
       "present": true,
       "parseable": true,
       "collection": null,
-      "records": 2279
+      "records": 2293
     },
     "schedule/runs.jsonl": {
       "present": true,
       "parseable": true,
       "collection": null,
-      "records": 238
+      "records": 255
     }
   },
   "snapshot": {
-    "files": 2192,
+    "files": 2200,
     "capture_attempts": 1
   },
   "identity": {
@@ -268,20 +268,20 @@
     "conviction_entries": 10,
     "events": 543,
     "research_jobs": 4,
-    "model_ledger": 2279,
+    "model_ledger": 2293,
     "job_state": 15,
-    "job_runs": 238,
+    "job_runs": 255,
     "documents": 77,
-    "legacy_documents": 2192
+    "legacy_documents": 2200
   },
-  "archive_bytes": 20198070,
+  "archive_bytes": 20662622,
   "blockers": [],
   "secrets_found": [],
   "rehearsal": {
-    "schema": "pz_rehearse_38745921",
+    "schema": "pz_rehearse_65789367",
     "first_apply": {
       "applied": true,
-      "fingerprint": "7c8a97736053da5e61c6d8100ec57a469a244e077047584b6b147d40479cd010"
+      "fingerprint": "407bd275440c8e99a00cf1e8f8a238e80364b0926a0a4875f6f69366e7e370f1"
     },
     "counts": {
       "all_match": true,
@@ -303,16 +303,16 @@
         "conviction_entries": 10,
         "events": 543,
         "research_jobs": 4,
-        "model_ledger": 2279,
+        "model_ledger": 2293,
         "job_state": 15,
-        "job_runs": 238,
+        "job_runs": 255,
         "documents": 78,
-        "legacy_documents": 2192
+        "legacy_documents": 2200
       }
     },
     "archive": {
-      "files": 2192,
-      "restored_bytes": 20198070,
+      "files": 2200,
+      "restored_bytes": 20662622,
       "mismatched": [],
       "all_match": true
     },
@@ -342,16 +342,16 @@
         "conviction_entries": 10,
         "events": 543,
         "research_jobs": 4,
-        "model_ledger": 2279,
+        "model_ledger": 2293,
         "job_state": 15,
-        "job_runs": 238,
+        "job_runs": 255,
         "documents": 78,
-        "legacy_documents": 2192
+        "legacy_documents": 2200
       }
     },
     "scratch_schema_dropped": true,
     "conflict_existing_row": {
-      "schema": "pz_conflict_3144fb7f",
+      "schema": "pz_conflict_be9eda63",
       "kind": "row",
       "preexisting": "candidates.id = 4225c719f2f2",
       "outcome": "aborted: unique violation on candidates_pkey",
@@ -365,7 +365,7 @@
       "scratch_schema_dropped": true
     },
     "conflict_existing_archive_path": {
-      "schema": "pz_conflict_4f4c2868",
+      "schema": "pz_conflict_77db79be",
       "kind": "archive",
       "preexisting": "legacy_documents.path = .browser_opened",
       "outcome": "aborted: unique violation on legacy_documents_pkey",
