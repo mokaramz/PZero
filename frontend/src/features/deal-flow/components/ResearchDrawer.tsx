@@ -1,9 +1,7 @@
 import { useState } from "react";
 
 import { Button, Callout, Drawer } from "@/components/ui";
-import { NOT_PORTED } from "../model/deferred";
 import type { Candidate } from "../model/types";
-import { DeferredButton } from "./DeferredButton";
 import styles from "../DealFlow.module.css";
 
 const searchLinks = (name: string): Array<[string, string]> => {
@@ -23,11 +21,14 @@ export function ResearchDrawer({
   c,
   onClose,
   onDecide,
+  onKeep,
   busy,
 }: {
   c: Candidate;
   onClose: () => void;
   onDecide: (decision: "research" | "rejected", notes: string) => Promise<boolean>;
+  /** opens Keep & score; the notes are saved first (as researching), as before */
+  onKeep: () => void;
   busy: boolean;
 }) {
   const [notes, setNotes] = useState(c.notes || "");
@@ -56,9 +57,15 @@ export function ResearchDrawer({
       </label>
       <textarea id="rnotes" rows={5} value={notes} onChange={(e) => setNotes(e.target.value)} className={styles.mt8} />
       <div className={`row ${styles.mt8}`}>
-        <DeferredButton variant="success" reason={NOT_PORTED.keep}>
+        <Button
+          variant="success"
+          disabled={busy}
+          onClick={async () => {
+            if (await onDecide("research", notes)) onKeep();
+          }}
+        >
           Keep — go to scoring
-        </DeferredButton>
+        </Button>
         <Button
           variant="primary"
           disabled={busy}

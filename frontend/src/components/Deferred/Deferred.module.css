@@ -1,0 +1,9 @@
+/* Not ported yet (reviews 009, 011): entry points whose backend arrives with a later port stay in place, focusable and
+   named, but do nothing. */
+.off[aria-disabled="true"],
+.off[aria-disabled="true"]:hover {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+  filter: none;
+}

@@ -1,8 +1,11 @@
 import { useCallback, useMemo, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { ContextInspector } from "@/components/attention";
 import { useToast } from "@/components/Toast";
 import { Async, Panel } from "@/components/ui";
+import { companyLink } from "@/features/conviction/api";
+import { EditCompanyDrawer } from "@/features/conviction/components/EditCompanyDrawer";
 import { CandidateDetail } from "./components/CandidateDetail";
 import { CandidateFilters } from "./components/CandidateFilters";
 import { CandidateList } from "./components/CandidateList";
@@ -23,7 +26,8 @@ import styles from "./DealFlow.module.css";
 
 /**
  * Deal Flow (review 009): the whole inbox ranked on the client by the protected rules, the selected candidate's
- * inspector, and the operator's decision. Panels whose backend is not ported yet keep their place, disabled.
+ * inspector, and the operator's decision (Keep opens the Conviction scoring form). Panels whose backend is not ported
+ * yet keep their place, disabled.
  */
 export default function DealFlowPage() {
   const q = useInbox();
@@ -33,6 +37,8 @@ export default function DealFlowPage() {
   const { controls, set, sel, setSel, limit, showMore, show } = useViewControls();
   const { ws, naf, theme, im, filter, tScope, tKind, tRoute } = controls;
   const [researchId, setResearchId] = useState<string | null>(null);
+  const [keepId, setKeepId] = useState<string | null>(null);
+  const navigate = useNavigate();
   const findRef = useRef<HTMLDivElement | null>(null);
 
   useDeepLinks(ib, { show, setFilter: set.setFilter, setRoute: set.setTRoute, findRef });
@@ -49,6 +55,7 @@ export default function DealFlowPage() {
 
   const selected = byId(selId);
   const researchC = byId(researchId);
+  const keepC = byId(keepId);
   const detail = useDecision(selected);
   const research = useDecision(researchC);
   const toast = useToast();
@@ -112,6 +119,7 @@ export default function DealFlowPage() {
                       actions={{
                         decide: (d) => void detail.decide(d),
                         research: () => selected && setResearchId(selected.id),
+                        keep: () => selected && setKeepId(selected.id),
                         busy: detail.busy || research.busy,
                       }}
                       tri={selId && tri ? tri[selId] : undefined}
@@ -137,7 +145,15 @@ export default function DealFlowPage() {
             if (ok && d === "research") toast.show("Saved as researching", "ok");
             return ok;
           }}
+          onKeep={() => {
+            setResearchId(null);
+            setKeepId(researchC.id);
+          }}
         />
+      )}
+      {/* Keep is a Conviction save with the candidate's inbox_id (review 011): on success the new entry opens */}
+      {keepC && (
+        <EditCompanyDrawer key={keepC.id} open candidate={keepC} onClose={() => setKeepId(null)} onSaved={(slug) => navigate(companyLink(slug))} />
       )}
     </>
   );

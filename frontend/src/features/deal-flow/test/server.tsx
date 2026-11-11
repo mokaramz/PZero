@@ -19,6 +19,9 @@ export type Routes = {
   triage?: () => TriagePayload | null;
   candidate?: (id: string, ns: string) => Answer;
   decide?: (id: string, body: Record<string, unknown>) => Answer;
+  /** the Conviction scoring tables and save, for Keep (review 011) */
+  meta?: () => unknown;
+  save?: (body: Record<string, unknown>) => Answer;
 };
 
 export function fakeServer(routes: Routes) {
@@ -43,6 +46,11 @@ export function fakeServer(routes: Routes) {
     const dec = /^\/api\/deal-flow\/candidates\/([^/]+)\/decision$/.exec(path);
     if (method === "POST" && dec && routes.decide) {
       const a = await routes.decide(decodeURIComponent(dec[1]), body);
+      return json(a.status, a.body);
+    }
+    if (method === "GET" && path === "/api/conviction/meta" && routes.meta) return json(200, routes.meta());
+    if (method === "POST" && path === "/api/conviction/save" && routes.save) {
+      const a = await routes.save(body);
       return json(a.status, a.body);
     }
     return json(404, { ok: false, error: "not found" });

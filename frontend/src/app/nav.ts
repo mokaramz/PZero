@@ -43,7 +43,7 @@ export const NAV: NavSection[] = [
   {
     title: "Judgment",
     items: [
-      { path: "/conviction", label: "Conviction", icon: "conviction", legacyView: "pipe" },
+      { path: "/conviction", label: "Conviction", icon: "conviction", legacyView: "pipe", page: lazy(() => import("@/features/conviction/ConvictionPage")) },
       { path: "/radar", label: "Radar", icon: "radar", legacyView: "radar" },
       { path: "/founder-calls", label: "Founder Calls", icon: "phone", legacyView: "calls" },
       { path: "/evaluator", label: "Active Evaluator", icon: "chat", legacyView: "evaluator" },

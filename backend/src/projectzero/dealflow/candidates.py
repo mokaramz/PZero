@@ -10,9 +10,10 @@ Native Scout, manual).
   committee reviews and every id it is known by. Any old id resolves (``candidate`` / ``scout_intake`` /
   ``native_scout`` namespaces), so legacy deep links keep working.
 * ``decide`` — the operator changes a status. ``kept`` is refused: Keep is the scored Conviction workflow, never a
-  bare flag (old rule E2). Deciding the current status again changes nothing and says so. An optional
-  ``expected_status`` guards against two tabs overwriting each other. Every change is one ``candidate_events`` row;
-  source yield, feedback learning and case preparation will read those events instead of being side effects here.
+  bare flag (old rule E2); that workflow calls ``lock_for_keep`` / ``keep`` inside its own save transaction.
+  Deciding the current status again changes nothing and says so. An optional ``expected_status`` guards against two
+  tabs overwriting each other. Every change is one ``candidate_events`` row; source yield, feedback learning and case
+  preparation will read those events instead of being side effects here.
 """
 
 from __future__ import annotations
@@ -346,3 +347,43 @@ class DealFlowStore:
             )
         fb = feedback.for_candidate(c, RankingContext.load(self.conn, self._schema).table)  # the old decide response
         return {"id": candidate_id, "status": status, "previous_status": current, "changed": changed, "feedback": fb}
+
+    # ── Keep (review 011) ───────────────────────────────────────────────────────────────────────────────────────
+    def lock_for_keep(self, candidate_id: str) -> dict[str, Any]:
+        """The first half of a scored Keep: company row, then candidate row (the one lock order), and the reopen
+        guard, BEFORE the Conviction entry is written. Returns ``{status, company_id}`` read under both locks."""
+        locked = self._lock_candidate(candidate_id)
+        if locked["company_id"] and locked["status"] in CLOSED_STATUSES:
+            self._guard_reopen(candidate_id, locked["company_id"])
+        return locked
+
+    def keep(self, candidate_id: str, *, reason: str, detail: dict[str, Any]) -> dict[str, Any]:
+        """The status half of a scored Keep: the Conviction save (``conviction.store``) calls it in the SAME
+        transaction as the entry write, after ``lock_for_keep``. The candidate becomes ``kept`` and the operator status
+        event carries the decision snapshot (the old ``record_decision(c, "kept")``), so the effective feedback ledger
+        counts it like every other decision. A candidate already ``kept`` records nothing: repeating a Keep is no new
+        decision."""
+        locked = self.lock_for_keep(candidate_id)  # already held by this transaction: no new lock, same order
+        current = locked["status"]
+        changed = current != "kept"
+        if changed:
+            self._rows(
+                "update {s}.candidates set status = 'kept', decided_at = now() where id = %s returning id",
+                (candidate_id,),
+            )
+        c, _ = ranking_input(self._rows("select * from {s}.candidates where id = %s", (candidate_id,))[0])
+        if changed:
+            aliases = self._rows(
+                "select alias_id from {s}.candidate_aliases where namespace = 'candidate' and candidate_id = %s",
+                (candidate_id,),
+            )
+            keys = ledger.ordered_keys(candidate_id, [str(r["alias_id"]) for r in aliases])
+            event = {**detail, "feedback": ledger.decision_record(c, STATUS_TO_DECISION["kept"], keys)}
+            self._rows(
+                "insert into {s}.candidate_events "
+                "(candidate_id, actor, action, from_status, to_status, reason, detail) "
+                "values (%s, 'operator', 'status', %s, 'kept', %s, %s) returning id",
+                (candidate_id, current, reason, Jsonb(event)),
+            )
+        fb = feedback.for_candidate(c, RankingContext.load(self.conn, self._schema).table)
+        return {"id": candidate_id, "status": "kept", "previous_status": current, "changed": changed, "feedback": fb}

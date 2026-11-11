@@ -1,0 +1,90 @@
+/* Stage trace (Conviction header): restrained, drawn once, no glow, no network theatre. */
+.trace {
+  margin: 0;
+  width: 340px;
+  max-width: 100%;
+}
+.trace svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.line {
+  fill: none;
+  stroke: var(--blue-ink);
+  stroke-width: 1.2;
+  stroke-linecap: round;
+  opacity: 0.7;
+}
+.faint {
+  stroke: var(--stone);
+  opacity: 1;
+}
+.strong {
+  stroke: var(--navy);
+  stroke-width: 1.6;
+  opacity: 1;
+}
+.dot {
+  animation: traceIn var(--dur) var(--ease-out) backwards;
+}
+.dot[data-tone="sand"] {
+  fill: var(--dot-sand);
+}
+.dot[data-tone="sage"] {
+  fill: var(--dot-sage);
+}
+.dot[data-tone="steel"] {
+  fill: var(--blue-line);
+}
+.node {
+  fill: var(--paper);
+  stroke: var(--blue-ink);
+  stroke-width: 1.3;
+  animation: traceIn var(--dur) var(--ease-out) backwards;
+}
+.node[data-tone="sage"] {
+  fill: var(--green);
+  stroke: var(--green);
+}
+.analysis {
+  fill: var(--paper);
+  stroke: var(--amber);
+  stroke-width: 1.4;
+}
+.glyph {
+  fill: none;
+  stroke: var(--navy);
+  stroke-width: 1.4;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+.mid {
+  fill: var(--navy);
+}
+.target {
+  fill: var(--green-soft);
+  stroke: var(--green);
+  stroke-width: 1.8;
+}
+.core {
+  fill: var(--green);
+}
+.stage {
+  animation: traceIn var(--dur-slow) var(--ease-out) backwards;
+}
+.text {
+  font: 600 11.5px var(--font-ui);
+  fill: var(--ink-2);
+}
+@keyframes traceIn {
+  from {
+    opacity: 0;
+  }
+}
+@media (max-width: 760px) {
+  .trace {
+    width: 280px;
+  }
+}
