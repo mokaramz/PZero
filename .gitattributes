@@ -1,1 +1,5 @@
+# Keep LF everywhere in the working copy (no CRLF rewriting on Windows checkouts)
+* text=auto eol=lf
+# Byte-exact fixtures: SHA-256-pinned goldens and the CRLF/BOM archive fixture must never be converted
 supabase/tests/fixtures/** -text
+backend/tests/fixtures/** -text
