@@ -2,9 +2,18 @@
 
 from __future__ import annotations
 
+from collections.abc import Callable
 from typing import Any
 
-from projectzero.dealflow.identity import is_placeholder_name, normalize_name
+from projectzero.dealflow.identity import is_placeholder_name
+from projectzero.network.identity import (
+    canonical_github_id,
+    canonical_openalex,
+    canonical_orcid,
+    classify_profile_url,
+    fold,
+    own_accounts,
+)
 from projectzero.ops.legacy.convert import (
     day,
     records,
@@ -119,44 +128,83 @@ class RecordsMapper(BuilderState):
 
     # ── network, events ─────────────────────────────────────────────────────────────────────────────────────────
     def people(self) -> None:
-        people = records((self.src.json("people.json", {}) or {}).get("people"))
+        """``people.json`` -> people + person_identifiers (review 012).
+
+        A record without an ``id`` is skipped and reported (the old ``compat.records(..., ("id",))``: the old app never
+        showed it); two records with one id are a blocker (the old ``people.get`` saw only the first). ``created_at``
+        is the old ``created`` day; ``normalized_name`` the old person key ``fold``. Strong identifiers are globally
+        unique (a cross-person repeat is reported, not stored); weak ones (``url``, ``alias``) are unique per person.
+        """
+        collection = (self.src.json("people.json", {}) or {}).get("people")
+        items = list(collection.values()) if isinstance(collection, dict) else collection
+        items = items if isinstance(items, list) else []
         owned: dict[tuple[str, str], str] = {}
-        duplicates = []
-        promoted = {"id", "name", "country", "identity_status", "founder_status", "radar_state"}
-        for p in people:
+        seen_ids: dict[str, Any] = {}
+        duplicates: list[dict[str, Any]] = []
+        skipped: list[dict[str, Any]] = []
+        repeated = 0
+        created_from_import_time = 0
+        for position, p in enumerate(items):
+            if not isinstance(p, dict) or p.get("id") in (None, ""):
+                name = p.get("name") if isinstance(p, dict) else None
+                why = "no id" if isinstance(p, dict) else "not a record"
+                skipped.append({"position": position, "name": name if isinstance(name, str) else None, "why": why})
+                continue
+            pid = str(p["id"])
+            if pid in seen_ids:
+                self.identity_blockers.append(
+                    f"people.json records {seen_ids[pid]!r} and {p.get('name')!r} share the id {pid!r}: "
+                    "the old app showed only the first; rename or merge one first"
+                )
+                continue
+            seen_ids[pid] = p.get("name")
+            created = day(p.get("created"))
+            if created is None:
+                created_from_import_time += 1
+            name = p.get("name") if isinstance(p.get("name"), str) and p["name"].strip() else pid
             self.t["people"].append(
                 {
-                    "id": p["id"],
-                    "name": p.get("name") or p["id"],
-                    "normalized_name": normalize_name(p.get("name")),
-                    "country": p.get("country") if isinstance(p.get("country"), str) else None,
-                    "identity_status": p.get("identity_status"),
-                    "founder_status": p.get("founder_status"),
-                    "radar_state": p.get("radar_state"),
-                    "attrs": {k: v for k, v in p.items() if k not in promoted},
+                    "id": pid,
+                    "name": name,
+                    "normalized_name": fold(name) or None,
+                    **{k: p.get(k) if isinstance(p.get(k), str) else None for k in _PERSON_TEXT if k != "name"},
+                    # a promoted field whose value is not text (e.g. a non-string country) stays in attrs
+                    "attrs": {
+                        k: v
+                        for k, v in p.items()
+                        # "record" is reserved for application writes (the current record, review 012, H-078):
+                        # an imported field of that name stays in legacy only
+                        if k not in ("id", "record")
+                        and (k not in _PERSON_TEXT or (v is not None and not isinstance(v, str)))
+                    },
                     "legacy": p,
+                    "created_at": created or self.now,
                 }
             )
-            pairs = [
-                ("orcid", p.get("orcid")),
-                ("openalex", p.get("openalex_id")),
-                ("github", p.get("github_id")),
-                ("patent_inventor", p.get("patent_inventor_id")),
-            ]
-            pairs += [("profile_url", u) for u in str_list(p.get("profile_urls"))]
-            for kind, value in pairs:
-                if not isinstance(value, str) or not value.strip() or is_placeholder_name(value):
+            mine: set[tuple[str, str]] = set()
+            for kind, value in _person_identifiers(p):
+                if (kind, value) in mine:
+                    repeated += 1  # the same identifier twice on one person: one row, nothing to report
                     continue
-                key = (kind, value.strip())
-                if key in owned:
-                    duplicates.append({"kind": kind, "value": value, "people": [owned[key], p["id"]]})
-                    continue
-                owned[key] = p["id"]
-                self.t["person_identifiers"].append({"person_id": p["id"], "kind": kind, "value": value.strip()})
+                mine.add((kind, value))
+                if kind not in _WEAK_PERSON_KINDS:
+                    owner = owned.setdefault((kind, value), pid)
+                    if owner != pid:
+                        duplicates.append({"kind": kind, "value": value, "people": [owner, pid]})
+                        continue
+                self.t["person_identifiers"].append({"person_id": pid, "kind": kind, "value": value})
+        by_kind: dict[str, int] = {}
+        for i in self.t["person_identifiers"]:
+            by_kind[i["kind"]] = by_kind.get(i["kind"], 0) + 1
         self.report["reconciliation"]["people.json"] = {
-            "in": len(people),
+            "in": len(items),
             "rows": len(self.t["people"]),
+            "skipped_without_id": skipped,
+            "duplicate_ids_blocked": len(items) - len(skipped) - len(self.t["people"]),
+            "created_at_from_import_time": created_from_import_time,
+            "identifiers": dict(sorted(by_kind.items())),
             "duplicate_identifiers_not_stored": duplicates,
+            "repeated_within_one_person": repeated,
             "company_links": "kept in people.attrs (legacy links are by name; company_people waits for confirmation)",
         }
 
@@ -316,6 +364,37 @@ class RecordsMapper(BuilderState):
             if f.parsed is not None:
                 _redact(f.parsed, f"archive:{f.path}", secrets)
         return sorted(set(secrets))
+
+
+_PERSON_TEXT = ("name", "country", "identity_status", "founder_status", "radar_state")  # text columns of pz.people
+_WEAK_PERSON_KINDS = frozenset({"url", "alias"})  # unique per person only (migration 0005)
+
+
+def _person_identifiers(p: dict[str, Any]) -> list[tuple[str, str]]:
+    """(kind, canonical value) of every identifier a legacy person record asserts, strongest first."""
+
+    def text(value: Any, canonical: Callable[[str], str]) -> str | None:
+        return canonical(value) if isinstance(value, str) and value.strip() and not is_placeholder_name(value) else None
+
+    out: list[tuple[str, str]] = []
+    strong = (
+        ("orcid", text(p.get("orcid"), canonical_orcid)),
+        ("openalex", text(p.get("openalex_id"), canonical_openalex)),
+        ("github", canonical_github_id(p.get("github_id"))),  # the same validator as the ownership evidence (H-082)
+        ("patent_inventor", text(p.get("patent_inventor_id"), str.strip)),
+    )
+    out.extend((kind, value) for kind, value in strong if value is not None)
+    own = own_accounts(p)
+    for url in str_list(p.get("profile_urls")):
+        if not is_placeholder_name(url) and (classified := classify_profile_url(url, own)) is not None:
+            out.append(classified)
+    seen: set[str] = set()
+    for alias in str_list(p.get("aliases")):
+        value = alias.strip()
+        if value and not is_placeholder_name(value) and value.casefold() not in seen:
+            seen.add(value.casefold())  # one alias per spelling, case aside (the first spelling is kept)
+            out.append(("alias", value))
+    return out
 
 
 def _redact(value: Any, where: str, found: list[str], path: str = "") -> Any:

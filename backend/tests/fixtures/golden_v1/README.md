@@ -17,3 +17,5 @@ sha256 values above before comparing anything.
 `scripts/oracle/*_oracle.py` (`python -m projectzero.ops.parity_<name> goldens`); each records its provenance
 (revision, clean tree). `oracle_conviction.json` (review 011): `taste.score`, `imq.evaluate` / `persist`,
 `days_since` and `/api/meta` over a synthetic corpus at the fixed clock 2026-11-11 12:00.
+`oracle_people_fold.json` (review 012): the old person-identity key `services/identity.fold` over a synthetic corpus of
+72 names and non-string values (`python -m projectzero.ops.parity_people goldens`).

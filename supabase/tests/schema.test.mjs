@@ -374,3 +374,59 @@ describe("migration 0004 — every Conviction write is an append-only event", ()
     assert.equal(rls.rows[0].relrowsecurity, true);
   });
 });
+
+describe("migration 0005 — a person's non-profile link is a weak url identifier", () => {
+  test("url and alias are weak (shared by two people), a profile stays globally unique", async () => {
+    const db = await freshDb();
+    await db.query(`insert into pz.people (id, name) values ('p-a', 'Ada'), ('p-b', 'Bea')`);
+    for (const p of ["p-a", "p-b"]) {
+      await db.query(`insert into pz.person_identifiers (person_id, kind, value) values ($1, 'url', 'https://acme.example.com')`, [p]);
+      await db.query(`insert into pz.person_identifiers (person_id, kind, value) values ($1, 'alias', 'adal')`, [p]);
+    }
+    await db.query(`insert into pz.person_identifiers (person_id, kind, value) values ('p-a', 'profile_url', 'https://github.com/ada')`);
+    const rows = await db.query(`select kind, strength, count(*)::int n from pz.person_identifiers group by 1, 2 order by 1`);
+    assert.deepEqual(rows.rows, [
+      { kind: "alias", strength: "weak", n: 2 },
+      { kind: "profile_url", strength: "strong", n: 1 },
+      { kind: "url", strength: "weak", n: 2 },
+    ]);
+    await rejects(
+      db.query(`insert into pz.person_identifiers (person_id, kind, value) values ('p-b', 'profile_url', 'https://github.com/ada')`),
+      /person_identifiers_strong_unique/,
+    );
+    await rejects(
+      db.query(`insert into pz.person_identifiers (person_id, kind, value) values ('p-a', 'url', 'https://acme.example.com')`),
+      /person_identifiers_per_person_unique/,
+    );
+    await rejects(
+      db.query(`insert into pz.person_identifiers (person_id, kind, value) values ('p-a', 'website', 'x')`),
+      /person_identifiers_kind_check/,
+    );
+  });
+
+  test("it applies over existing identifiers without changing any strength", async () => {
+    const { PGlite } = await import("@electric-sql/pglite");
+    const { readdirSync } = await import("node:fs");
+    const db = new PGlite();
+    await db.exec("create role anon nologin; create role authenticated nologin;");
+    const files = readdirSync(MIGRATIONS).filter((f) => f.endsWith(".sql")).sort();
+    const fifth = files.find((f) => f.includes("person_weak_url"));
+    for (const f of files.filter((f) => f < fifth)) await db.exec(readFileSync(join(MIGRATIONS, f), "utf8"));
+    await db.query(`insert into pz.people (id, name) values ('p-a', 'Ada')`);
+    await db.query(`insert into pz.person_identifiers (person_id, kind, value)
+                    values ('p-a', 'orcid', 'https://orcid.org/0000-0002-1825-0097'), ('p-a', 'alias', 'adal'),
+                           ('p-a', 'profile_url', 'https://acme.example.com')`);
+    await rejects(
+      db.query(`insert into pz.person_identifiers (person_id, kind, value) values ('p-a', 'url', 'https://a.example.com')`),
+      /person_identifiers_kind_check/,
+    );
+    await db.exec(readFileSync(join(MIGRATIONS, fifth), "utf8"));
+    const rows = await db.query(`select kind, value, strength from pz.person_identifiers order by id`);
+    assert.deepEqual(rows.rows.map((r) => [r.kind, r.strength]), [["orcid", "strong"], ["alias", "weak"], ["profile_url", "strong"]]);
+    await db.query(`insert into pz.people (id, name) values ('p-b', 'Bea')`);
+    await rejects(
+      db.query(`insert into pz.person_identifiers (person_id, kind, value) values ('p-b', 'orcid', 'https://orcid.org/0000-0002-1825-0097')`),
+      /person_identifiers_strong_unique/,
+    );
+  });
+});

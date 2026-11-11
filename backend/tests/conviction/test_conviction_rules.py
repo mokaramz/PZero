@@ -13,6 +13,7 @@ import pytest
 from projectzero.conviction import entries, imq, operator, pipeline, taste
 from projectzero.conviction.inputs import UNREADABLE, inputs_from
 from projectzero.conviction.store import ordered, record_of
+from projectzero.network.people import record_of as person_record
 
 NOW = datetime(2026, 11, 11, 12, 0, 0)
 TODAY = NOW.date()
@@ -261,3 +262,20 @@ def test_server_side_of_the_client_quirks() -> None:
 def test_days_since_takes_the_clock() -> None:
     assert taste.days_since("2026-11-01", date(2026, 11, 11)) == 10
     assert taste.days_since("2026-12-01", date(2026, 11, 11)) == 0
+
+
+def test_a_people_attrs_record_edit_reaches_the_imq_inputs() -> None:
+    """Review 012: the people write model. ``attrs.record`` (a Network write) wins over the imported ``legacy``."""
+    imported = {"id": "p-ada", "name": "Ada Lovelace", "identity_status": "needs identity resolution"}
+    row = {"id": "p-ada", "name": "Ada Lovelace", "identity_status": "needs identity resolution", "attrs": {},
+           "legacy": imported}  # fmt: skip
+
+    def state(r: dict[str, Any]) -> str:
+        inp = inputs_from({}, [person_record(r)])
+        return str(pipeline.build({"week": "45/2026"}, [qualified(80)], inp, NOW)["signals"][0]["imq_eval"]["state"])
+
+    assert state(row) == "NOT YET IMQ"  # the imported founder is not resolved: gate C fails
+    edited = {**row, "attrs": {"record": {**imported, "identity_status": "resolved"}}}
+    assert inputs_from({}, [person_record(edited)]).imq.people == [{**imported, "identity_status": "resolved"}]
+    assert state(edited) == imq.QUALIFIED
+    assert edited["legacy"]["identity_status"] == "needs identity resolution"  # the import stays untouched
