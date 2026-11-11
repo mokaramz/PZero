@@ -69,3 +69,37 @@ for (const width of [1366, 1920])
       const delta = keys.filter((k) => (sigs.old[k] ?? 0) !== (sigs.new[k] ?? 0)).map((k) => `${k}: ${sigs.old[k] ?? 0} -> ${sigs.new[k] ?? 0}`);
       console.log(`[${view.key} ${width} ${theme}] signature differences: ${delta.length ? delta.join(", ") : "none"}`);
     });
+
+/** The event form and the debrief (review 016): the same event opened by deep link in both apps. */
+for (const form of [{ key: "event-form", query: "edit=1", ready: '[aria-label="Event form"]' }, { key: "debrief", query: "debrief=1", ready: '[data-testid="debrief-form"]' }] as const)
+  for (const theme of ["light", "dark"] as const)
+    test(`capture events ${form.key} 1366 ${theme}`, async ({ browser, request }) => {
+      mkdirSync(DIR!, { recursive: true });
+      const ids = async (base: string) => ((await (await request.get(`${base}/api/events`)).json()).events as Array<{ id: string; past: boolean }>);
+      const oldIds = new Set((await ids(OLD!)).map((e) => e.id));
+      const pick = (await ids(NEW)).find((e) => !e.past && oldIds.has(e.id));
+      expect(pick, "an upcoming event both apps hold").toBeTruthy();
+      const sigs: Record<string, Record<string, number>> = {};
+      for (const [app, base] of [["old", OLD!], ["new", NEW]] as const) {
+        const ctx = await browser.newContext({ viewport: { width: 1366, height: 1000 }, colorScheme: theme, reducedMotion: "reduce" });
+        await ctx.addInitScript((t) => localStorage.setItem("pz.theme", t), theme);
+        const page = await ctx.newPage();
+        await page.goto(`${base}/events?event=${encodeURIComponent(pick!.id)}&${form.query}`);
+        await expect(page.locator(form.ready)).toBeVisible({ timeout: 90_000 });
+        await page.waitForTimeout(1500);
+        await page.screenshot({ path: join(DIR!, `events-${form.key}-${app}-1366-${theme}.png`) });
+        sigs[app] = await page.evaluate((sel) => {
+          const out: Record<string, number> = {};
+          for (const e of document.querySelector(sel)!.querySelectorAll("*")) {
+            for (const k of e.classList) out[`c:${/^_(.+?)_[a-z0-9]{5}_\d+$/.exec(k)?.[1] ?? k}`] = (out[`c:${/^_(.+?)_[a-z0-9]{5}_\d+$/.exec(k)?.[1] ?? k}`] || 0) + 1;
+            const label = e.getAttribute("aria-label");
+            if (label) out[`l:${label}`] = (out[`l:${label}`] || 0) + 1;
+          }
+          return out;
+        }, form.ready);
+        await ctx.close();
+      }
+      const keys = [...new Set([...Object.keys(sigs.old), ...Object.keys(sigs.new)])].sort();
+      const delta = keys.filter((k) => (sigs.old[k] ?? 0) !== (sigs.new[k] ?? 0)).map((k) => `${k}: ${sigs.old[k] ?? 0} -> ${sigs.new[k] ?? 0}`);
+      console.log(`[events ${form.key} ${theme}] signature differences: ${delta.length ? delta.join(", ") : "none"}`);
+    });

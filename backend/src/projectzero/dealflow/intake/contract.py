@@ -33,6 +33,7 @@ class Origin(StrEnum):
     MANUAL = "manual"
     REGISTRY_SCAN = "registry_scan"
     RESEARCH = "research"
+    EVENT_DEBRIEF = "event_debrief"  # startup leads met at an event (review 016), set server-side
     LEGACY_SCOUT00 = "legacy_scout00"
     LEGACY_NATIVE = "legacy_native"
     LEGACY_DEALFLOW = "legacy_dealflow"

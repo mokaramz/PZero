@@ -1,6 +1,4 @@
-import { DeferredLink } from "@/components/Deferred";
 import { cx } from "@/lib/format";
-import { NOT_PORTED } from "../model/deferred";
 import type { EventRecord, ScoutReport } from "../model/types";
 import { travelLine, timeLabel } from "./bits";
 import { isPriorityEvent, priorityWhy, type Item } from "../model/workspace";
@@ -23,7 +21,7 @@ function Label({ e }: { e: EventRecord }) {
 }
 
 /** An event with real signal: time · title · organizer · place · why it matters · type/themes · verification · actions. */
-export function EventCard({ e, types, selected, onOpen }: Common & { e: EventRecord; types: Record<string, string> }) {
+export function EventCard({ e, types, selected, onOpen, onPlan }: Common & { e: EventRecord; types: Record<string, string>; onPlan: (id: string) => void }) {
   const tier = e.eligibility?.tier;
   const why = e.scout?.why || (tier === "HIGH-SIGNAL" ? evidenceLine(e) : "");
   const org = e.organizer && e.organizer !== "UNKNOWN" ? e.organizer.split(",").slice(0, 2).join(",") : "";
@@ -74,9 +72,9 @@ export function EventCard({ e, types, selected, onOpen }: Common & { e: EventRec
         ) : null}
         <span className="grow" />
         {e.status !== "planned" && e.status !== "attended" && tier !== "REJECTED" && (
-          <DeferredLink className={styles.act} reason={NOT_PORTED.status}>
+          <button type="button" className={styles.act} onClick={() => onPlan(e.id)}>
             Plan
-          </DeferredLink>
+          </button>
         )}
         <button type="button" className={styles.actQ} onClick={() => onOpen(e.id)}>
           Details
@@ -91,9 +89,8 @@ export function EventCard({ e, types, selected, onOpen }: Common & { e: EventRec
   );
 }
 
-/** A Scout 00 recommendation that is NOT an Events record yet — explicitly labelled; Add / Monitor / Ignore only
- *  (all three wait for the event writes port). */
-export function SuggestionCard({ r, selected, onOpen }: Common & { r: ScoutReport }) {
+/** A Scout 00 recommendation that is NOT an Events record yet — explicitly labelled; Add / Monitor / Ignore only. */
+export function SuggestionCard({ r, selected, onOpen, onAct, busy }: Common & { r: ScoutReport; onAct: (r: ScoutReport, a: "add" | "monitor" | "ignore") => void; busy: boolean }) {
   return (
     <article
       className={cx(styles.card, styles.cardSug, selected && styles.cardSel)}
@@ -130,17 +127,17 @@ export function SuggestionCard({ r, selected, onOpen }: Common & { r: ScoutRepor
           </span>
         ))}
         <span className="grow" />
-        <DeferredLink className={styles.actPri} reason={NOT_PORTED.scout}>
-          Add to Events
-        </DeferredLink>
+        <button type="button" className={styles.actPri} disabled={busy} onClick={() => onAct(r, "add")}>
+          {busy ? "Adding…" : "Add to Events"}
+        </button>
         {!r.statuses.includes("MONITOR") && (
-          <DeferredLink className={styles.actQ} reason={NOT_PORTED.scout}>
+          <button type="button" className={styles.actQ} onClick={() => onAct(r, "monitor")}>
             Monitor
-          </DeferredLink>
+          </button>
         )}
-        <DeferredLink className={styles.actQ} reason={NOT_PORTED.scout}>
+        <button type="button" className={styles.actQ} onClick={() => onAct(r, "ignore")}>
           Ignore
-        </DeferredLink>
+        </button>
       </div>
     </article>
   );

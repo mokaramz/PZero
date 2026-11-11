@@ -266,6 +266,11 @@ def test_the_leads_listed_are_the_new_ones_in_stored_order(monkeypatch: pytest.M
     assert [x["id"] for x in client.get("/api/events").json()["leads"]] == [f"l{i}" for i in range(0, 300, 2)]
 
 
-def test_reads_are_gets_only() -> None:
-    methods = {m for r in router.router.routes for m in getattr(r, "methods", set())}
-    assert methods == {"GET"}
+def test_reads_are_gets_and_writes_are_posts() -> None:
+    by_method: dict[str, set[str]] = {}
+    for r in router.router.routes:
+        for m in getattr(r, "methods", set()):
+            by_method.setdefault(m, set()).add(getattr(r, "path", ""))
+    reads = {"/api/events", "/api/events/health", "/api/events/suggest", "/api/events/wsig", "/api/events/weekend"}
+    writes = {f"/api/events/{w}" for w in ("save", "verify", "lead", "debrief", "scout")}
+    assert by_method == {"GET": reads, "POST": writes}

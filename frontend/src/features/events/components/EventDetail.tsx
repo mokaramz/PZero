@@ -1,9 +1,7 @@
 import { Link } from "react-router-dom";
 
-import { DeferredButton } from "@/components/Deferred";
 import { Badge, Button } from "@/components/ui";
 import { cx } from "@/lib/format";
-import { NOT_PORTED } from "../model/deferred";
 import type { EventRecord, EventsPayload, PeopleSlice, ScoutReport, WsigItem } from "../model/types";
 import { audienceSignal, costLine, evFormat, ladderLevel, peopleIn } from "../model/eventUtil";
 import { Unk, When } from "./When";
@@ -17,7 +15,12 @@ type Props = {
   people: PeopleSlice["people"];
   wsig: WsigItem[];
   homeCity: string;
+  onStatus: (status: string) => void;
+  statusBusy: boolean;
+  onEdit: () => void;
+  onDebrief: () => void;
   onWeekend: () => void;
+  onVerify: () => void;
 };
 
 const BAND = (v?: string) => (v === "HIGH" ? styles.bHigh : v === "MEDIUM" ? styles.bMed : styles.bNone);
@@ -35,9 +38,8 @@ function stateLabel(e: EventRecord): [string, string] {
 }
 
 /** Event details — one column: the facts on a dark card, then your decision, why it matters, verification, sources.
- *  Scores and the legacy ladder stay one fold away ("Evidence & scoring"). The decision, Verify, Edit and Debrief wait
- *  for the event writes port: they keep their place, disabled with the reason. */
-export function EventDetail({ e, ev, people, wsig, homeCity, onWeekend }: Props) {
+ *  Scores and the legacy ladder stay one fold away ("Evidence & scoring"). */
+export function EventDetail({ e, ev, people, wsig, homeCity, onStatus, statusBusy, onEdit, onDebrief, onWeekend, onVerify }: Props) {
   const a = e.assessment ?? {};
   const w = wsig.find((x) => x.id === e.id);
   const ppl = peopleIn(people, e.city);
@@ -88,15 +90,15 @@ export function EventDetail({ e, ev, people, wsig, homeCity, onWeekend }: Props)
 
       <aside className={styles.dDecision} aria-label="Decision">
         <div className={styles.goRow} role="group" aria-label="Your decision">
-          <DeferredButton size="sm" variant={e.status === "planned" ? "primary" : "default"} aria-pressed={e.status === "planned"} reason={NOT_PORTED.status}>
+          <Button size="sm" variant={e.status === "planned" ? "primary" : "default"} aria-pressed={e.status === "planned"} disabled={statusBusy} onClick={() => onStatus("planned")}>
             GO
-          </DeferredButton>
-          <DeferredButton size="sm" variant={e.status === "new" ? "primary" : "default"} aria-pressed={e.status === "new"} reason={NOT_PORTED.status}>
+          </Button>
+          <Button size="sm" variant={e.status === "new" ? "primary" : "default"} aria-pressed={e.status === "new"} disabled={statusBusy} onClick={() => onStatus("new")}>
             MAYBE
-          </DeferredButton>
-          <DeferredButton size="sm" variant={e.status === "skipped" ? "danger" : "default"} aria-pressed={e.status === "skipped"} reason={NOT_PORTED.status}>
+          </Button>
+          <Button size="sm" variant={e.status === "skipped" ? "danger" : "default"} aria-pressed={e.status === "skipped"} disabled={statusBusy} onClick={() => onStatus("skipped")}>
             SKIP
-          </DeferredButton>
+          </Button>
         </div>
         {action.state === "sold_out" ? (
           <Button size="sm" disabled>
@@ -163,9 +165,9 @@ export function EventDetail({ e, ev, people, wsig, homeCity, onWeekend }: Props)
           <>
             <span className={styles.verNo}>Not verified.</span> Missing: {(e.eligibility?.reasons ?? []).slice(0, 3).join("; ")}
             <div className={styles.dRow}>
-              <DeferredButton size="sm" reason={NOT_PORTED.verify}>
+              <Button size="sm" onClick={onVerify}>
                 Mark as verified
-              </DeferredButton>
+              </Button>
             </div>
           </>
         ) : tier === "REJECTED" ? (
@@ -215,12 +217,12 @@ export function EventDetail({ e, ev, people, wsig, homeCity, onWeekend }: Props)
       </Sect>
 
       <div className={styles.dRow}>
-        <DeferredButton size="sm" reason={NOT_PORTED.edit}>
+        <Button size="sm" onClick={onEdit}>
           Edit event &amp; notes
-        </DeferredButton>
-        <DeferredButton size="sm" reason={NOT_PORTED.debrief}>
+        </Button>
+        <Button size="sm" onClick={onDebrief}>
           Debrief after the event
-        </DeferredButton>
+        </Button>
         <Link className={styles.actQ} to={`/map?event=${encodeURIComponent(e.id)}`}>
           Show on map
         </Link>
@@ -297,8 +299,8 @@ export function EventDetail({ e, ev, people, wsig, homeCity, onWeekend }: Props)
   );
 }
 
-/** Details of a Scout 00 suggestion that is not an Events record yet (Add / Monitor / Ignore wait for the writes port). */
-export function SuggestionDetail({ r }: { r: ScoutReport }) {
+/** Details of a Scout 00 suggestion that is not an Events record yet. */
+export function SuggestionDetail({ r, onAct, busy }: { r: ScoutReport; onAct: (r: ScoutReport, a: "add" | "monitor" | "ignore") => void; busy: boolean }) {
   return (
     <div className={styles.detail} data-testid="suggestion-detail">
       <section className={styles.dFacts}>
@@ -314,17 +316,17 @@ export function SuggestionDetail({ r }: { r: ScoutReport }) {
         </dl>
       </section>
       <div className={styles.dRow}>
-        <DeferredButton size="sm" variant="primary" reason={NOT_PORTED.scout}>
+        <Button size="sm" variant="primary" busy={busy} onClick={() => onAct(r, "add")}>
           Add to Events
-        </DeferredButton>
+        </Button>
         {!r.statuses.includes("MONITOR") && (
-          <DeferredButton size="sm" reason={NOT_PORTED.scout}>
+          <Button size="sm" onClick={() => onAct(r, "monitor")}>
             Monitor
-          </DeferredButton>
+          </Button>
         )}
-        <DeferredButton size="sm" variant="ghost" reason={NOT_PORTED.scout}>
+        <Button size="sm" variant="ghost" onClick={() => onAct(r, "ignore")}>
           Ignore
-        </DeferredButton>
+        </Button>
         {r.url && (
           <a className={styles.actQ} href={r.url} target="_blank" rel="noreferrer">
             Official source ↗

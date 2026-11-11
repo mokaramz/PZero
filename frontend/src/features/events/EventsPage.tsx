@@ -1,34 +1,38 @@
 /**
- * Events (v1 view `events`, review 015 — read-only): discover where founders and investors gather.
- * Deep link: /events?event=<id> opens an event (or a Scout 00 suggestion by its key); closing it replaces the history
- * entry, as before. The old `&edit=1` / `&debrief=1` opened a form; those forms arrive with the event writes port, so
- * the parameters are only removed from the URL and the event is shown. Every write keeps its old place, disabled with
- * its reason (`model/deferred.ts`).
+ * Events (v1 view `events`): discover where founders and investors gather. Reads since review 015, writes since 016
+ * (`api.ts`); only the source scan waits for review 017 (`model/deferred.ts`).
+ * Deep links: /events?event=<id> opens an event (or a Scout 00 suggestion by its key); closing it replaces the history
+ * entry. &edit=1 / &debrief=1 (from the Map panel) open that event's form once and are then removed from the URL; an
+ * id that is not on record never turns into an "Add event" form (it shows "Event not found").
  */
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useSearchParams } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 
-import { DeferredButton, DeferredLink, useDeferred } from "@/components/Deferred";
+import { DeferredButton, useDeferred } from "@/components/Deferred";
 import { Async, Badge, Button, Drawer, EmptyState } from "@/components/ui";
-import { usePref } from "@/lib/hooks";
+import { useToast } from "@/components/Toast";
+import { post } from "@/lib/api";
+import { useAction, usePref } from "@/lib/hooks";
 import { cx } from "@/lib/format";
 import { usePeople } from "@/features/network/api";
-import { useEventHealth, useEvents, useWsig } from "./api";
+import { EVENT_KEYS, LABEL, LEAD, SAVE, SCOUT, SCOUT_KEYS, VERIFY, useEventHealth, useEvents, useWsig, type SaveResult, type ScoutResult } from "./api";
 import { dayLabel } from "./components/bits";
 import { Calendar, DayStrip } from "./components/Calendar";
+import { DebriefForm } from "./components/DebriefForm";
 import { EventCard, QuietRow, SuggestionCard } from "./components/EventCard";
 import { EventDetail, SuggestionDetail } from "./components/EventDetail";
+import { EventForm } from "./components/EventForm";
 import { EventHealth } from "./components/EventHealth";
 import { WeekendPlan } from "./components/WeekendPlan";
 import { WhereShouldIGo } from "./components/WhereShouldIGo";
 import { NOT_PORTED } from "./model/deferred";
-import type { EventsPayload } from "./model/types";
+import type { EventsPayload, ScoutReport } from "./model/types";
 import { DEFAULT_FILTERS, VIEWS, addDays, counts, dayGroups, inView, itemsOf, visible, type Item, type ViewKey, type WsFilters } from "./model/workspace";
 import styles from "./Events.module.css";
 
 type Mode = "tl" | "tb" | "ld";
-/** The only drawer form of 015 is the (read-only) sourcing weekend; Add / Edit / Convert / Debrief wait for 016. */
-type Form = { kind: "weekend" } | null;
+type Form = { kind: "edit"; id: string } | { kind: "new" } | { kind: "lead"; id: string } | { kind: "debrief"; id: string } | { kind: "weekend" } | null;
 
 export default function EventsPage() {
   const q = useEvents();
@@ -40,6 +44,8 @@ export default function EventsPage() {
 }
 
 function EventsWorkspace({ ev }: { ev: EventsPayload }) {
+  const toast = useToast();
+  const qc = useQueryClient();
   const [params, setParams] = useSearchParams();
   const selId = params.get("event");
   const today = ev.today || new Date().toISOString().slice(0, 10);
@@ -52,10 +58,15 @@ function EventsWorkspace({ ev }: { ev: EventsPayload }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [all, setAll] = useState(false);
   const [healthOpen, setHealthOpen] = useState(false);
+  const [busyKey, setBusyKey] = useState<string | null>(null);
   const [wsigDays, setWsigDays] = useState("14");
   const menuRef = useRef<HTMLDivElement>(null);
-  const [form, setForm] = useState<Form>(null);
-  // Deep links from the Map panel (/events?event=<id>&edit=1 or &debrief=1) opened a form; in 015 they show the event.
+  // Deep links from the Map panel: /events?event=<id>&edit=1 or &debrief=1 open the form directly — for an event on
+  // record only (an unknown id shows "Event not found", never an add form).
+  const [form, setForm] = useState<Form>(() => {
+    if (!selId || !ev.events.some((e) => e.id === selId)) return null;
+    return params.get("edit") ? { kind: "edit", id: selId } : params.get("debrief") ? { kind: "debrief", id: selId } : null;
+  });
   useEffect(() => {
     if (params.has("edit") || params.has("debrief")) {
       const next = new URLSearchParams(params);
@@ -80,12 +91,34 @@ function EventsWorkspace({ ev }: { ev: EventsPayload }) {
   const wsig = useWsig(wsigDays);
   const health = useEventHealth();
   const people = usePeople();
+  const setStatus = useAction<{ id: string; status: string }, SaveResult>(SAVE, { invalidates: EVENT_KEYS, label: LABEL.save, success: undefined });
+  const verify = useAction<{ id: string; verified: boolean }>(VERIFY, { invalidates: EVENT_KEYS, label: LABEL.verify, success: "Marked as verified by you — now eligible (HUMAN JUDGMENT)" });
+  const dismiss = useAction<{ id: string; decision: string }>(LEAD, { invalidates: EVENT_KEYS, label: LABEL.lead });
 
   const open = (id: string | null) => {
     const next = new URLSearchParams(params);
     if (id) next.set("event", id);
     else next.delete("event");
     setParams(next, { replace: !id });
+  };
+  const status = async (id: string, s: string) => {
+    await setStatus.mutateAsync({ id, status: s });
+    toast.show(`Status → ${s}`, "ok");
+  };
+  const plan = (id: string) => void status(id, "planned");
+  /** The existing Scout Intake action, once per merged report (the Events dedup keeps it ONE event). */
+  const scoutAct = async (r: ScoutReport, action: "add" | "monitor" | "ignore") => {
+    setBusyKey(r.key);
+    try {
+      for (const id of r.report_ids) await post<ScoutResult>(SCOUT, { id, action });
+      toast.show(action === "add" ? `${r.name} is on Events — verify it there before planning` : `${r.name} → ${action === "monitor" ? "Monitor" : "Ignored"} in Scout Intake`, "ok");
+      if (selId === r.key) open(null);
+      await Promise.all(SCOUT_KEYS.map((k) => qc.invalidateQueries({ queryKey: [k] })));
+    } catch (e) {
+      toast.show(`Scout 00 report not updated: ${e instanceof Error ? e.message : String(e)}`, "error");
+    } finally {
+      setBusyKey(null);
+    }
   };
 
   const events = ev.events;
@@ -105,7 +138,9 @@ function EventsWorkspace({ ev }: { ev: EventsPayload }) {
 
   const selectedEvent = selId ? events.find((e) => e.id === selId) ?? null : null;
   const selectedReport = selId && !selectedEvent ? reports.find((r) => r.key === selId) ?? null : null;
-  const formTitle = "Sourcing weekend";
+  const formEvent = form && "id" in form ? events.find((e) => e.id === form.id) ?? null : null;
+  const formLead = form?.kind === "lead" ? ev.leads.find((l) => l.id === form.id) ?? null : null;
+  const formTitle = form?.kind === "weekend" ? "Sourcing weekend" : form?.kind === "debrief" ? `Debrief: ${formEvent?.name ?? ""}` : form?.kind === "edit" ? formEvent?.name ?? "Edit event" : "Add event";
 
   const pills: Array<[string, () => void]> = [];
   if (f.date) pills.push([new Date(`${f.date}T12:00:00`).toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" }), () => set({ date: "" })]);
@@ -134,9 +169,9 @@ function EventsWorkspace({ ev }: { ev: EventsPayload }) {
 
   const card = (it: Item) =>
     it.kind === "suggestion" ? (
-      <SuggestionCard key={it.id} r={it.r} selected={selId === it.id} onOpen={open} />
+      <SuggestionCard key={it.id} r={it.r} selected={selId === it.id} onOpen={open} onAct={(r, a) => void scoutAct(r, a)} busy={busyKey === it.id} />
     ) : (
-      <EventCard key={it.id} e={it.e} types={ev.types} selected={selId === it.id} onOpen={open} />
+      <EventCard key={it.id} e={it.e} types={ev.types} selected={selId === it.id} onOpen={open} onPlan={plan} />
     );
 
   const menuItem = (label: string, run: () => void) => (
@@ -166,9 +201,9 @@ function EventsWorkspace({ ev }: { ev: EventsPayload }) {
           </div>
           <span className="grow" />
           <div className={styles.heroActs}>
-            <DeferredLink className={styles.heroBtn} reason={NOT_PORTED.add}>
+            <button type="button" className={styles.heroBtn} onClick={() => setForm({ kind: "new" })}>
               + Event
-            </DeferredLink>
+            </button>
             <div className={styles.menu} ref={menuRef}>
               <button type="button" className={styles.heroBtn} aria-haspopup="menu" aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)}>
                 More ▾
@@ -238,12 +273,12 @@ function EventsWorkspace({ ev }: { ev: EventsPayload }) {
                   {l.note && <div className="small">{l.note}</div>}
                 </div>
                 <div className={styles.leadActs}>
-                  <DeferredButton size="sm" variant="success" reason={NOT_PORTED.lead}>
+                  <Button size="sm" variant="success" onClick={() => setForm({ kind: "lead", id: l.id })}>
                     Convert
-                  </DeferredButton>
-                  <DeferredButton size="sm" variant="danger" reason={NOT_PORTED.lead}>
+                  </Button>
+                  <Button size="sm" variant="danger" busy={dismiss.isPending && dismiss.variables?.id === l.id} onClick={() => dismiss.mutate({ id: l.id, decision: "dismissed" })}>
                     Dismiss
-                  </DeferredButton>
+                  </Button>
                 </div>
               </div>
             ))
@@ -285,7 +320,11 @@ function EventsWorkspace({ ev }: { ev: EventsPayload }) {
                     <Badge tone={(e.sc.total ?? 0) >= 75 ? "green" : "blue"}>{e.sc.total ?? "—"}</Badge>
                   </td>
                   <td>
-                    <StatusSelect name={e.name} status={e.status || "new"} />
+                    <select aria-label={`Status of ${e.name}`} value={e.status || "new"} onChange={(x) => void status(e.id, x.target.value)}>
+                      {["new", "planned", "attended", "skipped"].map((s) => (
+                        <option key={s}>{s}</option>
+                      ))}
+                    </select>
                   </td>
                 </tr>
               ))}
@@ -390,6 +429,7 @@ function EventsWorkspace({ ev }: { ev: EventsPayload }) {
                     setView("upcoming");
                     set({ date: "" });
                   }}
+                  onNew={() => setForm({ kind: "new" })}
                 />
               ) : (
                 groups.map((g) => {
@@ -447,12 +487,17 @@ function EventsWorkspace({ ev }: { ev: EventsPayload }) {
             people={people.data?.people ?? []}
             wsig={wsig.data?.ranked ?? []}
             homeCity="Karlsruhe"
+            statusBusy={setStatus.isPending}
+            onStatus={(s) => void status(selectedEvent.id, s)}
+            onEdit={() => setForm({ kind: "edit", id: selectedEvent.id })}
+            onDebrief={() => setForm({ kind: "debrief", id: selectedEvent.id })}
             onWeekend={() => setForm({ kind: "weekend" })}
+            onVerify={() => verify.mutate({ id: selectedEvent.id, verified: true })}
           />
         )}
       </Drawer>
       <Drawer open={!!selectedReport && !form} onClose={() => open(null)} title={selectedReport?.name} width={600}>
-        {selectedReport && <SuggestionDetail r={selectedReport} />}
+        {selectedReport && <SuggestionDetail r={selectedReport} onAct={(r, a) => void scoutAct(r, a)} busy={busyKey === selectedReport.key} />}
       </Drawer>
       {selId && !selectedEvent && !selectedReport && !form && (
         <Drawer open onClose={() => open(null)} title="Event not found">
@@ -491,13 +536,26 @@ function EventsWorkspace({ ev }: { ev: EventsPayload }) {
 
       <Drawer open={!!form} onClose={() => setForm(null)} title={formTitle} width={760}>
         {form?.kind === "weekend" && <WeekendPlan weekendWindow={ev.weekend_window} />}
+        {form?.kind === "debrief" && <DebriefForm eventId={form.id} onDone={() => setForm(null)} />}
+        {(form?.kind === "edit" || form?.kind === "new" || form?.kind === "lead") && (
+          <EventForm
+            key={JSON.stringify(form)}
+            ev={ev}
+            event={form.kind === "edit" ? formEvent : null}
+            lead={formLead}
+            onDone={(id) => {
+              setForm(null);
+              if (form.kind === "new" && id) open(id);
+            }}
+          />
+        )}
       </Drawer>
     </div>
   );
 }
 
 /** Says why this view is empty and offers the existing ways out — no diagnostics dashboard. */
-function NoMatch({ view, f, items, onClear, onAll }: { view: ViewKey; f: WsFilters; items: Item[]; onClear: () => void; onAll: () => void }) {
+function NoMatch({ view, f, items, onClear, onAll, onNew }: { view: ViewKey; f: WsFilters; items: Item[]; onClear: () => void; onAll: () => void; onNew: () => void }) {
   const viewName = VIEWS.find((v) => v[0] === view)?.[1] ?? "";
   const why = [
     view !== "upcoming" && `in ${viewName}`,
@@ -529,15 +587,16 @@ function NoMatch({ view, f, items, onClear, onAll }: { view: ViewKey; f: WsFilte
         <DeferredButton variant="ghost" reason={NOT_PORTED.scan}>
           Scan sources
         </DeferredButton>
-        <DeferredButton variant="ghost" reason={NOT_PORTED.add}>
+        <Button variant="ghost" onClick={onNew}>
           + Add an event you know
-        </DeferredButton>
+        </Button>
       </div>
     </div>
   );
 }
 
-/** A "More" menu item whose action is not ported yet: still a named menu item, inert, with its reason. */
+/** A "More" menu item whose action is not ported yet (the source scan, review 017): a named menu item, inert, with
+ *  its reason. */
 function DeferredMenuItem({ reason, children }: { reason: string; children: ReactNode }) {
   const d = useDeferred(reason);
   return (
@@ -545,29 +604,6 @@ function DeferredMenuItem({ reason, children }: { reason: string; children: Reac
       <button type="button" role="menuitem" {...d.props}>
         {children}
       </button>
-      {d.note}
-    </>
-  );
-}
-
-/** The table's status select (event_save, review 016): it shows the stored status, disabled with the reason. */
-function StatusSelect({ name, status }: { name: string; status: string }) {
-  const d = useDeferred(NOT_PORTED.status);
-  return (
-    <>
-      <select
-        aria-label={`Status of ${name}`}
-        value={status}
-        disabled
-        title={d.props.title}
-        aria-describedby={d.props["aria-describedby"]}
-        data-deferred=""
-        onChange={() => undefined}
-      >
-        {["new", "planned", "attended", "skipped"].map((s) => (
-          <option key={s}>{s}</option>
-        ))}
-      </select>
       {d.note}
     </>
   );

@@ -78,7 +78,7 @@ def weekends_for(clock: str) -> list[list[str]]:
 
 
 # ------------------------------------------------------------------ the oracle
-def run_oracle(inp: Mapping[str, Any], files: Mapping[str, bytes] | None = None) -> dict[str, Any]:
+def run_oracle(inp: Mapping[str, Any], files: Mapping[str, bytes] | None = None, mode: str = "reads") -> dict[str, Any]:
     python = OLD_REPO / "backend" / ".venv" / "Scripts" / "python.exe"
     if not python.exists():
         raise SystemExit(f"old interpreter not found: {python} (set PZ_OLD_REPO)")
@@ -97,7 +97,7 @@ def run_oracle(inp: Mapping[str, Any], files: Mapping[str, bytes] | None = None)
         env = {**os.environ, "PZ_DATA": str(data), "PZ_TESTING": "1", "PYTHONPATH": str(OLD_REPO / "backend" / "src")}
         env.pop("SUPABASE_DB_URL", None)  # the oracle never needs, and never sees, the database
         run = subprocess.run(
-            [str(python), str(ORACLE), "reads", str(src), str(dst)], env=env, capture_output=True, text=True
+            [str(python), str(ORACLE), mode, str(src), str(dst)], env=env, capture_output=True, text=True
         )
         if run.returncode != 0:
             raise SystemExit(f"oracle failed:\n{run.stderr[-3000:]}")

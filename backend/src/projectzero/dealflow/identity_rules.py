@@ -28,6 +28,7 @@ ORIGIN_FAMILY = {
     "legacy_native": "native",
     "manual": "manual",
     "research": "research",
+    "event_debrief": "event_debrief",  # leads met in person at an event: a source of their own (review 016)
 }
 
 

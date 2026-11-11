@@ -104,3 +104,13 @@ target named) or archived-only (with a reason).
   Europe/Berlin. Ids are not format-validated; a record without one is skipped and reported, a repeated one blocks the
   import. Event ↔ person links stay in `attrs.people_met` (no link table yet); `.watch/` page baselines stay
   archive-only until the scan port decides.
+- Events writes (review [016](team/reviews/016-events-writes-plan.md), migration 0008):
+  - **Current record.** The app writes the whole current record into `attrs.record`, and the columns mirror it
+    through `events.columns`.
+  - **Dates on an edit.** A start or end the edit did not change keeps its stored date and time, so a free-text date
+    is never re-resolved; only a changed side is resolved, with the request's Berlin date.
+  - **History.** Every write appends one row to `event_history`, which is append-only and has exactly one target, an
+    event or a lead. A Scout 00 Monitor / Ignore is audited only in the report's own `history` in
+    `documents['scout_intake.json#rest']`.
+  - **Debrief leads.** Startup leads from a debrief enter Deal Flow through intake as a trusted batch with the origin
+    `event_debrief`. Their evidence is the lead's URL, else the event's URL, and never `website`.
