@@ -6,8 +6,11 @@ import { expect, type Locator, type Page, type Request } from "@playwright/test"
  */
 const NOT_PORTED = [/\/api\/activity\b/, /\/api\/catchup\b/, /\/api\/pipeline\b/, /\/api\/people\b/, /\/api\/events\b/];
 
-/** Page errors and console errors (none allowed), and every 404 of a Deal Flow endpoint (none allowed). */
-export function watch(page: Page) {
+/**
+ * Page errors and console errors (none allowed), and every 404 of a Deal Flow endpoint (none allowed).
+ * `expected` lists HTTP statuses a test provokes on purpose (e.g. 409 for a duplicate): their console line is allowed.
+ */
+export function watch(page: Page, { expected = [] as number[] } = {}) {
   const errors: string[] = [];
   const notPorted404: string[] = [];
   page.on("pageerror", (e) => errors.push(`pageerror: ${e.message}`));
@@ -18,7 +21,9 @@ export function watch(page: Page) {
   });
   page.on("console", (m) => {
     if (m.type() !== "error") return;
-    if (/Failed to load resource: the server responded with a status of 404/.test(m.text())) return; // counted above
+    const status = /Failed to load resource: the server responded with a status of (\d+)/.exec(m.text())?.[1];
+    if (status === "404") return; // counted above
+    if (status && expected.includes(Number(status))) return;
     errors.push(`console: ${m.text()}`);
   });
   return { expectClean: () => expect(errors, errors.join(" | ")).toEqual([]) };

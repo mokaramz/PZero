@@ -11,7 +11,6 @@ import { operatorView } from "../model/operatorView";
 import type { TriageSummary } from "../model/triage";
 import type { Candidate, InboxPayload } from "../model/types";
 import { AnalystChip } from "./AnalystChip";
-import { DeferredButton } from "./DeferredButton";
 import { TriagePanel } from "./TriagePanel";
 import styles from "../DealFlow.module.css";
 
@@ -19,6 +18,8 @@ export type DetailActions = {
   decide: (decision: SentDecision) => void;
   /** opens the ResearchDrawer (notes are written there) */
   research: () => void;
+  /** opens Keep & score (a Conviction save with the candidate's inbox_id) */
+  keep: () => void;
   busy: boolean;
 };
 
@@ -246,9 +247,9 @@ export function CandidateDetail({ c, ib, im, actions, tri, triPending }: Props) 
           Reject
         </Button>
         <Button onClick={actions.research}>Research</Button>
-        <DeferredButton variant="success" reason={NOT_PORTED.keep}>
+        <Button variant="success" onClick={actions.keep}>
           Keep — score it
-        </DeferredButton>
+        </Button>
         {c.decision !== "new" && (
           <Button size="sm" variant="ghost" onClick={() => actions.decide("new")} disabled={actions.busy}>
             Undo

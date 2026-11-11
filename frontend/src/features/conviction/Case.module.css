@@ -1,0 +1,243 @@
+/* Prepared case — the visual heart of a Conviction company: a bone workspace with the raised decision card inside */
+.case {
+  background: var(--bone);
+  border: 1px solid var(--hair);
+  border-radius: var(--r-lg);
+  padding: 0 20px 4px;
+  margin: 12px 0;
+  min-width: 0;
+}
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  padding: 12px 0 0;
+}
+.title {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-2);
+}
+/* the case's own preparation state — bookkeeping, so it is quiet (the company's CURRENT STATE is in the header) */
+.caseState {
+  font-size: 12px;
+  color: var(--faint);
+  text-transform: lowercase;
+}
+.caseState::before {
+  content: "· ";
+}
+.when::before {
+  content: "· ";
+}
+.when {
+  font-size: 11.5px;
+  color: var(--faint);
+}
+.empty {
+  padding: 8px 0 14px;
+  font-size: 13px;
+  max-width: 70ch;
+}
+.pzSub {
+  display: block;
+  margin-top: 4px;
+  font: 400 12px/1.4 var(--font-ui);
+  letter-spacing: 0;
+  color: var(--mut);
+}
+/* "What I need from you" — only when a human decision is actually open */
+.need {
+  padding: 0 0 12px;
+}
+.needHead {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--mut);
+}
+
+/* the deeper layers: one paper list of hairline rows, each with a one-line summary — composed, not tiled */
+.sections {
+  background: var(--paper);
+  border: 1px solid var(--hair);
+  border-radius: var(--r-lg);
+  box-shadow: var(--sh-card);
+  padding: 0 16px;
+}
+.sec + .sec {
+  border-top: 1px solid var(--hair);
+}
+.secHead {
+  display: flex;
+  align-items: center;
+  gap: 4px 12px;
+  flex-wrap: wrap;
+  padding: 13px 2px;
+  cursor: pointer;
+  list-style: none;
+}
+.secHead::-webkit-details-marker {
+  display: none;
+}
+.secIcon {
+  color: var(--faint);
+  flex: none;
+  align-self: center;
+}
+.secChevron {
+  color: var(--faint);
+  flex: none;
+  align-self: center;
+  transition: transform var(--motion) var(--ease);
+}
+.sec[open] > .secHead .secChevron {
+  transform: rotate(90deg);
+}
+.secHead:hover .secTitle {
+  color: var(--blue-ink);
+}
+.secTitle {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink);
+}
+.secHint {
+  margin-left: auto;
+  text-align: right;
+  font-size: 12.5px;
+  color: var(--mut);
+  min-width: 0;
+}
+.secAudit .secTitle {
+  color: var(--mut);
+  font-weight: 400;
+}
+.secAudit .secHint {
+  color: var(--faint);
+}
+.secBody {
+  padding: 0 2px 18px 20px;
+  font-size: 13px;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+  min-width: 0;
+}
+.tableWrap {
+  position: relative;
+  overflow-x: auto;
+}
+@media (max-width: 640px) {
+  .secHint {
+    margin-left: 18px;
+    flex-basis: 100%;
+  }
+  .secBody {
+    padding-left: 4px;
+  }
+}
+.grow {
+  flex: 1;
+}
+.sect {
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--mut);
+  margin: 8px 0 3px;
+}
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.list li {
+  padding: 2px 0;
+}
+.ok {
+  color: var(--green);
+  font-weight: 600;
+}
+.warn {
+  color: var(--amber);
+  font-weight: 600;
+}
+.unk {
+  color: var(--mut);
+  font-weight: 600;
+}
+.decisions {
+  margin: 4px 0 0;
+  padding-left: 20px;
+  font-size: 13px;
+}
+.decisions li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 0;
+}
+.decisions li button {
+  margin-left: 8px;
+}
+.rubric {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.rubric th,
+.rubric td {
+  text-align: left;
+  vertical-align: top;
+  padding: 4px 6px;
+  border-top: 1px solid var(--hair);
+}
+.rubric th {
+  color: var(--mut);
+  font-weight: 600;
+}
+.ev {
+  color: var(--faint);
+  font-size: 11.5px;
+}
+.audit {
+  font-size: 11.5px;
+  color: var(--mut);
+  max-height: 180px;
+  overflow: auto;
+}
+
+.brief {
+  margin: 8px 0 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--hair);
+  border-radius: var(--r-md);
+  display: grid;
+  gap: 4px;
+}
+.briefRow {
+  display: grid;
+  grid-template-columns: 9.5rem 1fr;
+  gap: 8px;
+  margin: 0;
+}
+.briefRow dd {
+  margin: 0;
+}
+@media (max-width: 640px) {
+  .briefRow {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+}
+
+/* Operator Focus: the one-line reason under the decision card's move */
+
+.oneLine {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

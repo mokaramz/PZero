@@ -8,6 +8,7 @@
  * Color is never the only signal — every field / dot carries a text label.
  */
 export { Capped, type CappedProps } from "./Capped";
+export { ConvergenceTrace } from "./ConvergenceTrace";
 export { DecisionCard, type DecisionCardProps } from "./DecisionCard";
 export { Disclosure, type DisclosureProps } from "./Disclosure";
 export { FIELD_LABEL, fieldFor, type Field } from "./fields";
@@ -17,3 +18,4 @@ export { initials } from "./initials";
 export { Monogram } from "./Monogram";
 export { MoveButton, type Move } from "./MoveButton";
 export { StatusChip, type StatusTone } from "./StatusChip";
+export { VerificationBar } from "./VerificationBar";

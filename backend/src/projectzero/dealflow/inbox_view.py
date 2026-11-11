@@ -73,6 +73,13 @@ def _source_geo(row: dict[str, Any]) -> dict[str, Any]:
     return {"geo": legacy.get("geo") or (row.get("attrs") or {}).get("geo") or []}
 
 
+def candidate_rows(conn: psycopg.Connection[Any], schema: str) -> list[dict[str, Any]]:
+    """Every candidate row in the view's order (also the old inbox order the Conviction save searches, review 011)."""
+    with conn.cursor(row_factory=dict_row) as cur:
+        cur.execute(sql.SQL(_CANDIDATES).format(s=schema_ident(schema)))
+        return list(cur.fetchall())
+
+
 def inbox_view(conn: psycopg.Connection[Any], schema: str) -> dict[str, Any]:
     s = schema_ident(schema)
     ctx = RankingContext.load(conn, schema)
@@ -80,8 +87,7 @@ def inbox_view(conn: psycopg.Connection[Any], schema: str) -> dict[str, Any]:
         cur.execute(sql.SQL("select key, body from {}.documents where key = any(%s)").format(s),
                     (["inbox.json#rest", "workspace_geos.json"],))  # fmt: skip
         docs = {r["key"]: r["body"] for r in cur.fetchall()}
-        cur.execute(sql.SQL(_CANDIDATES).format(s=s))
-        rows = cur.fetchall()
+        rows = candidate_rows(conn, schema)
         cur.execute(sql.SQL(_SOURCES).format(s=s))
         sources = [_source_geo(r) for r in cur.fetchall()]
 

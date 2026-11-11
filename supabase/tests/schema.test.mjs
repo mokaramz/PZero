@@ -350,3 +350,27 @@ describe("migration 0003 — a Conviction entry keeps its per-claim verification
     await rejects(db.exec(readFileSync(join(MIGRATIONS, third), "utf8")), /conviction_entries is not empty/);
   });
 });
+
+describe("migration 0004 — every Conviction write is an append-only event", () => {
+  test("events are written, never changed, and their action is one of create / save / status", async () => {
+    const db = await freshDb();
+    const co = (await db.query(`insert into pz.companies (name) values ('Evented Co') returning id`)).rows[0].id;
+    const entry = (
+      await db.query(`insert into pz.conviction_entries (company_id, slug, status) values ($1, 'evented', 'new') returning id`, [co])
+    ).rows[0].id;
+    await db.query(
+      `insert into pz.conviction_events (entry_id, slug, actor, action, before, after) values ($1, 'evented', 'operator', 'status', $2, $3)`,
+      [entry, JSON.stringify({ status: "new" }), JSON.stringify({ status: "contacted" })],
+    );
+    const row = await db.query(`select before, after, detail from pz.conviction_events`);
+    assert.deepEqual(row.rows[0], { before: { status: "new" }, after: { status: "contacted" }, detail: {} });
+    await rejects(db.query(`update pz.conviction_events set slug = 'x'`), /append-only/);
+    await rejects(db.query(`delete from pz.conviction_events`), /append-only/);
+    await rejects(
+      db.query(`insert into pz.conviction_events (entry_id, slug, actor, action, after) values ($1, 'evented', 'operator', 'delete', '{}')`, [entry]),
+      /conviction_events_action_check/,
+    );
+    const rls = await db.query(`select relrowsecurity from pg_class where relname = 'conviction_events'`);
+    assert.equal(rls.rows[0].relrowsecurity, true);
+  });
+});

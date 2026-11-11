@@ -1,6 +1,7 @@
 import { act, fireEvent, screen, waitFor, within } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
+import { meta } from "@/features/conviction/test/fixtures";
 import { INBOX_KEY } from "./hooks/useDealFlowData";
 import { wsCounts } from "./model/geo";
 import { buildList, type ListOptions } from "./model/list";
@@ -230,6 +231,85 @@ describe("Deal Flow — decisions", () => {
   });
 });
 
+describe("Deal Flow — Keep (a Conviction save, review 011)", () => {
+  /** A server that also answers the scoring tables and the Conviction save. */
+  function keepServe(save: (body: Record<string, unknown>) => { status: number; body: unknown }) {
+    const db = inbox();
+    return serve({
+      inbox: () => structuredClone(db),
+      meta: () => meta(),
+      save,
+      decide: (id, body) => {
+        const c = db.candidates.find((x) => x.id === id)!;
+        const previous = c.pz_status;
+        Object.assign(c, { pz_status: String(body.status), decision: DECISION_OF[String(body.status)] }, body.notes !== undefined ? { notes: body.notes } : {});
+        return { status: 200, body: { ok: true, id, status: body.status, previous_status: previous, changed: true, feedback: null } };
+      },
+    });
+  }
+
+  async function openKeep(name: string) {
+    const dlg = await screen.findByRole("dialog", { name });
+    await waitFor(() => expect(within(dlg).getByTestId("livescore")).toBeInTheDocument());
+    return dlg;
+  }
+
+  it("“Keep — score it” opens the scoring form prefilled from the candidate, saves with inbox_id and opens the entry", async () => {
+    const server = keepServe(() => ({ status: 200, body: { ok: true, slug: "company-e1" } }));
+    const { router } = renderPage();
+    await loaded();
+    const id = rowIds()[0]!;
+    const c = inbox().candidates.find((x) => x.id === id)!;
+    fireEvent.click(within(screen.getByTestId("cand-detail")).getByRole("button", { name: "Keep — score it" }));
+    const dlg = await openKeep(`Keep & score: ${c.name}`);
+    expect(dlg.querySelector<HTMLInputElement>('[name="company"]')).toHaveValue(c.name);
+    expect(dlg.querySelector<HTMLInputElement>('[name="discovery_source"]')).toHaveValue(c.source);
+    expect(server.posts()).toEqual([]);
+    fireEvent.click(within(dlg).getByRole("button", { name: "Save to pipeline" }));
+    await waitFor(() => expect(router.state.location.pathname).toBe("/conviction"));
+    expect(router.state.location.search).toBe("?company=company-e1");
+    const [save] = server.posts();
+    expect(save.path).toBe("/api/conviction/save");
+    expect(save.body).toMatchObject({ inbox_id: id, company: c.name, one_liner: c.description, location: c.location, discovery_source: c.source });
+    expect(save.body).not.toHaveProperty("slug");
+    // the Deal Flow inbox is stale now (the candidate became kept on the server)
+    await waitFor(() => expect(server.inboxReads()).toBeGreaterThanOrEqual(2));
+  });
+
+  it("“Keep — go to scoring” saves the notes as researching first, then keeps through the form", async () => {
+    const server = keepServe(() => ({ status: 200, body: { ok: true, slug: "company-x" } }));
+    const { router } = renderPage();
+    await loaded();
+    const id = rowIds()[0]!;
+    fireEvent.click(within(screen.getByTestId("cand-detail")).getByRole("button", { name: "Research" }));
+    const drawer = screen.getByRole("dialog");
+    fireEvent.change(within(drawer).getByLabelText(/Notes/), { target: { value: "strong founder" } });
+    fireEvent.click(within(drawer).getByRole("button", { name: "Keep — go to scoring" }));
+    const dlg = await openKeep(`Keep & score: Company ${id}`);
+    expect(server.posts()[0]).toEqual({ method: "POST", path: `/api/deal-flow/candidates/${id}/decision`, body: { status: "reviewing", notes: "strong founder", expected_status: "new" } });
+    fireEvent.click(within(dlg).getByRole("button", { name: "Save to pipeline" }));
+    await waitFor(() => expect(router.state.location.search).toBe("?company=company-x"));
+    expect(server.posts()[1].body).toMatchObject({ inbox_id: id });
+  });
+
+  it("a Keep whose company already has an entry (409) offers to open it; the lead is not decided here", async () => {
+    const server = keepServe(() => ({ status: 409, body: { ok: false, duplicate: true, slug: "alpha", error: "a company with this name already exists — open it in Conviction to edit it" } }));
+    const { router, qc } = renderPage();
+    await loaded();
+    const id = rowIds()[0]!;
+    fireEvent.click(within(screen.getByTestId("cand-detail")).getByRole("button", { name: "Keep — score it" }));
+    const dlg = await openKeep(`Keep & score: Company ${id}`);
+    fireEvent.click(within(dlg).getByRole("button", { name: "Save to pipeline" }));
+    const offer = await within(dlg).findByTestId("save-duplicate");
+    expect(router.state.location.pathname).toBe("/deal-flow");
+    expect(row(qc, id)).toMatchObject({ decision: "new" });
+    fireEvent.click(within(offer).getByRole("button", { name: "Open existing entry" }));
+    await waitFor(() => expect(router.state.location.pathname).toBe("/conviction"));
+    expect(router.state.location.search).toBe("?company=alpha");
+    expect(server.posts()).toHaveLength(1);
+  });
+});
+
 describe("Deal Flow — entry points that are not ported yet", () => {
   function checkInert(server: ReturnType<typeof serve>) {
     const off = Array.from(document.querySelectorAll('[aria-disabled="true"]'));
@@ -248,11 +328,11 @@ describe("Deal Flow — entry points that are not ported yet", () => {
     const server = serve();
     renderPage();
     await loaded();
-    // the Attention view, the review-queue chip, the Find bar, the scan history and Keep in the decision row
+    // the Attention view, the review-queue chip, the Find bar and the scan history (Keep is live since review 011)
     openMore();
     let off = checkInert(server);
-    expect(off.map((e) => e.textContent)).toEqual(expect.arrayContaining(["Find New Candidates", "Analyze Top Candidates", "Keep — score it", "Agent Review Queue", "Scan history"]));
-    expect(screen.getByRole("button", { name: "Keep — score it" })).toHaveAttribute("title", "Keep moves to Conviction — available when Conviction is ported");
+    expect(off.map((e) => e.textContent)).toEqual(expect.arrayContaining(["Find New Candidates", "Analyze Top Candidates", "Agent Review Queue", "Scan history"]));
+    expect(screen.getByRole("button", { name: "Keep — score it" })).not.toHaveAttribute("aria-disabled");
     expect((screen.getByTestId("scan-history") as HTMLDetailsElement).open).toBe(false);
     expect(screen.getByLabelText("Feed window")).toBeDisabled();
     expect(screen.getByLabelText("Number of candidates to analyze")).toBeDisabled();
@@ -269,11 +349,10 @@ describe("Deal Flow — entry points that are not ported yet", () => {
     expect(screen.getByTestId("red-team")).toHaveTextContent("The red team arrives with the analysis port");
     expect(screen.getByLabelText("Override verdict")).toBeDisabled();
 
-    // the Research drawer's Keep
+    // the Research drawer's Keep is live as well
     fireEvent.click(within(screen.getByTestId("cand-detail")).getByRole("button", { name: "Research" }));
-    expect(within(screen.getByRole("dialog")).getByRole("button", { name: "Keep — go to scoring" })).toHaveAttribute("aria-disabled", "true");
-    checkInert(server);
-    expect(screen.getByRole("dialog")).toBeInTheDocument();
+    expect(within(screen.getByRole("dialog")).getByRole("button", { name: "Keep — go to scoring" })).not.toHaveAttribute("aria-disabled");
+    expect(server.posts()).toEqual([]);
   });
 });
 

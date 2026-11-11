@@ -3,7 +3,6 @@
  * and is disabled with this one-line reason until its backend is ported.
  */
 export const NOT_PORTED = {
-  keep: "Keep moves to Conviction — available when Conviction is ported",
   analysis: "Machine analysis arrives with the analysis port",
   reviewQueue: "The Agent Review Queue arrives with the analysis port",
   redTeam: "The red team arrives with the analysis port",
