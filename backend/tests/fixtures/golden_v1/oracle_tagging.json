@@ -1,0 +1,5681 @@
+{
+ "cases": [
+  {
+   "key": "synthetic-hi",
+   "rank": true,
+   "records": [
+    {
+     "description": "We sell things to people.",
+     "name": "Plain GmbH",
+     "tier": "registry"
+    },
+    {
+     "description": "AI agents for freight forwarders and customs paperwork",
+     "name": "Freight Agents AG",
+     "tier": "registry"
+    },
+    {
+     "description": "A chemical distributor",
+     "name": "Chem One",
+     "tier": "announcement"
+    },
+    {
+     "description": "chemical packaging for industry",
+     "name": "Chem Two",
+     "tier": "announcement"
+    },
+    {
+     "description": "underwriting automation",
+     "name": "Longword",
+     "tier": "grant"
+    },
+    {
+     "description": "a counter-drone sensor fusion stack",
+     "name": "Phrase Co",
+     "tier": "pre_company"
+    },
+    {
+     "description": "Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe.  stablecoin e-money licence",
+     "name": "Beyond600",
+     "tier": "registry"
+    },
+    {
+     "description": "short description",
+     "name": "NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN freight",
+     "tier": "registry"
+    },
+    {
+     "description": "holding and consulting",
+     "name": "Holding Verwaltung GmbH",
+     "tier": "registry"
+    },
+    {
+     "description": "handel mit waren",
+     "name": "Handel Shop",
+     "tier": "registry"
+    },
+    {
+     "description": "holding stablecoin payments mica drone uav defence military nato freight",
+     "name": "Quirk Zero",
+     "tier": "pre_company"
+    },
+    {
+     "description": "biotech antibody platform for oncology diagnostics",
+     "name": "Bio Spinout",
+     "tier": "pre_company"
+    },
+    {
+     "description": "accounting ledger bookkeeping vat for SMEs",
+     "name": "Twin Seeker",
+     "tier": "manual"
+    },
+    {
+     "description": "We use cookies to improve your experience",
+     "name": "Cookie Wall",
+     "tier": "registry"
+    },
+    {
+     "description": "Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial c we use cookies",
+     "name": "Late Cookie",
+     "tier": "registry"
+    }
+   ],
+   "source": {
+    "geo": [
+     "DE"
+    ],
+    "id": "hi",
+    "name": "Oracle hi",
+    "probation": true,
+    "reliability": "high",
+    "sectors": [
+     "ai"
+    ]
+   }
+  },
+  {
+   "key": "synthetic-med",
+   "rank": true,
+   "records": [
+    {
+     "description": "We sell things to people.",
+     "name": "Plain GmbH",
+     "tier": "registry"
+    },
+    {
+     "description": "AI agents for freight forwarders and customs paperwork",
+     "name": "Freight Agents AG",
+     "tier": "registry"
+    },
+    {
+     "description": "A chemical distributor",
+     "name": "Chem One",
+     "tier": "announcement"
+    },
+    {
+     "description": "chemical packaging for industry",
+     "name": "Chem Two",
+     "tier": "announcement"
+    },
+    {
+     "description": "underwriting automation",
+     "name": "Longword",
+     "tier": "grant"
+    },
+    {
+     "description": "a counter-drone sensor fusion stack",
+     "name": "Phrase Co",
+     "tier": "pre_company"
+    },
+    {
+     "description": "Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe.  stablecoin e-money licence",
+     "name": "Beyond600",
+     "tier": "registry"
+    },
+    {
+     "description": "short description",
+     "name": "NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN freight",
+     "tier": "registry"
+    },
+    {
+     "description": "holding and consulting",
+     "name": "Holding Verwaltung GmbH",
+     "tier": "registry"
+    },
+    {
+     "description": "handel mit waren",
+     "name": "Handel Shop",
+     "tier": "registry"
+    },
+    {
+     "description": "holding stablecoin payments mica drone uav defence military nato freight",
+     "name": "Quirk Zero",
+     "tier": "pre_company"
+    },
+    {
+     "description": "biotech antibody platform for oncology diagnostics",
+     "name": "Bio Spinout",
+     "tier": "pre_company"
+    },
+    {
+     "description": "accounting ledger bookkeeping vat for SMEs",
+     "name": "Twin Seeker",
+     "tier": "manual"
+    },
+    {
+     "description": "We use cookies to improve your experience",
+     "name": "Cookie Wall",
+     "tier": "registry"
+    },
+    {
+     "description": "Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial c we use cookies",
+     "name": "Late Cookie",
+     "tier": "registry"
+    }
+   ],
+   "source": {
+    "geo": [
+     "DE"
+    ],
+    "id": "med",
+    "name": "Oracle med",
+    "probation": false,
+    "reliability": "medium",
+    "sectors": [
+     "ai"
+    ]
+   }
+  },
+  {
+   "key": "synthetic-lo",
+   "rank": true,
+   "records": [
+    {
+     "description": "We sell things to people.",
+     "name": "Plain GmbH",
+     "tier": "registry"
+    },
+    {
+     "description": "AI agents for freight forwarders and customs paperwork",
+     "name": "Freight Agents AG",
+     "tier": "registry"
+    },
+    {
+     "description": "A chemical distributor",
+     "name": "Chem One",
+     "tier": "announcement"
+    },
+    {
+     "description": "chemical packaging for industry",
+     "name": "Chem Two",
+     "tier": "announcement"
+    },
+    {
+     "description": "underwriting automation",
+     "name": "Longword",
+     "tier": "grant"
+    },
+    {
+     "description": "a counter-drone sensor fusion stack",
+     "name": "Phrase Co",
+     "tier": "pre_company"
+    },
+    {
+     "description": "Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe.  stablecoin e-money licence",
+     "name": "Beyond600",
+     "tier": "registry"
+    },
+    {
+     "description": "short description",
+     "name": "NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN freight",
+     "tier": "registry"
+    },
+    {
+     "description": "holding and consulting",
+     "name": "Holding Verwaltung GmbH",
+     "tier": "registry"
+    },
+    {
+     "description": "handel mit waren",
+     "name": "Handel Shop",
+     "tier": "registry"
+    },
+    {
+     "description": "holding stablecoin payments mica drone uav defence military nato freight",
+     "name": "Quirk Zero",
+     "tier": "pre_company"
+    },
+    {
+     "description": "biotech antibody platform for oncology diagnostics",
+     "name": "Bio Spinout",
+     "tier": "pre_company"
+    },
+    {
+     "description": "accounting ledger bookkeeping vat for SMEs",
+     "name": "Twin Seeker",
+     "tier": "manual"
+    },
+    {
+     "description": "We use cookies to improve your experience",
+     "name": "Cookie Wall",
+     "tier": "registry"
+    },
+    {
+     "description": "Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial c we use cookies",
+     "name": "Late Cookie",
+     "tier": "registry"
+    }
+   ],
+   "source": {
+    "geo": [
+     "DE"
+    ],
+    "id": "lo",
+    "name": "Oracle lo",
+    "probation": false,
+    "reliability": "low",
+    "sectors": [
+     "ai"
+    ]
+   }
+  },
+  {
+   "key": "synthetic-none",
+   "rank": true,
+   "records": [
+    {
+     "description": "We sell things to people.",
+     "name": "Plain GmbH",
+     "tier": "registry"
+    },
+    {
+     "description": "AI agents for freight forwarders and customs paperwork",
+     "name": "Freight Agents AG",
+     "tier": "registry"
+    },
+    {
+     "description": "A chemical distributor",
+     "name": "Chem One",
+     "tier": "announcement"
+    },
+    {
+     "description": "chemical packaging for industry",
+     "name": "Chem Two",
+     "tier": "announcement"
+    },
+    {
+     "description": "underwriting automation",
+     "name": "Longword",
+     "tier": "grant"
+    },
+    {
+     "description": "a counter-drone sensor fusion stack",
+     "name": "Phrase Co",
+     "tier": "pre_company"
+    },
+    {
+     "description": "Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe.  stablecoin e-money licence",
+     "name": "Beyond600",
+     "tier": "registry"
+    },
+    {
+     "description": "short description",
+     "name": "NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN freight",
+     "tier": "registry"
+    },
+    {
+     "description": "holding and consulting",
+     "name": "Holding Verwaltung GmbH",
+     "tier": "registry"
+    },
+    {
+     "description": "handel mit waren",
+     "name": "Handel Shop",
+     "tier": "registry"
+    },
+    {
+     "description": "holding stablecoin payments mica drone uav defence military nato freight",
+     "name": "Quirk Zero",
+     "tier": "pre_company"
+    },
+    {
+     "description": "biotech antibody platform for oncology diagnostics",
+     "name": "Bio Spinout",
+     "tier": "pre_company"
+    },
+    {
+     "description": "accounting ledger bookkeeping vat for SMEs",
+     "name": "Twin Seeker",
+     "tier": "manual"
+    },
+    {
+     "description": "We use cookies to improve your experience",
+     "name": "Cookie Wall",
+     "tier": "registry"
+    },
+    {
+     "description": "Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial c we use cookies",
+     "name": "Late Cookie",
+     "tier": "registry"
+    }
+   ],
+   "source": {
+    "geo": [
+     "DE"
+    ],
+    "id": "none",
+    "name": "Oracle none",
+    "probation": false,
+    "sectors": [
+     "ai"
+    ]
+   }
+  },
+  {
+   "key": "cycle008-0",
+   "rank": true,
+   "records": [
+    {
+     "description": "EPFL LIS spin-off; origami-inspired deployable façade grid carrying rail-mounted robots that project CAD layouts and run AI scaffolding checks, roadmap to marking/drilling and panel installation; SOGC shareholders Petrš 114/200 parts, Estier 76/200, Prof. Dario Floreano 10/200 (adviser); Estier co-founded BlueBotics (2001) and Rovenso (2016), ex-EPFL Deputy VP Innovation; first industrial pilot planned 2027; LOIs and early investor discussions (company-reported to Venture Kick).",
+     "name": "Déploya Robotics Sàrl",
+     "tier": "manual"
+    }
+   ],
+   "source": {
+    "geo": [],
+    "id": "live-grok",
+    "name": "Grok scout",
+    "probation": false,
+    "reliability": "medium",
+    "sectors": []
+   }
+  },
+  {
+   "key": "cycle008-1",
+   "rank": true,
+   "records": [
+    {
+     "description": "Max Planck Institute of Quantum Optics (Rempe group) spin-off building atom-cavity quantum interconnect hardware to network quantum processors, then networked QPU and quantum repeaters; prototyping at MPQ while building own Munich lab; pilot with an unnamed neutral-atom QC company and planned repeater pilot with Deutsche Telekom (CTO statements at Quantum World Congress, 1 Oct 2026).",
+     "name": "QMunicate GmbH",
+     "tier": "manual"
+    }
+   ],
+   "source": {
+    "geo": [],
+    "id": "live-grok",
+    "name": "Grok scout",
+    "probation": false,
+    "reliability": "medium",
+    "sectors": []
+   }
+  },
+  {
+   "key": "cycle008-2",
+   "rank": true,
+   "records": [
+    {
+     "description": "2025 EPFL AQUA Lab spin-off making cryogenic integrated circuits for quantum computers; multi-year framework agreement with ZuriQ (ETH spin-off) announced 2 Nov 2026 with first order of inaugural product for delivery by end-2026; listed as seeking seed investors in Swiss Slush 2026 delegation kit.",
+     "name": "Rhonexum",
+     "tier": "manual"
+    }
+   ],
+   "source": {
+    "geo": [],
+    "id": "live-grok",
+    "name": "Grok scout",
+    "probation": false,
+    "reliability": "medium",
+    "sectors": []
+   }
+  },
+  {
+   "key": "cycle008-3",
+   "rank": true,
+   "records": [
+    {
+     "description": "Founder post 6 Nov 2026: a live prospect demo became a likely next paid pilot within 24h of first data collection (company claim); founder attending CoRL (Austin) 9 Nov.",
+     "name": "Dream Machines",
+     "tier": "manual"
+    }
+   ],
+   "source": {
+    "geo": [],
+    "id": "live-grok",
+    "name": "Grok scout",
+    "probation": false,
+    "reliability": "medium",
+    "sectors": []
+   }
+  },
+  {
+   "key": "cycle008-4",
+   "rank": true,
+   "records": [
+    {
+     "description": "FIT Tech Seed loan CHF 100k (startupnews.ch, 3 Nov 2026) to reach CE marking for PolaOne by early 2027; PolaOne maps whole fresh tissue samples in ~60 s without staining, used for research in several pathology labs; CTO Davide Scandella won Falling Walls Lab Emerging Talents (6 Nov 2026).",
+     "name": "PolaSight",
+     "tier": "manual"
+    }
+   ],
+   "source": {
+    "geo": [],
+    "id": "live-grok",
+    "name": "Grok scout",
+    "probation": false,
+    "reliability": "medium",
+    "sectors": []
+   }
+  },
+  {
+   "key": "cycle008-5",
+   "rank": true,
+   "records": [
+    {
+     "description": "Rare-earth-free axial-flux 'Double Rotor Machine' drivetrain running in a hybrid-electric autonomy-ready dumper on construction sites; pivoting to full-stack UGV OEM for defence, construction and critical infrastructure (company description).",
+     "name": "4QT GmbH",
+     "tier": "manual"
+    }
+   ],
+   "source": {
+    "geo": [],
+    "id": "live-grok",
+    "name": "Grok scout",
+    "probation": false,
+    "reliability": "medium",
+    "sectors": []
+   }
+  },
+  {
+   "key": "cycle008-6",
+   "rank": true,
+   "records": [
+    {
+     "description": "Teleoperated robotic platform (TREX) for mechanical thrombectomy in ischaemic stroke, from EPFL REHAssist with Geneva University Hospitals (Prof. Paolo Machi); grant funds in-vitro validation ahead of in-vivo.",
+     "name": "Endobotica",
+     "tier": "pre_company"
+    }
+   ],
+   "source": {
+    "geo": [],
+    "id": "live-grok",
+    "name": "Grok scout",
+    "probation": false,
+    "reliability": "medium",
+    "sectors": []
+   }
+  },
+  {
+   "absorb": [
+    {
+     "records": [
+      {
+       "description": "pasted by the operator",
+       "name": "Déploya Robotics Sàrl",
+       "tier": "pre_company"
+      }
+     ],
+     "source": {
+      "geo": [],
+      "id": "live-manual",
+      "name": "Manual",
+      "probation": false,
+      "reliability": "medium",
+      "sectors": []
+     }
+    }
+   ],
+   "key": "absorb-grok-manual",
+   "rank": true,
+   "records": [
+    {
+     "description": "EPFL LIS spin-off; origami-inspired deployable façade grid carrying rail-mounted robots that project CAD layouts and run AI scaffolding checks, roadmap to marking/drilling and panel installation; SOGC shareholders Petrš 114/200 parts, Estier 76/200, Prof. Dario Floreano 10/200 (adviser); Estier co-founded BlueBotics (2001) and Rovenso (2016), ex-EPFL Deputy VP Innovation; first industrial pilot planned 2027; LOIs and early investor discussions (company-reported to Venture Kick).",
+     "name": "Déploya Robotics Sàrl",
+     "tier": "manual"
+    }
+   ],
+   "source": {
+    "geo": [],
+    "id": "live-grok",
+    "name": "Grok scout",
+    "probation": false,
+    "reliability": "medium",
+    "sectors": []
+   }
+  }
+ ],
+ "expected": {
+  "absorb-grok-manual": {
+   "attention": [
+    {
+     "applied": [
+      [
+       "Research spinout",
+       16
+      ],
+      [
+       "Industrial Autonomy / Physical World",
+       6
+      ],
+      [
+       "Non-obvious / proprietary source",
+       8
+      ]
+     ],
+     "diff": 10,
+     "diff_applied": [
+      [
+       "Project A theme depth",
+       10
+      ]
+     ],
+     "diff_explain": "Project A theme depth +10",
+     "entity": {
+      "label": "Entity: VENTURE",
+      "penalty": 0,
+      "reason": "explicit company/startup evidence",
+      "type": "VENTURE"
+     },
+     "explain": "Research spinout +16 · Industrial Autonomy / Physical World +6 · Non-obvious / proprietary source +8",
+     "final": 43,
+     "gated": null,
+     "lens": 3,
+     "score": 30
+    }
+   ],
+   "kept": [
+    {
+     "all_source_ids": [
+      "live-grok",
+      "live-manual"
+     ],
+     "also_seen": [
+      {
+       "discovery_tier": "pre_company",
+       "first_seen": "submission-0001",
+       "source": "Manual",
+       "source_date": "",
+       "source_id": "live-manual",
+       "url": ""
+      }
+     ],
+     "archetype_hits": [],
+     "country": "",
+     "date": "",
+     "date_kind": "",
+     "decision": "new",
+     "description": "EPFL LIS spin-off; origami-inspired deployable façade grid carrying rail-mounted robots that project CAD layouts and run AI scaffolding checks, roadmap to marking/drilling and panel installation; SOGC shareholders Petrš 114/200 parts, Estier 76/200, Prof. Dario Floreano 10/200 (adviser); Estier co-founded BlueBotics (2001) and Rovenso (2016), ex-EPFL Deputy VP Innovation; first industrial pilot planned 2027; LOIs and early investor discussions (company-reported to Venture Kick).",
+     "detected_on": "2026-11-11",
+     "discovery_tier": "manual",
+     "entity_ids": {},
+     "first_seen": "2026-11-11",
+     "geo": [],
+     "geo_scope": "region-eu",
+     "id": "36f2178a10f1",
+     "last_observed": "submission-0001",
+     "location": "",
+     "name": "Déploya Robotics Sàrl",
+     "noise": false,
+     "notes": "",
+     "priority": 5,
+     "q_found": [
+      "live-grok",
+      "live-manual"
+     ],
+     "quality_source_id": "live-manual",
+     "sectors": [
+      "robotics",
+      "climate",
+      "ai_sw"
+     ],
+     "seen_runs": 2,
+     "source": "Grok scout",
+     "source_date": null,
+     "source_id": "live-grok",
+     "source_sectors": [],
+     "source_url": "",
+     "src_quality": 1,
+     "twins": [
+      "Tabular"
+     ],
+     "why": [
+      "Possible portfolio twin(s): Tabular → run conflict check",
+      "Cross-source signal: also seen on Manual"
+     ]
+    }
+   ],
+   "report": {
+    "count": 1,
+    "interstitial": 0,
+    "raw": 1
+   }
+  },
+  "cycle008-0": {
+   "attention": [
+    {
+     "applied": [
+      [
+       "Research spinout",
+       16
+      ],
+      [
+       "Industrial Autonomy / Physical World",
+       6
+      ],
+      [
+       "Non-obvious / proprietary source",
+       8
+      ]
+     ],
+     "diff": 10,
+     "diff_applied": [
+      [
+       "Project A theme depth",
+       10
+      ]
+     ],
+     "diff_explain": "Project A theme depth +10",
+     "entity": {
+      "label": "Entity: VENTURE",
+      "penalty": 0,
+      "reason": "explicit company/startup evidence",
+      "type": "VENTURE"
+     },
+     "explain": "Research spinout +16 · Industrial Autonomy / Physical World +6 · Non-obvious / proprietary source +8",
+     "final": 43,
+     "gated": null,
+     "lens": 3,
+     "score": 30
+    }
+   ],
+   "kept": [
+    {
+     "archetype_hits": [],
+     "country": "",
+     "date": "",
+     "date_kind": "",
+     "decision": "new",
+     "description": "EPFL LIS spin-off; origami-inspired deployable façade grid carrying rail-mounted robots that project CAD layouts and run AI scaffolding checks, roadmap to marking/drilling and panel installation; SOGC shareholders Petrš 114/200 parts, Estier 76/200, Prof. Dario Floreano 10/200 (adviser); Estier co-founded BlueBotics (2001) and Rovenso (2016), ex-EPFL Deputy VP Innovation; first industrial pilot planned 2027; LOIs and early investor discussions (company-reported to Venture Kick).",
+     "detected_on": "2026-11-11",
+     "discovery_tier": "manual",
+     "first_seen": "2026-11-11",
+     "geo": [],
+     "geo_scope": "region-eu",
+     "id": "36f2178a10f1",
+     "location": "",
+     "name": "Déploya Robotics Sàrl",
+     "noise": false,
+     "notes": "",
+     "priority": 3,
+     "sectors": [
+      "robotics",
+      "climate",
+      "ai_sw"
+     ],
+     "source": "Grok scout",
+     "source_date": null,
+     "source_id": "live-grok",
+     "source_sectors": [],
+     "source_url": "",
+     "src_quality": 1,
+     "twins": [
+      "Tabular"
+     ],
+     "why": [
+      "Possible portfolio twin(s): Tabular → run conflict check"
+     ]
+    }
+   ],
+   "report": {
+    "count": 1,
+    "interstitial": 0,
+    "raw": 1
+   }
+  },
+  "cycle008-1": {
+   "attention": [
+    {
+     "applied": [
+      [
+       "Research spinout",
+       16
+      ],
+      [
+       "Technical founders",
+       10
+      ],
+      [
+       "Frontier",
+       10
+      ],
+      [
+       "Non-obvious / proprietary source",
+       8
+      ]
+     ],
+     "diff": 30,
+     "diff_applied": [
+      [
+       "Technical specificity",
+       12
+      ],
+      [
+       "Project A theme depth",
+       10
+      ],
+      [
+       "Technical founder evidence",
+       8
+      ]
+     ],
+     "diff_explain": "Technical specificity +12 · Project A theme depth +10 · Technical founder evidence +8",
+     "entity": {
+      "label": "Entity: VENTURE",
+      "penalty": 0,
+      "reason": "legal form in name",
+      "type": "VENTURE"
+     },
+     "explain": "Research spinout +16 · Technical founders +10 · Frontier +10 · Non-obvious / proprietary source +8",
+     "final": 82,
+     "gated": null,
+     "lens": 8,
+     "score": 44
+    }
+   ],
+   "kept": [
+    {
+     "archetype_hits": [],
+     "country": "",
+     "date": "",
+     "date_kind": "",
+     "decision": "new",
+     "description": "Max Planck Institute of Quantum Optics (Rempe group) spin-off building atom-cavity quantum interconnect hardware to network quantum processors, then networked QPU and quantum repeaters; prototyping at MPQ while building own Munich lab; pilot with an unnamed neutral-atom QC company and planned repeater pilot with Deutsche Telekom (CTO statements at Quantum World Congress, 1 Oct 2026).",
+     "detected_on": "2026-11-11",
+     "discovery_tier": "manual",
+     "first_seen": "2026-11-11",
+     "geo": [],
+     "geo_scope": "region-eu",
+     "id": "060504e9e8e2",
+     "location": "",
+     "name": "QMunicate GmbH",
+     "noise": false,
+     "notes": "",
+     "priority": 2,
+     "sectors": [
+      "semis_quantum"
+     ],
+     "source": "Grok scout",
+     "source_date": null,
+     "source_id": "live-grok",
+     "source_sectors": [],
+     "source_url": "",
+     "src_quality": 1,
+     "twins": [],
+     "why": []
+    }
+   ],
+   "report": {
+    "count": 1,
+    "interstitial": 0,
+    "raw": 1
+   }
+  },
+  "cycle008-2": {
+   "attention": [
+    {
+     "applied": [
+      [
+       "Research spinout",
+       16
+      ],
+      [
+       "Frontier",
+       10
+      ],
+      [
+       "Non-obvious / proprietary source",
+       8
+      ]
+     ],
+     "diff": 12,
+     "diff_applied": [
+      [
+       "Technical specificity",
+       12
+      ]
+     ],
+     "diff_explain": "Technical specificity +12",
+     "entity": {
+      "label": "Entity: PRE-COMPANY PROJECT",
+      "penalty": 0,
+      "reason": "official pre-company / spinout-project context",
+      "type": "PRE_COMPANY_PROJECT"
+     },
+     "explain": "Research spinout +16 · Frontier +10 · Non-obvious / proprietary source +8",
+     "final": 52,
+     "gated": null,
+     "lens": 6,
+     "score": 34
+    }
+   ],
+   "kept": [
+    {
+     "archetype_hits": [],
+     "country": "",
+     "date": "",
+     "date_kind": "",
+     "decision": "new",
+     "description": "2025 EPFL AQUA Lab spin-off making cryogenic integrated circuits for quantum computers; multi-year framework agreement with ZuriQ (ETH spin-off) announced 2 Nov 2026 with first order of inaugural product for delivery by end-2026; listed as seeking seed investors in Swiss Slush 2026 delegation kit.",
+     "detected_on": "2026-11-11",
+     "discovery_tier": "manual",
+     "first_seen": "2026-11-11",
+     "geo": [],
+     "geo_scope": "region-eu",
+     "id": "9c96e58d374c",
+     "location": "",
+     "name": "Rhonexum",
+     "noise": false,
+     "notes": "",
+     "priority": 2,
+     "sectors": [
+      "semis_quantum",
+      "deeptech"
+     ],
+     "source": "Grok scout",
+     "source_date": null,
+     "source_id": "live-grok",
+     "source_sectors": [],
+     "source_url": "",
+     "src_quality": 1,
+     "twins": [],
+     "why": []
+    }
+   ],
+   "report": {
+    "count": 1,
+    "interstitial": 0,
+    "raw": 1
+   }
+  },
+  "cycle008-3": {
+   "attention": [
+    {
+     "applied": [
+      [
+       "Non-obvious / proprietary source",
+       8
+      ]
+     ],
+     "diff": 0,
+     "diff_applied": [],
+     "diff_explain": "",
+     "entity": {
+      "label": "Entity: VENTURE",
+      "penalty": 0,
+      "reason": "explicit company/startup evidence",
+      "type": "VENTURE"
+     },
+     "explain": "Non-obvious / proprietary source +8",
+     "final": 8,
+     "gated": null,
+     "lens": 0,
+     "score": 8
+    }
+   ],
+   "kept": [
+    {
+     "archetype_hits": [],
+     "country": "",
+     "date": "",
+     "date_kind": "",
+     "decision": "new",
+     "description": "Founder post 6 Nov 2026: a live prospect demo became a likely next paid pilot within 24h of first data collection (company claim); founder attending CoRL (Austin) 9 Nov.",
+     "detected_on": "2026-11-11",
+     "discovery_tier": "manual",
+     "first_seen": "2026-11-11",
+     "geo": [],
+     "geo_scope": "region-eu",
+     "id": "124e838a41e9",
+     "location": "",
+     "name": "Dream Machines",
+     "noise": false,
+     "notes": "",
+     "priority": 2,
+     "sectors": [],
+     "source": "Grok scout",
+     "source_date": null,
+     "source_id": "live-grok",
+     "source_sectors": [],
+     "source_url": "",
+     "src_quality": 1,
+     "twins": [],
+     "why": []
+    }
+   ],
+   "report": {
+    "count": 1,
+    "interstitial": 0,
+    "raw": 1
+   }
+  },
+  "cycle008-4": {
+   "attention": [
+    {
+     "applied": [
+      [
+       "Technical founders",
+       10
+      ],
+      [
+       "Non-obvious / proprietary source",
+       8
+      ]
+     ],
+     "diff": -2,
+     "diff_applied": [
+      [
+       "Technical founder evidence",
+       8
+      ],
+      [
+       "Academic / no commercial path visible",
+       -10
+      ]
+     ],
+     "diff_explain": "Technical founder evidence +8 · Academic / no commercial path visible -10",
+     "entity": {
+      "label": "Entity: UNKNOWN ENTITY TYPE -12",
+      "penalty": -12,
+      "reason": "no entity-type evidence in text",
+      "type": "UNKNOWN_ENTITY_TYPE"
+     },
+     "explain": "Technical founders +10 · Non-obvious / proprietary source +8",
+     "final": 6,
+     "gated": null,
+     "lens": 2,
+     "score": 18
+    }
+   ],
+   "kept": [
+    {
+     "archetype_hits": [],
+     "country": "",
+     "date": "",
+     "date_kind": "",
+     "decision": "new",
+     "description": "FIT Tech Seed loan CHF 100k (startupnews.ch, 3 Nov 2026) to reach CE marking for PolaOne by early 2027; PolaOne maps whole fresh tissue samples in ~60 s without staining, used for research in several pathology labs; CTO Davide Scandella won Falling Walls Lab Emerging Talents (6 Nov 2026).",
+     "detected_on": "2026-11-11",
+     "discovery_tier": "manual",
+     "first_seen": "2026-11-11",
+     "geo": [],
+     "geo_scope": "region-eu",
+     "id": "b165c1318f5e",
+     "location": "",
+     "name": "PolaSight",
+     "noise": false,
+     "notes": "",
+     "priority": 2,
+     "sectors": [],
+     "source": "Grok scout",
+     "source_date": null,
+     "source_id": "live-grok",
+     "source_sectors": [],
+     "source_url": "",
+     "src_quality": 1,
+     "twins": [],
+     "why": []
+    }
+   ],
+   "report": {
+    "count": 1,
+    "interstitial": 0,
+    "raw": 1
+   }
+  },
+  "cycle008-5": {
+   "attention": [
+    {
+     "applied": [
+      [
+       "Defence",
+       8
+      ],
+      [
+       "Non-obvious / proprietary source",
+       8
+      ]
+     ],
+     "diff": 26,
+     "diff_applied": [
+      [
+       "Industrial / commercial application",
+       10
+      ],
+      [
+       "Project A theme depth",
+       10
+      ],
+      [
+       "Platform / scale potential",
+       6
+      ]
+     ],
+     "diff_explain": "Industrial / commercial application +10 · Project A theme depth +10 · Platform / scale potential +6",
+     "entity": {
+      "label": "Entity: VENTURE",
+      "penalty": 0,
+      "reason": "legal form in name",
+      "type": "VENTURE"
+     },
+     "explain": "Defence +8 · Non-obvious / proprietary source +8",
+     "final": 42,
+     "gated": null,
+     "lens": 0,
+     "score": 16
+    }
+   ],
+   "kept": [
+    {
+     "archetype_hits": [],
+     "country": "",
+     "date": "",
+     "date_kind": "",
+     "decision": "new",
+     "description": "Rare-earth-free axial-flux 'Double Rotor Machine' drivetrain running in a hybrid-electric autonomy-ready dumper on construction sites; pivoting to full-stack UGV OEM for defence, construction and critical infrastructure (company description).",
+     "detected_on": "2026-11-11",
+     "discovery_tier": "manual",
+     "first_seen": "2026-11-11",
+     "geo": [],
+     "geo_scope": "region-eu",
+     "id": "dc372bd2d967",
+     "location": "",
+     "name": "4QT GmbH",
+     "noise": false,
+     "notes": "",
+     "priority": 3,
+     "sectors": [
+      "defence",
+      "robotics"
+     ],
+     "source": "Grok scout",
+     "source_date": null,
+     "source_id": "live-grok",
+     "source_sectors": [],
+     "source_url": "",
+     "src_quality": 1,
+     "twins": [
+      "Vestigas",
+      "ARX Robotics"
+     ],
+     "why": [
+      "Possible portfolio twin(s): Vestigas, ARX Robotics → run conflict check"
+     ]
+    }
+   ],
+   "report": {
+    "count": 1,
+    "interstitial": 0,
+    "raw": 1
+   }
+  },
+  "cycle008-6": {
+   "attention": [
+    {
+     "applied": [
+      [
+       "PRE-COMPANY",
+       20
+      ],
+      [
+       "Research spinout",
+       16
+      ],
+      [
+       "Industrial Autonomy / Physical World",
+       6
+      ],
+      [
+       "Non-obvious / proprietary source",
+       8
+      ]
+     ],
+     "diff": 28,
+     "diff_applied": [
+      [
+       "Technical specificity",
+       12
+      ],
+      [
+       "Industrial / commercial application",
+       10
+      ],
+      [
+       "Platform / scale potential",
+       6
+      ]
+     ],
+     "diff_explain": "Technical specificity +12 · Industrial / commercial application +10 · Platform / scale potential +6",
+     "entity": {
+      "label": "Entity: PRE-COMPANY PROJECT",
+      "penalty": 0,
+      "reason": "official pre-company / spinout-project context",
+      "type": "PRE_COMPANY_PROJECT"
+     },
+     "explain": "PRE-COMPANY +20 · Research spinout +16 · Industrial Autonomy / Physical World +6 · Non-obvious / proprietary source +8",
+     "final": 85,
+     "gated": null,
+     "lens": 7,
+     "score": 50
+    }
+   ],
+   "kept": [
+    {
+     "archetype_hits": [],
+     "country": "",
+     "date": "",
+     "date_kind": "",
+     "decision": "new",
+     "description": "Teleoperated robotic platform (TREX) for mechanical thrombectomy in ischaemic stroke, from EPFL REHAssist with Geneva University Hospitals (Prof. Paolo Machi); grant funds in-vitro validation ahead of in-vivo.",
+     "detected_on": "2026-11-11",
+     "discovery_tier": "pre_company",
+     "first_seen": "2026-11-11",
+     "geo": [],
+     "geo_scope": "region-eu",
+     "id": "1bc125f6dbd3",
+     "location": "",
+     "name": "Endobotica",
+     "noise": false,
+     "notes": "",
+     "priority": 4,
+     "sectors": [
+      "robotics"
+     ],
+     "source": "Grok scout",
+     "source_date": null,
+     "source_id": "live-grok",
+     "source_sectors": [],
+     "source_url": "",
+     "src_quality": 1,
+     "twins": [],
+     "why": [
+      "Pre-company channel — this is where the sourcing edge is"
+     ]
+    }
+   ],
+   "report": {
+    "count": 1,
+    "interstitial": 0,
+    "raw": 1
+   }
+  },
+  "synthetic-hi": {
+   "attention": [
+    {
+     "applied": [
+      [
+       "Non-obvious / proprietary source",
+       8
+      ]
+     ],
+     "diff": 0,
+     "diff_applied": [],
+     "diff_explain": "",
+     "entity": {
+      "label": "Entity: VENTURE",
+      "penalty": 0,
+      "reason": "legal form in name",
+      "type": "VENTURE"
+     },
+     "explain": "Non-obvious / proprietary source +8",
+     "final": 8,
+     "gated": null,
+     "lens": 0,
+     "score": 8
+    },
+    {
+     "applied": [
+      [
+       "Industrial Autonomy / Physical World",
+       6
+      ],
+      [
+       "Non-obvious / proprietary source",
+       8
+      ]
+     ],
+     "diff": 20,
+     "diff_applied": [
+      [
+       "Industrial / commercial application",
+       10
+      ],
+      [
+       "Project A theme depth",
+       10
+      ]
+     ],
+     "diff_explain": "Industrial / commercial application +10 · Project A theme depth +10",
+     "entity": {
+      "label": "Entity: VENTURE",
+      "penalty": 0,
+      "reason": "legal form in name",
+      "type": "VENTURE"
+     },
+     "explain": "Industrial Autonomy / Physical World +6 · Non-obvious / proprietary source +8",
+     "final": 34,
+     "gated": null,
+     "lens": 0,
+     "score": 14
+    },
+    {
+     "applied": [
+      [
+       "Announcement / funding-news source",
+       -8
+      ]
+     ],
+     "diff": 0,
+     "diff_applied": [],
+     "diff_explain": "",
+     "entity": {
+      "label": "Entity: UNKNOWN ENTITY TYPE -12",
+      "penalty": -12,
+      "reason": "no entity-type evidence in text",
+      "type": "UNKNOWN_ENTITY_TYPE"
+     },
+     "explain": "Announcement / funding-news source -8",
+     "final": -20,
+     "gated": null,
+     "lens": 0,
+     "score": -8
+    },
+    {
+     "applied": [
+      [
+       "Industrial Autonomy / Physical World",
+       6
+      ],
+      [
+       "Announcement / funding-news source",
+       -8
+      ]
+     ],
+     "diff": 26,
+     "diff_applied": [
+      [
+       "Industrial / commercial application",
+       10
+      ],
+      [
+       "Project A theme depth",
+       10
+      ],
+      [
+       "Platform / scale potential",
+       6
+      ]
+     ],
+     "diff_explain": "Industrial / commercial application +10 · Project A theme depth +10 · Platform / scale potential +6",
+     "entity": {
+      "label": "Entity: POSSIBLE VENTURE -8",
+      "penalty": -8,
+      "reason": "product/team wording without company or project proof",
+      "type": "POSSIBLE_VENTURE"
+     },
+     "explain": "Industrial Autonomy / Physical World +6 · Announcement / funding-news source -8",
+     "final": 16,
+     "gated": null,
+     "lens": 0,
+     "score": -2
+    },
+    {
+     "applied": [
+      [
+       "Technical grant / research project",
+       14
+      ],
+      [
+       "Non-obvious / proprietary source",
+       8
+      ]
+     ],
+     "diff": 16,
+     "diff_applied": [
+      [
+       "Project A theme depth",
+       10
+      ],
+      [
+       "Platform / scale potential",
+       6
+      ]
+     ],
+     "diff_explain": "Project A theme depth +10 · Platform / scale potential +6",
+     "entity": {
+      "label": "Entity: UNKNOWN ENTITY TYPE -12",
+      "penalty": -12,
+      "reason": "no entity-type evidence in text",
+      "type": "UNKNOWN_ENTITY_TYPE"
+     },
+     "explain": "Technical grant / research project +14 · Non-obvious / proprietary source +8",
+     "final": 28,
+     "gated": null,
+     "lens": 2,
+     "score": 22
+    },
+    {
+     "applied": [
+      [
+       "PRE-COMPANY",
+       20
+      ],
+      [
+       "Defence",
+       8
+      ],
+      [
+       "Non-obvious / proprietary source",
+       8
+      ]
+     ],
+     "diff": 28,
+     "diff_applied": [
+      [
+       "Technical specificity",
+       12
+      ],
+      [
+       "Project A theme depth",
+       10
+      ],
+      [
+       "Platform / scale potential",
+       6
+      ]
+     ],
+     "diff_explain": "Technical specificity +12 · Project A theme depth +10 · Platform / scale potential +6",
+     "entity": {
+      "label": "Entity: PRE-COMPANY PROJECT",
+      "penalty": 0,
+      "reason": "official pre-company / spinout-project context",
+      "type": "PRE_COMPANY_PROJECT"
+     },
+     "explain": "PRE-COMPANY +20 · Defence +8 · Non-obvious / proprietary source +8",
+     "final": 66,
+     "gated": null,
+     "lens": 2,
+     "score": 36
+    },
+    {
+     "applied": [
+      [
+       "Non-obvious / proprietary source",
+       8
+      ]
+     ],
+     "diff": 26,
+     "diff_applied": [
+      [
+       "Industrial / commercial application",
+       10
+      ],
+      [
+       "Project A theme depth",
+       10
+      ],
+      [
+       "Platform / scale potential",
+       6
+      ]
+     ],
+     "diff_explain": "Industrial / commercial application +10 · Project A theme depth +10 · Platform / scale potential +6",
+     "entity": {
+      "label": "Entity: VENTURE",
+      "penalty": 0,
+      "reason": "explicit company/startup evidence",
+      "type": "VENTURE"
+     },
+     "explain": "Non-obvious / proprietary source +8",
+     "final": 34,
+     "gated": null,
+     "lens": 0,
+     "score": 8
+    },
+    {
+     "applied": [
+      [
+       "Non-obvious / proprietary source",
+       8
+      ]
+     ],
+     "diff": 0,
+     "diff_applied": [],
+     "diff_explain": "",
+     "entity": {
+      "label": "Entity: UNKNOWN ENTITY TYPE -12",
+      "penalty": -12,
+      "reason": "no entity-type evidence in text",
+      "type": "UNKNOWN_ENTITY_TYPE"
+     },
+     "explain": "Non-obvious / proprietary source +8",
+     "final": -4,
+     "gated": "entity extraction low-quality (name looks like a headline)",
+     "lens": 0,
+     "score": 8
+    },
+    {
+     "applied": [
+      [
+       "Non-obvious / proprietary source",
+       8
+      ]
+     ],
+     "diff": 0,
+     "diff_applied": [],
+     "diff_explain": "",
+     "entity": {
+      "label": "Entity: VENTURE",
+      "penalty": 0,
+      "reason": "legal form in name",
+      "type": "VENTURE"
+     },
+     "explain": "Non-obvious / proprietary source +8",
+     "final": 8,
+     "gated": "flagged as noise by sourcing",
+     "lens": 0,
+     "score": 8
+    },
+    {
+     "applied": [
+      [
+       "Non-obvious / proprietary source",
+       8
+      ]
+     ],
+     "diff": 0,
+     "diff_applied": [],
+     "diff_explain": "",
+     "entity": {
+      "label": "Entity: UNKNOWN ENTITY TYPE -12",
+      "penalty": -12,
+      "reason": "no entity-type evidence in text",
+      "type": "UNKNOWN_ENTITY_TYPE"
+     },
+     "explain": "Non-obvious / proprietary source +8",
+     "final": -4,
+     "gated": "flagged as noise by sourcing",
+     "lens": 0,
+     "score": 8
+    },
+    {
+     "applied": [
+      [
+       "PRE-COMPANY",
+       20
+      ],
+      [
+       "Defence",
+       8
+      ],
+      [
+       "Non-obvious / proprietary source",
+       8
+      ]
+     ],
+     "diff": 28,
+     "diff_applied": [
+      [
+       "Technical specificity",
+       12
+      ],
+      [
+       "Project A theme depth",
+       10
+      ],
+      [
+       "Platform / scale potential",
+       6
+      ]
+     ],
+     "diff_explain": "Technical specificity +12 · Project A theme depth +10 · Platform / scale potential +6",
+     "entity": {
+      "label": "Entity: PRE-COMPANY PROJECT",
+      "penalty": 0,
+      "reason": "official pre-company / spinout-project context",
+      "type": "PRE_COMPANY_PROJECT"
+     },
+     "explain": "PRE-COMPANY +20 · Defence +8 · Non-obvious / proprietary source +8",
+     "final": 66,
+     "gated": "flagged as noise by sourcing",
+     "lens": 2,
+     "score": 36
+    },
+    {
+     "applied": [
+      [
+       "PRE-COMPANY",
+       20
+      ],
+      [
+       "Research spinout",
+       16
+      ],
+      [
+       "Non-obvious / proprietary source",
+       8
+      ]
+     ],
+     "diff": 0,
+     "diff_applied": [
+      [
+       "Technical specificity",
+       12
+      ],
+      [
+       "Platform / scale potential",
+       6
+      ],
+      [
+       "Academic / no commercial path visible",
+       -10
+      ],
+      [
+       "Weak core-fund fit",
+       -8
+      ]
+     ],
+     "diff_explain": "Technical specificity +12 · Platform / scale potential +6 · Academic / no commercial path visible -10 · Weak core-fund fit -8",
+     "entity": {
+      "label": "Entity: PRE-COMPANY PROJECT",
+      "penalty": 0,
+      "reason": "official pre-company / spinout-project context",
+      "type": "PRE_COMPANY_PROJECT"
+     },
+     "explain": "PRE-COMPANY +20 · Research spinout +16 · Non-obvious / proprietary source +8",
+     "final": 49,
+     "gated": null,
+     "lens": 5,
+     "score": 44
+    },
+    {
+     "applied": [
+      [
+       "Non-obvious / proprietary source",
+       8
+      ]
+     ],
+     "diff": 10,
+     "diff_applied": [
+      [
+       "Industrial / commercial application",
+       10
+      ]
+     ],
+     "diff_explain": "Industrial / commercial application +10",
+     "entity": {
+      "label": "Entity: UNKNOWN ENTITY TYPE -12",
+      "penalty": -12,
+      "reason": "no entity-type evidence in text",
+      "type": "UNKNOWN_ENTITY_TYPE"
+     },
+     "explain": "Non-obvious / proprietary source +8",
+     "final": 6,
+     "gated": null,
+     "lens": 0,
+     "score": 8
+    },
+    {
+     "applied": [
+      [
+       "Non-obvious / proprietary source",
+       8
+      ]
+     ],
+     "diff": 16,
+     "diff_applied": [
+      [
+       "Industrial / commercial application",
+       10
+      ],
+      [
+       "Platform / scale potential",
+       6
+      ]
+     ],
+     "diff_explain": "Industrial / commercial application +10 · Platform / scale potential +6",
+     "entity": {
+      "label": "Entity: VENTURE",
+      "penalty": 0,
+      "reason": "explicit company/startup evidence",
+      "type": "VENTURE"
+     },
+     "explain": "Non-obvious / proprietary source +8",
+     "final": 24,
+     "gated": null,
+     "lens": 0,
+     "score": 8
+    }
+   ],
+   "kept": [
+    {
+     "archetype_hits": [],
+     "country": "",
+     "date": "",
+     "date_kind": "",
+     "decision": "new",
+     "description": "We sell things to people.",
+     "detected_on": "2026-11-11",
+     "discovery_tier": "registry",
+     "first_seen": "2026-11-11",
+     "geo": [
+      "DE"
+     ],
+     "geo_scope": "region-eu",
+     "id": "67591f19b60a",
+     "location": "",
+     "name": "Plain GmbH",
+     "noise": false,
+     "notes": "",
+     "priority": 3,
+     "probation_source": true,
+     "sectors": [],
+     "source": "Oracle hi",
+     "source_date": null,
+     "source_id": "hi",
+     "source_sectors": [
+      "ai"
+     ],
+     "source_url": "",
+     "src_quality": 2,
+     "twins": [],
+     "why": [
+      "From a PROBATION source — new, limited trust, still being measured"
+     ]
+    },
+    {
+     "archetype_hits": [
+      1
+     ],
+     "country": "",
+     "date": "",
+     "date_kind": "",
+     "decision": "new",
+     "description": "AI agents for freight forwarders and customs paperwork",
+     "detected_on": "2026-11-11",
+     "discovery_tier": "registry",
+     "first_seen": "2026-11-11",
+     "geo": [
+      "DE"
+     ],
+     "geo_scope": "region-eu",
+     "id": "96f17e478944",
+     "location": "",
+     "name": "Freight Agents AG",
+     "noise": false,
+     "notes": "",
+     "priority": 6,
+     "probation_source": true,
+     "sectors": [
+      "ai_sw"
+     ],
+     "source": "Oracle hi",
+     "source_date": null,
+     "source_id": "hi",
+     "source_sectors": [
+      "ai"
+     ],
+     "source_url": "",
+     "src_quality": 2,
+     "twins": [
+      "Nexcade"
+     ],
+     "why": [
+      "Archetype keyword match: #1 Vertical AI agent for a paper-heavy operational job in a traditional European B2B industry",
+      "Possible portfolio twin(s): Nexcade → run conflict check",
+      "From a PROBATION source — new, limited trust, still being measured"
+     ]
+    },
+    {
+     "archetype_hits": [],
+     "country": "",
+     "date": "",
+     "date_kind": "",
+     "decision": "new",
+     "description": "A chemical distributor",
+     "detected_on": "2026-11-11",
+     "discovery_tier": "announcement",
+     "first_seen": "2026-11-11",
+     "geo": [
+      "DE"
+     ],
+     "geo_scope": "region-eu",
+     "id": "ef497dc8736d",
+     "location": "",
+     "name": "Chem One",
+     "noise": false,
+     "notes": "",
+     "priority": 3,
+     "probation_source": true,
+     "sectors": [],
+     "source": "Oracle hi",
+     "source_date": null,
+     "source_id": "hi",
+     "source_sectors": [
+      "ai"
+     ],
+     "source_url": "",
+     "src_quality": 2,
+     "twins": [],
+     "why": [
+      "Announcement feed — discovery only; probably recently funded",
+      "From a PROBATION source — new, limited trust, still being measured"
+     ]
+    },
+    {
+     "archetype_hits": [
+      2
+     ],
+     "country": "",
+     "date": "",
+     "date_kind": "",
+     "decision": "new",
+     "description": "chemical packaging for industry",
+     "detected_on": "2026-11-11",
+     "discovery_tier": "announcement",
+     "first_seen": "2026-11-11",
+     "geo": [
+      "DE"
+     ],
+     "geo_scope": "region-eu",
+     "id": "000485d42c13",
+     "location": "",
+     "name": "Chem Two",
+     "noise": false,
+     "notes": "",
+     "priority": 5,
+     "probation_source": true,
+     "sectors": [],
+     "source": "Oracle hi",
+     "source_date": null,
+     "source_id": "hi",
+     "source_sectors": [
+      "ai"
+     ],
+     "source_url": "",
+     "src_quality": 2,
+     "twins": [],
+     "why": [
+      "Archetype keyword match: #2 Cross-border industrial trade or procurement platform for a fragmented physical commodity, with embedded financing, logistics or pricing intelligence",
+      "Announcement feed — discovery only; probably recently funded",
+      "From a PROBATION source — new, limited trust, still being measured"
+     ]
+    },
+    {
+     "archetype_hits": [
+      4
+     ],
+     "country": "",
+     "date": "",
+     "date_kind": "",
+     "decision": "new",
+     "description": "underwriting automation",
+     "detected_on": "2026-11-11",
+     "discovery_tier": "grant",
+     "first_seen": "2026-11-11",
+     "geo": [
+      "DE"
+     ],
+     "geo_scope": "region-eu",
+     "id": "e39d9355e0c0",
+     "location": "",
+     "name": "Longword",
+     "noise": false,
+     "notes": "",
+     "priority": 6,
+     "probation_source": true,
+     "sectors": [],
+     "source": "Oracle hi",
+     "source_date": null,
+     "source_id": "hi",
+     "source_sectors": [
+      "ai"
+     ],
+     "source_url": "",
+     "src_quality": 2,
+     "twins": [
+      "Nettle"
+     ],
+     "why": [
+      "Archetype keyword match: #4 Insurance infrastructure for new or under-served commercial risks",
+      "Possible portfolio twin(s): Nettle → run conflict check",
+      "From a PROBATION source — new, limited trust, still being measured"
+     ]
+    },
+    {
+     "archetype_hits": [
+      6,
+      5
+     ],
+     "country": "",
+     "date": "",
+     "date_kind": "",
+     "decision": "new",
+     "description": "a counter-drone sensor fusion stack",
+     "detected_on": "2026-11-11",
+     "discovery_tier": "pre_company",
+     "first_seen": "2026-11-11",
+     "geo": [
+      "DE"
+     ],
+     "geo_scope": "region-eu",
+     "id": "ec8e8a59a014",
+     "location": "",
+     "name": "Phrase Co",
+     "noise": false,
+     "notes": "",
+     "priority": 10,
+     "probation_source": true,
+     "sectors": [
+      "robotics",
+      "deeptech"
+     ],
+     "source": "Oracle hi",
+     "source_date": null,
+     "source_id": "hi",
+     "source_sectors": [
+      "ai"
+     ],
+     "source_url": "",
+     "src_quality": 2,
+     "twins": [
+      "Project Q"
+     ],
+     "why": [
+      "Archetype keyword match: #6 Dual-use autonomous platforms with a fleet/software brain; #5 Defence software layer",
+      "Pre-company channel — this is where the sourcing edge is",
+      "Possible portfolio twin(s): Project Q → run conflict check",
+      "From a PROBATION source — new, limited trust, still being measured"
+     ]
+    },
+    {
+     "archetype_hits": [
+      3
+     ],
+     "country": "",
+     "date": "",
+     "date_kind": "",
+     "decision": "new",
+     "description": "Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools",
+     "detected_on": "2026-11-11",
+     "discovery_tier": "registry",
+     "first_seen": "2026-11-11",
+     "geo": [
+      "DE"
+     ],
+     "geo_scope": "region-eu",
+     "id": "c569b9590937",
+     "location": "",
+     "name": "Beyond600",
+     "noise": false,
+     "notes": "",
+     "priority": 6,
+     "probation_source": true,
+     "sectors": [],
+     "source": "Oracle hi",
+     "source_date": null,
+     "source_id": "hi",
+     "source_sectors": [
+      "ai"
+     ],
+     "source_url": "",
+     "src_quality": 2,
+     "twins": [
+      "ReStabilise"
+     ],
+     "why": [
+      "Archetype keyword match: #3 \"Regulated-by-design\" financial infrastructure",
+      "Possible portfolio twin(s): ReStabilise → run conflict check",
+      "From a PROBATION source — new, limited trust, still being measured"
+     ]
+    },
+    {
+     "archetype_hits": [],
+     "country": "",
+     "date": "",
+     "date_kind": "",
+     "decision": "new",
+     "description": "short description",
+     "detected_on": "2026-11-11",
+     "discovery_tier": "registry",
+     "first_seen": "2026-11-11",
+     "geo": [
+      "DE"
+     ],
+     "geo_scope": "region-eu",
+     "id": "e5dc52227a2d",
+     "location": "",
+     "name": "NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN",
+     "noise": false,
+     "notes": "",
+     "priority": 4,
+     "probation_source": true,
+     "sectors": [],
+     "source": "Oracle hi",
+     "source_date": null,
+     "source_id": "hi",
+     "source_sectors": [
+      "ai"
+     ],
+     "source_url": "",
+     "src_quality": 2,
+     "twins": [
+      "Nexcade"
+     ],
+     "why": [
+      "Possible portfolio twin(s): Nexcade → run conflict check",
+      "From a PROBATION source — new, limited trust, still being measured"
+     ]
+    },
+    {
+     "archetype_hits": [],
+     "country": "",
+     "date": "",
+     "date_kind": "",
+     "decision": "rejected",
+     "description": "holding and consulting",
+     "detected_on": "2026-11-11",
+     "discovery_tier": "registry",
+     "first_seen": "2026-11-11",
+     "geo": [
+      "DE"
+     ],
+     "geo_scope": "region-eu",
+     "id": "257555f6a7f9",
+     "location": "",
+     "name": "Holding Verwaltung GmbH",
+     "noise": true,
+     "notes": "auto-rejected: looks like noise — bring back if wrong",
+     "priority": -7,
+     "probation_source": true,
+     "sectors": [],
+     "source": "Oracle hi",
+     "source_date": null,
+     "source_id": "hi",
+     "source_sectors": [
+      "ai"
+     ],
+     "source_url": "",
+     "src_quality": 2,
+     "twins": [],
+     "why": [
+      "⚠ Looks like holding/consulting/services — likely noise",
+      "From a PROBATION source — new, limited trust, still being measured"
+     ]
+    },
+    {
+     "archetype_hits": [],
+     "country": "",
+     "date": "",
+     "date_kind": "",
+     "decision": "rejected",
+     "description": "handel mit waren",
+     "detected_on": "2026-11-11",
+     "discovery_tier": "registry",
+     "first_seen": "2026-11-11",
+     "geo": [
+      "DE"
+     ],
+     "geo_scope": "region-eu",
+     "id": "92cfc61c61f2",
+     "location": "",
+     "name": "Handel Shop",
+     "noise": true,
+     "notes": "auto-rejected: looks like noise — bring back if wrong",
+     "priority": -7,
+     "probation_source": true,
+     "sectors": [],
+     "source": "Oracle hi",
+     "source_date": null,
+     "source_id": "hi",
+     "source_sectors": [
+      "ai"
+     ],
+     "source_url": "",
+     "src_quality": 2,
+     "twins": [],
+     "why": [
+      "⚠ Looks like holding/consulting/services — likely noise",
+      "From a PROBATION source — new, limited trust, still being measured"
+     ]
+    },
+    {
+     "archetype_hits": [
+      5,
+      3,
+      6
+     ],
+     "country": "",
+     "date": "",
+     "date_kind": "",
+     "decision": "rejected",
+     "description": "holding stablecoin payments mica drone uav defence military nato freight",
+     "detected_on": "2026-11-11",
+     "discovery_tier": "pre_company",
+     "first_seen": "2026-11-11",
+     "geo": [
+      "DE"
+     ],
+     "geo_scope": "region-eu",
+     "id": "5ee0dce3650a",
+     "location": "",
+     "name": "Quirk Zero",
+     "noise": true,
+     "notes": "auto-rejected: looks like noise — bring back if wrong",
+     "priority": 7,
+     "probation_source": true,
+     "sectors": [
+      "defence",
+      "robotics"
+     ],
+     "source": "Oracle hi",
+     "source_date": null,
+     "source_id": "hi",
+     "source_sectors": [
+      "ai"
+     ],
+     "source_url": "",
+     "src_quality": 2,
+     "twins": [
+      "Nexcade",
+      "ReStabilise",
+      "Quantum Systems"
+     ],
+     "why": [
+      "Archetype keyword match: #5 Defence software layer; #3 \"Regulated-by-design\" financial infrastructure; #6 Dual-use autonomous platforms with a fleet/software brain",
+      "Pre-company channel — this is where the sourcing edge is",
+      "Possible portfolio twin(s): Nexcade, ReStabilise, Quantum Systems → run conflict check",
+      "⚠ Looks like holding/consulting/services — likely noise",
+      "From a PROBATION source — new, limited trust, still being measured"
+     ]
+    },
+    {
+     "archetype_hits": [],
+     "country": "",
+     "date": "",
+     "date_kind": "",
+     "decision": "new",
+     "description": "biotech antibody platform for oncology diagnostics",
+     "detected_on": "2026-11-11",
+     "discovery_tier": "pre_company",
+     "first_seen": "2026-11-11",
+     "geo": [
+      "DE"
+     ],
+     "geo_scope": "region-eu",
+     "id": "a61111c309c8",
+     "location": "",
+     "name": "Bio Spinout",
+     "noise": false,
+     "notes": "",
+     "opportunistic": true,
+     "priority": 5,
+     "probation_source": true,
+     "sectors": [
+      "bio",
+      "deeptech"
+     ],
+     "source": "Oracle hi",
+     "source_date": null,
+     "source_id": "hi",
+     "source_sectors": [
+      "ai"
+     ],
+     "source_url": "",
+     "src_quality": 2,
+     "twins": [],
+     "why": [
+      "Pre-company channel — this is where the sourcing edge is",
+      "OPPORTUNISTIC — candidate text is bio/pharma; outside core themes, #15 outlier route only",
+      "From a PROBATION source — new, limited trust, still being measured"
+     ]
+    },
+    {
+     "archetype_hits": [
+      1
+     ],
+     "country": "",
+     "date": "",
+     "date_kind": "",
+     "decision": "new",
+     "description": "accounting ledger bookkeeping vat for SMEs",
+     "detected_on": "2026-11-11",
+     "discovery_tier": "manual",
+     "first_seen": "2026-11-11",
+     "geo": [
+      "DE"
+     ],
+     "geo_scope": "region-eu",
+     "id": "972b6a756995",
+     "location": "",
+     "name": "Twin Seeker",
+     "noise": false,
+     "notes": "",
+     "priority": 6,
+     "probation_source": true,
+     "sectors": [],
+     "source": "Oracle hi",
+     "source_date": null,
+     "source_id": "hi",
+     "source_sectors": [
+      "ai"
+     ],
+     "source_url": "",
+     "src_quality": 2,
+     "twins": [
+      "Tabular"
+     ],
+     "why": [
+      "Archetype keyword match: #1 Vertical AI agent for a paper-heavy operational job in a traditional European B2B industry",
+      "Possible portfolio twin(s): Tabular → run conflict check",
+      "From a PROBATION source — new, limited trust, still being measured"
+     ]
+    },
+    {
+     "archetype_hits": [],
+     "country": "",
+     "date": "",
+     "date_kind": "",
+     "decision": "new",
+     "description": "Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial c we use cookies",
+     "detected_on": "2026-11-11",
+     "discovery_tier": "registry",
+     "first_seen": "2026-11-11",
+     "geo": [
+      "DE"
+     ],
+     "geo_scope": "region-eu",
+     "id": "4640fff2ace9",
+     "location": "",
+     "name": "Late Cookie",
+     "noise": false,
+     "notes": "",
+     "priority": 3,
+     "probation_source": true,
+     "sectors": [],
+     "source": "Oracle hi",
+     "source_date": null,
+     "source_id": "hi",
+     "source_sectors": [
+      "ai"
+     ],
+     "source_url": "",
+     "src_quality": 2,
+     "twins": [],
+     "why": [
+      "From a PROBATION source — new, limited trust, still being measured"
+     ]
+    }
+   ],
+   "report": {
+    "count": 14,
+    "interstitial": 1,
+    "raw": 15
+   }
+  },
+  "synthetic-lo": {
+   "attention": [
+    {
+     "applied": [],
+     "diff": 0,
+     "diff_applied": [],
+     "diff_explain": "",
+     "entity": {
+      "label": "Entity: VENTURE",
+      "penalty": 0,
+      "reason": "legal form in name",
+      "type": "VENTURE"
+     },
+     "explain": "",
+     "final": 0,
+     "gated": null,
+     "lens": 0,
+     "score": 0
+    },
+    {
+     "applied": [
+      [
+       "Industrial Autonomy / Physical World",
+       6
+      ]
+     ],
+     "diff": 20,
+     "diff_applied": [
+      [
+       "Industrial / commercial application",
+       10
+      ],
+      [
+       "Project A theme depth",
+       10
+      ]
+     ],
+     "diff_explain": "Industrial / commercial application +10 · Project A theme depth +10",
+     "entity": {
+      "label": "Entity: VENTURE",
+      "penalty": 0,
+      "reason": "legal form in name",
+      "type": "VENTURE"
+     },
+     "explain": "Industrial Autonomy / Physical World +6",
+     "final": 26,
+     "gated": null,
+     "lens": 0,
+     "score": 6
+    },
+    {
+     "applied": [
+      [
+       "Announcement / funding-news source",
+       -8
+      ]
+     ],
+     "diff": 0,
+     "diff_applied": [],
+     "diff_explain": "",
+     "entity": {
+      "label": "Entity: UNKNOWN ENTITY TYPE -12",
+      "penalty": -12,
+      "reason": "no entity-type evidence in text",
+      "type": "UNKNOWN_ENTITY_TYPE"
+     },
+     "explain": "Announcement / funding-news source -8",
+     "final": -20,
+     "gated": null,
+     "lens": 0,
+     "score": -8
+    },
+    {
+     "applied": [
+      [
+       "Industrial Autonomy / Physical World",
+       6
+      ],
+      [
+       "Announcement / funding-news source",
+       -8
+      ]
+     ],
+     "diff": 26,
+     "diff_applied": [
+      [
+       "Industrial / commercial application",
+       10
+      ],
+      [
+       "Project A theme depth",
+       10
+      ],
+      [
+       "Platform / scale potential",
+       6
+      ]
+     ],
+     "diff_explain": "Industrial / commercial application +10 · Project A theme depth +10 · Platform / scale potential +6",
+     "entity": {
+      "label": "Entity: POSSIBLE VENTURE -8",
+      "penalty": -8,
+      "reason": "product/team wording without company or project proof",
+      "type": "POSSIBLE_VENTURE"
+     },
+     "explain": "Industrial Autonomy / Physical World +6 · Announcement / funding-news source -8",
+     "final": 16,
+     "gated": null,
+     "lens": 0,
+     "score": -2
+    },
+    {
+     "applied": [
+      [
+       "Technical grant / research project",
+       14
+      ]
+     ],
+     "diff": 16,
+     "diff_applied": [
+      [
+       "Project A theme depth",
+       10
+      ],
+      [
+       "Platform / scale potential",
+       6
+      ]
+     ],
+     "diff_explain": "Project A theme depth +10 · Platform / scale potential +6",
+     "entity": {
+      "label": "Entity: UNKNOWN ENTITY TYPE -12",
+      "penalty": -12,
+      "reason": "no entity-type evidence in text",
+      "type": "UNKNOWN_ENTITY_TYPE"
+     },
+     "explain": "Technical grant / research project +14",
+     "final": 20,
+     "gated": null,
+     "lens": 2,
+     "score": 14
+    },
+    {
+     "applied": [
+      [
+       "PRE-COMPANY",
+       20
+      ],
+      [
+       "Defence",
+       8
+      ]
+     ],
+     "diff": 28,
+     "diff_applied": [
+      [
+       "Technical specificity",
+       12
+      ],
+      [
+       "Project A theme depth",
+       10
+      ],
+      [
+       "Platform / scale potential",
+       6
+      ]
+     ],
+     "diff_explain": "Technical specificity +12 · Project A theme depth +10 · Platform / scale potential +6",
+     "entity": {
+      "label": "Entity: PRE-COMPANY PROJECT",
+      "penalty": 0,
+      "reason": "official pre-company / spinout-project context",
+      "type": "PRE_COMPANY_PROJECT"
+     },
+     "explain": "PRE-COMPANY +20 · Defence +8",
+     "final": 58,
+     "gated": null,
+     "lens": 2,
+     "score": 28
+    },
+    {
+     "applied": [],
+     "diff": 26,
+     "diff_applied": [
+      [
+       "Industrial / commercial application",
+       10
+      ],
+      [
+       "Project A theme depth",
+       10
+      ],
+      [
+       "Platform / scale potential",
+       6
+      ]
+     ],
+     "diff_explain": "Industrial / commercial application +10 · Project A theme depth +10 · Platform / scale potential +6",
+     "entity": {
+      "label": "Entity: VENTURE",
+      "penalty": 0,
+      "reason": "explicit company/startup evidence",
+      "type": "VENTURE"
+     },
+     "explain": "",
+     "final": 26,
+     "gated": null,
+     "lens": 0,
+     "score": 0
+    },
+    {
+     "applied": [],
+     "diff": 0,
+     "diff_applied": [],
+     "diff_explain": "",
+     "entity": {
+      "label": "Entity: UNKNOWN ENTITY TYPE -12",
+      "penalty": -12,
+      "reason": "no entity-type evidence in text",
+      "type": "UNKNOWN_ENTITY_TYPE"
+     },
+     "explain": "",
+     "final": -12,
+     "gated": "entity extraction low-quality (name looks like a headline)",
+     "lens": 0,
+     "score": 0
+    },
+    {
+     "applied": [],
+     "diff": 0,
+     "diff_applied": [],
+     "diff_explain": "",
+     "entity": {
+      "label": "Entity: VENTURE",
+      "penalty": 0,
+      "reason": "legal form in name",
+      "type": "VENTURE"
+     },
+     "explain": "",
+     "final": 0,
+     "gated": "flagged as noise by sourcing",
+     "lens": 0,
+     "score": 0
+    },
+    {
+     "applied": [],
+     "diff": 0,
+     "diff_applied": [],
+     "diff_explain": "",
+     "entity": {
+      "label": "Entity: UNKNOWN ENTITY TYPE -12",
+      "penalty": -12,
+      "reason": "no entity-type evidence in text",
+      "type": "UNKNOWN_ENTITY_TYPE"
+     },
+     "explain": "",
+     "final": -12,
+     "gated": "flagged as noise by sourcing",
+     "lens": 0,
+     "score": 0
+    },
+    {
+     "applied": [
+      [
+       "PRE-COMPANY",
+       20
+      ],
+      [
+       "Defence",
+       8
+      ]
+     ],
+     "diff": 28,
+     "diff_applied": [
+      [
+       "Technical specificity",
+       12
+      ],
+      [
+       "Project A theme depth",
+       10
+      ],
+      [
+       "Platform / scale potential",
+       6
+      ]
+     ],
+     "diff_explain": "Technical specificity +12 · Project A theme depth +10 · Platform / scale potential +6",
+     "entity": {
+      "label": "Entity: PRE-COMPANY PROJECT",
+      "penalty": 0,
+      "reason": "official pre-company / spinout-project context",
+      "type": "PRE_COMPANY_PROJECT"
+     },
+     "explain": "PRE-COMPANY +20 · Defence +8",
+     "final": 58,
+     "gated": "flagged as noise by sourcing",
+     "lens": 2,
+     "score": 28
+    },
+    {
+     "applied": [
+      [
+       "PRE-COMPANY",
+       20
+      ],
+      [
+       "Research spinout",
+       16
+      ]
+     ],
+     "diff": 0,
+     "diff_applied": [
+      [
+       "Technical specificity",
+       12
+      ],
+      [
+       "Platform / scale potential",
+       6
+      ],
+      [
+       "Academic / no commercial path visible",
+       -10
+      ],
+      [
+       "Weak core-fund fit",
+       -8
+      ]
+     ],
+     "diff_explain": "Technical specificity +12 · Platform / scale potential +6 · Academic / no commercial path visible -10 · Weak core-fund fit -8",
+     "entity": {
+      "label": "Entity: PRE-COMPANY PROJECT",
+      "penalty": 0,
+      "reason": "official pre-company / spinout-project context",
+      "type": "PRE_COMPANY_PROJECT"
+     },
+     "explain": "PRE-COMPANY +20 · Research spinout +16",
+     "final": 41,
+     "gated": null,
+     "lens": 5,
+     "score": 36
+    },
+    {
+     "applied": [],
+     "diff": 10,
+     "diff_applied": [
+      [
+       "Industrial / commercial application",
+       10
+      ]
+     ],
+     "diff_explain": "Industrial / commercial application +10",
+     "entity": {
+      "label": "Entity: UNKNOWN ENTITY TYPE -12",
+      "penalty": -12,
+      "reason": "no entity-type evidence in text",
+      "type": "UNKNOWN_ENTITY_TYPE"
+     },
+     "explain": "",
+     "final": -2,
+     "gated": null,
+     "lens": 0,
+     "score": 0
+    },
+    {
+     "applied": [],
+     "diff": 16,
+     "diff_applied": [
+      [
+       "Industrial / commercial application",
+       10
+      ],
+      [
+       "Platform / scale potential",
+       6
+      ]
+     ],
+     "diff_explain": "Industrial / commercial application +10 · Platform / scale potential +6",
+     "entity": {
+      "label": "Entity: VENTURE",
+      "penalty": 0,
+      "reason": "explicit company/startup evidence",
+      "type": "VENTURE"
+     },
+     "explain": "",
+     "final": 16,
+     "gated": null,
+     "lens": 0,
+     "score": 0
+    }
+   ],
+   "kept": [
+    {
+     "archetype_hits": [],
+     "country": "",
+     "date": "",
+     "date_kind": "",
+     "decision": "new",
+     "description": "We sell things to people.",
+     "detected_on": "2026-11-11",
+     "discovery_tier": "registry",
+     "first_seen": "2026-11-11",
+     "geo": [
+      "DE"
+     ],
+     "geo_scope": "region-eu",
+     "id": "f7897d235459",
+     "location": "",
+     "name": "Plain GmbH",
+     "noise": false,
+     "notes": "",
+     "priority": 1,
+     "sectors": [],
+     "source": "Oracle lo",
+     "source_date": null,
+     "source_id": "lo",
+     "source_sectors": [
+      "ai"
+     ],
+     "source_url": "",
+     "src_quality": 0,
+     "twins": [],
+     "why": []
+    },
+    {
+     "archetype_hits": [
+      1
+     ],
+     "country": "",
+     "date": "",
+     "date_kind": "",
+     "decision": "new",
+     "description": "AI agents for freight forwarders and customs paperwork",
+     "detected_on": "2026-11-11",
+     "discovery_tier": "registry",
+     "first_seen": "2026-11-11",
+     "geo": [
+      "DE"
+     ],
+     "geo_scope": "region-eu",
+     "id": "5a2352e469de",
+     "location": "",
+     "name": "Freight Agents AG",
+     "noise": false,
+     "notes": "",
+     "priority": 4,
+     "sectors": [
+      "ai_sw"
+     ],
+     "source": "Oracle lo",
+     "source_date": null,
+     "source_id": "lo",
+     "source_sectors": [
+      "ai"
+     ],
+     "source_url": "",
+     "src_quality": 0,
+     "twins": [
+      "Nexcade"
+     ],
+     "why": [
+      "Archetype keyword match: #1 Vertical AI agent for a paper-heavy operational job in a traditional European B2B industry",
+      "Possible portfolio twin(s): Nexcade → run conflict check"
+     ]
+    },
+    {
+     "archetype_hits": [],
+     "country": "",
+     "date": "",
+     "date_kind": "",
+     "decision": "new",
+     "description": "A chemical distributor",
+     "detected_on": "2026-11-11",
+     "discovery_tier": "announcement",
+     "first_seen": "2026-11-11",
+     "geo": [
+      "DE"
+     ],
+     "geo_scope": "region-eu",
+     "id": "7556fc597904",
+     "location": "",
+     "name": "Chem One",
+     "noise": false,
+     "notes": "",
+     "priority": 1,
+     "sectors": [],
+     "source": "Oracle lo",
+     "source_date": null,
+     "source_id": "lo",
+     "source_sectors": [
+      "ai"
+     ],
+     "source_url": "",
+     "src_quality": 0,
+     "twins": [],
+     "why": [
+      "Announcement feed — discovery only; probably recently funded"
+     ]
+    },
+    {
+     "archetype_hits": [
+      2
+     ],
+     "country": "",
+     "date": "",
+     "date_kind": "",
+     "decision": "new",
+     "description": "chemical packaging for industry",
+     "detected_on": "2026-11-11",
+     "discovery_tier": "announcement",
+     "first_seen": "2026-11-11",
+     "geo": [
+      "DE"
+     ],
+     "geo_scope": "region-eu",
+     "id": "c09cd08c6f95",
+     "location": "",
+     "name": "Chem Two",
+     "noise": false,
+     "notes": "",
+     "priority": 3,
+     "sectors": [],
+     "source": "Oracle lo",
+     "source_date": null,
+     "source_id": "lo",
+     "source_sectors": [
+      "ai"
+     ],
+     "source_url": "",
+     "src_quality": 0,
+     "twins": [],
+     "why": [
+      "Archetype keyword match: #2 Cross-border industrial trade or procurement platform for a fragmented physical commodity, with embedded financing, logistics or pricing intelligence",
+      "Announcement feed — discovery only; probably recently funded"
+     ]
+    },
+    {
+     "archetype_hits": [
+      4
+     ],
+     "country": "",
+     "date": "",
+     "date_kind": "",
+     "decision": "new",
+     "description": "underwriting automation",
+     "detected_on": "2026-11-11",
+     "discovery_tier": "grant",
+     "first_seen": "2026-11-11",
+     "geo": [
+      "DE"
+     ],
+     "geo_scope": "region-eu",
+     "id": "5d9a1496f924",
+     "location": "",
+     "name": "Longword",
+     "noise": false,
+     "notes": "",
+     "priority": 4,
+     "sectors": [],
+     "source": "Oracle lo",
+     "source_date": null,
+     "source_id": "lo",
+     "source_sectors": [
+      "ai"
+     ],
+     "source_url": "",
+     "src_quality": 0,
+     "twins": [
+      "Nettle"
+     ],
+     "why": [
+      "Archetype keyword match: #4 Insurance infrastructure for new or under-served commercial risks",
+      "Possible portfolio twin(s): Nettle → run conflict check"
+     ]
+    },
+    {
+     "archetype_hits": [
+      6,
+      5
+     ],
+     "country": "",
+     "date": "",
+     "date_kind": "",
+     "decision": "new",
+     "description": "a counter-drone sensor fusion stack",
+     "detected_on": "2026-11-11",
+     "discovery_tier": "pre_company",
+     "first_seen": "2026-11-11",
+     "geo": [
+      "DE"
+     ],
+     "geo_scope": "region-eu",
+     "id": "846221ea0d1d",
+     "location": "",
+     "name": "Phrase Co",
+     "noise": false,
+     "notes": "",
+     "priority": 8,
+     "sectors": [
+      "robotics",
+      "deeptech"
+     ],
+     "source": "Oracle lo",
+     "source_date": null,
+     "source_id": "lo",
+     "source_sectors": [
+      "ai"
+     ],
+     "source_url": "",
+     "src_quality": 0,
+     "twins": [
+      "Project Q"
+     ],
+     "why": [
+      "Archetype keyword match: #6 Dual-use autonomous platforms with a fleet/software brain; #5 Defence software layer",
+      "Pre-company channel — this is where the sourcing edge is",
+      "Possible portfolio twin(s): Project Q → run conflict check"
+     ]
+    },
+    {
+     "archetype_hits": [
+      3
+     ],
+     "country": "",
+     "date": "",
+     "date_kind": "",
+     "decision": "new",
+     "description": "Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools",
+     "detected_on": "2026-11-11",
+     "discovery_tier": "registry",
+     "first_seen": "2026-11-11",
+     "geo": [
+      "DE"
+     ],
+     "geo_scope": "region-eu",
+     "id": "ee694bb19610",
+     "location": "",
+     "name": "Beyond600",
+     "noise": false,
+     "notes": "",
+     "priority": 4,
+     "sectors": [],
+     "source": "Oracle lo",
+     "source_date": null,
+     "source_id": "lo",
+     "source_sectors": [
+      "ai"
+     ],
+     "source_url": "",
+     "src_quality": 0,
+     "twins": [
+      "ReStabilise"
+     ],
+     "why": [
+      "Archetype keyword match: #3 \"Regulated-by-design\" financial infrastructure",
+      "Possible portfolio twin(s): ReStabilise → run conflict check"
+     ]
+    },
+    {
+     "archetype_hits": [],
+     "country": "",
+     "date": "",
+     "date_kind": "",
+     "decision": "new",
+     "description": "short description",
+     "detected_on": "2026-11-11",
+     "discovery_tier": "registry",
+     "first_seen": "2026-11-11",
+     "geo": [
+      "DE"
+     ],
+     "geo_scope": "region-eu",
+     "id": "a6f8758de127",
+     "location": "",
+     "name": "NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN",
+     "noise": false,
+     "notes": "",
+     "priority": 2,
+     "sectors": [],
+     "source": "Oracle lo",
+     "source_date": null,
+     "source_id": "lo",
+     "source_sectors": [
+      "ai"
+     ],
+     "source_url": "",
+     "src_quality": 0,
+     "twins": [
+      "Nexcade"
+     ],
+     "why": [
+      "Possible portfolio twin(s): Nexcade → run conflict check"
+     ]
+    },
+    {
+     "archetype_hits": [],
+     "country": "",
+     "date": "",
+     "date_kind": "",
+     "decision": "rejected",
+     "description": "holding and consulting",
+     "detected_on": "2026-11-11",
+     "discovery_tier": "registry",
+     "first_seen": "2026-11-11",
+     "geo": [
+      "DE"
+     ],
+     "geo_scope": "region-eu",
+     "id": "68c8f74d13b0",
+     "location": "",
+     "name": "Holding Verwaltung GmbH",
+     "noise": true,
+     "notes": "auto-rejected: looks like noise — bring back if wrong",
+     "priority": -9,
+     "sectors": [],
+     "source": "Oracle lo",
+     "source_date": null,
+     "source_id": "lo",
+     "source_sectors": [
+      "ai"
+     ],
+     "source_url": "",
+     "src_quality": 0,
+     "twins": [],
+     "why": [
+      "⚠ Looks like holding/consulting/services — likely noise"
+     ]
+    },
+    {
+     "archetype_hits": [],
+     "country": "",
+     "date": "",
+     "date_kind": "",
+     "decision": "rejected",
+     "description": "handel mit waren",
+     "detected_on": "2026-11-11",
+     "discovery_tier": "registry",
+     "first_seen": "2026-11-11",
+     "geo": [
+      "DE"
+     ],
+     "geo_scope": "region-eu",
+     "id": "c1626efe12aa",
+     "location": "",
+     "name": "Handel Shop",
+     "noise": true,
+     "notes": "auto-rejected: looks like noise — bring back if wrong",
+     "priority": -9,
+     "sectors": [],
+     "source": "Oracle lo",
+     "source_date": null,
+     "source_id": "lo",
+     "source_sectors": [
+      "ai"
+     ],
+     "source_url": "",
+     "src_quality": 0,
+     "twins": [],
+     "why": [
+      "⚠ Looks like holding/consulting/services — likely noise"
+     ]
+    },
+    {
+     "archetype_hits": [
+      5,
+      3,
+      6
+     ],
+     "country": "",
+     "date": "",
+     "date_kind": "",
+     "decision": "rejected",
+     "description": "holding stablecoin payments mica drone uav defence military nato freight",
+     "detected_on": "2026-11-11",
+     "discovery_tier": "pre_company",
+     "first_seen": "2026-11-11",
+     "geo": [
+      "DE"
+     ],
+     "geo_scope": "region-eu",
+     "id": "2b396a63f504",
+     "location": "",
+     "name": "Quirk Zero",
+     "noise": true,
+     "notes": "auto-rejected: looks like noise — bring back if wrong",
+     "priority": 5,
+     "sectors": [
+      "defence",
+      "robotics"
+     ],
+     "source": "Oracle lo",
+     "source_date": null,
+     "source_id": "lo",
+     "source_sectors": [
+      "ai"
+     ],
+     "source_url": "",
+     "src_quality": 0,
+     "twins": [
+      "Nexcade",
+      "ReStabilise",
+      "Quantum Systems"
+     ],
+     "why": [
+      "Archetype keyword match: #5 Defence software layer; #3 \"Regulated-by-design\" financial infrastructure; #6 Dual-use autonomous platforms with a fleet/software brain",
+      "Pre-company channel — this is where the sourcing edge is",
+      "Possible portfolio twin(s): Nexcade, ReStabilise, Quantum Systems → run conflict check",
+      "⚠ Looks like holding/consulting/services — likely noise"
+     ]
+    },
+    {
+     "archetype_hits": [],
+     "country": "",
+     "date": "",
+     "date_kind": "",
+     "decision": "new",
+     "description": "biotech antibody platform for oncology diagnostics",
+     "detected_on": "2026-11-11",
+     "discovery_tier": "pre_company",
+     "first_seen": "2026-11-11",
+     "geo": [
+      "DE"
+     ],
+     "geo_scope": "region-eu",
+     "id": "409713db5c2a",
+     "location": "",
+     "name": "Bio Spinout",
+     "noise": false,
+     "notes": "",
+     "opportunistic": true,
+     "priority": 3,
+     "sectors": [
+      "bio",
+      "deeptech"
+     ],
+     "source": "Oracle lo",
+     "source_date": null,
+     "source_id": "lo",
+     "source_sectors": [
+      "ai"
+     ],
+     "source_url": "",
+     "src_quality": 0,
+     "twins": [],
+     "why": [
+      "Pre-company channel — this is where the sourcing edge is",
+      "OPPORTUNISTIC — candidate text is bio/pharma; outside core themes, #15 outlier route only"
+     ]
+    },
+    {
+     "archetype_hits": [
+      1
+     ],
+     "country": "",
+     "date": "",
+     "date_kind": "",
+     "decision": "new",
+     "description": "accounting ledger bookkeeping vat for SMEs",
+     "detected_on": "2026-11-11",
+     "discovery_tier": "manual",
+     "first_seen": "2026-11-11",
+     "geo": [
+      "DE"
+     ],
+     "geo_scope": "region-eu",
+     "id": "7c536af1e304",
+     "location": "",
+     "name": "Twin Seeker",
+     "noise": false,
+     "notes": "",
+     "priority": 4,
+     "sectors": [],
+     "source": "Oracle lo",
+     "source_date": null,
+     "source_id": "lo",
+     "source_sectors": [
+      "ai"
+     ],
+     "source_url": "",
+     "src_quality": 0,
+     "twins": [
+      "Tabular"
+     ],
+     "why": [
+      "Archetype keyword match: #1 Vertical AI agent for a paper-heavy operational job in a traditional European B2B industry",
+      "Possible portfolio twin(s): Tabular → run conflict check"
+     ]
+    },
+    {
+     "archetype_hits": [],
+     "country": "",
+     "date": "",
+     "date_kind": "",
+     "decision": "new",
+     "description": "Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial c we use cookies",
+     "detected_on": "2026-11-11",
+     "discovery_tier": "registry",
+     "first_seen": "2026-11-11",
+     "geo": [
+      "DE"
+     ],
+     "geo_scope": "region-eu",
+     "id": "5bf98a98c6c5",
+     "location": "",
+     "name": "Late Cookie",
+     "noise": false,
+     "notes": "",
+     "priority": 1,
+     "sectors": [],
+     "source": "Oracle lo",
+     "source_date": null,
+     "source_id": "lo",
+     "source_sectors": [
+      "ai"
+     ],
+     "source_url": "",
+     "src_quality": 0,
+     "twins": [],
+     "why": []
+    }
+   ],
+   "report": {
+    "count": 14,
+    "interstitial": 1,
+    "raw": 15
+   }
+  },
+  "synthetic-med": {
+   "attention": [
+    {
+     "applied": [],
+     "diff": 0,
+     "diff_applied": [],
+     "diff_explain": "",
+     "entity": {
+      "label": "Entity: VENTURE",
+      "penalty": 0,
+      "reason": "legal form in name",
+      "type": "VENTURE"
+     },
+     "explain": "",
+     "final": 0,
+     "gated": null,
+     "lens": 0,
+     "score": 0
+    },
+    {
+     "applied": [
+      [
+       "Industrial Autonomy / Physical World",
+       6
+      ]
+     ],
+     "diff": 20,
+     "diff_applied": [
+      [
+       "Industrial / commercial application",
+       10
+      ],
+      [
+       "Project A theme depth",
+       10
+      ]
+     ],
+     "diff_explain": "Industrial / commercial application +10 · Project A theme depth +10",
+     "entity": {
+      "label": "Entity: VENTURE",
+      "penalty": 0,
+      "reason": "legal form in name",
+      "type": "VENTURE"
+     },
+     "explain": "Industrial Autonomy / Physical World +6",
+     "final": 26,
+     "gated": null,
+     "lens": 0,
+     "score": 6
+    },
+    {
+     "applied": [
+      [
+       "Announcement / funding-news source",
+       -8
+      ]
+     ],
+     "diff": 0,
+     "diff_applied": [],
+     "diff_explain": "",
+     "entity": {
+      "label": "Entity: UNKNOWN ENTITY TYPE -12",
+      "penalty": -12,
+      "reason": "no entity-type evidence in text",
+      "type": "UNKNOWN_ENTITY_TYPE"
+     },
+     "explain": "Announcement / funding-news source -8",
+     "final": -20,
+     "gated": null,
+     "lens": 0,
+     "score": -8
+    },
+    {
+     "applied": [
+      [
+       "Industrial Autonomy / Physical World",
+       6
+      ],
+      [
+       "Announcement / funding-news source",
+       -8
+      ]
+     ],
+     "diff": 26,
+     "diff_applied": [
+      [
+       "Industrial / commercial application",
+       10
+      ],
+      [
+       "Project A theme depth",
+       10
+      ],
+      [
+       "Platform / scale potential",
+       6
+      ]
+     ],
+     "diff_explain": "Industrial / commercial application +10 · Project A theme depth +10 · Platform / scale potential +6",
+     "entity": {
+      "label": "Entity: POSSIBLE VENTURE -8",
+      "penalty": -8,
+      "reason": "product/team wording without company or project proof",
+      "type": "POSSIBLE_VENTURE"
+     },
+     "explain": "Industrial Autonomy / Physical World +6 · Announcement / funding-news source -8",
+     "final": 16,
+     "gated": null,
+     "lens": 0,
+     "score": -2
+    },
+    {
+     "applied": [
+      [
+       "Technical grant / research project",
+       14
+      ]
+     ],
+     "diff": 16,
+     "diff_applied": [
+      [
+       "Project A theme depth",
+       10
+      ],
+      [
+       "Platform / scale potential",
+       6
+      ]
+     ],
+     "diff_explain": "Project A theme depth +10 · Platform / scale potential +6",
+     "entity": {
+      "label": "Entity: UNKNOWN ENTITY TYPE -12",
+      "penalty": -12,
+      "reason": "no entity-type evidence in text",
+      "type": "UNKNOWN_ENTITY_TYPE"
+     },
+     "explain": "Technical grant / research project +14",
+     "final": 20,
+     "gated": null,
+     "lens": 2,
+     "score": 14
+    },
+    {
+     "applied": [
+      [
+       "PRE-COMPANY",
+       20
+      ],
+      [
+       "Defence",
+       8
+      ]
+     ],
+     "diff": 28,
+     "diff_applied": [
+      [
+       "Technical specificity",
+       12
+      ],
+      [
+       "Project A theme depth",
+       10
+      ],
+      [
+       "Platform / scale potential",
+       6
+      ]
+     ],
+     "diff_explain": "Technical specificity +12 · Project A theme depth +10 · Platform / scale potential +6",
+     "entity": {
+      "label": "Entity: PRE-COMPANY PROJECT",
+      "penalty": 0,
+      "reason": "official pre-company / spinout-project context",
+      "type": "PRE_COMPANY_PROJECT"
+     },
+     "explain": "PRE-COMPANY +20 · Defence +8",
+     "final": 58,
+     "gated": null,
+     "lens": 2,
+     "score": 28
+    },
+    {
+     "applied": [],
+     "diff": 26,
+     "diff_applied": [
+      [
+       "Industrial / commercial application",
+       10
+      ],
+      [
+       "Project A theme depth",
+       10
+      ],
+      [
+       "Platform / scale potential",
+       6
+      ]
+     ],
+     "diff_explain": "Industrial / commercial application +10 · Project A theme depth +10 · Platform / scale potential +6",
+     "entity": {
+      "label": "Entity: VENTURE",
+      "penalty": 0,
+      "reason": "explicit company/startup evidence",
+      "type": "VENTURE"
+     },
+     "explain": "",
+     "final": 26,
+     "gated": null,
+     "lens": 0,
+     "score": 0
+    },
+    {
+     "applied": [],
+     "diff": 0,
+     "diff_applied": [],
+     "diff_explain": "",
+     "entity": {
+      "label": "Entity: UNKNOWN ENTITY TYPE -12",
+      "penalty": -12,
+      "reason": "no entity-type evidence in text",
+      "type": "UNKNOWN_ENTITY_TYPE"
+     },
+     "explain": "",
+     "final": -12,
+     "gated": "entity extraction low-quality (name looks like a headline)",
+     "lens": 0,
+     "score": 0
+    },
+    {
+     "applied": [],
+     "diff": 0,
+     "diff_applied": [],
+     "diff_explain": "",
+     "entity": {
+      "label": "Entity: VENTURE",
+      "penalty": 0,
+      "reason": "legal form in name",
+      "type": "VENTURE"
+     },
+     "explain": "",
+     "final": 0,
+     "gated": "flagged as noise by sourcing",
+     "lens": 0,
+     "score": 0
+    },
+    {
+     "applied": [],
+     "diff": 0,
+     "diff_applied": [],
+     "diff_explain": "",
+     "entity": {
+      "label": "Entity: UNKNOWN ENTITY TYPE -12",
+      "penalty": -12,
+      "reason": "no entity-type evidence in text",
+      "type": "UNKNOWN_ENTITY_TYPE"
+     },
+     "explain": "",
+     "final": -12,
+     "gated": "flagged as noise by sourcing",
+     "lens": 0,
+     "score": 0
+    },
+    {
+     "applied": [
+      [
+       "PRE-COMPANY",
+       20
+      ],
+      [
+       "Defence",
+       8
+      ]
+     ],
+     "diff": 28,
+     "diff_applied": [
+      [
+       "Technical specificity",
+       12
+      ],
+      [
+       "Project A theme depth",
+       10
+      ],
+      [
+       "Platform / scale potential",
+       6
+      ]
+     ],
+     "diff_explain": "Technical specificity +12 · Project A theme depth +10 · Platform / scale potential +6",
+     "entity": {
+      "label": "Entity: PRE-COMPANY PROJECT",
+      "penalty": 0,
+      "reason": "official pre-company / spinout-project context",
+      "type": "PRE_COMPANY_PROJECT"
+     },
+     "explain": "PRE-COMPANY +20 · Defence +8",
+     "final": 58,
+     "gated": "flagged as noise by sourcing",
+     "lens": 2,
+     "score": 28
+    },
+    {
+     "applied": [
+      [
+       "PRE-COMPANY",
+       20
+      ],
+      [
+       "Research spinout",
+       16
+      ]
+     ],
+     "diff": 0,
+     "diff_applied": [
+      [
+       "Technical specificity",
+       12
+      ],
+      [
+       "Platform / scale potential",
+       6
+      ],
+      [
+       "Academic / no commercial path visible",
+       -10
+      ],
+      [
+       "Weak core-fund fit",
+       -8
+      ]
+     ],
+     "diff_explain": "Technical specificity +12 · Platform / scale potential +6 · Academic / no commercial path visible -10 · Weak core-fund fit -8",
+     "entity": {
+      "label": "Entity: PRE-COMPANY PROJECT",
+      "penalty": 0,
+      "reason": "official pre-company / spinout-project context",
+      "type": "PRE_COMPANY_PROJECT"
+     },
+     "explain": "PRE-COMPANY +20 · Research spinout +16",
+     "final": 41,
+     "gated": null,
+     "lens": 5,
+     "score": 36
+    },
+    {
+     "applied": [],
+     "diff": 10,
+     "diff_applied": [
+      [
+       "Industrial / commercial application",
+       10
+      ]
+     ],
+     "diff_explain": "Industrial / commercial application +10",
+     "entity": {
+      "label": "Entity: UNKNOWN ENTITY TYPE -12",
+      "penalty": -12,
+      "reason": "no entity-type evidence in text",
+      "type": "UNKNOWN_ENTITY_TYPE"
+     },
+     "explain": "",
+     "final": -2,
+     "gated": null,
+     "lens": 0,
+     "score": 0
+    },
+    {
+     "applied": [],
+     "diff": 16,
+     "diff_applied": [
+      [
+       "Industrial / commercial application",
+       10
+      ],
+      [
+       "Platform / scale potential",
+       6
+      ]
+     ],
+     "diff_explain": "Industrial / commercial application +10 · Platform / scale potential +6",
+     "entity": {
+      "label": "Entity: VENTURE",
+      "penalty": 0,
+      "reason": "explicit company/startup evidence",
+      "type": "VENTURE"
+     },
+     "explain": "",
+     "final": 16,
+     "gated": null,
+     "lens": 0,
+     "score": 0
+    }
+   ],
+   "kept": [
+    {
+     "archetype_hits": [],
+     "country": "",
+     "date": "",
+     "date_kind": "",
+     "decision": "new",
+     "description": "We sell things to people.",
+     "detected_on": "2026-11-11",
+     "discovery_tier": "registry",
+     "first_seen": "2026-11-11",
+     "geo": [
+      "DE"
+     ],
+     "geo_scope": "region-eu",
+     "id": "6a30921b6ff2",
+     "location": "",
+     "name": "Plain GmbH",
+     "noise": false,
+     "notes": "",
+     "priority": 2,
+     "sectors": [],
+     "source": "Oracle med",
+     "source_date": null,
+     "source_id": "med",
+     "source_sectors": [
+      "ai"
+     ],
+     "source_url": "",
+     "src_quality": 1,
+     "twins": [],
+     "why": []
+    },
+    {
+     "archetype_hits": [
+      1
+     ],
+     "country": "",
+     "date": "",
+     "date_kind": "",
+     "decision": "new",
+     "description": "AI agents for freight forwarders and customs paperwork",
+     "detected_on": "2026-11-11",
+     "discovery_tier": "registry",
+     "first_seen": "2026-11-11",
+     "geo": [
+      "DE"
+     ],
+     "geo_scope": "region-eu",
+     "id": "894d5a50dfc7",
+     "location": "",
+     "name": "Freight Agents AG",
+     "noise": false,
+     "notes": "",
+     "priority": 5,
+     "sectors": [
+      "ai_sw"
+     ],
+     "source": "Oracle med",
+     "source_date": null,
+     "source_id": "med",
+     "source_sectors": [
+      "ai"
+     ],
+     "source_url": "",
+     "src_quality": 1,
+     "twins": [
+      "Nexcade"
+     ],
+     "why": [
+      "Archetype keyword match: #1 Vertical AI agent for a paper-heavy operational job in a traditional European B2B industry",
+      "Possible portfolio twin(s): Nexcade → run conflict check"
+     ]
+    },
+    {
+     "archetype_hits": [],
+     "country": "",
+     "date": "",
+     "date_kind": "",
+     "decision": "new",
+     "description": "A chemical distributor",
+     "detected_on": "2026-11-11",
+     "discovery_tier": "announcement",
+     "first_seen": "2026-11-11",
+     "geo": [
+      "DE"
+     ],
+     "geo_scope": "region-eu",
+     "id": "96e157e7be93",
+     "location": "",
+     "name": "Chem One",
+     "noise": false,
+     "notes": "",
+     "priority": 2,
+     "sectors": [],
+     "source": "Oracle med",
+     "source_date": null,
+     "source_id": "med",
+     "source_sectors": [
+      "ai"
+     ],
+     "source_url": "",
+     "src_quality": 1,
+     "twins": [],
+     "why": [
+      "Announcement feed — discovery only; probably recently funded"
+     ]
+    },
+    {
+     "archetype_hits": [
+      2
+     ],
+     "country": "",
+     "date": "",
+     "date_kind": "",
+     "decision": "new",
+     "description": "chemical packaging for industry",
+     "detected_on": "2026-11-11",
+     "discovery_tier": "announcement",
+     "first_seen": "2026-11-11",
+     "geo": [
+      "DE"
+     ],
+     "geo_scope": "region-eu",
+     "id": "24c64040fe44",
+     "location": "",
+     "name": "Chem Two",
+     "noise": false,
+     "notes": "",
+     "priority": 4,
+     "sectors": [],
+     "source": "Oracle med",
+     "source_date": null,
+     "source_id": "med",
+     "source_sectors": [
+      "ai"
+     ],
+     "source_url": "",
+     "src_quality": 1,
+     "twins": [],
+     "why": [
+      "Archetype keyword match: #2 Cross-border industrial trade or procurement platform for a fragmented physical commodity, with embedded financing, logistics or pricing intelligence",
+      "Announcement feed — discovery only; probably recently funded"
+     ]
+    },
+    {
+     "archetype_hits": [
+      4
+     ],
+     "country": "",
+     "date": "",
+     "date_kind": "",
+     "decision": "new",
+     "description": "underwriting automation",
+     "detected_on": "2026-11-11",
+     "discovery_tier": "grant",
+     "first_seen": "2026-11-11",
+     "geo": [
+      "DE"
+     ],
+     "geo_scope": "region-eu",
+     "id": "0cf4a1893dee",
+     "location": "",
+     "name": "Longword",
+     "noise": false,
+     "notes": "",
+     "priority": 5,
+     "sectors": [],
+     "source": "Oracle med",
+     "source_date": null,
+     "source_id": "med",
+     "source_sectors": [
+      "ai"
+     ],
+     "source_url": "",
+     "src_quality": 1,
+     "twins": [
+      "Nettle"
+     ],
+     "why": [
+      "Archetype keyword match: #4 Insurance infrastructure for new or under-served commercial risks",
+      "Possible portfolio twin(s): Nettle → run conflict check"
+     ]
+    },
+    {
+     "archetype_hits": [
+      6,
+      5
+     ],
+     "country": "",
+     "date": "",
+     "date_kind": "",
+     "decision": "new",
+     "description": "a counter-drone sensor fusion stack",
+     "detected_on": "2026-11-11",
+     "discovery_tier": "pre_company",
+     "first_seen": "2026-11-11",
+     "geo": [
+      "DE"
+     ],
+     "geo_scope": "region-eu",
+     "id": "1546844d837c",
+     "location": "",
+     "name": "Phrase Co",
+     "noise": false,
+     "notes": "",
+     "priority": 9,
+     "sectors": [
+      "robotics",
+      "deeptech"
+     ],
+     "source": "Oracle med",
+     "source_date": null,
+     "source_id": "med",
+     "source_sectors": [
+      "ai"
+     ],
+     "source_url": "",
+     "src_quality": 1,
+     "twins": [
+      "Project Q"
+     ],
+     "why": [
+      "Archetype keyword match: #6 Dual-use autonomous platforms with a fleet/software brain; #5 Defence software layer",
+      "Pre-company channel — this is where the sourcing edge is",
+      "Possible portfolio twin(s): Project Q → run conflict check"
+     ]
+    },
+    {
+     "archetype_hits": [
+      3
+     ],
+     "country": "",
+     "date": "",
+     "date_kind": "",
+     "decision": "new",
+     "description": "Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools",
+     "detected_on": "2026-11-11",
+     "discovery_tier": "registry",
+     "first_seen": "2026-11-11",
+     "geo": [
+      "DE"
+     ],
+     "geo_scope": "region-eu",
+     "id": "949ed6a23d1d",
+     "location": "",
+     "name": "Beyond600",
+     "noise": false,
+     "notes": "",
+     "priority": 5,
+     "sectors": [],
+     "source": "Oracle med",
+     "source_date": null,
+     "source_id": "med",
+     "source_sectors": [
+      "ai"
+     ],
+     "source_url": "",
+     "src_quality": 1,
+     "twins": [
+      "ReStabilise"
+     ],
+     "why": [
+      "Archetype keyword match: #3 \"Regulated-by-design\" financial infrastructure",
+      "Possible portfolio twin(s): ReStabilise → run conflict check"
+     ]
+    },
+    {
+     "archetype_hits": [],
+     "country": "",
+     "date": "",
+     "date_kind": "",
+     "decision": "new",
+     "description": "short description",
+     "detected_on": "2026-11-11",
+     "discovery_tier": "registry",
+     "first_seen": "2026-11-11",
+     "geo": [
+      "DE"
+     ],
+     "geo_scope": "region-eu",
+     "id": "6fe59ddeeebc",
+     "location": "",
+     "name": "NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN",
+     "noise": false,
+     "notes": "",
+     "priority": 3,
+     "sectors": [],
+     "source": "Oracle med",
+     "source_date": null,
+     "source_id": "med",
+     "source_sectors": [
+      "ai"
+     ],
+     "source_url": "",
+     "src_quality": 1,
+     "twins": [
+      "Nexcade"
+     ],
+     "why": [
+      "Possible portfolio twin(s): Nexcade → run conflict check"
+     ]
+    },
+    {
+     "archetype_hits": [],
+     "country": "",
+     "date": "",
+     "date_kind": "",
+     "decision": "rejected",
+     "description": "holding and consulting",
+     "detected_on": "2026-11-11",
+     "discovery_tier": "registry",
+     "first_seen": "2026-11-11",
+     "geo": [
+      "DE"
+     ],
+     "geo_scope": "region-eu",
+     "id": "8f23493af56e",
+     "location": "",
+     "name": "Holding Verwaltung GmbH",
+     "noise": true,
+     "notes": "auto-rejected: looks like noise — bring back if wrong",
+     "priority": -8,
+     "sectors": [],
+     "source": "Oracle med",
+     "source_date": null,
+     "source_id": "med",
+     "source_sectors": [
+      "ai"
+     ],
+     "source_url": "",
+     "src_quality": 1,
+     "twins": [],
+     "why": [
+      "⚠ Looks like holding/consulting/services — likely noise"
+     ]
+    },
+    {
+     "archetype_hits": [],
+     "country": "",
+     "date": "",
+     "date_kind": "",
+     "decision": "rejected",
+     "description": "handel mit waren",
+     "detected_on": "2026-11-11",
+     "discovery_tier": "registry",
+     "first_seen": "2026-11-11",
+     "geo": [
+      "DE"
+     ],
+     "geo_scope": "region-eu",
+     "id": "ce5ee4debf24",
+     "location": "",
+     "name": "Handel Shop",
+     "noise": true,
+     "notes": "auto-rejected: looks like noise — bring back if wrong",
+     "priority": -8,
+     "sectors": [],
+     "source": "Oracle med",
+     "source_date": null,
+     "source_id": "med",
+     "source_sectors": [
+      "ai"
+     ],
+     "source_url": "",
+     "src_quality": 1,
+     "twins": [],
+     "why": [
+      "⚠ Looks like holding/consulting/services — likely noise"
+     ]
+    },
+    {
+     "archetype_hits": [
+      5,
+      3,
+      6
+     ],
+     "country": "",
+     "date": "",
+     "date_kind": "",
+     "decision": "rejected",
+     "description": "holding stablecoin payments mica drone uav defence military nato freight",
+     "detected_on": "2026-11-11",
+     "discovery_tier": "pre_company",
+     "first_seen": "2026-11-11",
+     "geo": [
+      "DE"
+     ],
+     "geo_scope": "region-eu",
+     "id": "1a66a73b8962",
+     "location": "",
+     "name": "Quirk Zero",
+     "noise": true,
+     "notes": "auto-rejected: looks like noise — bring back if wrong",
+     "priority": 6,
+     "sectors": [
+      "defence",
+      "robotics"
+     ],
+     "source": "Oracle med",
+     "source_date": null,
+     "source_id": "med",
+     "source_sectors": [
+      "ai"
+     ],
+     "source_url": "",
+     "src_quality": 1,
+     "twins": [
+      "Nexcade",
+      "ReStabilise",
+      "Quantum Systems"
+     ],
+     "why": [
+      "Archetype keyword match: #5 Defence software layer; #3 \"Regulated-by-design\" financial infrastructure; #6 Dual-use autonomous platforms with a fleet/software brain",
+      "Pre-company channel — this is where the sourcing edge is",
+      "Possible portfolio twin(s): Nexcade, ReStabilise, Quantum Systems → run conflict check",
+      "⚠ Looks like holding/consulting/services — likely noise"
+     ]
+    },
+    {
+     "archetype_hits": [],
+     "country": "",
+     "date": "",
+     "date_kind": "",
+     "decision": "new",
+     "description": "biotech antibody platform for oncology diagnostics",
+     "detected_on": "2026-11-11",
+     "discovery_tier": "pre_company",
+     "first_seen": "2026-11-11",
+     "geo": [
+      "DE"
+     ],
+     "geo_scope": "region-eu",
+     "id": "4419ecc809e6",
+     "location": "",
+     "name": "Bio Spinout",
+     "noise": false,
+     "notes": "",
+     "opportunistic": true,
+     "priority": 4,
+     "sectors": [
+      "bio",
+      "deeptech"
+     ],
+     "source": "Oracle med",
+     "source_date": null,
+     "source_id": "med",
+     "source_sectors": [
+      "ai"
+     ],
+     "source_url": "",
+     "src_quality": 1,
+     "twins": [],
+     "why": [
+      "Pre-company channel — this is where the sourcing edge is",
+      "OPPORTUNISTIC — candidate text is bio/pharma; outside core themes, #15 outlier route only"
+     ]
+    },
+    {
+     "archetype_hits": [
+      1
+     ],
+     "country": "",
+     "date": "",
+     "date_kind": "",
+     "decision": "new",
+     "description": "accounting ledger bookkeeping vat for SMEs",
+     "detected_on": "2026-11-11",
+     "discovery_tier": "manual",
+     "first_seen": "2026-11-11",
+     "geo": [
+      "DE"
+     ],
+     "geo_scope": "region-eu",
+     "id": "9059ea5b09f9",
+     "location": "",
+     "name": "Twin Seeker",
+     "noise": false,
+     "notes": "",
+     "priority": 5,
+     "sectors": [],
+     "source": "Oracle med",
+     "source_date": null,
+     "source_id": "med",
+     "source_sectors": [
+      "ai"
+     ],
+     "source_url": "",
+     "src_quality": 1,
+     "twins": [
+      "Tabular"
+     ],
+     "why": [
+      "Archetype keyword match: #1 Vertical AI agent for a paper-heavy operational job in a traditional European B2B industry",
+      "Possible portfolio twin(s): Tabular → run conflict check"
+     ]
+    },
+    {
+     "archetype_hits": [],
+     "country": "",
+     "date": "",
+     "date_kind": "",
+     "decision": "new",
+     "description": "Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial c we use cookies",
+     "detected_on": "2026-11-11",
+     "discovery_tier": "registry",
+     "first_seen": "2026-11-11",
+     "geo": [
+      "DE"
+     ],
+     "geo_scope": "region-eu",
+     "id": "5018b90ff76c",
+     "location": "",
+     "name": "Late Cookie",
+     "noise": false,
+     "notes": "",
+     "priority": 2,
+     "sectors": [],
+     "source": "Oracle med",
+     "source_date": null,
+     "source_id": "med",
+     "source_sectors": [
+      "ai"
+     ],
+     "source_url": "",
+     "src_quality": 1,
+     "twins": [],
+     "why": []
+    }
+   ],
+   "report": {
+    "count": 14,
+    "interstitial": 1,
+    "raw": 15
+   }
+  },
+  "synthetic-none": {
+   "attention": [
+    {
+     "applied": [],
+     "diff": 0,
+     "diff_applied": [],
+     "diff_explain": "",
+     "entity": {
+      "label": "Entity: VENTURE",
+      "penalty": 0,
+      "reason": "legal form in name",
+      "type": "VENTURE"
+     },
+     "explain": "",
+     "final": 0,
+     "gated": null,
+     "lens": 0,
+     "score": 0
+    },
+    {
+     "applied": [
+      [
+       "Industrial Autonomy / Physical World",
+       6
+      ]
+     ],
+     "diff": 20,
+     "diff_applied": [
+      [
+       "Industrial / commercial application",
+       10
+      ],
+      [
+       "Project A theme depth",
+       10
+      ]
+     ],
+     "diff_explain": "Industrial / commercial application +10 · Project A theme depth +10",
+     "entity": {
+      "label": "Entity: VENTURE",
+      "penalty": 0,
+      "reason": "legal form in name",
+      "type": "VENTURE"
+     },
+     "explain": "Industrial Autonomy / Physical World +6",
+     "final": 26,
+     "gated": null,
+     "lens": 0,
+     "score": 6
+    },
+    {
+     "applied": [
+      [
+       "Announcement / funding-news source",
+       -8
+      ]
+     ],
+     "diff": 0,
+     "diff_applied": [],
+     "diff_explain": "",
+     "entity": {
+      "label": "Entity: UNKNOWN ENTITY TYPE -12",
+      "penalty": -12,
+      "reason": "no entity-type evidence in text",
+      "type": "UNKNOWN_ENTITY_TYPE"
+     },
+     "explain": "Announcement / funding-news source -8",
+     "final": -20,
+     "gated": null,
+     "lens": 0,
+     "score": -8
+    },
+    {
+     "applied": [
+      [
+       "Industrial Autonomy / Physical World",
+       6
+      ],
+      [
+       "Announcement / funding-news source",
+       -8
+      ]
+     ],
+     "diff": 26,
+     "diff_applied": [
+      [
+       "Industrial / commercial application",
+       10
+      ],
+      [
+       "Project A theme depth",
+       10
+      ],
+      [
+       "Platform / scale potential",
+       6
+      ]
+     ],
+     "diff_explain": "Industrial / commercial application +10 · Project A theme depth +10 · Platform / scale potential +6",
+     "entity": {
+      "label": "Entity: POSSIBLE VENTURE -8",
+      "penalty": -8,
+      "reason": "product/team wording without company or project proof",
+      "type": "POSSIBLE_VENTURE"
+     },
+     "explain": "Industrial Autonomy / Physical World +6 · Announcement / funding-news source -8",
+     "final": 16,
+     "gated": null,
+     "lens": 0,
+     "score": -2
+    },
+    {
+     "applied": [
+      [
+       "Technical grant / research project",
+       14
+      ]
+     ],
+     "diff": 16,
+     "diff_applied": [
+      [
+       "Project A theme depth",
+       10
+      ],
+      [
+       "Platform / scale potential",
+       6
+      ]
+     ],
+     "diff_explain": "Project A theme depth +10 · Platform / scale potential +6",
+     "entity": {
+      "label": "Entity: UNKNOWN ENTITY TYPE -12",
+      "penalty": -12,
+      "reason": "no entity-type evidence in text",
+      "type": "UNKNOWN_ENTITY_TYPE"
+     },
+     "explain": "Technical grant / research project +14",
+     "final": 20,
+     "gated": null,
+     "lens": 2,
+     "score": 14
+    },
+    {
+     "applied": [
+      [
+       "PRE-COMPANY",
+       20
+      ],
+      [
+       "Defence",
+       8
+      ]
+     ],
+     "diff": 28,
+     "diff_applied": [
+      [
+       "Technical specificity",
+       12
+      ],
+      [
+       "Project A theme depth",
+       10
+      ],
+      [
+       "Platform / scale potential",
+       6
+      ]
+     ],
+     "diff_explain": "Technical specificity +12 · Project A theme depth +10 · Platform / scale potential +6",
+     "entity": {
+      "label": "Entity: PRE-COMPANY PROJECT",
+      "penalty": 0,
+      "reason": "official pre-company / spinout-project context",
+      "type": "PRE_COMPANY_PROJECT"
+     },
+     "explain": "PRE-COMPANY +20 · Defence +8",
+     "final": 58,
+     "gated": null,
+     "lens": 2,
+     "score": 28
+    },
+    {
+     "applied": [],
+     "diff": 26,
+     "diff_applied": [
+      [
+       "Industrial / commercial application",
+       10
+      ],
+      [
+       "Project A theme depth",
+       10
+      ],
+      [
+       "Platform / scale potential",
+       6
+      ]
+     ],
+     "diff_explain": "Industrial / commercial application +10 · Project A theme depth +10 · Platform / scale potential +6",
+     "entity": {
+      "label": "Entity: VENTURE",
+      "penalty": 0,
+      "reason": "explicit company/startup evidence",
+      "type": "VENTURE"
+     },
+     "explain": "",
+     "final": 26,
+     "gated": null,
+     "lens": 0,
+     "score": 0
+    },
+    {
+     "applied": [],
+     "diff": 0,
+     "diff_applied": [],
+     "diff_explain": "",
+     "entity": {
+      "label": "Entity: UNKNOWN ENTITY TYPE -12",
+      "penalty": -12,
+      "reason": "no entity-type evidence in text",
+      "type": "UNKNOWN_ENTITY_TYPE"
+     },
+     "explain": "",
+     "final": -12,
+     "gated": "entity extraction low-quality (name looks like a headline)",
+     "lens": 0,
+     "score": 0
+    },
+    {
+     "applied": [],
+     "diff": 0,
+     "diff_applied": [],
+     "diff_explain": "",
+     "entity": {
+      "label": "Entity: VENTURE",
+      "penalty": 0,
+      "reason": "legal form in name",
+      "type": "VENTURE"
+     },
+     "explain": "",
+     "final": 0,
+     "gated": "flagged as noise by sourcing",
+     "lens": 0,
+     "score": 0
+    },
+    {
+     "applied": [],
+     "diff": 0,
+     "diff_applied": [],
+     "diff_explain": "",
+     "entity": {
+      "label": "Entity: UNKNOWN ENTITY TYPE -12",
+      "penalty": -12,
+      "reason": "no entity-type evidence in text",
+      "type": "UNKNOWN_ENTITY_TYPE"
+     },
+     "explain": "",
+     "final": -12,
+     "gated": "flagged as noise by sourcing",
+     "lens": 0,
+     "score": 0
+    },
+    {
+     "applied": [
+      [
+       "PRE-COMPANY",
+       20
+      ],
+      [
+       "Defence",
+       8
+      ]
+     ],
+     "diff": 28,
+     "diff_applied": [
+      [
+       "Technical specificity",
+       12
+      ],
+      [
+       "Project A theme depth",
+       10
+      ],
+      [
+       "Platform / scale potential",
+       6
+      ]
+     ],
+     "diff_explain": "Technical specificity +12 · Project A theme depth +10 · Platform / scale potential +6",
+     "entity": {
+      "label": "Entity: PRE-COMPANY PROJECT",
+      "penalty": 0,
+      "reason": "official pre-company / spinout-project context",
+      "type": "PRE_COMPANY_PROJECT"
+     },
+     "explain": "PRE-COMPANY +20 · Defence +8",
+     "final": 58,
+     "gated": "flagged as noise by sourcing",
+     "lens": 2,
+     "score": 28
+    },
+    {
+     "applied": [
+      [
+       "PRE-COMPANY",
+       20
+      ],
+      [
+       "Research spinout",
+       16
+      ]
+     ],
+     "diff": 0,
+     "diff_applied": [
+      [
+       "Technical specificity",
+       12
+      ],
+      [
+       "Platform / scale potential",
+       6
+      ],
+      [
+       "Academic / no commercial path visible",
+       -10
+      ],
+      [
+       "Weak core-fund fit",
+       -8
+      ]
+     ],
+     "diff_explain": "Technical specificity +12 · Platform / scale potential +6 · Academic / no commercial path visible -10 · Weak core-fund fit -8",
+     "entity": {
+      "label": "Entity: PRE-COMPANY PROJECT",
+      "penalty": 0,
+      "reason": "official pre-company / spinout-project context",
+      "type": "PRE_COMPANY_PROJECT"
+     },
+     "explain": "PRE-COMPANY +20 · Research spinout +16",
+     "final": 41,
+     "gated": null,
+     "lens": 5,
+     "score": 36
+    },
+    {
+     "applied": [],
+     "diff": 10,
+     "diff_applied": [
+      [
+       "Industrial / commercial application",
+       10
+      ]
+     ],
+     "diff_explain": "Industrial / commercial application +10",
+     "entity": {
+      "label": "Entity: UNKNOWN ENTITY TYPE -12",
+      "penalty": -12,
+      "reason": "no entity-type evidence in text",
+      "type": "UNKNOWN_ENTITY_TYPE"
+     },
+     "explain": "",
+     "final": -2,
+     "gated": null,
+     "lens": 0,
+     "score": 0
+    },
+    {
+     "applied": [],
+     "diff": 16,
+     "diff_applied": [
+      [
+       "Industrial / commercial application",
+       10
+      ],
+      [
+       "Platform / scale potential",
+       6
+      ]
+     ],
+     "diff_explain": "Industrial / commercial application +10 · Platform / scale potential +6",
+     "entity": {
+      "label": "Entity: VENTURE",
+      "penalty": 0,
+      "reason": "explicit company/startup evidence",
+      "type": "VENTURE"
+     },
+     "explain": "",
+     "final": 16,
+     "gated": null,
+     "lens": 0,
+     "score": 0
+    }
+   ],
+   "kept": [
+    {
+     "archetype_hits": [],
+     "country": "",
+     "date": "",
+     "date_kind": "",
+     "decision": "new",
+     "description": "We sell things to people.",
+     "detected_on": "2026-11-11",
+     "discovery_tier": "registry",
+     "first_seen": "2026-11-11",
+     "geo": [
+      "DE"
+     ],
+     "geo_scope": "region-eu",
+     "id": "41ca04f76f6b",
+     "location": "",
+     "name": "Plain GmbH",
+     "noise": false,
+     "notes": "",
+     "priority": 1,
+     "sectors": [],
+     "source": "Oracle none",
+     "source_date": null,
+     "source_id": "none",
+     "source_sectors": [
+      "ai"
+     ],
+     "source_url": "",
+     "src_quality": 0,
+     "twins": [],
+     "why": []
+    },
+    {
+     "archetype_hits": [
+      1
+     ],
+     "country": "",
+     "date": "",
+     "date_kind": "",
+     "decision": "new",
+     "description": "AI agents for freight forwarders and customs paperwork",
+     "detected_on": "2026-11-11",
+     "discovery_tier": "registry",
+     "first_seen": "2026-11-11",
+     "geo": [
+      "DE"
+     ],
+     "geo_scope": "region-eu",
+     "id": "322fe775bceb",
+     "location": "",
+     "name": "Freight Agents AG",
+     "noise": false,
+     "notes": "",
+     "priority": 4,
+     "sectors": [
+      "ai_sw"
+     ],
+     "source": "Oracle none",
+     "source_date": null,
+     "source_id": "none",
+     "source_sectors": [
+      "ai"
+     ],
+     "source_url": "",
+     "src_quality": 0,
+     "twins": [
+      "Nexcade"
+     ],
+     "why": [
+      "Archetype keyword match: #1 Vertical AI agent for a paper-heavy operational job in a traditional European B2B industry",
+      "Possible portfolio twin(s): Nexcade → run conflict check"
+     ]
+    },
+    {
+     "archetype_hits": [],
+     "country": "",
+     "date": "",
+     "date_kind": "",
+     "decision": "new",
+     "description": "A chemical distributor",
+     "detected_on": "2026-11-11",
+     "discovery_tier": "announcement",
+     "first_seen": "2026-11-11",
+     "geo": [
+      "DE"
+     ],
+     "geo_scope": "region-eu",
+     "id": "2b3ffde8084c",
+     "location": "",
+     "name": "Chem One",
+     "noise": false,
+     "notes": "",
+     "priority": 1,
+     "sectors": [],
+     "source": "Oracle none",
+     "source_date": null,
+     "source_id": "none",
+     "source_sectors": [
+      "ai"
+     ],
+     "source_url": "",
+     "src_quality": 0,
+     "twins": [],
+     "why": [
+      "Announcement feed — discovery only; probably recently funded"
+     ]
+    },
+    {
+     "archetype_hits": [
+      2
+     ],
+     "country": "",
+     "date": "",
+     "date_kind": "",
+     "decision": "new",
+     "description": "chemical packaging for industry",
+     "detected_on": "2026-11-11",
+     "discovery_tier": "announcement",
+     "first_seen": "2026-11-11",
+     "geo": [
+      "DE"
+     ],
+     "geo_scope": "region-eu",
+     "id": "a2a11feccc75",
+     "location": "",
+     "name": "Chem Two",
+     "noise": false,
+     "notes": "",
+     "priority": 3,
+     "sectors": [],
+     "source": "Oracle none",
+     "source_date": null,
+     "source_id": "none",
+     "source_sectors": [
+      "ai"
+     ],
+     "source_url": "",
+     "src_quality": 0,
+     "twins": [],
+     "why": [
+      "Archetype keyword match: #2 Cross-border industrial trade or procurement platform for a fragmented physical commodity, with embedded financing, logistics or pricing intelligence",
+      "Announcement feed — discovery only; probably recently funded"
+     ]
+    },
+    {
+     "archetype_hits": [
+      4
+     ],
+     "country": "",
+     "date": "",
+     "date_kind": "",
+     "decision": "new",
+     "description": "underwriting automation",
+     "detected_on": "2026-11-11",
+     "discovery_tier": "grant",
+     "first_seen": "2026-11-11",
+     "geo": [
+      "DE"
+     ],
+     "geo_scope": "region-eu",
+     "id": "d53d87badafc",
+     "location": "",
+     "name": "Longword",
+     "noise": false,
+     "notes": "",
+     "priority": 4,
+     "sectors": [],
+     "source": "Oracle none",
+     "source_date": null,
+     "source_id": "none",
+     "source_sectors": [
+      "ai"
+     ],
+     "source_url": "",
+     "src_quality": 0,
+     "twins": [
+      "Nettle"
+     ],
+     "why": [
+      "Archetype keyword match: #4 Insurance infrastructure for new or under-served commercial risks",
+      "Possible portfolio twin(s): Nettle → run conflict check"
+     ]
+    },
+    {
+     "archetype_hits": [
+      6,
+      5
+     ],
+     "country": "",
+     "date": "",
+     "date_kind": "",
+     "decision": "new",
+     "description": "a counter-drone sensor fusion stack",
+     "detected_on": "2026-11-11",
+     "discovery_tier": "pre_company",
+     "first_seen": "2026-11-11",
+     "geo": [
+      "DE"
+     ],
+     "geo_scope": "region-eu",
+     "id": "b3e561abda2b",
+     "location": "",
+     "name": "Phrase Co",
+     "noise": false,
+     "notes": "",
+     "priority": 8,
+     "sectors": [
+      "robotics",
+      "deeptech"
+     ],
+     "source": "Oracle none",
+     "source_date": null,
+     "source_id": "none",
+     "source_sectors": [
+      "ai"
+     ],
+     "source_url": "",
+     "src_quality": 0,
+     "twins": [
+      "Project Q"
+     ],
+     "why": [
+      "Archetype keyword match: #6 Dual-use autonomous platforms with a fleet/software brain; #5 Defence software layer",
+      "Pre-company channel — this is where the sourcing edge is",
+      "Possible portfolio twin(s): Project Q → run conflict check"
+     ]
+    },
+    {
+     "archetype_hits": [
+      3
+     ],
+     "country": "",
+     "date": "",
+     "date_kind": "",
+     "decision": "new",
+     "description": "Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools",
+     "detected_on": "2026-11-11",
+     "discovery_tier": "registry",
+     "first_seen": "2026-11-11",
+     "geo": [
+      "DE"
+     ],
+     "geo_scope": "region-eu",
+     "id": "58230d7ede06",
+     "location": "",
+     "name": "Beyond600",
+     "noise": false,
+     "notes": "",
+     "priority": 4,
+     "sectors": [],
+     "source": "Oracle none",
+     "source_date": null,
+     "source_id": "none",
+     "source_sectors": [
+      "ai"
+     ],
+     "source_url": "",
+     "src_quality": 0,
+     "twins": [
+      "ReStabilise"
+     ],
+     "why": [
+      "Archetype keyword match: #3 \"Regulated-by-design\" financial infrastructure",
+      "Possible portfolio twin(s): ReStabilise → run conflict check"
+     ]
+    },
+    {
+     "archetype_hits": [],
+     "country": "",
+     "date": "",
+     "date_kind": "",
+     "decision": "new",
+     "description": "short description",
+     "detected_on": "2026-11-11",
+     "discovery_tier": "registry",
+     "first_seen": "2026-11-11",
+     "geo": [
+      "DE"
+     ],
+     "geo_scope": "region-eu",
+     "id": "a110ff83090a",
+     "location": "",
+     "name": "NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN",
+     "noise": false,
+     "notes": "",
+     "priority": 2,
+     "sectors": [],
+     "source": "Oracle none",
+     "source_date": null,
+     "source_id": "none",
+     "source_sectors": [
+      "ai"
+     ],
+     "source_url": "",
+     "src_quality": 0,
+     "twins": [
+      "Nexcade"
+     ],
+     "why": [
+      "Possible portfolio twin(s): Nexcade → run conflict check"
+     ]
+    },
+    {
+     "archetype_hits": [],
+     "country": "",
+     "date": "",
+     "date_kind": "",
+     "decision": "rejected",
+     "description": "holding and consulting",
+     "detected_on": "2026-11-11",
+     "discovery_tier": "registry",
+     "first_seen": "2026-11-11",
+     "geo": [
+      "DE"
+     ],
+     "geo_scope": "region-eu",
+     "id": "53183f23921a",
+     "location": "",
+     "name": "Holding Verwaltung GmbH",
+     "noise": true,
+     "notes": "auto-rejected: looks like noise — bring back if wrong",
+     "priority": -9,
+     "sectors": [],
+     "source": "Oracle none",
+     "source_date": null,
+     "source_id": "none",
+     "source_sectors": [
+      "ai"
+     ],
+     "source_url": "",
+     "src_quality": 0,
+     "twins": [],
+     "why": [
+      "⚠ Looks like holding/consulting/services — likely noise"
+     ]
+    },
+    {
+     "archetype_hits": [],
+     "country": "",
+     "date": "",
+     "date_kind": "",
+     "decision": "rejected",
+     "description": "handel mit waren",
+     "detected_on": "2026-11-11",
+     "discovery_tier": "registry",
+     "first_seen": "2026-11-11",
+     "geo": [
+      "DE"
+     ],
+     "geo_scope": "region-eu",
+     "id": "8e3a60c7421b",
+     "location": "",
+     "name": "Handel Shop",
+     "noise": true,
+     "notes": "auto-rejected: looks like noise — bring back if wrong",
+     "priority": -9,
+     "sectors": [],
+     "source": "Oracle none",
+     "source_date": null,
+     "source_id": "none",
+     "source_sectors": [
+      "ai"
+     ],
+     "source_url": "",
+     "src_quality": 0,
+     "twins": [],
+     "why": [
+      "⚠ Looks like holding/consulting/services — likely noise"
+     ]
+    },
+    {
+     "archetype_hits": [
+      5,
+      3,
+      6
+     ],
+     "country": "",
+     "date": "",
+     "date_kind": "",
+     "decision": "rejected",
+     "description": "holding stablecoin payments mica drone uav defence military nato freight",
+     "detected_on": "2026-11-11",
+     "discovery_tier": "pre_company",
+     "first_seen": "2026-11-11",
+     "geo": [
+      "DE"
+     ],
+     "geo_scope": "region-eu",
+     "id": "956a38b1b7a7",
+     "location": "",
+     "name": "Quirk Zero",
+     "noise": true,
+     "notes": "auto-rejected: looks like noise — bring back if wrong",
+     "priority": 5,
+     "sectors": [
+      "defence",
+      "robotics"
+     ],
+     "source": "Oracle none",
+     "source_date": null,
+     "source_id": "none",
+     "source_sectors": [
+      "ai"
+     ],
+     "source_url": "",
+     "src_quality": 0,
+     "twins": [
+      "Nexcade",
+      "ReStabilise",
+      "Quantum Systems"
+     ],
+     "why": [
+      "Archetype keyword match: #5 Defence software layer; #3 \"Regulated-by-design\" financial infrastructure; #6 Dual-use autonomous platforms with a fleet/software brain",
+      "Pre-company channel — this is where the sourcing edge is",
+      "Possible portfolio twin(s): Nexcade, ReStabilise, Quantum Systems → run conflict check",
+      "⚠ Looks like holding/consulting/services — likely noise"
+     ]
+    },
+    {
+     "archetype_hits": [],
+     "country": "",
+     "date": "",
+     "date_kind": "",
+     "decision": "new",
+     "description": "biotech antibody platform for oncology diagnostics",
+     "detected_on": "2026-11-11",
+     "discovery_tier": "pre_company",
+     "first_seen": "2026-11-11",
+     "geo": [
+      "DE"
+     ],
+     "geo_scope": "region-eu",
+     "id": "430c4df34401",
+     "location": "",
+     "name": "Bio Spinout",
+     "noise": false,
+     "notes": "",
+     "opportunistic": true,
+     "priority": 3,
+     "sectors": [
+      "bio",
+      "deeptech"
+     ],
+     "source": "Oracle none",
+     "source_date": null,
+     "source_id": "none",
+     "source_sectors": [
+      "ai"
+     ],
+     "source_url": "",
+     "src_quality": 0,
+     "twins": [],
+     "why": [
+      "Pre-company channel — this is where the sourcing edge is",
+      "OPPORTUNISTIC — candidate text is bio/pharma; outside core themes, #15 outlier route only"
+     ]
+    },
+    {
+     "archetype_hits": [
+      1
+     ],
+     "country": "",
+     "date": "",
+     "date_kind": "",
+     "decision": "new",
+     "description": "accounting ledger bookkeeping vat for SMEs",
+     "detected_on": "2026-11-11",
+     "discovery_tier": "manual",
+     "first_seen": "2026-11-11",
+     "geo": [
+      "DE"
+     ],
+     "geo_scope": "region-eu",
+     "id": "853f95fb24b6",
+     "location": "",
+     "name": "Twin Seeker",
+     "noise": false,
+     "notes": "",
+     "priority": 4,
+     "sectors": [],
+     "source": "Oracle none",
+     "source_date": null,
+     "source_id": "none",
+     "source_sectors": [
+      "ai"
+     ],
+     "source_url": "",
+     "src_quality": 0,
+     "twins": [
+      "Tabular"
+     ],
+     "why": [
+      "Archetype keyword match: #1 Vertical AI agent for a paper-heavy operational job in a traditional European B2B industry",
+      "Possible portfolio twin(s): Tabular → run conflict check"
+     ]
+    },
+    {
+     "archetype_hits": [],
+     "country": "",
+     "date": "",
+     "date_kind": "",
+     "decision": "new",
+     "description": "Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial company building tools for operators across Europe. Industrial c we use cookies",
+     "detected_on": "2026-11-11",
+     "discovery_tier": "registry",
+     "first_seen": "2026-11-11",
+     "geo": [
+      "DE"
+     ],
+     "geo_scope": "region-eu",
+     "id": "016cfcfad661",
+     "location": "",
+     "name": "Late Cookie",
+     "noise": false,
+     "notes": "",
+     "priority": 1,
+     "sectors": [],
+     "source": "Oracle none",
+     "source_date": null,
+     "source_id": "none",
+     "source_sectors": [
+      "ai"
+     ],
+     "source_url": "",
+     "src_quality": 0,
+     "twins": [],
+     "why": []
+    }
+   ],
+   "report": {
+    "count": 14,
+    "interstitial": 1,
+    "raw": 15
+   }
+  }
+ },
+ "last_run": "2026-11-08 19:09:09",
+ "not_ported": [
+  "country",
+  "date",
+  "date_kind",
+  "detected_on",
+  "entity_ids",
+  "first_seen",
+  "geo_scope",
+  "last_observed",
+  "location",
+  "q_found",
+  "seen_runs",
+  "source_date",
+  "source_url"
+ ],
+ "provenance": {
+  "cases": 12,
+  "old_dirty": false,
+  "old_revision": "6c739b9cb6ca2517b845e381d39a36c50eccc59e"
+ },
+ "run_id": "submission-0001",
+ "tables": {
+  "ambiguous_kw": [
+   "agriculture",
+   "automation",
+   "banking",
+   "chemical",
+   "chemicals",
+   "commerce",
+   "compliance",
+   "construction",
+   "credit",
+   "energy",
+   "enterprise",
+   "finance",
+   "financial",
+   "financing",
+   "healthcare",
+   "industrial",
+   "infrastructure",
+   "insurance",
+   "logistics",
+   "maintenance",
+   "manufacturing",
+   "materials",
+   "mobility",
+   "operations",
+   "packaging",
+   "payments",
+   "pharma",
+   "platform",
+   "procurement",
+   "retail",
+   "security",
+   "software"
+  ],
+  "archetypes": [
+   [
+    1,
+    "Vertical AI agent for a paper-heavy operational job in a traditional European B2B industry",
+    [
+     "freight",
+     "forward",
+     "customs",
+     "zoll",
+     "claims",
+     "underwrit",
+     "accounting",
+     "buchhaltung",
+     "invoice",
+     "back-office",
+     "ai worker",
+     "agents",
+     "workflow",
+     "erp"
+    ]
+   ],
+   [
+    2,
+    "Cross-border industrial trade or procurement platform for a fragmented physical commodity, with embedded financing, logistics or pricing intelligence",
+    [
+     "procurement",
+     "beschaffung",
+     "marketplace",
+     "metals",
+     "metall",
+     "chemical",
+     "chemie",
+     "fertili",
+     "industrial supply",
+     "parts",
+     "materials trading",
+     "packaging"
+    ]
+   ],
+   [
+    3,
+    "\"Regulated-by-design\" financial infrastructure",
+    [
+     "stablecoin",
+     "mica",
+     "e-money",
+     "payments",
+     "working capital",
+     "financing",
+     "credit",
+     "lending",
+     "treasury",
+     "fca",
+     "bafin"
+    ]
+   ],
+   [
+    4,
+    "Insurance infrastructure for new or under-served commercial risks",
+    [
+     "insurance",
+     "versicher",
+     "insurtech",
+     "underwriting",
+     "claims",
+     "fraud",
+     "mga",
+     "risk assessment"
+    ]
+   ],
+   [
+    5,
+    "Defence software layer",
+    [
+     "defence",
+     "defense",
+     "verteidigung",
+     "c2",
+     "c4isr",
+     "isr",
+     "sensor fusion",
+     "electronic warfare",
+     "military",
+     "nato",
+     "bundeswehr",
+     "diana",
+     "eudis"
+    ]
+   ],
+   [
+    6,
+    "Dual-use autonomous platforms with a fleet/software brain",
+    [
+     "drone",
+     "drohne",
+     "uav",
+     "ugv",
+     "unmanned",
+     "autonomous",
+     "counter-drone",
+     "evtol",
+     "swarm",
+     "robot"
+    ]
+   ],
+   [
+    7,
+    "Industrial autonomy software for manufacturing",
+    [
+     "manufacturing",
+     "fertigung",
+     "shop floor",
+     "plc",
+     "automation",
+     "automatisierung",
+     "maintenance",
+     "mro",
+     "spare parts",
+     "digital twin",
+     "industrial ai"
+    ]
+   ],
+   [
+    8,
+    "Energy & critical-infrastructure intelligence",
+    [
+     "energy",
+     "energie",
+     "grid",
+     "netz",
+     "charging",
+     "ladepunkt",
+     "battery",
+     "geothermal",
+     "critical minerals",
+     "ppa",
+     "power"
+    ]
+   ],
+   [
+    9,
+    "Decarbonisation compliance data infrastructure",
+    [
+     "cbam",
+     "carbon",
+     "co2",
+     "scope 3",
+     "certification",
+     "zertifizierung",
+     "emissions",
+     "decarbon"
+    ]
+   ],
+   [
+    10,
+    "Sovereign compute / chips / photonics / secure infrastructure",
+    [
+     "chip",
+     "semiconductor",
+     "photonic",
+     "quantum",
+     "compute",
+     "sovereign",
+     "souverän",
+     "secure infrastructure"
+    ]
+   ],
+   [
+    11,
+    "Agent-infrastructure with a sharp wedge from repeat/technical founders",
+    [
+     "llm",
+     "fine-tun",
+     "agent framework",
+     "orchestration",
+     "evaluation",
+     "inference",
+     "small model",
+     "developer",
+     "sdk",
+     "open-source"
+    ]
+   ],
+   [
+    12,
+    "Workforce & skills platforms for physical industries with labour shortages",
+    [
+     "workforce",
+     "training",
+     "installer",
+     "technician",
+     "fachkräfte",
+     "skills",
+     "hiring"
+    ]
+   ],
+   [
+    13,
+    "Studio-style pre-company duos",
+    [
+     "stealth",
+     "pre-company",
+     "exploring",
+     "building something new",
+     "co-founder wanted",
+     "studio"
+    ]
+   ],
+   [
+    14,
+    "Sovereignty-framed bio-manufacturing / materials",
+    [
+     "bio-manufactur",
+     "fermentation",
+     "materials",
+     "magnet",
+     "rare earth",
+     "feedstock",
+     "biomaterial"
+    ]
+   ],
+   [
+    15,
+    "OUTLIER / NEW FRONTIER (no portfolio twin required)",
+    []
+   ]
+  ],
+  "interstitial": [
+   "(activate|enable|accept|allow)\\s+(the\\s+)?cookies|cookie\\s+(settings|policy|banner|consent)|consent\\s+(manager|required)|we\\s+use\\s+cookies|diese\\s+website\\s+verwendet\\s+cookies|enable\\s+javascript|javascript\\s+(is\\s+)?(required|disabled)|javascript\\s+has\\s+been\\s+disabled|are\\s+you\\s+a\\s+(robot|human)|verify\\s+you\\s+are|captcha|access\\s+denied|error\\s+403|log\\s?in\\s+to\\s+continue|sign\\s+in\\s+to\\s+continue|subscribe\\s+to\\s+(read|continue)|browser\\s+(is\\s+)?(out\\s?dated|not\\s+supported|update)|your\\s+browser|please\\s+update\\s+your",
+   34
+  ],
+  "noise": [
+   "holding",
+   "immobilien",
+   "real estate",
+   "consulting",
+   "beratung",
+   "verwaltung",
+   "gastro",
+   "restaurant",
+   "friseur",
+   "praxis",
+   "physio",
+   "handel ",
+   "beteiligung",
+   "invest ag"
+  ],
+  "portfolio": [
+   [
+    "Nexcade",
+    [
+     "freight",
+     "forward",
+     "quoting",
+     "booking",
+     "logistics agent"
+    ]
+   ],
+   [
+    "Tabular",
+    [
+     "accounting",
+     "buchhaltung",
+     "ledger",
+     "bookkeeping",
+     "vat"
+    ]
+   ],
+   [
+    "Nettle",
+    [
+     "insurance",
+     "underwriting",
+     "inspection",
+     "commercial insurance",
+     "risk assessment"
+    ]
+   ],
+   [
+    "Rematiq",
+    [
+     "medtech",
+     "mdr",
+     "fda",
+     "regulatory",
+     "compliance",
+     "medical device"
+    ]
+   ],
+   [
+    "Resourcly",
+    [
+     "spare parts",
+     "inventory",
+     "idle parts",
+     "mro",
+     "manufactur"
+    ]
+   ],
+   [
+    "Linexa",
+    [
+     "shop floor",
+     "plc",
+     "automation logic",
+     "manufactur",
+     "downtime"
+    ]
+   ],
+   [
+    "Avoltra",
+    [
+     "energy procurement",
+     "energy",
+     "ppa",
+     "industrial energy"
+    ]
+   ],
+   [
+    "Pactum",
+    [
+     "negotiation",
+     "supplier",
+     "procurement"
+    ]
+   ],
+   [
+    "Vestigas",
+    [
+     "construction",
+     "delivery note",
+     "bau",
+     "lieferschein"
+    ]
+   ],
+   [
+    "Atmen",
+    [
+     "certification",
+     "carbon intensity",
+     "cbam",
+     "hydrogen",
+     "decarbon"
+    ]
+   ],
+   [
+    "Enapi",
+    [
+     "ev charging",
+     "charging",
+     "clearing",
+     "emsp",
+     "cpo"
+    ]
+   ],
+   [
+    "Andercore",
+    [
+     "industrial supply",
+     "trade platform",
+     "cross-border",
+     "b2b marketplace"
+    ]
+   ],
+   [
+    "Metycle",
+    [
+     "metal",
+     "metall",
+     "scrap",
+     "recycling marketplace"
+    ]
+   ],
+   [
+    "Waypoint",
+    [
+     "fertili",
+     "commodity chemical",
+     "chemicals marketplace"
+    ]
+   ],
+   [
+    "Laserhub",
+    [
+     "metal parts",
+     "sheet metal",
+     "cnc",
+     "laser cut"
+    ]
+   ],
+   [
+    "Mimo",
+    [
+     "sme payments",
+     "accounts payable",
+     "credit",
+     "bookkeepers"
+    ]
+   ],
+   [
+    "Re:cap",
+    [
+     "non-dilutive",
+     "revenue-based",
+     "debt funding",
+     "financial operations"
+    ]
+   ],
+   [
+    "Copay",
+    [
+     "early payment",
+     "subcontractor",
+     "construction payments"
+    ]
+   ],
+   [
+    "Riva",
+    [
+     "blockchain payments",
+     "instant payments",
+     "b2b payments"
+    ]
+   ],
+   [
+    "ReStabilise",
+    [
+     "stablecoin",
+     "e-money",
+     "digital money",
+     "fca"
+    ]
+   ],
+   [
+    "Baobab",
+    [
+     "cyber insurance",
+     "mga",
+     "it liability",
+     "cyber risk"
+    ]
+   ],
+   [
+    "Claimer",
+    [
+     "r&d tax",
+     "tax credit",
+     "hmrc"
+    ]
+   ],
+   [
+    "Project Q",
+    [
+     "sensor",
+     "sensor fusion",
+     "defence intelligence",
+     "real-time intelligence",
+     "c2"
+    ]
+   ],
+   [
+    "Scipio",
+    [
+     "military logistics",
+     "resupply",
+     "c4isr",
+     "defence logistics"
+    ]
+   ],
+   [
+    "ARX Robotics",
+    [
+     "ugv",
+     "ground robot",
+     "unmanned ground"
+    ]
+   ],
+   [
+    "Quantum Systems",
+    [
+     "uav",
+     "isr drone",
+     "evtol drone",
+     "reconnaissance"
+    ]
+   ],
+   [
+    "STARK",
+    [
+     "loitering",
+     "munition",
+     "strike drone"
+    ]
+   ],
+   [
+    "Black Semiconductor",
+    [
+     "photonic",
+     "graphene",
+     "chip",
+     "semiconductor"
+    ]
+   ],
+   [
+    "Hades",
+    [
+     "geothermal",
+     "critical minerals",
+     "mining",
+     "subsurface"
+    ]
+   ],
+   [
+    "Vaeridion",
+    [
+     "electric aircraft",
+     "regional aviation",
+     "aviation"
+    ]
+   ],
+   [
+    "Twig Bio",
+    [
+     "fermentation",
+     "bio ingredient",
+     "biomanufactur"
+    ]
+   ],
+   [
+    "Distil Labs",
+    [
+     "small language model",
+     "fine-tun",
+     "slm"
+    ]
+   ],
+   [
+    "Restack",
+    [
+     "agent backend",
+     "agent framework",
+     "orchestration"
+    ]
+   ],
+   [
+    "Flow AI",
+    [
+     "agent evaluation",
+     "test data",
+     "agent testing"
+    ]
+   ],
+   [
+    "Montamo",
+    [
+     "installer",
+     "heat pump",
+     "training",
+     "workforce"
+    ]
+   ],
+   [
+    "Labrys",
+    [
+     "workforce management",
+     "global teams",
+     "payroll"
+    ]
+   ],
+   [
+    "11x",
+    [
+     "sdr",
+     "sales agent",
+     "outbound"
+    ]
+   ],
+   [
+    "Dixa",
+    [
+     "customer service",
+     "support platform"
+    ]
+   ],
+   [
+    "Root Global",
+    [
+     "scope 3",
+     "agri",
+     "farm emissions"
+    ]
+   ],
+   [
+    "Architect",
+    [
+     "landing page",
+     "conversion",
+     "personalis"
+    ]
+   ]
+  ],
+  "sector_keywords": {
+   "ai_sw": "\\b(ai|artificial intelligence|machine learning|llm\\w*|foundation model\\w*|computer vision|software|saas|api platform|agentic|data platform)\\b",
+   "bio": "\\b(biotech\\w*|bio-?pharm\\w*|pharma\\w*|drug|therapeut\\w*|clinical|oncolog\\w*|antibod\\w*|vaccine\\w*|genomic\\w*|proteom\\w*|cell therap\\w*|medtech|medical device|diagnostic\\w*|biomarker\\w*|molecular biolog\\w*)\\b",
+   "climate": "\\b(climate|carbon|decarboni\\w*|renewable\\w*|solar|wind energy|geothermal|hydrogen|batter(y|ies)|energy storage|grid|fusion energy|e-?fuel\\w*)\\b",
+   "deeptech": "\\b(deep-?tech|advanced material\\w*|advanced manufactur\\w*|additive manufactur\\w*|3d print\\w*|nanotech\\w*|sensor\\w*|catalys\\w*|superconduct\\w*|cryogenic\\w*|spinoff|spin-?out|ausgründung)\\b",
+   "defence": "\\b(defen[cs]e|dual-?use|military|nato|isr|battlefield|c4isr|counter-?uas|munition\\w*)\\b",
+   "robotics": "\\b(robot\\w*|autonomous (system\\w*|vehicle\\w*|driving|navigation|inspection)|drone\\w*|uav|ugv|manipulat\\w*|slam|humanoid\\w*)\\b",
+   "semis_quantum": "\\b(semiconductor\\w*|chip(let)?s?|photonic\\w*|quantum|wafer\\w*|lithograph\\w*|asic|fpga|rf front|gan|sic power)\\b",
+   "space": "\\b(satellite\\w*|orbital|launch vehicle|space(craft|port| debris| station)?|in-orbit|earth observation|lunar|cubesat\\w*|rocket\\w*)\\b"
+  }
+ }
+}

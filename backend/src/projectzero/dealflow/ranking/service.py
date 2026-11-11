@@ -4,9 +4,11 @@
   - **full**: the candidate was imported from the old Deal Flow (``legacy`` is an inbox record). The rules read that
     record exactly as the old app did, with today's operator notes (the old decide wrote ``notes`` into the record,
     so notes always fed the ranking text).
-  - **partial**: anything else — a Scout Intake / Native record, or a live Grok / manual / registry delivery. The
-    stored columns are mapped onto the same fields, but the old ingest tagging (``archetype_hits``, ``noise``,
-    ``priority``, ``discovery_tier``) does not exist for them yet (review 007), so the result is flagged ``partial``.
+  - **full** too: a live Grok / manual lead tagged at intake (``attrs.tagging``, review 007). The rules read the
+    stored old-scan-shaped record, with today's status and operator notes, exactly like an imported record.
+  - **partial**: anything else — a Scout Intake / Native record, a pre-007 untagged lead, or an origin without a
+    tagging mapping yet (registry scans until the scanner port). The stored columns are mapped onto the same
+    fields, but the ingest tags (``archetype_hits``, ``noise``, ``priority``, ``discovery_tier``) are missing.
 * ``RankingContext`` holds the two inputs that are not per candidate, loaded once per request, so the list and the
   detail paths read the SAME values: the old inbox's exact ``last_run`` (compared directly with ``run_id``) and the
   feedback ledger, frozen at import (review 008 moves its updates to decision events).
@@ -23,7 +25,7 @@ from psycopg import sql
 from psycopg.rows import dict_row
 
 from projectzero.core.db import schema_ident
-from projectzero.dealflow.ranking import attention, feedback, themes
+from projectzero.dealflow.ranking import attention, feedback, tagging, themes
 
 STATUS_TO_DECISION = {"new": "new", "reviewing": "research", "watch": "watch", "baseline": "baseline",
                       "rejected": "rejected", "archived": "rejected", "kept": "kept"}  # fmt: skip
@@ -63,6 +65,12 @@ def ranking_input(row: Mapping[str, Any]) -> tuple[dict[str, Any], str]:
         c["decision"] = STATUS_TO_DECISION.get(str(row.get("status")), c.get("decision"))
         if "notes" in attrs:
             c["notes"] = attrs["notes"]
+        return c, "full"
+    tags = attrs.get("tagging")
+    if tagging.is_current(tags):
+        c = dict(tags["record"])
+        c["decision"] = STATUS_TO_DECISION.get(str(row.get("status")), "new")
+        c["notes"] = attrs.get("notes", "")  # operator notes only: the generated auto-reject note is never stored
         return c, "full"
     c = {
         "id": row.get("id"),

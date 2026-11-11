@@ -22,6 +22,7 @@ from jsonschema import Draft202012Validator, FormatChecker
 from jsonschema.exceptions import ValidationError
 
 from projectzero.core.paths import CONTRACTS_DIR
+from projectzero.dealflow.ranking.tagging import interstitial_check_text, is_interstitial
 
 CONTRACT_VERSION = "1.0"
 SCHEMA_PATH = CONTRACTS_DIR / "intake_submission.schema.json"
@@ -166,6 +167,26 @@ def cross_entity_issues(entities: Sequence[Any], already_refused: Collection[int
     return found
 
 
+COMPANY_KINDS = frozenset({"company", "opportunity"})
+
+
+def content_issues(entity: Any, *, prefix: str = "$") -> list[Issue]:
+    """Rules on what an entity SAYS (review 007). A company / opportunity whose name and key fact read like page
+    plumbing (cookie banner, consent page, bot check, login wall) is refused with the reason. The old scan dropped
+    such records silently; the text tested is the old one: ``(name[:120] + " " + key_fact[:600])[:400]``."""
+    if not isinstance(entity, Mapping):
+        return []
+    kind = entity.get("kind")
+    if not isinstance(kind, str) or kind not in COMPANY_KINDS:  # a list / object kind is unhashable: schema reports it
+        return []
+    name, key_fact = entity.get("name"), entity.get("key_fact")
+    if not isinstance(name, str) or not isinstance(key_fact, (str, type(None))):
+        return []  # the schema reports malformed values
+    if is_interstitial(interstitial_check_text(name.strip(), key_fact or "")):
+        return [Issue(prefix, "reads like a cookie banner, consent page, bot check or login wall, not a company")]
+    return []
+
+
 def validate_external(payload: Any) -> list[Issue]:
     """Issues for an external submission; an empty list means it may be accepted."""
     if isinstance(payload, dict):
@@ -181,13 +202,15 @@ def validate_external(payload: Any) -> list[Issue]:
     issues = _issues(_envelope_validator().iter_errors(payload))
     if issues:
         return issues
-    cross = cross_entity_issues(payload["entities"])
-    return sorted(issue for index in sorted(cross) for issue in cross[index])
+    entities = payload["entities"]
+    content = [i for index, e in enumerate(entities) for i in content_issues(e, prefix=f"$/entities/{index}")]
+    cross = cross_entity_issues(entities)
+    return sorted(content + [issue for index in sorted(cross) for issue in cross[index]])
 
 
 def validate_entity(entity: Any, *, prefix: str = "$") -> list[Issue]:
     """Issues for one entity, using the same rules as entities inside an external submission."""
-    return _issues(_entity_validator().iter_errors(entity), prefix)
+    return _issues(_entity_validator().iter_errors(entity), prefix) + content_issues(entity, prefix=prefix)
 
 
 def canonical_sha256(document: Any) -> str:

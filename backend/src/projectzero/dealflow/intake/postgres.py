@@ -24,6 +24,12 @@ Per accepted entity:
   Intake never changes an existing candidate's status.
 * A person or event re-delivered with the same ``external_id`` from the same origin attaches to its candidate.
 * Every entity leaves an observation (evidence + the entity as delivered) and an ``intake`` event.
+
+**Ingest tagging** (review 007, decision 0002): a company / opportunity candidate CREATED by a live origin (Grok,
+manual) stores ``attrs.tagging`` = the old scan's tags for it, with the inputs they came from and a version. On a
+re-report the tags are replayed from the stored columns (so unchanged inputs give identical tags), and a different
+live origin is added once as a cross-source sighting. Imported and untagged candidates are never retagged here.
+Interstitial entities never reach this module: the contract refuses them before identity grouping.
 """
 
 from __future__ import annotations
@@ -47,10 +53,11 @@ from projectzero.dealflow.identity_rules import (
     origin_family,
     plan_delivery,
 )
+from projectzero.dealflow.intake.contract import COMPANY_KINDS
 from projectzero.dealflow.intake.service import SubmissionRecord
+from projectzero.dealflow.ranking import tagging
 from projectzero.dealflow.sources.registry import registry_value
 
-COMPANY_KINDS = frozenset({"company", "opportunity"})
 _ENTITY_ATTRS = (
     "external_id", "related_external_ids", "flags", "intent", "source_scouts", "scout_assessment", "claims", "stage",
     "signal_types", "signal_date", "confidence", "recommended_action", "thesis_fit", "founders", "aliases",
@@ -350,6 +357,9 @@ class PostgresIntake:
             attrs["external_key"] = f"{origin}:{entity['external_id']}"
         if company_id is None and identity in ("identity_conflict", "no_company"):
             attrs["identity"] = "identity_conflict" if identity == "identity_conflict" else "unresolved_name"
+        if entity["kind"] in COMPANY_KINDS and origin in tagging.LIVE_SOURCES:
+            inputs = tagging.live_inputs(origin, name, entity.get("key_fact"), entity.get("stage"), entity.get("flags"))
+            attrs["tagging"] = tagging.tag(inputs)
         row = self._one(
             "insert into {s}.candidates (company_id, subject_kind, name, status, origins, country, location, "
             "description, key_fact, key_unknown, recommended_object_type, sectors, attrs) "
@@ -379,6 +389,32 @@ class PostgresIntake:
             ),
             (origin, entity.get("key_fact"), entity.get("key_unknown"), candidate_id),
         )
+        self._retag(candidate_id, entity, origin)
+
+    def _retag(self, candidate_id: str, entity: Mapping[str, Any], origin: str) -> None:
+        """Replay a live-tagged candidate's tags from its stored columns, plus a sighting by a new live origin."""
+        row = self._one("select name, key_fact, attrs from {s}.candidates where id = %s", (candidate_id,))
+        assert row is not None
+        name, key_fact, attrs = row[0], row[1], row[2] or {}
+        stored = attrs.get("tagging")
+        if not tagging.is_current(stored):
+            return  # imported (legacy record) or pre-007 untagged: never retagged by intake
+        first = stored["inputs"]["origin"]
+        inputs = tagging.live_inputs(first, name, key_fact, attrs.get("stage"), attrs.get("flags"))
+        sightings = list(stored.get("sightings") or [])
+        seen = {inputs["source"]} | {s.get("source") for s in sightings}
+        if origin in tagging.LIVE_SOURCES and tagging.LIVE_SOURCES[origin]["name"] not in seen:
+            sightings.append(
+                tagging.sighting_for(origin, entity.get("stage"), entity.get("flags"), str(self.submission_id))
+            )
+        fresh = tagging.tag(inputs, sightings)
+        if fresh != stored:
+            self.conn.execute(
+                self._q(
+                    "update {s}.candidates set attrs = attrs || jsonb_build_object('tagging', %s::jsonb) where id = %s"
+                ),
+                (Jsonb(fresh), candidate_id),
+            )
 
     def _observe(self, candidate_id: str, entity: Mapping[str, Any], origin: str) -> None:
         evidence = list(entity.get("evidence") or [])
