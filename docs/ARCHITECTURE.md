@@ -173,6 +173,9 @@ Visible differences, all consequences of the merge:
 
 ## 8. Open questions
 
+All three are settled in [decision 0003](decisions/0003-open-architecture-questions.md): Grok's direct delivery
+only, a public URL stays required, single operator. They are kept below for context.
+
 1. Should the app keep calling Grok over the xAI API on a schedule (the old weekday "search bridge"), or is Grok's
    direct delivery the only Grok path? Draft assumes: direct delivery only; the xAI adapter is optional.
 2. Evidence gate: should a lead with **no public URL yet** (stealth, social-only) be submittable as an explicitly
