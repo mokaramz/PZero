@@ -1,8 +1,9 @@
 /**
  * Founder Radar (review 026a) — the new app on a preview database (the real snapshot in a scratch schema; writes land
- * only there). The views on real data, a person's drawer, a watch action read back after a fresh load, the disabled
- * network controls (026b), and the layout at the usual sizes. The mocked spec (`founder-radar-mocked.spec.ts`) covers
- * every action's exact POST body, the review drawer and the dialogs.
+ * only there). The views on real data, a person's drawer, a watch action read back after a fresh load, the live scan and
+ * research controls (026b; enabled, never pressed: no live network here), and the layout at the usual sizes. The mocked
+ * spec (`founder-radar-mocked.spec.ts`) covers every action's exact POST body, the scan and research runs, the review
+ * drawer and the dialogs.
  */
 import { expect, test, type Page } from "@playwright/test";
 
@@ -25,17 +26,23 @@ test.describe("Founder Radar — new app, preview database", () => {
     w.expectClean();
   });
 
-  test("Scan and Research stay disabled with their reason, and nothing calls them", async ({ page }) => {
+  test("Scan and Research are enabled (not pressed: no live network in a test)", async ({ page }) => {
     const w = watch(page);
     const calls: string[] = [];
     page.on("request", (r) => r.url().includes("/api/") && calls.push(new URL(r.url()).pathname));
-    await page.goto("/founder-radar");
+    await page.goto("/founder-radar?view=research");
     await expect(page.getByTestId("fr-counts")).toBeVisible({ timeout: 60_000 });
-    const scan = page.getByRole("button", { name: /Scan founder signals/ });
-    await expect(scan).toHaveAttribute("aria-disabled", "true");
-    await scan.click({ force: true });
-    await expect(page.getByText(/arrive with the founder scan port \(026b\)/).first()).toBeVisible();
-    expect(calls.some((p) => /scan|research(?!-queue)|research_queue|bridge/.test(p))).toBe(false);
+    const scan = page.getByRole("button", { name: "Scan founder signals" });
+    await expect(scan).toBeEnabled();
+    await expect(scan).not.toHaveAttribute("aria-disabled", "true");
+    await expect(page.getByTestId("fr-research")).toBeVisible();
+    await page.getByRole("tab", { name: /^Founder claims/ }).click();
+    for (const name of ["Research next 5 leads", "Research company queue (all leads with an official domain, resumable)"])
+      await expect(page.getByRole("button", { name })).toBeEnabled();
+    const research = page.getByRole("button", { name: "Research company", exact: true });
+    if (await research.count()) await expect(research.first()).toBeEnabled();
+    await expect(page.getByText(/arrive with the founder scan port/)).toHaveCount(0);
+    expect(calls.some((p) => /\/(scan|research|research_queue)$|bridge/.test(p))).toBe(false);
     w.expectClean();
   });
 

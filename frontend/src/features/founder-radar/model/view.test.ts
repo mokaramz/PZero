@@ -28,8 +28,13 @@ import {
   metricRows,
   priorityFactorsLine,
   recommendedPending,
+  refreshToast,
+  researchCompanyToast,
+  researchLeadsToast,
   researchList,
   reviewToast,
+  scanFinished,
+  scanToast,
   scoutReviewLink,
   storedBindings,
   viewOf,
@@ -208,5 +213,38 @@ describe("the old POST bodies", () => {
       "LinkedIn Connections export: 3 new · 0 merged — nothing verified",
     );
     expect(importToast({ ok: true, format: "custom", new: 1, merged: 2, skipped: [{}, {}] })).toBe("custom CSV: 1 new · 2 merged · 2 skipped — ");
+  });
+});
+
+describe("the scan and company research toasts (026b)", () => {
+  it("a scan is finished when it answers the health report; a started job is not", () => {
+    expect(scanFinished(d.health!)).toBe(true);
+    expect(scanFinished({ started: true })).toBe(false);
+    expect(scanFinished({ totals: {}, scan_time: "" })).toBe(false);
+    expect(scanToast(d.health!)).toBe("Scan done: 2 ok · 3 failed · 5 new · 1 merged");
+    expect(scanToast({})).toBe("Scan done: 0 ok · 0 failed · 0 new · 0 merged");
+  });
+
+  it("Research company and Refresh research read the first researched company", () => {
+    const ok = { ok: true, researched: [{ key: "k", name: "Kelpwise GmbH", ok: true, pages: 5, proposals: 9, new: 2 }] };
+    expect(researchCompanyToast(ok)).toEqual({ ok: true, text: "5 page(s) retrieved · 9 proposal(s) — review before anything counts" });
+    expect(refreshToast(ok)).toEqual({ ok: true, text: "5 page(s) · 2 new proposal(s)" });
+    const failed = { ok: true, researched: [{ key: "k", name: "Kelpwise GmbH", ok: false, error: "HTTP 404" }] };
+    expect(researchCompanyToast(failed)).toEqual({ ok: false, text: "HTTP 404" });
+    expect(researchCompanyToast({ ok: true, researched: [] })).toEqual({ ok: false, text: "research failed" });
+    expect(refreshToast({ ok: true, researched: [] })).toEqual({ ok: false, text: "refresh failed" });
+  });
+
+  it("Research next 5 leads: one part per company, or nothing left", () => {
+    expect(
+      researchLeadsToast({
+        ok: true,
+        researched: [
+          { key: "a", name: "Kelpwise GmbH", ok: true, proposals: 9 },
+          { key: "b", name: "Quillstone AI", ok: false, error: "HTTP 404" },
+        ],
+      }),
+    ).toBe("Kelpwise GmbH: 9 proposals · Quillstone AI: HTTP 404");
+    expect(researchLeadsToast({ ok: true, researched: [] })).toBe("nothing left to research");
   });
 });

@@ -1,6 +1,6 @@
 /**
  * The Founder Radar payloads (review 026a): the old `GET founder_radar` body and the old `radar_*` answers, unchanged,
- * now under `/api/founder-radar` (see ../api). The scan and research answers arrive with review 026b.
+ * now under `/api/founder-radar` (see ../api), including the scan and research answers (review 026b).
  */
 
 export type Band = "HIGH" | "MEDIUM" | "LOW" | "NOT ENOUGH INFORMATION" | string;
@@ -284,3 +284,25 @@ export type PromoteForm = Record<(typeof PROMOTE_FIELDS)[number], string>;
 
 /** What "Log founder call" hands to Founder Calls. */
 export type CallContext = { person_id: string; name: string; company?: string; radar_key?: string };
+
+/** `POST founder-radar/scan` → the new health report (synchronous). A server may answer `{started: true}` instead; the page
+ *  then polls the radar until `health.scan_time` changes. */
+export type ScanResult = Health & { ok?: boolean; started?: boolean };
+
+/** `POST founder-radar/research {key | keys | (nothing: the next 5 un-researched), refresh}`. */
+export type ResearchResult = {
+  ok: boolean;
+  researched: Array<{ key: string; name: string; ok?: boolean; error?: string; pages?: number; new?: number; proposals?: number }>;
+};
+
+/** `POST founder-radar/research_queue {batch}` → one resumable batch (`done` and `remaining` are counts). */
+export type QueueResult = {
+  ok?: boolean;
+  processed?: Array<{ name: string; ok: boolean; pages?: number; proposals?: number; error?: string }>;
+  done: number;
+  remaining: number;
+  failed?: Record<string, string>;
+  skipped_no_domain?: string[];
+  in_progress?: boolean;
+  resume?: boolean;
+};

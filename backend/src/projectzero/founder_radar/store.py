@@ -110,9 +110,9 @@ class FounderRadarStore:
             changed.append(key)
         return changed
 
-    def write_document(self, key: str, body: Any, action: str, detail: dict[str, Any]) -> bool:
-        """A radar document kept as a ``documents`` row (the metrics snapshot): stored only when it changed, with one
-        ``radar_events`` row (entity ``metrics``)."""
+    def write_document(self, key: str, body: Any, action: str, detail: dict[str, Any], entity: str = "metrics") -> bool:
+        """A radar document kept as a ``documents`` row (the metrics snapshot; review 026b: the cursor, the health and
+        the research queue, entity ``document``): stored only when it changed, with one ``radar_events`` row."""
         rows = self._rows("select body from {s}.documents where key = %s for update", (key,))
         prev = rows[0]["body"] if rows else None
         if prev is not None and _same(prev, body):
@@ -124,7 +124,7 @@ class FounderRadarStore:
         )
         self._rows(
             "insert into {s}.radar_events (entity, key, actor, action, before, after, detail) "
-            "values ('metrics', %s, 'operator', %s, %s, %s, %s)",
-            (key, action, None if prev is None else Jsonb(prev), Jsonb(body), Jsonb(detail)),
+            "values (%s, %s, 'operator', %s, %s, %s, %s)",
+            (entity, key, action, None if prev is None else Jsonb(prev), Jsonb(body), Jsonb(detail)),
         )
         return True

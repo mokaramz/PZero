@@ -1,14 +1,14 @@
 /**
  * Every Founder Radar write the page offers, with the old POST bodies and operator wording (`useFrActions`). v1 asked
- * with prompt() / confirm(); the same questions are asked in a form dialog (useAsk, model/dialogs). The scan, the
- * research crawl and the Scout 00 job are not here: they are deferred controls (model/deferred).
+ * with prompt() / confirm(); the same questions are asked in a form dialog (useAsk, model/dialogs). The company research
+ * runs (review 026b) are here too; the scan lives on the page (it polls). The Scout 00 job is never ported (model/deferred).
  */
 import { useQueryClient } from "@tanstack/react-query";
 import { useCallback } from "react";
 
 import { useToast } from "@/components/Toast";
 import { plainText } from "@/lib/activity";
-import { FR_KEYS, postMerge, useBoardyBrief, useCompanyWrite, useJudgment, useRadarAction } from "./api";
+import { FR_KEYS, RUN_KEYS, postMerge, postResearchQueue, useBoardyBrief, useCompanyWrite, useJudgment, useRadarAction, useResearch } from "./api";
 import { sv, type Values } from "./model/ask";
 import {
   COMPANY_EVIDENCE,
@@ -30,7 +30,8 @@ import {
   verifyIdentityExtra,
   type NoteAsk,
 } from "./model/dialogs";
-import type { FounderRadar } from "./model/types";
+import type { FounderRadar, QueueResult } from "./model/types";
+import { refreshToast, researchCompanyToast, researchLeadsToast } from "./model/view";
 import { useAsk } from "./useAsk";
 
 export const BOARDY_STATES = [
@@ -51,6 +52,7 @@ export function useFrActions(data: FounderRadar | undefined) {
   const company = useCompanyWrite();
   const boardy = useBoardyBrief();
   const judgment = useJudgment();
+  const research = useResearch();
 
   const person = (id: string) => data?.people.find((p) => p.id === id);
 
@@ -90,6 +92,7 @@ export function useFrActions(data: FounderRadar | undefined) {
     ask,
     act,
     refresh,
+    busy: action.isPending || company.isPending || research.isPending,
 
     watch: (id: string) => act(id, "watch"),
     investigate: (id: string) => act(id, "investigate_founder"),
@@ -159,6 +162,54 @@ export function useFrActions(data: FounderRadar | undefined) {
     async companyFact(key: string) {
       const v = await ask(COMPANY_FACT);
       if (v) await companyWrite(companyFactBody(key, v), `Sourced company fact recorded (binds only to ${sv(v, "field")})`);
+    },
+
+    /** v1 researchCompany: bounded official-domain research; true when proposals are ready to review. */
+    async researchCompany(key: string): Promise<boolean> {
+      toast.show("Researching official domain (bounded: homepage + ≤8 pages)…", "info");
+      try {
+        const t = researchCompanyToast(await research.mutateAsync({ key }));
+        toast.show(t.text, t.ok ? "ok" : "error");
+        return t.ok;
+      } catch {
+        return false; // toasted
+      }
+    },
+
+    async refreshResearch(key: string) {
+      toast.show("Refreshing research (bounded re-fetch; decisions kept)…", "info");
+      try {
+        const t = refreshToast(await research.mutateAsync({ key, refresh: true }));
+        toast.show(t.text, t.ok ? "ok" : "error");
+      } catch {
+        /* toasted */
+      }
+    },
+
+    async researchLeads() {
+      toast.show("Researching next 5 leads…", "info");
+      try {
+        toast.show(researchLeadsToast(await research.mutateAsync({})), "ok");
+      } catch {
+        /* toasted */
+      }
+    },
+
+    /** v1 researchQueue: resumable batches of 3 until nothing remains (≤ 40 rounds), progress reported after every batch. */
+    async researchQueue(onProgress: (r: QueueResult) => void) {
+      let done = 0;
+      try {
+        for (let i = 0; i < 40; i++) {
+          const r = await postResearchQueue();
+          done = r.done;
+          onProgress(r);
+          if (!r.remaining) break;
+        }
+        toast.show(`Company research queue: ${done} done`, "ok");
+      } catch (e) {
+        toast.show(e instanceof Error ? e.message : "research queue failed", "error"); // a 409 / 503 `error`, as the old toast
+      }
+      await Promise.all(RUN_KEYS.map((k) => qc.invalidateQueries({ queryKey: [k] })));
     },
   };
 }

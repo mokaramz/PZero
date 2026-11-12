@@ -3,8 +3,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { ALL_ITEMS } from "@/app/nav";
 import { NOT_PORTED as CONVICTION } from "@/features/conviction/model/deferred";
-import { NOT_PORTED } from "./model/deferred";
-import { ID, radar } from "./test/fixtures";
+import { ID, KELPWISE, radar } from "./test/fixtures";
 import { IMPORT_NOTE, fakeServer, renderPage } from "./test/server";
 
 const tab = (name: string) => screen.getByRole("tab", { name: new RegExp("^" + name.replace(/[+()]/g, "\\$&")) });
@@ -27,7 +26,7 @@ async function opened(path = "/founder-radar") {
   return r;
 }
 
-/** A deferred control stays inert for a pointer AND a keyboard (a browser turns Enter / Space into a click). */
+/** A deferred control (the Scout 00 job) stays inert for a pointer AND a keyboard (a browser turns Enter / Space into a click). */
 function pressEveryWay(el: Element) {
   fireEvent.click(el);
   for (const key of ["Enter", " "]) {
@@ -342,42 +341,168 @@ describe("Founder Radar — authorized import", () => {
   });
 });
 
-describe("Founder Radar — what arrives with review 026b", () => {
-  const NETWORK = /\/api\/(founder-radar\/(scan|research|research_queue)|radar_scan|radar_research|radar_research_queue|bridge_create|founder_radar)\b/;
+describe("Founder Radar — the scan and company research (026b)", () => {
+  const BUSY = "Another founder scan or research run is in progress — try again when it finishes.";
+  const QUEUE = "Research company queue (all leads with an official domain, resumable)";
+  const reads = (server: ReturnType<typeof fakeServer>) => server.calls.filter((c) => c.method === "GET" && c.path === "/api/founder-radar").length;
 
-  it("Scan founder signals and every research control stay in place, disabled with the reason, and never send a request", async () => {
-    const server = fakeServer();
+  it("every scan and research control is enabled", async () => {
+    fakeServer();
     await opened("/founder-radar?view=research");
-    const scan = screen.getByRole("button", { name: "Scan founder signals" });
-    expect(scan).toHaveAttribute("aria-disabled", "true");
-    expect(scan).toHaveAttribute("title", NOT_PORTED.scan);
-    expect(screen.getByTestId("fr-scan-deferred").textContent).toBe("Founder scans and company research arrive with the founder scan port (026b)");
     const controls = [
-      scan,
+      screen.getByRole("button", { name: "Scan founder signals" }),
       screen.getByRole("button", { name: "Research next 5 leads" }),
-      screen.getByRole("button", { name: "Research company queue (all leads with an official domain, resumable)" }),
+      screen.getByRole("button", { name: QUEUE }),
       ...screen.getAllByRole("button", { name: "Research company" }),
     ];
     expect(controls).toHaveLength(7); // the scan, the two queue links and the four company cards
     for (const el of controls) {
-      expect(el).toHaveAttribute("aria-disabled", "true");
-      expect(el).toHaveAttribute("title", NOT_PORTED.scan);
-      expect(el).toHaveAccessibleDescription(NOT_PORTED.scan);
-      pressEveryWay(el);
+      expect(el).toBeEnabled();
+      expect(el).not.toHaveAttribute("aria-disabled");
+      expect(el).not.toHaveAttribute("title");
     }
-    expect(screen.getByTestId("fr-research-deferred").textContent).toBe(NOT_PORTED.scan);
+    expect(screen.queryByText(/arrive with the founder scan port/)).toBeNull();
+    expect(screen.queryByTestId("fr-rq-state")).toBeNull(); // only once the queue runs
+  });
 
-    fireEvent.click(within(companyCard("Kelpwise GmbH")).getByRole("button", { name: "Review proposals (8)" }));
+  it("Scan founder signals: POST founder-radar/scan {} answers the health report synchronously", async () => {
+    const server = fakeServer();
+    await opened();
+    const before = reads(server);
+    fireEvent.click(screen.getByRole("button", { name: "Scan founder signals" }));
+    expect(await screen.findByText("Scan done: 2 ok · 3 failed · 5 new · 1 merged")).toBeInTheDocument();
+    expect(server.posts("scan").map((c) => c.body)).toEqual([{}]);
+    expect(server.calls.filter((c) => c.method === "POST").map((c) => c.path)).toEqual(["/api/founder-radar/scan"]);
+    await waitFor(() => expect(reads(server)).toBe(before + 1)); // the radar is re-read once, nothing polls
+    expect(screen.getByRole("button", { name: "Scan founder signals" })).toBeEnabled();
+  });
+
+  it("Scan founder signals: a started job is polled every 2 s until health.scan_time changes", async () => {
+    const after = radar();
+    after.health = { ...after.health, scan_time: "2026-11-12 10:00", totals: { ...after.health!.totals, ok: 5 } };
+    // the re-read right after the answer still has the old scan time; the first poll sees the new one
+    const server = fakeServer({ scan: () => ({ status: 200, body: { started: true } }), radar_after_scan: after, after_scan_reads: 2 });
+    await opened();
+    const before = reads(server);
+    fireEvent.click(screen.getByRole("button", { name: "Scan founder signals" }));
+    const busy = await screen.findByRole("button", { name: "Scanning…" });
+    expect(busy).toBeDisabled();
+    expect(await screen.findByText("Scan done: 5 ok · 3 failed · 5 new · 1 merged", undefined, { timeout: 5000 })).toBeInTheDocument();
+    expect(reads(server)).toBe(before + 2);
+    expect(server.posts("scan").map((c) => c.body)).toEqual([{}]);
+    expect(screen.getByRole("button", { name: "Scan founder signals" })).toBeEnabled();
+    await new Promise((r) => setTimeout(r, 2300));
+    expect(reads(server)).toBe(before + 2); // the poll stopped
+  }, 12_000);
+
+  it("Scan founder signals: a 409 (another run in progress) and a 503 (the deadline) are shown as errors", async () => {
+    let status = 409;
+    const server = fakeServer({ scan: () => ({ status, body: { ok: false, error: status === 409 ? BUSY : "the scan deadline passed before the write; nothing was written" } }) });
+    await opened();
+    fireEvent.click(screen.getByRole("button", { name: "Scan founder signals" }));
+    expect(await screen.findByText(`✕ Scanning founders failed — ${BUSY}`)).toBeInTheDocument();
+    expect(await screen.findByText("Scan failed")).toBeInTheDocument();
+    await waitFor(() => expect(screen.getByRole("button", { name: "Scan founder signals" })).toBeEnabled());
+    status = 503;
+    fireEvent.click(screen.getByRole("button", { name: "Scan founder signals" }));
+    expect(await screen.findByText(/^✕ Scanning founders failed — .*\(the scan deadline passed before the write; nothing was written\)$/)).toBeInTheDocument();
+    expect(server.posts("scan")).toHaveLength(2);
+  });
+
+  it("Research company: POST {key}, the toast, then the review opens", async () => {
+    const server = fakeServer();
+    await opened("/founder-radar?view=research");
+    fireEvent.click(within(companyCard("Quillstone AI")).getByRole("button", { name: "Research company" }));
+    expect(await screen.findByText("Researching official domain (bounded: homepage + ≤8 pages)…")).toBeInTheDocument();
+    expect(await screen.findByText("5 page(s) retrieved · 9 proposal(s) — review before anything counts")).toBeInTheDocument();
+    expect(server.posts("research").map((c) => c.body)).toEqual([{ key: "dom:quillstone.example" }]);
+    const drawer = await screen.findByRole("dialog", { name: "Review — Quillstone AI" });
+    expect(await within(drawer).findByText("No proposals yet — press Research company.")).toBeInTheDocument();
+  });
+
+  it("Research company: a failed run is an error toast and the review stays closed", async () => {
+    const server = fakeServer({
+      research: (b) => ({ status: 200, body: { ok: true, researched: [{ key: b.key, name: "Quillstone AI", ok: false, error: "robots.txt disallows the site" }] } }),
+    });
+    await opened("/founder-radar?view=research");
+    fireEvent.click(within(companyCard("Quillstone AI")).getByRole("button", { name: "Research company" }));
+    expect(await screen.findByText("robots.txt disallows the site")).toBeInTheDocument();
+    expect(server.posts("research")).toHaveLength(1);
+    expect(screen.queryByRole("dialog")).toBeNull();
+  });
+
+  it("Research company: a 409 is the failure toast with the reason", async () => {
+    fakeServer({ research: () => ({ status: 409, body: { ok: false, error: BUSY } }) });
+    await opened("/founder-radar?view=research");
+    fireEvent.click(within(companyCard("Quillstone AI")).getByRole("button", { name: "Research company" }));
+    expect(await screen.findByText(`✕ Starting founder research failed — ${BUSY}`)).toBeInTheDocument();
+    expect(screen.queryByRole("dialog")).toBeNull();
+  });
+
+  it("Research next 5 leads: POST {} and one part per company", async () => {
+    let answer: unknown[] = [
+      { key: KELPWISE, name: "Kelpwise GmbH", ok: true, pages: 5, proposals: 9 },
+      { key: "dom:quillstone.example", name: "Quillstone AI", ok: false, error: "HTTP 404" },
+    ];
+    const server = fakeServer({ research: () => ({ status: 200, body: { ok: true, researched: answer } }) });
+    await opened("/founder-radar?view=research");
+    fireEvent.click(screen.getByRole("button", { name: "Research next 5 leads" }));
+    expect(await screen.findByText("Researching next 5 leads…")).toBeInTheDocument();
+    expect(await screen.findByText("Kelpwise GmbH: 9 proposals · Quillstone AI: HTTP 404")).toBeInTheDocument();
+    answer = [];
+    await waitFor(() => expect(screen.getByRole("button", { name: "Research next 5 leads" })).toBeEnabled());
+    fireEvent.click(screen.getByRole("button", { name: "Research next 5 leads" }));
+    expect(await screen.findByText("nothing left to research")).toBeInTheDocument();
+    expect(server.posts("research").map((c) => c.body)).toEqual([{}, {}]);
+  });
+
+  it("the review drawer's Refresh research: POST {key, refresh: true}, the toast, the proposals re-read", async () => {
+    const server = fakeServer();
+    await opened(`/founder-radar?view=research&review=${encodeURIComponent(KELPWISE)}`);
     const drawer = await screen.findByRole("dialog", { name: "Review — Kelpwise GmbH" });
     const refresh = await within(drawer).findByRole("button", { name: "Refresh research" });
-    expect(refresh).toHaveAttribute("aria-disabled", "true");
-    expect(refresh).toHaveAttribute("title", NOT_PORTED.scan);
-    pressEveryWay(refresh);
-    expect(within(drawer).getByTestId("fr-review-deferred").textContent).toBe(NOT_PORTED.scan);
+    expect(refresh).toBeEnabled();
+    expect(server.posts("proposals")).toHaveLength(1);
+    fireEvent.click(refresh);
+    expect(await screen.findByText("Refreshing research (bounded re-fetch; decisions kept)…")).toBeInTheDocument();
+    expect(await screen.findByText("5 page(s) · 0 new proposal(s)")).toBeInTheDocument();
+    expect(server.posts("research").map((c) => c.body)).toEqual([{ key: KELPWISE, refresh: true }]);
+    await waitFor(() => expect(server.posts("proposals")).toHaveLength(2));
+  });
 
-    await new Promise((r) => setTimeout(r, 20));
-    expect(server.calls.filter((c) => NETWORK.test(c.path))).toEqual([]);
-    expect(server.calls.filter((c) => c.method === "POST").map((c) => c.path)).toEqual(["/api/founder-radar/proposals"]);
+  it("the company research queue: batches of 3 until nothing remains, fr-rq-state once it runs", async () => {
+    const server = fakeServer();
+    await opened("/founder-radar?view=research");
+    expect(screen.queryByTestId("fr-rq-state")).toBeNull();
+    const before = reads(server);
+    fireEvent.click(screen.getByRole("button", { name: QUEUE }));
+    expect(await screen.findByText("Company research queue: 2 done")).toBeInTheDocument();
+    expect(screen.getByTestId("fr-rq-state").textContent).toBe(
+      "Company research queue: 2 done · 0 remaining · 1 failed · skipped (no official domain): Grainline Labs · completefailures: dom:quillstone.example: HTTP 404",
+    );
+    expect(server.posts("research_queue").map((c) => c.body)).toEqual([{ batch: 3 }, { batch: 3 }]);
+    await waitFor(() => expect(reads(server)).toBe(before + 1));
+    expect(screen.getByRole("button", { name: QUEUE })).toBeEnabled();
+  });
+
+  it("the company research queue stops after 40 batches and says it can resume", async () => {
+    const server = fakeServer({
+      research_queue: () => ({ status: 200, body: { ok: true, processed: [], done: 7, remaining: 4, failed: {}, skipped_no_domain: [], in_progress: true, resume: true } }),
+    });
+    await opened("/founder-radar?view=research");
+    fireEvent.click(screen.getByRole("button", { name: QUEUE }));
+    expect(await screen.findByText("Company research queue: 7 done")).toBeInTheDocument();
+    expect(server.posts("research_queue")).toHaveLength(40);
+    expect(screen.getByTestId("fr-rq-state").textContent).toBe("Company research queue: 7 done · 4 remaining · 0 failed · resumable — press again to continue");
+  });
+
+  it("the company research queue: a 409 is shown and the queue stops", async () => {
+    const server = fakeServer({ research_queue: () => ({ status: 409, body: { ok: false, error: BUSY } }) });
+    await opened("/founder-radar?view=research");
+    fireEvent.click(screen.getByRole("button", { name: QUEUE }));
+    expect(await screen.findByText(BUSY)).toBeInTheDocument();
+    expect(server.posts("research_queue")).toHaveLength(1);
+    await waitFor(() => expect(screen.queryByTestId("fr-rq-state")).toBeNull());
   });
 
   it("Ask Scout 00 for identity evidence is disabled with the bridge reason (the Scout Bridge is never ported)", async () => {

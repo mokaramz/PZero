@@ -834,9 +834,9 @@ def real() -> int:  # pragma: no cover - needs the hosted database and the old r
     from psycopg import sql as _sql
 
     from projectzero.api.app import create_app
-    from projectzero.api.routers.founder_radar import _documents
     from projectzero.core.config import Settings, load_dotenv
     from projectzero.core.db import connect, transaction
+    from projectzero.founder_radar.db import documents as _documents
     from projectzero.founder_radar.store import FounderRadarStore
     from projectzero.network.store import load_people
     from projectzero.ops.db_check import _scratch_sql

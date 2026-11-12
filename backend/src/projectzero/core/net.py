@@ -36,7 +36,7 @@ from collections.abc import Callable, Mapping
 from concurrent.futures import ThreadPoolExecutor
 from concurrent.futures import TimeoutError as FuturesTimeout
 from dataclasses import dataclass, field
-from typing import Protocol
+from typing import Protocol, cast
 from urllib.parse import urljoin, urlsplit
 
 Resolver = Callable[[str], list[str]]
@@ -187,6 +187,26 @@ class Transport(Protocol):
         ...
 
 
+class TruncatingTransport(Protocol):
+    """A transport that can also read only a body's prefix (review 026b: ``fetch(truncate=True)``)."""
+
+    def send(
+        self,
+        target: Target,
+        method: str,
+        headers: Mapping[str, str],
+        body: bytes | None,
+        timeout: float,
+        max_bytes: int,
+        deadline: float | None = None,
+        *,
+        truncate: bool = False,
+    ) -> Response:
+        """As ``Transport.send``; ``truncate``: read at most ``max_bytes`` and return that prefix instead of refusing a
+        longer body."""
+        ...
+
+
 class _PinnedHTTPConnection(http.client.HTTPConnection):
     def __init__(self, target: Target, timeout: float) -> None:
         super().__init__(target.host, target.port, timeout=timeout)
@@ -222,6 +242,8 @@ class PinnedTransport:
         timeout: float,
         max_bytes: int,
         deadline: float | None = None,
+        *,
+        truncate: bool = False,
     ) -> Response:
         conn: http.client.HTTPConnection = (
             _PinnedHTTPSConnection(target, timeout, self._ctx)
@@ -234,9 +256,9 @@ class PinnedTransport:
             r = conn.getresponse()
             watchdog.response = r
             length = r.getheader("Content-Length")
-            if length and length.isdigit() and int(length) > max_bytes:
+            if length and length.isdigit() and int(length) > max_bytes and not truncate:
                 raise ResponseTooLargeError(f"response of {length} bytes exceeds the {max_bytes}-byte cap")
-            data = _read_bounded(r, max_bytes, timeout, deadline)
+            data = _read_bounded(r, max_bytes, timeout, deadline, truncate=truncate)
             url = f"{target.scheme}://{target.host}:{target.port}{target.path}"
             return Response(url, r.status, {k.lower(): v for k, v in r.getheaders()}, data)
         except (OSError, http.client.HTTPException) as exc:
@@ -292,13 +314,18 @@ def _read_bounded(
     max_bytes: int,
     timeout: float,
     deadline: float | None,
+    *,
+    truncate: bool = False,
 ) -> bytes:
     """The body in chunks, the socket timeout re-set to the time left before each one: a server that keeps a slow
     trickle going cannot hold the read past the deadline (a socket timeout alone bounds only the gap between
-    packets)."""
+    packets). ``truncate``: each read asks for at most the bytes still wanted and the read returns as soon as
+    ``max_bytes`` arrived (the old ``resp.read(n)``); otherwise a longer body is ``ResponseTooLargeError``."""
     parts: list[bytes] = []
     size = 0
     while True:
+        if truncate and size >= max_bytes:  # the whole prefix is here: never wait for bytes nobody needs
+            return b"".join(parts)
         left = remaining(deadline)
         if left is not None and left <= 0:
             raise FetchError("source deadline reached (reading the response)")
@@ -307,7 +334,9 @@ def _read_bounded(
         if sock is not None:
             sock.settimeout(max(0.01, left) if left is not None and bounded_by_deadline else timeout)
         try:
-            chunk = r.read1(CHUNK)  # at most ONE socket read (read(n) would block until n bytes arrived)
+            # at most ONE socket read (read(n) would block until n bytes arrived); when truncating, never more than the
+            # bytes still wanted, so nothing past the prefix is consumed (Codex H-223)
+            chunk = r.read1(min(CHUNK, max_bytes - size) if truncate else CHUNK)
         except TimeoutError as exc:
             if bounded_by_deadline:  # the deadline, not the server's pause, set this timeout
                 raise FetchError("source deadline reached (reading the response)") from exc
@@ -315,7 +344,7 @@ def _read_bounded(
         if not chunk:
             return b"".join(parts)
         size += len(chunk)
-        if size > max_bytes:
+        if size > max_bytes:  # never when truncating: each read asks for the remaining count at most
             raise ResponseTooLargeError(f"response exceeds the {max_bytes}-byte cap")
         parts.append(chunk)
 
@@ -334,24 +363,42 @@ def fetch(
     max_bytes: int = MAX_BYTES,
     resolver: Resolver | None = None,
     transport: Transport | None = None,
+    policy: Callable[[str, int], None] | None = None,
+    headers_for: Callable[[str], Mapping[str, str]] | None = None,
+    raise_for_status: bool = True,
+    truncate: bool = False,
 ) -> Response:
     """GET (or POST with ``data``) ``url`` behind the guard, following at most ``MAX_REDIRECTS`` redirects, each
-    validated and pinned. A status >= 400 raises ``FetchError`` (the old ``HTTPError``)."""
+    validated and pinned. A status >= 400 raises ``FetchError`` (the old ``HTTPError``).
+
+    Per-caller rules (review 026b; all optional, the defaults are the behaviour every earlier caller relies on):
+    ``policy(url, hop)`` runs BEFORE each send, the initial URL (hop 0) included, and raises ``UnsafeURLError`` to stop
+    the fetch before that request leaves; ``headers_for(url)`` gives the extra headers of ONE hop (nothing it returns is
+    carried to the next hop, so a credential reaches only the URLs it allows); ``raise_for_status=False`` returns an
+    error status with its headers instead of raising (still through the guarded transport); ``truncate=True`` reads at
+    most ``max_bytes`` of the body and keeps that prefix (the transport stops reading there)."""
     send = (transport or DEFAULT_TRANSPORT).send
-    hdrs = {"User-Agent": BROWSER_HEADERS["User-Agent"], **(headers or {})}
+    base = {"User-Agent": BROWSER_HEADERS["User-Agent"], **(headers or {})}
     current, verb = url, method or ("POST" if data is not None else "GET")
-    for _hop in range(MAX_REDIRECTS + 1):
+    for hop in range(MAX_REDIRECTS + 1):
+        if policy is not None:
+            policy(current, hop)  # the caller's origin / scheme / redirect-count rules, before anything is sent
         target = validate(current, resolver, deadline)  # refuses to start resolving after the deadline
         left = timeout if deadline is None else min(timeout, deadline - time.monotonic())
         if left <= 0:
             raise FetchError("source deadline reached")
-        r = send(target, verb, hdrs, data, left, max_bytes, deadline)
+        hdrs = {**base, **(headers_for(current) if headers_for is not None else {})}
+        if truncate:
+            cut = cast(TruncatingTransport, transport or DEFAULT_TRANSPORT)
+            r = cut.send(target, verb, hdrs, data, left, max_bytes, deadline, truncate=True)
+        else:
+            r = send(target, verb, hdrs, data, left, max_bytes, deadline)
         if r.status in (301, 302, 303, 307, 308) and r.headers.get("location"):
             current = urljoin(current, r.headers["location"])
             if r.status in (301, 302, 303):
                 verb, data = "GET", None
             continue
-        if r.status >= 400:
+        if r.status >= 400 and raise_for_status:
             raise FetchError(f"HTTP Error {r.status}")
         return Response(current, r.status, r.headers, r.body)
     raise FetchError(f"more than {MAX_REDIRECTS} redirects")

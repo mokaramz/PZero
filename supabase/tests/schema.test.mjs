@@ -884,7 +884,7 @@ describe("migration 0016 — Founder Radar companies and research in their ORIGI
     }
     await db.query(`insert into pz.radar_events (entity, key, actor, action, after) values ('company', 'k', 'operator', 'company', '{}')`);
     await rejects(db.query(`update pz.radar_events set actor = 'x'`), /append-only/);
-    await rejects(db.query(`insert into pz.radar_events (entity, key, actor, action, after) values ('company', 'k', 'operator', 'scan', '{}')`), /radar_events_action_check/);
+    await rejects(db.query(`insert into pz.radar_events (entity, key, actor, action, after) values ('company', 'k', 'operator', 'purge', '{}')`), /radar_events_action_check/);
   });
 
   test("the merge tombstone and the new person-event actions", async () => {
@@ -897,5 +897,17 @@ describe("migration 0016 — Founder Radar companies and research in their ORIGI
       await db.query(`insert into pz.person_events (person_id, actor, action, after) values ('p-a', 'operator', $1, '{}')`, [action]);
     }
     await rejects(db.query(`insert into pz.person_events (person_id, actor, action, after) values ('p-a', 'operator', 'delete', '{}')`), /person_events_action_check/);
+  });
+});
+
+describe("migration 0017 — the Founder Radar runs' events", () => {
+  test("scan and research events on records and documents; still append-only", async () => {
+    const db = await freshDb();
+    for (const [entity, action] of [["document", "scan"], ["research", "research"], ["metrics", "snapshot"], ["company", "company"]]) {
+      await db.query(`insert into pz.radar_events (entity, key, actor, action, after) values ($1, 'k', 'operator', $2, '{}')`, [entity, action]);
+    }
+    await rejects(db.query(`insert into pz.radar_events (entity, key, actor, action, after) values ('people', 'k', 'operator', 'scan', '{}')`), /radar_events_entity_check/);
+    await rejects(db.query(`insert into pz.radar_events (entity, key, actor, action, after) values ('document', 'k', 'operator', 'delete', '{}')`), /radar_events_action_check/);
+    await rejects(db.query(`update pz.radar_events set actor = 'x'`), /append-only/);
   });
 });
