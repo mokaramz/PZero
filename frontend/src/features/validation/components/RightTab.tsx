@@ -1,8 +1,8 @@
-import { DeferredButton } from "@/components/Deferred";
-import { Panel, Segmented, Stat } from "@/components/ui";
-import { NOT_PORTED } from "../model/deferred";
+import { Button, Panel, Segmented, Stat } from "@/components/ui";
+import { useRetract } from "../api";
 import { STAGES, type ValidationPayload } from "../model/types";
 import { collecting, DIMS, dimLabel, label, newestFirst, pct, verificationLine, whoWasRight, type Dim } from "../model/view";
+import { RETRACT_QUESTION, retractReason } from "../model/writes";
 import styles from "../Validation.module.css";
 
 /** "Are we right?" — quality conversion by grouping, the human-vs-machine calibration and the outcome ledger. The
@@ -86,8 +86,13 @@ function Calibration({ d }: { d: ValidationPayload }) {
   );
 }
 
-/** Newest first. Retract is a write (review 027b): visible, disabled with its reason. */
+/** Newest first. Retract asks why (kept in history, as before) and posts only a reason of 8+ characters. */
 function OutcomeLedger({ d }: { d: ValidationPayload }) {
+  const retract = useRetract();
+  const ask = (id: string) => {
+    const reason = retractReason(window.prompt(RETRACT_QUESTION));
+    if (reason) retract.mutate({ id, reason });
+  };
   return (
     <Panel title="Outcome ledger" data-testid="val-outcomes">
       {!d.outcomes.length ? (
@@ -104,9 +109,9 @@ function OutcomeLedger({ d }: { d: ValidationPayload }) {
                 source
               </a>
             )}
-            <DeferredButton size="sm" variant="ghost" reason={NOT_PORTED.writes}>
+            <Button size="sm" variant="ghost" onClick={() => ask(o.id)}>
               Retract
-            </DeferredButton>
+            </Button>
           </div>
         ))
       )}

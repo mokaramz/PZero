@@ -4,10 +4,10 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { ALL_ITEMS } from "@/app/nav";
 import { NOT_PORTED } from "./model/deferred";
 import type { NativeBridgeMetrics } from "./model/types";
+import { AUDIT_FORM } from "./model/writes";
 import { emptyValidation, packet, validation } from "./test/fixtures";
 import { fakeServer, renderPage } from "./test/server";
 
-const WRITES = NOT_PORTED.writes;
 const questions = () => screen.getByTestId("val-questions");
 const tab = (name: string) => within(questions()).getByRole("tab", { name });
 const ask = (name: string) => fireEvent.click(tab(name));
@@ -18,24 +18,18 @@ async function opened() {
   return r;
 }
 
-/** A deferred control stays inert for a pointer AND a keyboard (a browser turns Enter / Space into a click). */
-function pressEveryWay(el: Element) {
-  fireEvent.click(el);
-  for (const key of ["Enter", " "]) {
-    fireEvent.keyDown(el, { key });
-    fireEvent.keyUp(el, { key });
-    fireEvent.click(el, { detail: 0 });
-  }
+/** navigator.clipboard as a spy (jsdom has none); `fail` makes the copy reject, as a blocked clipboard does. */
+function stubClipboard(fail = false) {
+  const writeText = vi.fn(async (_text: string) => {
+    if (fail) throw new DOMException("Write permission denied.", "NotAllowedError");
+  });
+  Object.defineProperty(navigator, "clipboard", { value: { writeText }, configurable: true });
+  return writeText;
 }
 
-/** Visible, named, focusable, disabled with the 027b reason (title + accessible description). */
-function expectDeferred(el: HTMLElement) {
-  expect(el).toBeVisible();
-  expect(el).toHaveAttribute("aria-disabled", "true");
-  expect(el).toHaveAttribute("title", WRITES);
-  expect(el).toHaveAccessibleDescription(WRITES);
-  expect(el).not.toBeDisabled();
-}
+const type = (el: Element, value: string) => fireEvent.change(el, { target: { value } });
+const dialog = () => screen.getByRole("dialog");
+const settle = () => new Promise((r) => setTimeout(r, 0));
 
 afterEach(() => {
   vi.unstubAllGlobals();
@@ -277,7 +271,7 @@ describe("Validation — the page", () => {
     expect(screen.getByTestId("val-scout")).toHaveTextContent("Last packet handed over 2026-10-30T11:02:00 (cycle c-2026-10-16).");
   });
 
-  it("prepares the Scout 00 packet for the latest cycle with one read; marking it as sent is deferred", async () => {
+  it("prepares the Scout 00 packet for the latest cycle with one read", async () => {
     const server = fakeServer();
     await opened();
     ask("Where do we miss?");
@@ -290,13 +284,7 @@ describe("Validation — the page", () => {
     expect(text).toHaveTextContent("PROJECT ZERO → CHIEF SCOUT 00");
     expect(text).toHaveTextContent("Orbelle Health"); // misses are fed back to the scouts
     expect(screen.getByTestId("scout-packet-deferred")).toHaveTextContent("News and source-network learnings: News & Learning arrives with its port.");
-    const copy = screen.getByTestId("scout-packet-copy");
-    expect(copy).toHaveTextContent("Copy & log handover");
-    expectDeferred(copy);
-    const write = vi.fn(async () => {});
-    Object.defineProperty(navigator, "clipboard", { value: { writeText: write }, configurable: true });
-    pressEveryWay(copy);
-    expect(write).not.toHaveBeenCalled();
+    expect(screen.getByTestId("scout-packet-copy")).toHaveTextContent("Copy & log handover");
     // the packet survives a visit to another question
     ask("Are we early?");
     ask("Where do we miss?");
@@ -354,59 +342,294 @@ describe("Validation — the page", () => {
   });
 });
 
-describe("Validation — the writes are deferred to review 027b", () => {
-  it("every write control is visible, disabled with its reason, and sends nothing", async () => {
+describe("Validation — record an outcome", () => {
+  it("Save needs a company, a date and evidence for a real-world outcome; then one POST, the toast and a refresh", async () => {
     const server = fakeServer();
-    const prompt = vi.spyOn(window, "prompt").mockReturnValue("a reason long enough");
     await opened();
+    fireEvent.click(screen.getByTestId("record-outcome"));
+    expect(within(dialog()).getByRole("heading", { name: "Record an outcome" })).toBeInTheDocument();
+    const save = screen.getByTestId("outcome-save");
+    expect(save).toHaveTextContent("Record");
+    expect(save).toBeDisabled();
+    expect(screen.getByTestId("outcome-kind")).toHaveValue("institutional_round");
+    expect(within(dialog()).getByText("Evidence URL (required)")).toBeInTheDocument();
+    expect(within(dialog()).queryByText("Which database")).toBeNull();
+    type(screen.getByTestId("outcome-company"), "Kestrel Labs");
+    type(screen.getByTestId("outcome-date"), "2026-09-01");
+    expect(save).toBeDisabled(); // a round needs its evidence
+    type(screen.getByTestId("outcome-url"), "news.example/kestrel");
+    expect(save).toBeDisabled();
+    fireEvent.click(save);
+    type(screen.getByTestId("outcome-url"), "https://news.example/kestrel-seed");
+    expect(save).toBeEnabled();
+    await settle();
+    expect(server.posts()).toEqual([]); // nothing was sent while Save was disabled
 
-    const record = screen.getByTestId("record-outcome");
-    expect(record).toHaveTextContent("Record outcome");
-    expectDeferred(record);
-    pressEveryWay(record);
+    fireEvent.click(save);
+    expect(await screen.findByText("Outcome recorded")).toBeInTheDocument();
+    expect(server.posts()).toEqual([
+      {
+        method: "POST",
+        path: "/api/validation/outcome",
+        body: { company: "Kestrel Labs", kind: "institutional_round", event_date: "2026-09-01", evidence_url: "https://news.example/kestrel-seed", benchmark_system: "", note: "" },
+      },
+    ]);
+    await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
+    await waitFor(() => expect(server.reads()).toBe(2)); // the page's data is read again
+  });
+
+  it("'Which database' only for an external-database listing, which needs no URL", async () => {
+    const server = fakeServer();
+    await opened();
+    fireEvent.click(screen.getByTestId("record-outcome"));
+    type(screen.getByTestId("outcome-kind"), "external_db_listing");
+    expect(within(dialog()).getByText("Evidence URL")).toBeInTheDocument();
+    const db = within(dialog()).getByPlaceholderText("Dealroom, Crunchbase, …");
+    expect(within(dialog()).getByText("Only a timestamp you actually saw — never an estimate.")).toBeInTheDocument();
+    type(screen.getByTestId("outcome-company"), "Lumenfold AI");
+    type(screen.getByTestId("outcome-date"), "2026-10-07");
+    type(db, "Dealroom");
+    fireEvent.click(screen.getByTestId("outcome-save"));
+    await screen.findByText("Outcome recorded");
+    const body = server.posts()[0].body!;
+    expect(body).toEqual({ company: "Lumenfold AI", kind: "external_db_listing", event_date: "2026-10-07", evidence_url: "", benchmark_system: "Dealroom", note: "" });
+    for (const k of ["candidate_id", "supersedes", "outcome_date"]) expect(body).not.toHaveProperty(k);
+  });
+
+  it("a refusal (400) is the failure toast; the form stays open and nothing is refreshed", async () => {
+    const server = fakeServer({ outcome: () => ({ status: 400, body: { ok: false, error: "event_date is in the future" } }) });
+    await opened();
+    fireEvent.click(screen.getByTestId("record-outcome"));
+    type(screen.getByTestId("outcome-company"), "Kestrel Labs");
+    type(screen.getByTestId("outcome-kind"), "accelerator");
+    type(screen.getByTestId("outcome-date"), "2027-01-01");
+    fireEvent.click(screen.getByTestId("outcome-save"));
+    expect(await screen.findByText("✕ Recording the outcome failed — event_date is in the future")).toBeInTheDocument();
+    expect(server.posts()).toHaveLength(1);
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
+    await settle();
+    expect(server.reads()).toBe(1);
+  });
+
+  it("opening and closing the form writes nothing", async () => {
+    const server = fakeServer();
+    await opened();
+    fireEvent.click(screen.getByTestId("record-outcome"));
+    type(screen.getByTestId("outcome-company"), "Kestrel Labs");
+    fireEvent.click(within(dialog()).getByRole("button", { name: "Close" }));
     expect(screen.queryByRole("dialog")).toBeNull();
-
-    const more = screen.getByTestId("more-actions");
-    fireEvent.click(within(more).getByText("More"));
-    const miss = within(more).getByTestId("record-miss");
-    expect(miss).toHaveTextContent("Record a miss");
-    expect(miss).toBeDisabled();
-    expect(miss).toHaveAttribute("title", WRITES);
-    pressEveryWay(miss);
-
-    ask("Are we right?");
-    const retracts = screen.getAllByRole("button", { name: "Retract" });
-    expect(retracts).toHaveLength(2);
-    for (const r of retracts) {
-      expectDeferred(r);
-      pressEveryWay(r);
-    }
-    expect(prompt).not.toHaveBeenCalled();
-
-    ask("Which sources work?");
-    const bench = screen.getByTestId("val-benchmarks");
-    fireEvent.click(within(bench).getByText("Import a benchmark export (e.g. a Dealroom CSV you downloaded)"));
-    fireEvent.change(within(bench).getByPlaceholderText("Dealroom"), { target: { value: "Dealroom" } });
-    fireEvent.change(bench.querySelector("textarea")!, { target: { value: "Name,Date added\nKestrel Labs,2026-07-01\n" } });
-    const preview = within(bench).getByRole("button", { name: "Preview" });
-    expectDeferred(preview);
-    pressEveryWay(preview);
-    expect(within(bench).queryByRole("button", { name: /^Import \d+ dates$/ })).toBeNull();
-
-    ask("Where do we miss?");
-    const fp = screen.getByTestId("record-fp");
-    expect(fp).toHaveTextContent("Record false positive");
-    expectDeferred(fp);
-    pressEveryWay(fp);
-    expect(screen.queryByRole("dialog")).toBeNull();
-
-    await new Promise((r) => setTimeout(r, 0));
+    await settle();
     expect(server.writes()).toEqual([]);
-    expect(server.posts()).toEqual([]);
-    expect(server.gets()).toEqual(["/api/validation"]);
   });
 });
 
+describe("Validation — the audits", () => {
+  it("Record a miss (More): needs a company, posts the whole form with its type", async () => {
+    const server = fakeServer();
+    await opened();
+    const more = screen.getByTestId("more-actions");
+    fireEvent.click(within(more).getByText("More"));
+    fireEvent.click(within(more).getByTestId("record-miss"));
+    expect(within(dialog()).getByRole("heading", { name: "Miss audit — a strong company we did not catch early" })).toBeInTheDocument();
+    const save = screen.getByTestId("audit-save");
+    expect(save).toHaveTextContent("Record audit");
+    expect(save).toBeDisabled();
+    expect(within(dialog()).getByRole("combobox", { name: "Why missed" })).toHaveValue("source_not_covered");
+    expect(within(dialog()).getByRole("combobox", { name: "Preventable?" })).toHaveValue("unclear");
+    type(screen.getByTestId("audit-company"), "Orbelle Health");
+    type(within(dialog()).getByRole("textbox", { name: /^Earliest public signal/ }), "Grant award");
+    type(within(dialog()).getByRole("combobox", { name: "Why missed" }), "machine_reject");
+    type(within(dialog()).getByRole("combobox", { name: "Preventable?" }), "yes");
+    fireEvent.click(save);
+    expect(await screen.findByText("Audit recorded")).toBeInTheDocument();
+    expect(server.posts()).toEqual([
+      {
+        method: "POST",
+        path: "/api/validation/audit",
+        body: { ...AUDIT_FORM, company: "Orbelle Health", earliest_signal: "Grant award", why_missed: "machine_reject", preventable: "yes", type: "miss" },
+      },
+    ]);
+    await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
+    await waitFor(() => expect(server.reads()).toBe(2));
+  });
+
+  it("Record false positive: needs a cause; reopening starts empty; a 400 is shown", async () => {
+    const server = fakeServer({ audit: () => ({ status: 400, body: { ok: false, error: "company required" } }) });
+    await opened();
+    ask("Where do we miss?");
+    fireEvent.click(screen.getByTestId("record-fp"));
+    expect(within(dialog()).getByRole("heading", { name: "False-positive audit — prioritised but proved weak" })).toBeInTheDocument();
+    expect(within(dialog()).queryByText("Earliest public signal")).toBeNull();
+    type(screen.getByTestId("audit-company"), "Graniteleaf Labs");
+    const save = screen.getByTestId("audit-save");
+    expect(save).toBeDisabled();
+    fireEvent.click(within(dialog()).getByRole("checkbox", { name: "late stage mistaken for early" }));
+    fireEvent.click(within(dialog()).getByRole("checkbox", { name: "weak source" }));
+    expect(save).toBeEnabled();
+    fireEvent.click(save);
+    expect(await screen.findByText("✕ Recording the audit failed — company required")).toBeInTheDocument();
+    expect(server.posts()[0]).toMatchObject({ path: "/api/validation/audit", body: { company: "Graniteleaf Labs", causes: ["late_stage_mistaken_for_early", "weak_source"], type: "false_positive" } });
+    fireEvent.click(within(dialog()).getByRole("button", { name: "Close" }));
+    fireEvent.click(screen.getByTestId("record-fp"));
+    expect(screen.getByTestId("audit-company")).toHaveValue("");
+    expect(screen.getByTestId("audit-save")).toBeDisabled();
+    await settle();
+    expect(server.reads()).toBe(1);
+  });
+});
+
+describe("Validation — retract an outcome", () => {
+  it("asks why; a short or cancelled answer sends nothing, a reason of 8+ characters is posted", async () => {
+    const server = fakeServer();
+    const prompt = vi.spyOn(window, "prompt").mockReturnValueOnce("  short ").mockReturnValueOnce(null).mockReturnValueOnce("wrong company recorded");
+    await opened();
+    ask("Are we right?");
+    const retract = () => within(screen.getAllByTestId("val-outcome")[1]).getByRole("button", { name: "Retract" });
+    fireEvent.click(retract());
+    fireEvent.click(retract());
+    await settle();
+    expect(prompt).toHaveBeenCalledTimes(2);
+    expect(prompt).toHaveBeenCalledWith("Why retract this outcome? (kept in history)");
+    expect(server.posts()).toEqual([]);
+    fireEvent.click(retract());
+    expect(await screen.findByText("Retracted (kept in history)")).toBeInTheDocument();
+    expect(server.posts()).toEqual([{ method: "POST", path: "/api/validation/retract", body: { id: "oc-3e4f5a6b7c", reason: "wrong company recorded" } }]);
+    await waitFor(() => expect(server.reads()).toBe(2));
+  });
+
+  it("a refusal (400) is the failure toast", async () => {
+    const server = fakeServer({ retract: () => ({ status: 400, body: { ok: false, error: "unknown id" } }) });
+    vi.spyOn(window, "prompt").mockReturnValue("recorded twice by mistake");
+    await opened();
+    ask("Are we right?");
+    fireEvent.click(within(screen.getAllByTestId("val-outcome")[0]).getByRole("button", { name: "Retract" }));
+    expect(await screen.findByText("✕ Retracting failed — unknown id")).toBeInTheDocument();
+    expect(server.posts()[0].body).toEqual({ id: "oc-8d9e0f1a2b", reason: "recorded twice by mistake" });
+    await settle();
+    expect(server.reads()).toBe(1);
+  });
+});
+
+describe("Validation — import a benchmark export", () => {
+  const CSV = "Name,Date added\nKestrel Labs,2026-07-01\nFuture Co,2099-01-01\n";
+
+  async function openImport() {
+    await opened();
+    ask("Which sources work?");
+    const bench = screen.getByTestId("val-benchmarks");
+    fireEvent.click(within(bench).getByText("Import a benchmark export (e.g. a Dealroom CSV you downloaded)"));
+    return bench;
+  }
+
+  it("Preview (writes and refreshes nothing), then Import N dates (confirm), the toast and a refresh", async () => {
+    const server = fakeServer();
+    const bench = await openImport();
+    const preview = within(bench).getByRole("button", { name: "Preview" });
+    expect(preview).toBeDisabled();
+    type(within(bench).getByPlaceholderText("Dealroom"), "Dealroom");
+    type(bench.querySelector("textarea")!, "Name,Date");
+    expect(preview).toBeDisabled(); // under 10 characters
+    type(bench.querySelector("textarea")!, CSV);
+    expect(preview).toBeEnabled();
+    fireEvent.click(preview);
+    expect(await within(bench).findByTestId("val-benchmark-preview")).toHaveTextContent(
+      "2 rows · 1 usable · 1 skipped (no / future date) · 0 known to Project Zero · columns “Name” / “Date added”",
+    );
+    expect(server.posts()).toEqual([{ method: "POST", path: "/api/validation/benchmark_import", body: { system: "Dealroom", csv: CSV } }]);
+    expect(await screen.findByText("✓ Importing benchmark — done")).toBeInTheDocument();
+    await settle();
+    expect(server.reads()).toBe(1);
+
+    fireEvent.click(within(bench).getByRole("button", { name: "Import 1 dates" }));
+    expect(await screen.findByText("1 benchmark date(s) imported")).toBeInTheDocument();
+    expect(server.posts()[1]).toEqual({ method: "POST", path: "/api/validation/benchmark_import", body: { system: "Dealroom", csv: CSV, confirm: true } });
+    await waitFor(() => expect(server.reads()).toBe(2));
+    expect(within(screen.getByTestId("val-benchmarks")).queryByTestId("val-benchmark-preview")).toBeNull();
+    expect(within(screen.getByTestId("val-benchmarks")).queryByRole("button", { name: /^Import \d+ dates$/ })).toBeNull();
+  });
+
+  it("a refused preview (400) is the failure toast and offers no import", async () => {
+    const server = fakeServer({ benchmarkImport: () => ({ status: 400, body: { ok: false, error: "could not find the name / date columns — columns are: a, b" } }) });
+    const bench = await openImport();
+    type(within(bench).getByPlaceholderText("Dealroom"), "Dealroom");
+    type(bench.querySelector("textarea")!, "a,b\n1,2\n3,4\n");
+    fireEvent.click(within(bench).getByRole("button", { name: "Preview" }));
+    expect(await screen.findByText("✕ Importing benchmark failed — could not find the name / date columns — columns are: a, b")).toBeInTheDocument();
+    expect(server.posts()).toHaveLength(1);
+    expect(within(bench).queryByRole("button", { name: /^Import \d+ dates$/ })).toBeNull();
+  });
+});
+
+describe("Validation — copy & log the Scout 00 handover (decision f)", () => {
+  async function prepared(server: ReturnType<typeof fakeServer>) {
+    await opened();
+    ask("Where do we miss?");
+    fireEvent.click(screen.getByTestId("scout-packet"));
+    await screen.findByTestId("scout-packet-text");
+    expect(server.posts()).toEqual([]);
+  }
+
+  it("copies the text shown, THEN logs it with its Generated time and sha", async () => {
+    const server = fakeServer();
+    const order: string[] = [];
+    const writeText = stubClipboard();
+    writeText.mockImplementation(async () => {
+      order.push(`copy (${server.posts().length} posts)`);
+    });
+    await prepared(server);
+    fireEvent.click(screen.getByTestId("scout-packet-copy"));
+    expect(await screen.findByText("Packet copied — paste it into Chief Scout 00")).toBeInTheDocument();
+    expect(writeText).toHaveBeenCalledWith(packet().text);
+    expect(order).toEqual(["copy (0 posts)"]);
+    expect(await screen.findByText("✓ Preparing the Scout 00 packet — done")).toBeInTheDocument();
+    expect(server.posts()).toEqual([
+      { method: "POST", path: "/api/validation/scout_packet", body: { cycle: "c-2026-10-16", generated: "2026-11-12T09:15:00", sha: "5d1c0e9a7b3f2468" } },
+    ]);
+    await waitFor(() => expect(server.reads()).toBe(2));
+  });
+
+  it("the packet for every cycle is logged with cycle ''", async () => {
+    const server = fakeServer({ validation: emptyValidation });
+    stubClipboard();
+    await prepared(server);
+    fireEvent.click(screen.getByTestId("scout-packet-copy"));
+    await screen.findByText("✓ Preparing the Scout 00 packet — done");
+    expect(server.posts()[0].body).toEqual({ cycle: "", generated: "2026-11-12T09:15:00", sha: "5d1c0e9a7b3f2468" });
+  });
+
+  it("a packet that changed since it was prepared (409) is shown; nothing is refreshed", async () => {
+    const server = fakeServer({ markPacket: () => ({ status: 409, body: { ok: false, error: "the packet changed since it was prepared — prepare it again" } }) });
+    stubClipboard();
+    await prepared(server);
+    fireEvent.click(screen.getByTestId("scout-packet-copy"));
+    expect(await screen.findByText("✕ Preparing the Scout 00 packet failed — the packet changed since it was prepared — prepare it again")).toBeInTheDocument();
+    expect(server.posts()).toHaveLength(1);
+    await settle();
+    expect(server.reads()).toBe(1);
+  });
+
+  it("a blocked clipboard is the old error and logs nothing", async () => {
+    const server = fakeServer();
+    const writeText = stubClipboard(true);
+    await prepared(server);
+    fireEvent.click(screen.getByTestId("scout-packet-copy"));
+    expect(await screen.findByText("Clipboard blocked — select the text and copy manually")).toBeInTheDocument();
+    expect(writeText).toHaveBeenCalledTimes(1);
+    expect(screen.queryByText("Packet copied — paste it into Chief Scout 00")).toBeNull();
+    await settle();
+    expect(server.posts()).toEqual([]);
+  });
+
+  it("a packet without its Generated time is copied but not logged", async () => {
+    const server = fakeServer({ scoutPacket: () => ({ ...packet(), text: "PROJECT ZERO → CHIEF SCOUT 00 · FEEDBACK PACKET v1\n" }) });
+    stubClipboard();
+    await prepared(server);
+    fireEvent.click(screen.getByTestId("scout-packet-copy"));
+    expect(await screen.findByText("✕ Preparing the Scout 00 packet failed — the packet has no Generated time — prepare it again")).toBeInTheDocument();
+    await settle();
+    expect(server.posts()).toEqual([]);
+  });
+});
 describe("Validation — honest empty and failing states", () => {
   it("an empty data folder: nothing measurable, nothing recorded, no trend line", async () => {
     fakeServer({ validation: emptyValidation });
@@ -442,7 +665,7 @@ describe("Validation — honest empty and failing states", () => {
     fakeServer({ validation: () => (++n === 1 ? { status: 500, body: { ok: false, error: "Project Zero hit an internal error (db)" } } : validation()) });
     renderPage();
     expect(await screen.findByRole("alert")).toHaveTextContent("Project Zero hit an internal error (db)");
-    // the header and its (deferred) actions stay in place
+    // the header and its actions stay in place
     expect(screen.getByTestId("record-outcome")).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Retry" }));
     expect(await screen.findByTestId("val-edge")).toBeInTheDocument();

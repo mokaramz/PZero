@@ -1,17 +1,19 @@
 import { useState } from "react";
 
-import { DeferredButton } from "@/components/Deferred";
-import { Field, Panel } from "@/components/ui";
-import { NOT_PORTED } from "../model/deferred";
+import { Button, Field, Panel } from "@/components/ui";
+import { useBenchmarkImport, useBenchmarkPreview } from "../api";
 import type { ValidationPayload } from "../model/types";
 import { benchmarkLine } from "../model/view";
+import { benchmarkReady, importLabel, previewLine, type BenchmarkFields, type BenchmarkSummary } from "../model/writes";
 import styles from "../Validation.module.css";
 
 /** External benchmarks: did Project Zero see companies before they became visible elsewhere? Only real dates.
- *  The import form keeps its place and its fields; Preview (and so "Import N dates") is a write that arrives with
- *  review 027b. */
+ *  An export is previewed first (a POST that writes nothing), then imported with `confirm`. */
 export function Benchmarks({ b }: { b: ValidationPayload["benchmarks"] }) {
-  const [f, setF] = useState({ system: "", csv: "" });
+  const [f, setF] = useState<BenchmarkFields>({ system: "", csv: "" });
+  const [prev, setPrev] = useState<BenchmarkSummary | null>(null);
+  const preview = useBenchmarkPreview();
+  const imp = useBenchmarkImport();
   return (
     <Panel title="External benchmarks — earlier than everyone else?" data-testid="val-benchmarks">
       <p className="small faint">{b.note}</p>
@@ -38,10 +40,20 @@ export function Benchmarks({ b }: { b: ValidationPayload["benchmarks"] }) {
           <textarea rows={5} value={f.csv} onChange={(e) => setF({ ...f, csv: e.target.value })} />
         </Field>
         <div className="row">
-          <DeferredButton size="sm" reason={NOT_PORTED.writes}>
+          <Button size="sm" busy={preview.isPending} disabled={!benchmarkReady(f)} onClick={() => preview.mutate(f, { onSuccess: setPrev })}>
             Preview
-          </DeferredButton>
+          </Button>
+          {prev && (
+            <Button size="sm" variant="primary" busy={imp.isPending} onClick={() => imp.mutate({ ...f, confirm: true }, { onSuccess: () => setPrev(null) })}>
+              {importLabel(prev)}
+            </Button>
+          )}
         </div>
+        {prev && (
+          <div className="small" data-testid="val-benchmark-preview">
+            {previewLine(prev)}
+          </div>
+        )}
       </details>
     </Panel>
   );

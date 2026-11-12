@@ -1,31 +1,30 @@
-import { DeferredButton } from "@/components/Deferred";
 import { Badge, Button, Panel } from "@/components/ui";
 import { NOT_PORTED } from "../model/deferred";
 import type { Packet, ValidationPayload } from "../model/types";
 import { label, latestCycle, missType, scoutLine } from "../model/view";
 import styles from "../Validation.module.css";
 
-type PacketState = { packet: Packet | null; loading: boolean; prepare: (cycle: string) => void };
+type PacketState = { packet: Packet | null; loading: boolean; prepare: (cycle: string) => void; copyAndLog: () => void };
 
 /** "Where do we miss?" — audited misses and false positives, and the Scout 00 feedback packet. */
-export function MissTab({ d, scout }: { d: ValidationPayload; scout: PacketState }) {
+export function MissTab({ d, scout, onFalsePositive }: { d: ValidationPayload; scout: PacketState; onFalsePositive: () => void }) {
   return (
     <div className={styles.two}>
-      <Misses d={d} />
+      <Misses d={d} onFalsePositive={onFalsePositive} />
       <ScoutFeedback d={d} {...scout} />
     </div>
   );
 }
 
-/** "Record false positive" is a write (review 027b): visible, disabled with its reason. */
-function Misses({ d }: { d: ValidationPayload }) {
+/** "Record false positive" opens the audit form (the page holds it). */
+function Misses({ d, onFalsePositive }: { d: ValidationPayload; onFalsePositive: () => void }) {
   return (
     <Panel
       title="Misses & false positives"
       aside={
-        <DeferredButton size="sm" reason={NOT_PORTED.writes} data-testid="record-fp">
+        <Button size="sm" onClick={onFalsePositive} data-testid="record-fp">
           Record false positive
-        </DeferredButton>
+        </Button>
       }
       data-testid="val-misses"
     >
@@ -62,10 +61,9 @@ function Misses({ d }: { d: ValidationPayload }) {
   );
 }
 
-/** Preparing the packet is a read. "Copy & log handover" marks it as sent, a write (review 027b): visible, disabled
- *  with its reason — the packet text can still be selected and copied by hand. Its News and source-network sections
- *  arrive with News & Learning. */
-function ScoutFeedback({ d, packet, loading, prepare }: { d: ValidationPayload } & PacketState) {
+/** Preparing the packet is a read. "Copy & log handover" copies the text shown and then marks it as sent (see
+ *  ../useScoutPacket). Its News and source-network sections arrive with News & Learning. */
+function ScoutFeedback({ d, packet, loading, prepare, copyAndLog }: { d: ValidationPayload } & PacketState) {
   return (
     <Panel title="Scout 00 feedback" data-testid="val-scout">
       <div className="small">
@@ -82,9 +80,9 @@ function ScoutFeedback({ d, packet, loading, prepare }: { d: ValidationPayload }
           Prepare feedback packet (latest cycle)
         </Button>
         {packet && (
-          <DeferredButton size="sm" variant="primary" reason={NOT_PORTED.writes} data-testid="scout-packet-copy">
+          <Button size="sm" variant="primary" onClick={copyAndLog} data-testid="scout-packet-copy">
             Copy &amp; log handover
-          </DeferredButton>
+          </Button>
         )}
       </div>
       {packet && (

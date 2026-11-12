@@ -120,3 +120,22 @@
   margin: 2px 0;
   padding-left: 18px;
 }
+
+/* the false-positive causes: a group of checkboxes that wrap, labelled like a Field */
+.causeSet {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+}
+.causeSet > legend {
+  padding: 0;
+  margin-bottom: 4px;
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--mut);
+}
+.causes {
+  flex-wrap: wrap;
+  gap: 6px;
+}

@@ -23,8 +23,8 @@ from psycopg.rows import dict_row
 from projectzero.conviction.store import ConvictionStore
 from projectzero.conviction.store import record_of as conviction_record
 from projectzero.core.db import schema_ident
+from projectzero.dealflow.inbox_records import Absorbed, load_absorbed, old_inbox
 from projectzero.dealflow.inbox_view import candidate_rows
-from projectzero.dealflow.ranking.service import ranking_input
 from projectzero.dealflow.sources.normalize import load_registry
 from projectzero.dealflow.sources.store import SourcesStore
 from projectzero.ecosystems import cities
@@ -55,6 +55,7 @@ class Snapshot:
     listing: list[dict[str, Any]]  # the Events listing (the old ``events.listing()[0]``)
     stored_sources: list[Any]  # the Deal Flow source records as stored
     candidate_rows: list[dict[str, Any]]  # the candidate rows in the inbox order
+    absorbed: Absorbed  # the absorbed inbox records (review 025b)
 
 
 class EcosystemsStore:
@@ -87,6 +88,7 @@ class EcosystemsStore:
         stored = SourcesStore(self.conn, self._schema).stored()
         records, listing = self._events(now)
         rows = candidate_rows(self.conn, self._schema)
+        absorbed = load_absorbed(self.conn, self._schema)
         adoptions = self._rows(
             "select candidate_id, source_id, families, countries, cities, note, by, adopted_at "
             "from {s}.coverage_adoptions order by adopted_at, candidate_id"
@@ -94,13 +96,13 @@ class EcosystemsStore:
         inputs = CoverageInputs(
             sources=load_registry({"sources": stored})["sources"],
             **self._docs(),
-            inbox=[ranking_input(r)[0] for r in rows],
+            inbox=[r.record for r in old_inbox(rows, absorbed)],  # every old inbox record (review 025b)
             signals=self._signals(),
             people=load_people(self.conn, self._schema),
             events=records,
             adoptions=[dict(r) for r in adoptions],
         )
-        return Snapshot(inputs=inputs, listing=listing, stored_sources=stored, candidate_rows=rows)
+        return Snapshot(inputs=inputs, listing=listing, stored_sources=stored, candidate_rows=rows, absorbed=absorbed)
 
     def inputs(self, now: datetime) -> CoverageInputs:
         return self.snapshot(now).inputs

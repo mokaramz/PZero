@@ -1,31 +1,34 @@
 /**
- * Validation & Learning (v1 view `validation`, review 027a): is Project Zero making the operator better at finding
- * exceptional companies early — or only giving more information? One read (`GET validation`, see ./api), then one
- * analytical question at a time (FocusTabs; the active question is local state, as before — no query param).
+ * Validation & Learning (v1 view `validation`, reviews 027a, 027b): is Project Zero making the operator better at
+ * finding exceptional companies early — or only giving more information? One read (`GET validation`, see ./api), then
+ * one analytical question at a time (FocusTabs; the active question is local state, as before — no query param).
  *
- * The read side only. Every write control keeps its place and text, disabled with `NOT_PORTED.writes` until review
- * 027b: Record outcome, Record a miss, Record false positive, Retract, the benchmark Preview and "Copy & log handover".
- * The News benchmark and the native search bridge pilot show their own reasons (./model/deferred).
+ * The writes, each append-only (./api): Record outcome and Record a miss (the header), Record false positive and
+ * "Copy & log handover" (Where do we miss?), Retract (the outcome ledger) and the benchmark preview / import (Which
+ * sources work?). The forms need the vocabulary, so they live with the data. The News benchmark and the native search
+ * bridge pilot show their own reasons (./model/deferred).
  */
 import { useState, type ReactNode } from "react";
 
-import { DeferredButton } from "@/components/Deferred";
-import { ActionArea, Async, FocusTabs, PageHeader } from "@/components/ui";
+import { ActionArea, Async, Button, FocusTabs, PageHeader } from "@/components/ui";
 import { useValidation } from "./api";
 import { EarlyTab } from "./components/EarlyTab";
 import { Measurement } from "./components/Measurement";
 import { MissTab } from "./components/MissTab";
 import { NativeBridge } from "./components/NativeBridge";
+import { AuditForm, OutcomeForm } from "./components/RecordForms";
 import { RightTab } from "./components/RightTab";
 import { SourcesTab } from "./components/SourcesTab";
-import { NOT_PORTED } from "./model/deferred";
 import type { ValidationPayload } from "./model/types";
 import { QUESTIONS, type Dim, type Question } from "./model/view";
+import type { AuditType } from "./model/writes";
 import { useScoutPacket } from "./useScoutPacket";
 import styles from "./Validation.module.css";
 
 export default function ValidationPage() {
   const q = useValidation();
+  const [outcomeOpen, setOutcomeOpen] = useState(false);
+  const [audit, setAudit] = useState<AuditType | null>(null);
   return (
     <>
       <PageHeader
@@ -34,22 +37,28 @@ export default function ValidationPage() {
         actions={
           <ActionArea
             primary={
-              <DeferredButton reason={NOT_PORTED.writes} data-testid="record-outcome">
+              <Button onClick={() => setOutcomeOpen(true)} data-testid="record-outcome">
                 Record outcome
-              </DeferredButton>
+              </Button>
             }
-            more={[{ label: "Record a miss", onClick: () => {}, testId: "record-miss", disabled: true, hint: NOT_PORTED.writes }]}
+            more={[{ label: "Record a miss", onClick: () => setAudit("miss"), testId: "record-miss" }]}
           />
         }
       />
       <Async q={q} label="Computing validation…">
-        {(d) => <Validation d={d} />}
+        {(d) => (
+          <>
+            <Validation d={d} onFalsePositive={() => setAudit("false_positive")} />
+            <OutcomeForm open={outcomeOpen} onClose={() => setOutcomeOpen(false)} vocab={d.vocab} />
+            <AuditForm key={audit ?? "none"} type={audit} onClose={() => setAudit(null)} vocab={d.vocab} />
+          </>
+        )}
       </Async>
     </>
   );
 }
 
-function Validation({ d }: { d: ValidationPayload }) {
+function Validation({ d, onFalsePositive }: { d: ValidationPayload; onFalsePositive: () => void }) {
   const [question, setQuestion] = useState<Question>("early");
   const [dim, setDim] = useState<Dim>("tier");
   const scout = useScoutPacket();
@@ -58,7 +67,7 @@ function Validation({ d }: { d: ValidationPayload }) {
     early: <EarlyTab d={d} />,
     right: <RightTab d={d} dim={dim} onDim={setDim} />,
     sources: <SourcesTab d={d} />,
-    miss: <MissTab d={d} scout={scout} />,
+    miss: <MissTab d={d} scout={scout} onFalsePositive={onFalsePositive} />,
     cost: (
       <div className={styles.page}>
         <NativeBridge bridge={d.native_bridge} />

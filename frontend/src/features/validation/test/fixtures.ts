@@ -7,9 +7,12 @@
  *   Scout intake cycles, five daily snapshots (three series with 3+ numbers, pre-funding share with only 2), one data
  *   warning, two benchmark systems; News and the native bridge `{available: false, reason}`;
  * - `validation_empty.json`: an empty data folder (every metric NOT YET MEASURABLE, nothing recorded, one snapshot);
- * - `scout_packet.json`: the packet for the latest cycle, its News and source-network sections deferred.
+ * - `scout_packet.json`: the packet for the latest cycle, its News and source-network sections deferred;
+ * - `benchmark_summary.json`: the old benchmark preview of a two-row export (one usable, one future date).
  */
 import type { Packet, ValidationPayload } from "../model/types";
+import type { BenchmarkSummary } from "../model/writes";
+import benchmarkJson from "./benchmark_summary.json";
 import packetJson from "./scout_packet.json";
 import emptyJson from "./validation_empty.json";
 import fullJson from "./validation.json";
@@ -17,6 +20,7 @@ import fullJson from "./validation.json";
 export const validation = (): ValidationPayload => structuredClone(fullJson) as unknown as ValidationPayload;
 export const emptyValidation = (): ValidationPayload => structuredClone(emptyJson) as unknown as ValidationPayload;
 export const packet = (): Packet => structuredClone(packetJson) as Packet;
+export const benchmarkSummary = (): BenchmarkSummary => structuredClone(benchmarkJson) as BenchmarkSummary;
 
-/** The old write endpoints and their 027b paths: no test may ever see a request to one of them. */
+/** The old write endpoints and their 027b paths (a test that only opens or cancels expects none of them). */
 export const WRITE_PATHS = /\/api\/(validation_(outcome|audit|retract|benchmark_import|scout_packet)|validation\/(outcome|audit|retract|benchmark_import))\b/;

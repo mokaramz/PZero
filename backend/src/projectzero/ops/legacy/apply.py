@@ -134,6 +134,9 @@ def apply_plan(plan: ImportPlan, *, schema: str, conn: psycopg.Connection[Any] |
             cur.execute(sql.SQL("select {}.backfill_founder_radar()").format(sql.Identifier(schema)))
             row = cur.fetchone()
             written["founder_radar"] = int(row[0]) if row else 0  # review 026a: the 0016 mapping, raw order
+            cur.execute(sql.SQL("select {}.backfill_validation()").format(sql.Identifier(schema)))
+            row = cur.fetchone()
+            written["validation_log"] = int(row[0]) if row else 0  # review 027b: the 0018 mapping, line order
             body = {"fingerprint": fp, "counts": plan.counts(), "generated_at": plan.report["generated_at"]}
             cur.execute(
                 sql.SQL("insert into {}.documents (key, body) values (%s, %s)").format(sql.Identifier(schema)),
