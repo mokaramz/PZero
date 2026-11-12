@@ -1,0 +1,434 @@
+/* Founder Radar — cards follow v1's evcard rhythm (bold label + value lines, tags on the name row, link row at the foot). */
+.page {
+  min-width: 0;
+}
+
+/* ---------------- header */
+.headActions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.search {
+  width: 220px;
+  max-width: 100%;
+  border-radius: 999px;
+  padding: 7px 14px;
+  background: var(--well);
+}
+.counts {
+  margin-top: 6px;
+  font-size: 12.5px;
+  color: var(--mut);
+}
+/* the one-line reason next to controls that arrive with a later review (026b) */
+.deferredNote {
+  margin-top: 2px;
+  font-size: 12px;
+  color: var(--faint);
+}
+.views {
+  padding-top: 12px;
+  margin-bottom: 12px;
+  border-top: 1px solid var(--hair);
+}
+.segs {
+  margin-bottom: 10px;
+}
+.intro {
+  font-size: 12.5px;
+  color: var(--mut);
+  margin: 4px 2px 10px;
+  line-height: 1.55;
+}
+.intro b {
+  color: var(--ink-2);
+}
+.searchBlock {
+  margin-top: 14px;
+}
+
+/* ---------------- filters */
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.filters select {
+  max-width: 100%;
+  min-width: 0;
+  flex: 0 1 190px;
+}
+.check {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  color: var(--ink-2);
+  padding: 5px 10px;
+  border: 1px solid var(--hair-2);
+  border-radius: var(--r-sm);
+  background: var(--paper);
+  cursor: pointer;
+}
+
+/* ---------------- layout */
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+.researchGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 260px;
+  gap: 18px;
+  align-items: start;
+}
+@media (max-width: 1100px) {
+  .researchGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+.metrics {
+  background: var(--paper);
+  border: 1px solid var(--hair);
+  border-radius: var(--r-lg);
+  box-shadow: var(--sh-2);
+  padding: 14px 16px;
+}
+.metrics h3 {
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+.metricsBody {
+  font-size: 12.5px;
+  color: var(--mut);
+  display: grid;
+  gap: 3px;
+}
+.metricsBody b {
+  color: var(--ink);
+}
+
+/* ---------------- cards */
+.card {
+  background: var(--paper);
+  border: 1px solid var(--hair);
+  border-radius: var(--r-lg);
+  box-shadow: var(--sh-2);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.clickable {
+  cursor: pointer;
+  transition: border-color var(--motion) var(--ease);
+}
+.clickable:hover {
+  border-color: rgba(47, 111, 211, 0.35);
+}
+.cardHead {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 3px;
+}
+.name {
+  font-weight: 600;
+  font-size: 14px;
+  margin-right: 2px;
+}
+.spacer {
+  flex: 1;
+}
+.meta {
+  font-size: 12px;
+  color: var(--mut);
+}
+.order {
+  font: 600 11.5px var(--font-mono);
+  color: var(--blue);
+  background: var(--blue-soft);
+  border-radius: 999px;
+  padding: 2px 8px;
+}
+.row {
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--ink-2);
+}
+.row b {
+  color: var(--ink);
+  font-weight: 600;
+}
+.sub {
+  font-size: 12px;
+  color: var(--mut);
+  line-height: 1.5;
+}
+.subInline {
+  font-size: 12px;
+  color: var(--mut);
+}
+.amberText,
+.amberText b {
+  color: var(--amber);
+}
+.unk {
+  color: var(--faint);
+  font-style: italic;
+}
+.proof {
+  margin: 2px 0 0 18px;
+}
+.pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 3px 0;
+}
+.pill {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 9px;
+  border-radius: 999px;
+  line-height: 1.5;
+}
+.pill_hi {
+  color: var(--green);
+  background: var(--green-soft);
+}
+.pill_mid {
+  color: var(--blue);
+  background: var(--blue-soft);
+}
+.pill_lo {
+  color: var(--amber);
+  background: var(--amber-soft);
+}
+.pill_na {
+  color: var(--mut);
+  background: var(--well);
+}
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  margin-top: 6px;
+  font-size: 12.5px;
+}
+.linkBtn {
+  font: inherit;
+  font-size: inherit;
+  color: var(--blue);
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+}
+.linkBtn:hover:not(:disabled) {
+  text-decoration: underline;
+}
+.linkBtn:disabled,
+.linkBtn[aria-disabled="true"] {
+  color: var(--faint);
+  cursor: not-allowed;
+  text-decoration: none;
+}
+.ext {
+  overflow-wrap: anywhere;
+}
+.extBtn {
+  display: inline-flex;
+  align-items: center;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 3px 10px;
+  border: 1px solid var(--hair-2);
+  border-radius: var(--r-md);
+  background: var(--paper);
+  color: var(--ink);
+  white-space: nowrap;
+}
+.blocked {
+  color: var(--faint);
+  cursor: help;
+}
+.details {
+  font-size: 12px;
+  color: var(--mut);
+}
+.details summary {
+  cursor: pointer;
+  width: fit-content;
+}
+.rqState {
+  margin-top: 6px;
+  color: var(--ink-2);
+}
+
+/* ---------------- diagnostics */
+.coverage {
+  display: grid;
+  gap: 10px;
+  font-size: 13px;
+}
+.healthSum {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  font-size: 12.5px;
+  margin-bottom: 10px;
+}
+.green {
+  color: var(--green);
+}
+.red {
+  color: var(--red);
+}
+.amber {
+  color: var(--amber);
+}
+.hd {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--mut);
+  margin: 10px 0 4px;
+}
+.tableWrap {
+  overflow-x: auto;
+  margin-bottom: 6px;
+}
+.tableWrap td {
+  font-size: 12.5px;
+}
+
+/* ---------------- drawers */
+.review,
+.person {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.revSummary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 12px 18px;
+  padding: 12px 14px;
+  border: 1px solid var(--hair);
+  border-radius: var(--r-lg);
+  background: var(--paper);
+  box-shadow: var(--sh-1);
+}
+.revSummary .hd {
+  margin-top: 0;
+}
+.big {
+  font: 600 22px/1.1 var(--font-ui);
+}
+.revActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+.revRow {
+  padding: 9px 0;
+  border-bottom: 1px solid var(--hair);
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+.revLabel {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px;
+  font-size: 13px;
+  color: var(--ink);
+}
+.passage {
+  margin-left: 22px;
+  font-size: 12.5px;
+  color: var(--ink-2);
+}
+.provenance {
+  margin-left: 22px;
+  font-size: 12px;
+  color: var(--mut);
+}
+.provenance select {
+  max-width: 100%;
+}
+.revRow .details {
+  margin-left: 22px;
+}
+.sect {
+  padding: 8px 0 10px;
+  border-bottom: 1px solid var(--hair);
+  font-size: 13px;
+}
+.sect .hd {
+  margin-top: 0;
+}
+.inlineRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-top: 6px;
+}
+.grow {
+  flex: 1 1 240px;
+  min-width: 0;
+}
+.actionsGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.actionsGrid button {
+  white-space: normal;
+  text-align: left;
+}
+.brief {
+  margin-top: 8px;
+}
+
+/* ---------------- dialogs */
+.askForm {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.askForm input:not([type="checkbox"]),
+.askForm select,
+.askForm textarea {
+  width: 100%;
+}
+.twoCol {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 10px;
+}
+.confirmBox {
+  white-space: pre-wrap;
+  font-size: 13px;
+  padding: 12px 14px;
+  border-radius: var(--r-md);
+  background: var(--well);
+}

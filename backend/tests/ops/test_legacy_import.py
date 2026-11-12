@@ -1234,3 +1234,34 @@ def test_a_rejected_candidate_with_a_bad_url_and_an_empty_archive_do_not_block(l
     assert plan.report["reconciliation"]["sources/network.json"] == {"candidates_usable": 2}
     write(legacy, "sources/network.json", {})
     assert not [b for b in plan_for(legacy).blockers if "sources/network.json" in b]
+
+
+# ── review 026a: the radar archives are checked by the 0016 backfill's rules (keyed by name / domain, no own id) ────
+RADAR = {"radar_companies.json": "companies", "radar_research.json": "domains"}
+
+
+@pytest.mark.parametrize("path", sorted(RADAR))
+def test_a_wellformed_radar_archive_plans_without_a_blocker(legacy: Path, path: str) -> None:
+    coll = RADAR[path]
+    text = json.dumps({coll: {"name:invented-longer-co": {"id": "anything", "notes": ""}, "dom:a.example": {}}})
+    write(legacy, path, None, raw=b"\xef\xbb\xbf" + text.encode("utf-8"))  # a BOM, and an unrelated "id" field
+    plan = plan_for(legacy)
+    assert not [b for b in plan.blockers if path in b]
+    assert plan.report["reconciliation"][path][coll] == 2
+
+
+@pytest.mark.parametrize("path", sorted(RADAR))
+@pytest.mark.parametrize(
+    ("text", "problem"),
+    [
+        ('{"COLL": null}', "must be an object keyed by id (it is null)"),
+        ('{"COLL": {"k": {}, "k": {}}}', "'k' is repeated"),
+        ('{"COLL": {"": {}}}', "not a record keyed by its own id"),
+        ('{"COLL": {"k": 5}}', "not a record keyed by its own id"),
+        ("[1]", "the top level must be an object"),
+    ],
+)
+def test_a_malformed_radar_archive_blocks_the_plan(legacy: Path, path: str, text: str, problem: str) -> None:
+    write(legacy, path, None, raw=text.replace("COLL", RADAR[path]).encode("utf-8"))
+    plan = plan_for(legacy)
+    assert any(path in b and problem in b for b in plan.blockers), plan.blockers

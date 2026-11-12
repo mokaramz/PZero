@@ -150,6 +150,9 @@ ADA = {"id": "p-ada-quill", "name": "Ada Quill", "provenance": "radar_detected",
        "orcid": "0000-0002-1825-0097", "openalex_id": "A5000000001", "aliases": ["adaq"],
        "profile_urls": ["https://openalex.org/A5000000001", "https://quill.example.com"],
        "identity_status": "needs identity resolution", "recommended": [], "startups": [], "created": "2026-09-12"}  # fmt: skip
+# the same person imported as a Network person (user_provided): edits take the plain save, without the Founder Radar
+# identity / signal recompute that review 026a ported for radar-generated people
+ADA_NET = {**ADA, "provenance": "user_provided"}
 BEN = {"id": "p-ben-ortiz", "name": "Ben Ortiz", "provenance": "user_provided", "recommended": [], "startups": [],
        "created": "2026-09-13"}  # fmt: skip
 
@@ -204,7 +207,7 @@ def test_a_partial_edit_on_an_imported_person_keeps_everything_else(
     settings: Settings, schema: str, api: tuple[TestClient, Clock]
 ) -> None:
     client, _ = api
-    seed(settings, schema, [ADA, BEN])
+    seed(settings, schema, [ADA_NET, BEN])
     ids_before = identifiers(settings, schema, "p-ada-quill")
     cols_before = row(settings, schema, "p-ada-quill")
     assert cols_before is not None
@@ -213,8 +216,8 @@ def test_a_partial_edit_on_an_imported_person_keeps_everything_else(
     assert r.status_code == 200 and r.json() == {"ok": True, "id": "p-ada-quill"}
     after = row(settings, schema, "p-ada-quill")
     assert after is not None
-    assert after["legacy"] == ADA  # the import is never changed
-    assert after["attrs"]["record"] == {**ADA, "next_action": "Follow up after the paper",
+    assert after["legacy"] == ADA_NET  # the import is never changed
+    assert after["attrs"]["record"] == {**ADA_NET, "next_action": "Follow up after the paper",
                                         "next_action_date": "2026-11-20"}  # fmt: skip
     for col in ("name", "normalized_name", "country", "identity_status", "founder_status", "radar_state"):
         assert after[col] == cols_before[col]
@@ -285,23 +288,31 @@ def test_a_conflict_the_import_already_reported_does_not_block_other_edits(
     assert record(settings, schema, "p-ben-ortiz")["notes"] == "met at the meetup"
 
 
-def test_renaming_a_founder_radar_person_waits_for_the_founder_radar_port(
+def test_renaming_a_founder_radar_person_takes_the_old_radar_name_path(
     settings: Settings, schema: str, api: tuple[TestClient, Clock]
 ) -> None:
+    """Review 026a delivers what review 013 deferred: the old ``operator_save`` radar path."""
     client, _ = api
     seed(settings, schema, [ADA])
-    before = row(settings, schema, "p-ada-quill")
     r = client.post("/api/network/person_save", json={"id": "p-ada-quill", "name": "Ada Lovequill", "notes": "x"})
-    assert r.status_code == 409 and r.json()["radar_name"] is True and r.json()["id"] == "p-ada-quill"
-    assert row(settings, schema, "p-ada-quill") == before and events(settings, schema) == []
-    r = client.post("/api/network/person_save", json={"id": "p-ada-quill", "name": "Ada Quill", "notes": "x"})
-    assert r.status_code == 200  # the same name (the edit form always sends it) is not a rename
+    assert r.status_code == 200, r.text
+    rec = record(settings, schema, "p-ada-quill")
+    assert rec["name"] == "Ada Lovequill" and "Ada Quill" in rec["aliases"]  # the former name kept as an alias
+    assert rec["name_by_operator"] is True and rec["name_attributed"] is True
+    assert "identity_verified_by" not in rec  # entering a name never verifies the identity
+    assert any("human name entered by Mohamed" in x and "Ada Quill -> Ada Lovequill" in x
+               for x in rec["identity_evidence"])  # fmt: skip
+    assert rec["sources"][-1]["source"] == "Operator edit" and rec["sources"][-1]["by"] == "operator"
+    assert isinstance(rec["signal"], dict) and rec["signal_categories"] == rec["signal"]["bands"]  # recomputed
+    assert [e[0] for e in events(settings, schema, "p-ada-quill")] == ["save"]
+    r = client.post("/api/network/person_save", json={"id": "p-ada-quill", "name": "Ada Lovequill", "notes": "x"})
+    assert r.status_code == 200 and [e[0] for e in events(settings, schema, "p-ada-quill")] == ["save"]  # unchanged
 
 
-def test_a_recommended_radar_person_still_cannot_be_renamed(
+def test_a_recommended_radar_person_is_still_a_radar_person(
     settings: Settings, schema: str, api: tuple[TestClient, Clock]
 ) -> None:
-    """H-091: the ritual marks an existing person user_provided; the rename check reads the durable imported origin."""
+    """H-091: the ritual marks an existing person user_provided; the radar path reads the durable imported origin."""
     client, _ = api
     seed(settings, schema, [ADA, BEN])
     assert (
@@ -309,20 +320,19 @@ def test_a_recommended_radar_person_still_cannot_be_renamed(
         == 200
     )
     assert record(settings, schema, "p-ada-quill")["provenance"] == "user_provided"  # the current record changed
-    before = (row(settings, schema, "p-ada-quill"), identifiers(settings, schema, "p-ada-quill"),
-              len(events(settings, schema)))  # fmt: skip
     r = client.post("/api/network/person_save", json={"id": "p-ada-quill", "name": "Ada Lovequill"})
-    assert r.status_code == 409 and r.json()["radar_name"] is True
-    after = (row(settings, schema, "p-ada-quill"), identifiers(settings, schema, "p-ada-quill"),
-             len(events(settings, schema)))  # fmt: skip
-    assert after == before  # record, identifiers and the event count untouched
-    # a person created in this app (the ritual's new person) stays renamable
+    assert r.status_code == 200
+    rec = record(settings, schema, "p-ada-quill")
+    assert rec["name_by_operator"] is True and "Ada Quill" in rec["aliases"]  # still the radar path
+    # a person created in this app (the ritual's new person) is renamed plainly
     assert (
         client.post("/api/network/talented", json={"id": "p-ben-ortiz", "persons": [{"name": "Dev Rao"}]}).status_code
         == 200
     )
     renamed = client.post("/api/network/person_save", json={"id": "p-dev-rao", "name": "Devika Rao"})
-    assert renamed.status_code == 200 and record(settings, schema, "p-dev-rao")["name"] == "Devika Rao"
+    assert renamed.status_code == 200
+    dev = record(settings, schema, "p-dev-rao")
+    assert dev["name"] == "Devika Rao" and "name_by_operator" not in dev and "signal" not in dev
 
 
 # ── decision (b): the ritual under concurrency ──────────────────────────────────────────────────────────────────
@@ -432,7 +442,7 @@ def test_concurrent_saves_of_one_person_run_one_after_another(
     settings: Settings, schema: str, api: tuple[TestClient, Clock]
 ) -> None:
     client, _ = api
-    seed(settings, schema, [ADA])
+    seed(settings, schema, [ADA_NET])
     holder = connect(settings.db_url)
     result: dict[str, Any] = {}
     try:
@@ -462,7 +472,7 @@ def test_an_attrs_record_edit_reaches_the_conviction_imq_inputs(
     settings: Settings, schema: str, api: tuple[TestClient, Clock]
 ) -> None:
     client, _ = api
-    seed(settings, schema, [ADA])
+    seed(settings, schema, [ADA_NET])
     entry = {"company": "Quill Labs", "status": "new", "archetype": 3, "earliness": "pre_company", "conflict": "none",
              "scores": {"founder": 25, "venture_scale": 19, "why_now": 15, "taste": 15, "insight": 10},
              "verified": {"founders": True, "traction": True, "funding": True}, "founders": [{"name": "Ada Quill"}],
@@ -488,10 +498,10 @@ def test_an_attrs_record_edit_reaches_the_conviction_imq_inputs(
     assert r.status_code == 200
     with transaction(settings.db_url) as conn:
         people = load_inputs(conn, schema).imq.people
-    assert people == [{**ADA, "identity_status": "resolved"}]
+    assert people == [{**ADA_NET, "identity_status": "resolved"}]
     assert row(settings, schema, "p-ada-quill")["identity_status"] == "resolved"  # type: ignore[index]
     assert state() == "IMQ — QUALIFIED NOW"
-    assert row(settings, schema, "p-ada-quill")["legacy"] == ADA  # type: ignore[index]
+    assert row(settings, schema, "p-ada-quill")["legacy"] == ADA_NET  # type: ignore[index]
 
 
 # ── reads and the Watchlist ─────────────────────────────────────────────────────────────────────────────────────

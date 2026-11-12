@@ -14,8 +14,8 @@ Writes (each ONE transaction; refused with 409 before the legacy import):
 * ``POST /api/network/person_save``  add ``{name, ...FIELDS}`` / edit ``{id, ...FIELDS}`` (follow-up, log contact,
   judgment are edits) -> 200 ``{ok: true, id}`` · 400 ``{ok: false, error}`` · 404 ``{ok: false, error, id}`` (edit of
   an unknown id) · 409 ``{ok: false, error, id, duplicate: true}`` (add: the generated id exists) · 409 ``{ok: false,
-  error, id, radar_name: true}`` (renaming a Founder Radar person) · 409 ``{ok: false, error, identifier: {kind,
-  value}, owner}`` (a strong identifier another person holds)
+  error, identifier: {kind, value}, owner}`` (a strong identifier another person holds) · 409 ``{ok: false, error,
+  merged_into}`` (add: the generated id is a merged person's, review 026a)
 * ``POST /api/network/talented``     ``{id, persons: [{name, note}]}`` -> 200 ``{ok: true, created: [id]}`` · 400
 * ``POST /api/network/watch_log``    ``{id, note}`` -> 200 ``{ok: true}`` · 400
 

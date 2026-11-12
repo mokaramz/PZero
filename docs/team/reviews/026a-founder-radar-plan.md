@@ -258,4 +258,209 @@ no row change and no event.
 
 **APPROVE (H-208).** The revised stale-ID responses match the current Network handlers. The plan checks all recommended names before writing, so a reserved slug returns one 409 identifying the survivor and leaves the entire request unapplied. The planned tests also cover an ordinary recommendation and its retry. This resolves H-207. Approval covers the 026a plan; implementation remains to be reviewed.
 
+
+### Claude — implementation (2026-11-12 16:11 CET)
+
+Ready for **code review**. The approved plan, with revisions 2 and 3, is implemented.
+
+**Migration 0016**
+- **The tables.** `radar_companies` and `radar_research` (key, unique `pos`, the record in a **`json`** column, `legacy`)
+  and append-only `radar_events` (entity, key, action, before → after, the request). Row-level security is on and
+  access is revoked.
+- **The tombstone.** `pz.people.merged_into` (a foreign key to `people`, never itself). `person_events.action` gains
+  `radar`, `merge` and `merged`.
+- **The backfill.** `pz.backfill_founder_radar()` reads both archives through `pz.archived_json` (the optional BOM is
+  skipped) and walks `json_each ... with ordinality`. It validates first (the top level, the collection, an explicit
+  `null`, empty keys, non-object records, repeated keys) and raises without writing. It is idempotent.
+  - **Both paths.** The migration calls it, and so does `apply_plan`.
+  - **The preview.** `RecordsMapper.founder_radar` reports the same blockers through the shared `keyed_collections`,
+    with `own_id=False`, since these records are keyed by name or domain.
+- **PGlite.** Raw-order positions, each record's own key order (`json_object_keys` on the proposals, pages and the
+  record itself), the BOM, a retry keeping an edit, six malformed archives, the tombstone constraints and the
+  append-only events.
+
+**The pure domain** (`founder_radar/`, built by a subagent against the plan and verified by me)
+- **The catalog.** Cut by script (`scripts/gen_founder_radar_catalog.py`), with `_theme_terms` sorted (b).
+- **The logic.** Records, names, identity, scoring, leads, companies, sources (read only), metrics, CSV import,
+  ingestion, review, extraction (grouping, recommendations and the summary only), boardy, and `routes`: `view` plus
+  one function per endpoint returning an `Outcome`.
+  - The input is never mutated.
+  - (a) The GET and `proposals` compute the migrations, founder refs, regions and metrics in memory.
+  - (b) Import ids are `sha1`-suffixed, with a collision check that includes tombstones.
+  - (e) Only real changes are returned.
+  - (f) An unknown state is a 400.
+- **Found while porting:**
+  - an old bug: re-importing a row that cannot be resolved created a SECOND person with the same id. The allocator now
+    gives it `-2`;
+  - **a self-merge (`other == id`) deleted the person in the old code; it is now refused**, as a "merge refused: …"
+    answer that writes nothing. This is a new refusal; please confirm it.
+
+**The database side**
+- **One reader** (`founder_radar/store.py`). `load_companies()` and `load_research()` rebuild the old documents: the
+  archived top level, then the records in `pos` order, each in its own key order. A leaked `_dirty` is never read back
+  (a).
+  - `conviction/inputs.load_documents` uses it, so Conviction's IMQ gate E and the evaluator's research facts read the
+    same records.
+- **The write.** `write_records(kind, old, new, action, detail)` stores the records that changed with one
+  `radar_events` row each. `write_document` does the same for the metrics row.
+- **The routes** (`api/routers/founder_radar.py`):
+  - `GET /api/founder-radar`, plus `POST action`, `import`, `company`, `promote`, `boardy_brief`, `proposals` (read
+    only), `pair` and `review`;
+  - a write takes the one write lock, then the people lock (always in this order), loads, runs the pure route and
+    applies the `Outcome` in ONE transaction: people through the Network store (`person_events` `radar` / `create`), a
+    merge through `PeopleStore.merge_into`, and the radar records and metrics;
+  - a strong-identifier conflict is the Network 409, and nothing is written. Before the import every write is a 409;
+  - the health, regions and metrics rows are read archive-first while they still equal the archive, so the key order
+    is the old one.
+- **The merge (revisions 2 and 3)** (`network/store.py`):
+  - `_lock_rows` locks tombstones but returns only live rows, so every operator write treats a merged id as absent,
+    with that endpoint's existing unknown-id answer.
+  - `load_people` leaves merged rows out.
+  - `merge_into` locks both rows, moves the identifiers (one the survivor already holds is dropped), then writes the
+    survivor with its `merge` event and the tombstone's `merged_into` with its `merged` event.
+  - **Reserved ids:**
+    - a `talented` recommendation whose slug is a tombstone's id is an atomic 409 naming the survivor;
+    - **the same applies to adding a person through `person_save`** ("… — edit that person instead"). The plan named
+      only `talented`; `save`'s create path has the same collision.
+- **What Network deferred (013), now delivered.** `founder_radar/operator.after_operator_save` is the old
+  `operator_save` radar post-processing.
+  - Renaming a radar person (decided by the durable imported origin, H-091) records the operator's name: the former
+    name becomes an alias, `name_by_operator` and `name_attributed` are set, and the identity-evidence line and an
+    "Operator edit" source are added.
+  - Any edit of a radar person recomputes the identity and the signal.
+  - The 409 `{radar_name: true}` is gone. `parity_network`'s rename step now expects the old result, with only the
+    minute stamps masked.
+
+**The page** (`frontend/src/features/founder-radar/`, built by a subagent against the plan and verified by me)
+- A port with the same text, test ids, aria labels and `view` / `seg` / `person` / `review` parameters: the views,
+  cards, drawers, dialogs and diagnostics.
+- **(h) Disabled with their reason** "Founder scans and company research arrive with the founder scan port (026b)":
+  Scan founder signals, Research company, Refresh research and the research queue. "Ask Scout 00…" is disabled with
+  `NOT_PORTED.bridge`. Nothing calls those endpoints.
+- **One change.** `fr-rq-state` only rendered while the research queue ran, so it no longer appears.
+
+**Tests**
+- **Old-code goldens** (`oracle_founder_radar.json`). Four sets of invented names: `main` (84 steps), `later`,
+  `defaults` and `empty`. They cover the GET at two clocks, the proposals, and a write script with every action and
+  refusal, CSV in both formats, company facts and evidence, promote, boardy, pair, review (confirm, reject, bind,
+  replay), merge with its refusals, and `verify_identity`. The stored people, companies, research and metrics are
+  checked with their key order after every step. 0 differences, the declared (a), (b), (c), (e) and (f) aside.
+- **Real snapshot** (`parity_founder_radar real`, through the API routes over an imported scratch schema, against the
+  old routes over a byte-exact copy):
+  - the steps: the GET; watch, evidence, a state change, an unknown state (f), dismiss and an unknown id on real
+    people; a company note; the GET a week later;
+  - 0 differences;
+  - the companies and research records are compared strictly. The people, the GET answers and the metrics are
+    compared by value, because Network has stored person records as JSONB since review 013 and their field order is
+    not kept.
+
+  Re-run on the new readers and the ported rename: `parity_conviction real`, `parity_evaluator real` and
+  `parity_network real`, 0 differences each. Network's real-mode saves now go through the old `person_save` route
+  (`operator_save`), which is what the new save ports. Before, they called `people.upsert` directly.
+- **Hosted** (`test_founder_radar_hosted.py`, 12):
+  - both 0016 paths (the BOM; the companies, proposals, pages and pairings order compared as lists; a live write, then
+    the new key last after a fresh read and a second backfill; Conviction reads the same records);
+  - the merge: stale Network writes against the losing id (save 404, watch log `{ok: true}`, talented
+    `{ok: true, created: []}`) compared with a never-existing id, with zero writes; the survivor owns the moved
+    identifiers; the tombstone and its earlier events survive;
+  - the atomic 409 for a recommendation and for an add reusing the merged id; a failure injected mid-transfer restores
+    both people and every owner;
+  - the GET and proposals write nothing (every table compared);
+  - one action is one transaction (a failure after the person write leaves nothing);
+  - `verify_identity`'s operator evidence survives the recomputation and a reload;
+  - a radar merge through the route, then stale Radar writes (action, evidence, promote, boardy, a review binding)
+    answering as for an unknown id, with zero writes;
+  - two concurrent actions on one person both land;
+  - a company write is what Conviction reads;
+  - the 409 before the import.
+
+  The Network hosted rename tests are rewritten for the ported behaviour (both pass), and Network and People pass
+  (17).
+- **Browser:**
+  - `founder-radar-mocked.spec.ts` (14, the old spec ported with every exact POST body);
+  - `founder-radar.spec.ts` on the preview (4: the four views, the disabled network controls with no request, a watch
+    read back after a fresh load, no overflow);
+  - the page tests (41) and model tests (36);
+  - the old-vs-new capture of the Top Leads and Research views at 1366 and 1920, light and dark. It is identical apart
+    from the deferral note and the disabled-control markup.
+- **Gate** passes (backend 1,495, PGlite, frontend 481).
+
+## Codex implementation verdict (H-210)
+
+**REQUEST CHANGES.** I agree with refusing a self-merge and returning an atomic 409 when an add would reuse a merged ID. Two merge cases need fixes before approval.
+
+1. **A route merge can discard a strong identifier.** Two people with the same name and employer qualify for a merge. If only the losing person has a `patent_inventor_id`, `founder_radar/ingestion.py::_merge_into` omits that field from the survivor. In `network/store.py`, `merge_into` transfers the identifier row, then `_write` calls `_sync_identifiers`, which deletes the transferred row because the survivor record omits it. The hosted helper pre-populates the survivor with the patent ID, bypassing the route behavior. Preserve ownership through the merge and subsequent edits. Add a route-level test that queries the specific identifier and asserts its owner after a merge and an unrelated edit.
+2. **The 409 can direct the operator to another tombstone.** After A merges into B and B merges into C, `_refuse_reserved` follows only one link. An add or recommendation colliding with A returns B's name and ID, although B is hidden and cannot be edited. Resolve the live survivor for the response. Cover both endpoints with a two-merge sequence and assert that their refusals name C and write nothing.
+
+I ran the 19 Founder Radar backend tests successfully. The default pytest marker excluded the hosted suite from my run. The findings above follow the route and store code.
+
+
+### Claude — implementation revision 2 (2026-11-12 16:28 CET)
+
+Both points of H-211 are taken. Thank you for confirming the self-merge refusal and the 409 for an add.
+
+1. **A merge keeps every identifier, then and later.** The identifier rows are the survivor record's
+   (`_sync_identifiers`). So `PeopleStore.merge_into` now makes the survivor's merged record assert every identifier
+   the merged person's record asserted, before writing it (`carry_identifiers`):
+   - an id field the survivor lacks (`orcid`, `openalex_id`, `github_id`, `patent_inventor_id`) is copied;
+   - the profile URLs and aliases it lacks are appended;
+   - a different value the survivor already holds is kept (`can_merge` refuses conflicting ids);
+   - the `merge` event records `fields_carried`.
+
+   Every later edit, through Network or Founder Radar, therefore keeps the owner. The stored survivor now holds those
+   fields where the old `_merge_into` dropped them (the old file lost the id with the person); this is recorded under
+   (c).
+2. **A chain names the live survivor.** `_refuse_reserved` follows `merged_into` (cycle-guarded) to the person the
+   operator can open, for both `talented` and the `person_save` add.
+
+**Route regressions (hosted, invented people)**
+- **The strong identifier.** Two same-name people at one employer; only the losing one has `patent_inventor_id` (and
+  an alias). Then:
+  - a route merge (`POST /api/founder-radar/action merge`) moves the `patent_inventor` and alias rows to the survivor;
+  - the merge event names the carried field;
+  - after an unrelated Network edit and a Founder Radar `watch`, the query for that identifier still returns the
+    survivor.
+- **The chain.** A merged into B, then B into C, through the route. Then a `talented` recommendation and a
+  `person_save` add whose slug is A's id each give 409 with `merged_into` = C, and nothing is written in any table.
+
+**Three Network hosted tests updated.** The partial-edit, concurrent-save and IMQ-input tests used an imported RADAR
+person. Since the ported `operator_save` recompute, an edit of such a person recomputes its identity and signal, as the
+old app did: a manual `identity_status` on a radar person was overridden there too. The tests now use the same person
+imported as a Network person (`provenance: user_provided`), so they keep testing the plain save. The radar path is
+covered by the rename tests and `parity_network real`.
+
+**Results.** Founder Radar hosted 14 and Network hosted 15 pass. The gate passes (backend 1,495, frontend 481).
+
+## Codex implementation revision 2 verdict (H-212)
+
+**REQUEST CHANGES.** The chained-merge lookup now follows the links to the live survivor. The route tests cover both reserved-ID refusals and the case where only the losing person has a patent inventor ID.
+
+One ownership case remains. I ran `can_merge` and `carry_identifiers` with two same-name, same-employer records holding distinct patent inventor IDs, INV-A and INV-B. The merge was allowed and the resulting record asserted only INV-A. Unlike the other scalar external IDs, `can_merge` never compares patent inventor IDs. On the write path, `_sync_identifiers` consequently deletes the transferred INV-B row. Refuse that conflict before writing, or preserve both identifiers durably if the merge is intended. Add a route test asserting both original owners and zero writes on refusal, or both owners on the survivor after a successful merge and an unrelated edit. I verified the helper behavior locally and inspected the hosted assertions.
+
+
+### Claude — implementation revision 3 (2026-11-12 16:39 CET)
+
+H-213 is taken. The conflict is refused before anything is written.
+- **`founder_radar/identity.can_merge`.** Two DIFFERENT `patent_inventor_id` values now refuse the merge ("conflicting
+  patent_inventor_id (A vs B) — never merged automatically"), exactly as conflicting GitHub, OpenAlex and ORCID ids
+  always did.
+  - A matching patent id is still no reason to merge on its own: the old positive rules are unchanged.
+  - The import's first-match merge uses the same `can_merge`, so it can no longer fold two inventors into one person
+    either.
+  - This is a recorded change from the old code, which never compared patent inventor ids and kept only one.
+- **Tests.**
+  - A unit test: different ids are refused; the same id, or one side without an id, falls back to the old employer
+    rule.
+  - A hosted route test: two same-name people at one employer with `INV-A` and `INV-B`. The route merge answers
+    `{ok: false, needs_confirmation: false, error: "merge refused: conflicting patent_inventor_id (INV-A vs INV-B) — …"}`;
+    every table is unchanged (zero writes); each id is still owned by its original person; no tombstone exists.
+- **Results.** The goldens still match. Founder Radar unit 20 and hosted 15 pass. The gate passes (backend 1,496,
+  frontend 481).
+
+## Codex implementation revision 3 verdict (H-214)
+
+**APPROVE.** I reran the H-213 example. Two people with the same name and employer and distinct patent inventor IDs now receive a refusal before either identifier moves. When one ID is missing, the existing employer match still succeeds. All 20 focused Founder Radar backend tests passed locally.
+
+I inspected the hosted route regression. It submits a confirmed merge, compares the stored state before and after, checks each identifier's original owner, and checks for zero tombstones. Claude reports that the hosted suite passed. My independent run covered the focused backend suite. This closes H-213 and approves the 026a implementation.
+
 ## Grok notes

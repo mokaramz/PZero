@@ -26,6 +26,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import subprocess
 import sys
 import tempfile
@@ -285,12 +286,13 @@ def pick_real(people: list[dict[str, Any]]) -> dict[str, str]:
 
 
 def parity_steps(real: Mapping[str, str], today: str) -> list[dict[str, Any]]:
-    """Steps whose old and new results must be IDENTICAL."""
+    """Steps whose old and new results must be IDENTICAL. Every save goes through the old ``person_save`` route
+    (``operator_save``: since review 026a the new save also runs its radar post-processing)."""
     return [
-        {"op": "upsert", "body": {"name": "  "}},  # name required
-        {"op": "upsert", "body": {}},
+        {"op": "person_save", "body": {"name": "  "}},  # name required
+        {"op": "person_save", "body": {}},
         {
-            "op": "upsert",
+            "op": "person_save",
             "body": {
                 "name": "Replay Ada Quill",
                 "location": "Karlsruhe",
@@ -303,14 +305,17 @@ def parity_steps(real: Mapping[str, str], today: str) -> list[dict[str, Any]]:
                 "next_action_date": today,
             },
         },
-        {"op": "upsert", "body": {"id": "p-replay-ada-quill", "next_action": "Send the deck", "next_action_date": ""}},
         {
-            "op": "upsert",
+            "op": "person_save",
+            "body": {"id": "p-replay-ada-quill", "next_action": "Send the deck", "next_action_date": ""},
+        },
+        {
+            "op": "person_save",
             "body": {"id": real["follow"], "next_action": "Follow up after the paper", "next_action_date": today},
         },  # a follow-up on an imported Founder Radar person
-        {"op": "upsert", "body": {"id": real["user"], "last_interaction": today, "notes": "met at the meetup"}},
-        {"op": "upsert", "body": {"id": real["judged"], "human_judgment": "strong technical founder"}},  # judgment
-        {"op": "upsert", "body": {"name": "Replay Ben Ortiz", "introduced_by": "p-replay-ada-quill"}},
+        {"op": "person_save", "body": {"id": real["user"], "last_interaction": today, "notes": "met at the meetup"}},
+        {"op": "person_save", "body": {"id": real["judged"], "human_judgment": "strong technical founder"}},  # judgment
+        {"op": "person_save", "body": {"name": "Replay Ben Ortiz", "introduced_by": "p-replay-ada-quill"}},
         {
             "op": "talented",
             "body": {
@@ -331,7 +336,7 @@ def parity_steps(real: Mapping[str, str], today: str) -> list[dict[str, Any]]:
         {"op": "watch_log", "body": {"id": real["signal"], "note": "spoke at a conference"}},
         {"op": "watch_log", "body": {"id": "p-replay-ada-quill", "note": ""}},  # just mark checked
         {"op": "watch_log", "body": {"id": "p-no-such-person", "note": "ignored"}},
-        {"op": "upsert", "body": {"id": "p-replay-dev-rao", "watch": True, "startups": ["Rao Robotics"]}},
+        {"op": "person_save", "body": {"id": "p-replay-dev-rao", "watch": True, "startups": ["Rao Robotics"]}},
     ]
 
 
@@ -339,22 +344,32 @@ def decision_steps(real: Mapping[str, str]) -> list[dict[str, Any]]:
     """Steps where the new code differs ON PURPOSE; each difference is asserted in ``check_decision``."""
     return [
         # (a) an add whose generated id exists: old overwrote the person, new refuses with the existing id
-        {"op": "upsert", "body": {"name": "Replay Ada Quill", "company": "Overwritten Co"}, "decision": "a-duplicate"},
+        {
+            "op": "person_save",
+            "body": {"name": "Replay Ada Quill", "company": "Overwritten Co"},
+            "decision": "a-duplicate",
+        },
         # (a) an edit of an unknown id: old created it, new refuses and creates nothing
-        {"op": "upsert", "body": {"id": "p-replay-unknown", "name": "Replay Unknown"}, "decision": "a-unknown"},
+        {"op": "person_save", "body": {"id": "p-replay-unknown", "name": "Replay Unknown"}, "decision": "a-unknown"},
         # (b) another introducer recommends a person who already has an introducer: old re-parented
         {
             "op": "talented",
             "body": {"id": "p-replay-ben-ortiz", "persons": [{"name": "Replay Cleo Vance", "note": "Ben's note"}]},
             "decision": "b-reparent",
         },
-        # deferred: renaming a Founder Radar person (old radar-name path) is refused
+        # review 026a: renaming a Founder Radar person takes the old radar-name path
         {
             "op": "person_save",
             "body": {"id": real["rename"], "name": "Replay Renamed Person"},
             "decision": "radar-name",
         },
     ]
+
+
+def _no_minutes(v: Any) -> Any:
+    """A record with its ``YYYY-MM-DD HH:MM`` stamps masked: the old code read the machine clock, the new one the
+    request clock (the radar-name path stamps its identity evidence and its source)."""
+    return json.loads(re.sub(r"\d{4}-\d{2}-\d{2} \d{2}:\d{2}", "<minute>", json.dumps(v)))
 
 
 def _by_id(people: list[Any]) -> dict[str, Any]:
@@ -407,8 +422,8 @@ def check_decision(step: Mapping[str, Any], old: Mapping[str, Any], new_code: in
         pid = step["body"]["id"]
         expect(old["code"] == 200 and old_after[pid]["name"] == "Replay Renamed Person", "old renamed the person")
         expect(old_after[pid].get("name_by_operator") is True, "old took the radar-name path")
-        expect(new_code == 409 and new_body.get("radar_name") is True, "new: 409 radar_name")
-        expect(new_after[pid] == before[pid], "new: the person is unchanged")
+        expect(new_code == 200, "new: 200")
+        expect(_no_minutes(new_after[pid]) == _no_minutes(old_after[pid]), "new: the old radar-name result")
         touched = {pid}
     diverged |= touched
     others_old = {k: v for k, v in old_after.items() if k not in diverged}

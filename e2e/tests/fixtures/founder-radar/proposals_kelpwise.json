@@ -1,0 +1,362 @@
+{
+  "ok": true,
+  "proposals": [],
+  "groups": [
+    {
+      "key": "founded|2025",
+      "field": "founded",
+      "value": "2025",
+      "best": {
+        "id": "pr-k-founded",
+        "field": "founded",
+        "value": "2025",
+        "passage": "2026-11-04 — Kelpwise was founded in 2025 and today announced its pre-seed round.",
+        "url": "https://kelpwise.example/news",
+        "source_label": "Kelpwise GmbH news",
+        "source_type": "official domain",
+        "activity_date": "",
+        "retrieved": "2026-11-10 21:01",
+        "confidence": "medium",
+        "status": "pending",
+        "person": null,
+        "source_rank": 1,
+        "template_text": false,
+        "why": "timing gate: a sourced founding date within 3 years is early-stage evidence",
+        "evidence_kind": "quoted_fact"
+      },
+      "alternatives": [
+        {
+          "id": "pr-k-founded-2",
+          "field": "founded",
+          "value": "2025",
+          "passage": "Kelpwise was founded in 2025 by two marine engineers.",
+          "url": "https://kelpwise.example/about",
+          "source_label": "Kelpwise GmbH about",
+          "source_type": "official domain",
+          "activity_date": "",
+          "retrieved": "2026-11-10 21:01",
+          "confidence": "medium",
+          "status": "pending",
+          "person": null,
+          "source_rank": 2,
+          "template_text": false,
+          "why": "",
+          "evidence_kind": "quoted_fact"
+        },
+        {
+          "id": "pr-k-founded-3",
+          "field": "founded",
+          "value": "2025",
+          "passage": "Kelpwise (founded 2025) builds sensing buoys.",
+          "url": "https://kelpwise.example",
+          "source_label": "Kelpwise GmbH homepage",
+          "source_type": "official domain",
+          "activity_date": "",
+          "retrieved": "2026-11-10 21:01",
+          "confidence": "medium",
+          "status": "pending",
+          "person": null,
+          "source_rank": 3,
+          "template_text": false,
+          "why": "",
+          "evidence_kind": "quoted_fact"
+        }
+      ],
+      "hidden": 2,
+      "disputed": false,
+      "status": "pending",
+      "all_ids": [
+        "pr-k-founded",
+        "pr-k-founded-2",
+        "pr-k-founded-3"
+      ]
+    },
+    {
+      "key": "funding|pre-seed",
+      "field": "funding",
+      "value": "pre-seed",
+      "best": {
+        "id": "pr-k-funding",
+        "field": "funding",
+        "value": "pre-seed",
+        "passage": "2026-11-04 — Kelpwise was founded in 2025 and today announced its pre-seed round.",
+        "url": "https://kelpwise.example/news",
+        "source_label": "Kelpwise GmbH news",
+        "source_type": "official domain",
+        "activity_date": "",
+        "retrieved": "2026-11-10 21:01",
+        "confidence": "medium",
+        "status": "pending",
+        "person": null,
+        "source_rank": 1,
+        "template_text": false,
+        "why": "stage gate: a sourced early round",
+        "evidence_kind": "quoted_fact"
+      },
+      "alternatives": [],
+      "hidden": 0,
+      "disputed": false,
+      "status": "pending",
+      "all_ids": [
+        "pr-k-funding"
+      ]
+    },
+    {
+      "key": "status|active",
+      "field": "status",
+      "value": "active",
+      "best": {
+        "id": "pr-k-status",
+        "field": "status",
+        "value": "active",
+        "passage": "We are hiring our first field engineers.",
+        "url": "https://kelpwise.example/careers",
+        "source_label": "Kelpwise GmbH careers",
+        "source_type": "official domain",
+        "activity_date": "",
+        "retrieved": "2026-11-10 21:01",
+        "confidence": "medium",
+        "status": "pending",
+        "person": null,
+        "source_rank": 1,
+        "template_text": false,
+        "why": "status gate: the company operates today",
+        "evidence_kind": "quoted_fact"
+      },
+      "alternatives": [],
+      "hidden": 0,
+      "disputed": false,
+      "status": "pending",
+      "all_ids": [
+        "pr-k-status"
+      ]
+    },
+    {
+      "key": "recent_activity|dated item on news page (2026-11-04)",
+      "field": "recent_activity",
+      "value": "dated item on news page (2026-11-04)",
+      "best": {
+        "id": "pr-k-recent",
+        "field": "recent_activity",
+        "value": "dated item on news page (2026-11-04)",
+        "passage": "2026-11-04 — Kelpwise announced its pre-seed round.",
+        "url": "https://kelpwise.example/news",
+        "source_label": "Kelpwise GmbH news",
+        "source_type": "official domain",
+        "activity_date": "2026-11-04",
+        "retrieved": "2026-11-10 21:01",
+        "confidence": "medium",
+        "status": "pending",
+        "person": null,
+        "source_rank": 1,
+        "template_text": false,
+        "why": "recency gate: a dated public activity",
+        "evidence_kind": "quoted_fact"
+      },
+      "alternatives": [],
+      "hidden": 0,
+      "disputed": false,
+      "status": "pending",
+      "all_ids": [
+        "pr-k-recent"
+      ]
+    },
+    {
+      "key": "project_a_fit|high",
+      "field": "project_a_fit",
+      "value": "HIGH",
+      "best": {
+        "id": "pr-k-fit",
+        "field": "project_a_fit",
+        "value": "HIGH",
+        "passage": "themes: ocean, sensing, industrial IoT",
+        "url": "https://kelpwise.example",
+        "source_label": "Kelpwise GmbH homepage",
+        "source_type": "official domain",
+        "activity_date": "",
+        "retrieved": "2026-11-10 21:01",
+        "confidence": "low",
+        "status": "pending",
+        "person": null,
+        "source_rank": 1,
+        "template_text": false,
+        "why": "Project A fit is a machine inference — confirm it yourself",
+        "evidence_kind": "machine_inference"
+      },
+      "alternatives": [],
+      "hidden": 0,
+      "disputed": false,
+      "status": "pending",
+      "all_ids": [
+        "pr-k-fit"
+      ]
+    },
+    {
+      "key": "access_route|hello@kelpwise.example",
+      "field": "access_route",
+      "value": "hello@kelpwise.example",
+      "best": {
+        "id": "pr-k-access",
+        "field": "access_route",
+        "value": "hello@kelpwise.example",
+        "passage": "Write to hello@kelpwise.example",
+        "url": "https://kelpwise.example/contact",
+        "source_label": "Kelpwise GmbH contact",
+        "source_type": "official domain",
+        "activity_date": "",
+        "retrieved": "2026-11-10 21:01",
+        "confidence": "medium",
+        "status": "pending",
+        "person": null,
+        "source_rank": 1,
+        "template_text": false,
+        "why": "a cold company route",
+        "evidence_kind": "quoted_fact"
+      },
+      "alternatives": [],
+      "hidden": 0,
+      "disputed": false,
+      "status": "pending",
+      "all_ids": [
+        "pr-k-access"
+      ]
+    },
+    {
+      "key": "founder|mira talvik",
+      "field": "founder",
+      "value": "Mira Talvik",
+      "best": {
+        "id": "pr-k-f-mira",
+        "field": "founder",
+        "value": "Mira Talvik",
+        "passage": "Mira Talvik, Co-Founder & CEO.",
+        "url": "https://kelpwise.example/team",
+        "source_label": "Kelpwise GmbH team",
+        "source_type": "official domain",
+        "activity_date": "",
+        "retrieved": "2026-11-10 21:01",
+        "confidence": "medium",
+        "status": "pending",
+        "person": {
+          "name": "Mira Talvik",
+          "role": "Co-Founder & CEO",
+          "company": "Kelpwise GmbH"
+        },
+        "source_rank": 2,
+        "template_text": false,
+        "why": "identity: individual pairing + confirmation required",
+        "evidence_kind": "quoted_fact"
+      },
+      "alternatives": [],
+      "hidden": 0,
+      "disputed": false,
+      "status": "pending",
+      "all_ids": [
+        "pr-k-f-mira"
+      ]
+    },
+    {
+      "key": "founder|jonas brekke",
+      "field": "founder",
+      "value": "Jonas Brekke",
+      "best": {
+        "id": "pr-k-f-jonas",
+        "field": "founder",
+        "value": "Jonas Brekke",
+        "passage": "Jonas Brekke, Co-Founder & CTO.",
+        "url": "https://kelpwise.example/team",
+        "source_label": "Kelpwise GmbH team",
+        "source_type": "official domain",
+        "activity_date": "",
+        "retrieved": "2026-11-10 21:01",
+        "confidence": "medium",
+        "status": "pending",
+        "person": {
+          "name": "Jonas Brekke",
+          "role": "Co-Founder & CTO",
+          "company": "Kelpwise GmbH"
+        },
+        "source_rank": 2,
+        "template_text": false,
+        "why": "identity: individual pairing + confirmation required",
+        "evidence_kind": "quoted_fact"
+      },
+      "alternatives": [],
+      "hidden": 0,
+      "disputed": false,
+      "status": "pending",
+      "all_ids": [
+        "pr-k-f-jonas"
+      ]
+    },
+    {
+      "key": "operating_signal|customer / deployment wording",
+      "field": "operating_signal",
+      "value": "customer / deployment wording",
+      "best": {
+        "id": "pr-k-operating",
+        "field": "operating_signal",
+        "value": "customer / deployment wording",
+        "passage": "Trusted by leading ports.",
+        "url": "https://kelpwise.example",
+        "source_label": "Kelpwise GmbH homepage",
+        "source_type": "official domain",
+        "activity_date": "",
+        "retrieved": "2026-11-10 21:01",
+        "confidence": "low",
+        "status": "pending",
+        "person": null,
+        "source_rank": 1,
+        "template_text": true,
+        "why": "operating signal",
+        "evidence_kind": ""
+      },
+      "alternatives": [],
+      "hidden": 0,
+      "disputed": true,
+      "status": "pending",
+      "all_ids": [
+        "pr-k-operating"
+      ]
+    }
+  ],
+  "recommended": [
+    "pr-k-founded",
+    "pr-k-funding",
+    "pr-k-status",
+    "pr-k-recent"
+  ],
+  "summary": {
+    "pages_retrieved": 4,
+    "pages_blocked": 1,
+    "facts_proposed": 7,
+    "founder_candidates": 2,
+    "hidden_duplicates": 2,
+    "recommended": 4,
+    "missing_gate": [
+      "founded",
+      "status",
+      "project_a_fit",
+      "recent_activity"
+    ],
+    "confirmed": 0
+  },
+  "company": {
+    "name": "Kelpwise GmbH",
+    "domain": "kelpwise.example",
+    "next_missing": [
+      "founded",
+      "status",
+      "project_a_fit",
+      "recent_activity"
+    ],
+    "priority_label": "Medium",
+    "priority_why": "recent dated pipeline/public signal; early-stage claim",
+    "next_action": "resolve founder identities (2 of 2 unresolved)"
+  },
+  "pages": {},
+  "done": true,
+  "history": [],
+  "refreshed_at": "",
+  "pairings": {}
+}

@@ -53,3 +53,14 @@ page-watcher lines and rejected / skipped events, unknown geography), the order-
 key order, network order, search `results[0]`, `Counter` ties), coverage derived from the documents, broken layers and
 an empty folder, at 2026-11-12 10:00 with `time` frozen (`built_at` = the clock, `build_s` = 0.0); identical answers
 are stored once (`python -m projectzero.ops.parity_map goldens`).
+
+`oracle_founder_radar.json` (review 026a): the old Founder Radar routes (`GET founder_radar`, `radar_proposals`, the
+old `region_health` / `next_batch`, and an 84-step write script of every `radar_action` with each refusal, CSV imports
+in both formats (merge / new / unresolved / skipped), `radar_company` facts and evidence with every refusal, promote,
+`boardy_brief`, `radar_pair` and `radar_review` (confirm / reject / bind / replay), and a merge with its refusals, with
+the answer, the GET and the stored people, companies, research and metrics documents after each step) over four
+synthetic data folders of invented names (a main folder whose research `proposals` / `pages` / `pairings` insertion
+order differs from JSONB order, the same folder read at a second clock, missing / malformed defaults, and an empty
+folder), at 2026-11-12 10:00 with the old `hash` pinned to `int(sha1(str(key)))`, the theme terms sorted and
+`PYTHONHASHSEED=0`; the reads' writes are restored (decision a) and identical values are stored once
+(`python -m projectzero.ops.parity_founder_radar goldens`).

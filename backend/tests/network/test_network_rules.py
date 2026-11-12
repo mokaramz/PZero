@@ -111,34 +111,6 @@ def test_apply_save_copies_values() -> None:
     assert rec["recommended"] == ["p-b"]
 
 
-@pytest.mark.parametrize(
-    ("before", "body", "refused"),
-    [
-        ({"name": "jdoe42", "provenance": "radar_detected"}, {"name": "Jane Doe"}, True),
-        ({"name": "Jane Doe", "provenance": "radar_detected"}, {"name": " jane  doe "}, True),  # spacing counts
-        ({"name": "Jane Doe", "provenance": "radar_detected"}, {"name": "Jane Doe!"}, False),  # same old _fold
-        ({"name": "Jane Doe", "provenance": "radar_detected"}, {"name": "JANE DOE"}, False),
-        ({"name": "Jane Doe", "provenance": "radar_detected"}, {"next_action": "x"}, False),
-        ({"name": "Jane Doe"}, {"name": "Other"}, True),  # no provenance: generated in the old sense
-        ({"name": "Jane Doe", "provenance": "user_provided"}, {"name": "Other"}, False),
-        ({"name": "Jane Doe", "provenance": "radar_detected"}, {"name": ""}, False),
-    ],
-)
-def test_renaming_a_founder_radar_person_is_the_deferred_path(
-    before: dict[str, Any], body: dict[str, Any], refused: bool
-) -> None:
-    assert edits.is_radar_rename(before, body, legacy=before) is refused  # an imported person: legacy is its origin
-
-
-def test_the_rename_check_reads_the_durable_imported_origin() -> None:
-    radar = {"name": "Jane Doe", "provenance": "radar_detected"}
-    recommended = {**radar, "provenance": "user_provided"}  # what the talented ritual makes of an existing person
-    assert edits.is_radar_rename(recommended, {"name": "Other"}, legacy=radar) is True  # still a radar person
-    app_made = {"name": "Jane Doe", "provenance": "user_provided"}
-    assert edits.is_radar_rename(app_made, {"name": "Other"}, legacy=None) is False  # created here: renamable
-    assert edits.is_radar_rename({"name": "Jane Doe"}, {"name": "Other"}, legacy="not a dict") is False
-
-
 # ── the ritual (decision b) ─────────────────────────────────────────────────────────────────────────────────────
 def ritual(records: dict[str, dict[str, Any]], host: str, persons: list[dict[str, Any]]) -> tuple[Any, ...]:
     work = copy.deepcopy(records)
