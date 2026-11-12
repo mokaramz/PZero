@@ -1,0 +1,344 @@
+/* Sources (review 021) — the registry, the detail aside, the coverage matrix and the manual / watched lists, ported from the old view. */
+.hd {
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--mut);
+  margin-bottom: 3px;
+}
+.num {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+}
+.mt6 {
+  margin-top: 6px;
+}
+.nowrap {
+  white-space: nowrap;
+}
+
+.wsRow {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin: -6px 0 12px;
+}
+
+/* ---------------- health summary */
+.sum {
+  display: grid;
+  grid-template-columns: repeat(4, 90px) minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+  background: var(--paper);
+  border: 1px solid var(--hair);
+  border-radius: var(--r-lg);
+  box-shadow: var(--sh-2);
+  padding: 14px 18px;
+  margin-bottom: 14px;
+}
+.sum > div:not(.sumTxt) {
+  border-radius: 12px;
+  padding: 8px 12px;
+}
+.sumOk {
+  background: var(--green-soft);
+}
+.sumWarn {
+  background: var(--amber-soft);
+}
+.sumFail {
+  background: var(--red-soft);
+}
+.sumOff {
+  background: var(--well);
+}
+.n {
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.1;
+}
+.l {
+  font-size: 11.5px;
+  color: var(--mut);
+}
+.sumTxt {
+  font-size: 12.5px;
+  color: var(--mut);
+}
+
+/* ---------------- registry + detail workspace */
+.ws {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  background: var(--paper);
+  border: 1px solid var(--hair);
+  border-radius: var(--r-lg);
+  box-shadow: var(--sh-2);
+  margin-bottom: 14px;
+  align-items: start;
+}
+.listCol {
+  border-right: 1px solid var(--hair);
+  min-width: 0;
+}
+.ph {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 16px;
+  border-bottom: 1px solid var(--hair);
+}
+.ph h3 {
+  font-size: 13px;
+  font-weight: 600;
+}
+.ph small {
+  font-weight: 400;
+  font-size: 11.5px;
+}
+.tableWrap {
+  overflow: auto;
+  max-width: 100%;
+}
+.listCol .tableWrap {
+  max-height: calc(100vh - 220px);
+}
+.tbl th {
+  position: sticky;
+  top: 0;
+  background: var(--paper);
+  z-index: 1;
+  padding: 7px 6px;
+  font-size: 10.5px;
+  white-space: nowrap;
+}
+.tbl td {
+  padding: 6px;
+  font-size: 12px;
+  vertical-align: top;
+}
+.tbl tbody tr {
+  cursor: pointer;
+}
+.tbl tbody tr:hover td {
+  background: var(--well);
+}
+.tbl tr.sel td {
+  background: var(--blue-soft);
+}
+.tbl tr.off td {
+  color: var(--faint);
+}
+.nameBtn {
+  font: 600 12.5px var(--font-ui);
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  text-align: left;
+  cursor: pointer;
+  min-width: 120px;
+}
+.sub {
+  color: var(--mut);
+  font-size: 11.5px;
+}
+.hdot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 5px;
+  vertical-align: middle;
+  background: var(--faint);
+}
+.h_ok {
+  background: var(--green);
+}
+.h_warn {
+  background: var(--amber);
+}
+.h_failed {
+  background: var(--red);
+}
+.h_off {
+  background: var(--hair-2);
+}
+
+.detCol {
+  position: sticky;
+  top: 0;
+  max-height: calc(100vh - 160px);
+  overflow: auto;
+  min-width: 0;
+}
+.det {
+  padding: 12px 16px 16px;
+}
+.detEmpty {
+  padding: 60px 16px;
+  text-align: center;
+  color: var(--faint);
+}
+.srcName {
+  font: 400 19px/1.25 var(--font-serif);
+  margin: 8px 0 2px;
+}
+.sect {
+  padding: 9px 0;
+  border-bottom: 1px solid var(--hair);
+}
+.ppt {
+  font-size: 12.5px;
+  overflow-wrap: anywhere;
+}
+.ppt :global(.faint) {
+  font-size: 11.5px;
+  margin-top: 3px;
+}
+.url {
+  overflow-wrap: anywhere;
+}
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.tag {
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: var(--well);
+  color: var(--ink-2);
+}
+.funnel {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.frow {
+  display: grid;
+  grid-template-columns: 78px minmax(0, 1fr) 28px;
+  gap: 6px;
+  align-items: center;
+}
+.fl {
+  font-size: 11.5px;
+  color: var(--mut);
+}
+.fb {
+  height: 6px;
+  background: var(--well);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.fb i {
+  display: block;
+  height: 100%;
+  background: var(--blue);
+  border-radius: 3px;
+}
+
+/* ---------------- coverage matrix */
+.cov {
+  min-width: 700px;
+  margin-bottom: 8px;
+}
+.cov th {
+  font-size: 10.5px;
+  white-space: nowrap;
+}
+.cov th[scope="row"] {
+  font-size: 12px;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--ink);
+  border-bottom: 1px solid var(--hair);
+}
+.cell {
+  text-align: center;
+  font: 600 11px var(--font-mono);
+}
+.c_none {
+  background: var(--well);
+  color: var(--faint);
+}
+.c_weak {
+  background: var(--amber-soft);
+}
+.c_ok {
+  background: var(--green-soft);
+}
+.c_strong {
+  background: color-mix(in srgb, var(--green) 24%, var(--paper));
+}
+.pot {
+  font: 400 9.5px var(--font-mono);
+  color: var(--faint);
+}
+
+/* ---------------- manual / watched sources */
+.srcGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 4px 28px;
+}
+.srcItem {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--hair);
+  font-size: 13px;
+  min-width: 0;
+}
+.srcItem > a {
+  font-size: 12px;
+}
+.how {
+  font-size: 12px;
+  color: var(--mut);
+}
+.how2 {
+  margin-bottom: 20px;
+}
+.how2 > summary {
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--mut);
+  padding: 8px 14px;
+  background: var(--paper);
+  border: 1px solid var(--hair);
+  border-radius: var(--r-md);
+  width: max-content;
+  margin-bottom: 8px;
+}
+
+@media (max-width: 1100px) {
+  .ws {
+    grid-template-columns: 1fr;
+  }
+  .listCol {
+    border-right: 0;
+  }
+  .detCol {
+    position: static;
+    max-height: none;
+    border-top: 1px solid var(--hair-2);
+  }
+  .sum {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .sumTxt {
+    grid-column: 1 / -1;
+  }
+}

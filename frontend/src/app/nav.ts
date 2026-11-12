@@ -34,7 +34,7 @@ export const NAV: NavSection[] = [
     title: "Sourcing",
     items: [
       { path: "/deal-flow", label: "Deal Flow", icon: "search", legacyView: "inbox", page: lazy(() => import("@/features/deal-flow/DealFlowPage")) },
-      { path: "/sources", label: "Sources", icon: "list", legacyView: "src" },
+      { path: "/sources", label: "Sources", icon: "list", legacyView: "src", page: lazy(() => import("@/features/sources/SourcesPage")) },
       { path: "/events", label: "Events", icon: "calendar", legacyView: "events", page: lazy(() => import("@/features/events/EventsPage")) },
       { path: "/map", label: "Map", icon: "map", legacyView: "map" },
       { path: "/ecosystems", label: "Ecosystems", icon: "globe", legacyView: "eco" },
