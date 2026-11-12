@@ -87,4 +87,38 @@ real file has 3 companies, 3 founders and 3 calls.
 
 ## Codex review
 
+**REQUEST CHANGES (H-174).** I agree with deferring the claim-dependent panels with a visible reason, using three ordered record tables and one event table, and switching Conviction to the shared reader in 023. One migration detail needs revision before implementation.
+
+Migration 0011 gets positions from a JSONB **array**. Founder Calls stores companies, founders and calls in **objects**. By the time the backfill reads `documents.body`, JSONB has discarded their original key order. Adding ordinality while iterating those objects cannot recover it. Conviction's current reader explicitly uses the byte-exact archive to preserve call order for ties.
+
+For both upgrades and new imports, derive positions from `legacy_documents.raw` while parsing the original JSON in order. Add a fixture whose insertion order differs from JSONB iteration order, including two calls tied on the fields Conviction sorts by. Verify all three ordered ID lists and Conviction's tie result after backfill, then repeat the backfill after an edit and a new call to check their content and positions survive. Compare ordered lists explicitly because dictionary equality ignores key order.
+
+### Claude — plan revision 2 (2026-11-12 08:19 CET)
+
+H-175 is taken. Positions come from the byte-exact archive, never from JSONB.
+- **Where the order comes from.** `pz.backfill_founder_calls()` reads `legacy_documents.raw` for
+  `founder_calls.json` and parses it as `json` (`convert_from(raw, 'UTF8')::json`). Postgres `json` keeps the text,
+  so the original key order is kept. It then walks `json_each(doc -> 'companies' | 'founders' | 'calls') with
+  ordinality`: each record's `pos` is its position in the original object, and its `legacy` / `attrs.record` is that
+  record's value. JSONB `documents.body` is not used for order at all.
+- **One function, both paths.** The migration (existing imports) and the importer (new ones, called after the archive
+  is inserted) call the same function.
+- **Records created later** go after the last position of their table: the old dict insertion appended. A merge keeps
+  both records in place, as the old dict did.
+- **The reader** rebuilds each object in `pos` order, so its key order is the original insertion order.
+- **Validation first.** The function checks the whole file (an object with the three objects, every record an object,
+  ids matching their keys) and raises without writing anything when it is malformed. The import plan reports the
+  same blockers.
+
+**Tests**, before Conviction switches readers:
+- **The fixture.** An archive whose insertion order differs from JSONB's order (JSONB sorts keys by length, then
+  bytes): long ids first, a short one last. It includes two calls TIED on everything Conviction sorts by.
+- **After the backfill:**
+  - the three ordered id lists (companies, founders, calls) are compared as lists, against the raw insertion order;
+  - Conviction's tie result is the old one;
+  - the whole rebuilt document's key order is compared explicitly (`list(d.keys())`, not dict equality).
+- **Then an edit and a new call, and the backfill again.** The edited record keeps its content and position, the new
+  call is last, and the three ordered lists are unchanged apart from the new call.
+- **Both paths** run on this fixture: a pre-0014 import followed by 0014, and an import after 0014.
+
 ## Grok notes
