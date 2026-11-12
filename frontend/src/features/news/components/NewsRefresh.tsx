@@ -1,28 +1,34 @@
-import { DeferredButton } from "@/components/Deferred";
-import { useRefreshStatus } from "../api";
-import { NOT_PORTED } from "../model/deferred";
-import { lastOkText, plainFailure, progressText, refreshSummary, showsLastOk } from "../model/refresh";
+import { Button } from "@/components/ui";
+import { useRefreshNews, useRefreshStatus } from "../api";
+import { ALREADY_RUNNING, isNotStarted, lastOkText, plainFailure, progressText, refreshSummary, showsLastOk } from "../model/refresh";
 import styles from "../News.module.css";
 
 /**
- * "Refresh news" + the last run's outcome. The refresh itself arrives with 028c, so the button keeps its place and says
- * why it does nothing; the status is read once (the job is idle — the old page polled every 1.5 s only while a run was
- * active, and nothing runs here).
+ * "Refresh news" + the last run's outcome (028c). The run executes inside its request (decision e): while it is in flight
+ * the button and the line show the old running state, and when it returns the status, the stories and the sources are
+ * read again, so the line shows the new outcome. Nothing polls (the old page polled every 1.5 s while a background run
+ * was active). A run already active elsewhere is the old "already running" line; a failure is the failure toast.
  */
 export function NewsRefresh() {
   const s = useRefreshStatus().data;
-  const running = !!s?.job.running;
+  const run = useRefreshNews();
+  const running = !!s?.job.running || run.isPending;
+  const msg = isNotStarted(run.data) ? run.data.reason || ALREADY_RUNNING : "";
+  const start = () => {
+    if (running) return;
+    run.mutate();
+  };
   const last = s?.last;
   const sum = last ? refreshSummary(last) : null;
   return (
     <div className={styles.refresh} data-testid="news-refresh">
-      <DeferredButton reason={NOT_PORTED.refresh} data-testid="news-refresh-button">
+      <Button onClick={start} busy={running} disabled={running} data-testid="news-refresh-button">
         {running ? "Refreshing…" : "Refresh news"}
-      </DeferredButton>
+      </Button>
       <div className={styles.refreshText} aria-live="polite">
-        {running && s ? (
+        {running ? (
           <span data-testid="news-refresh-progress">
-            <b>Refreshing news…</b> {progressText(s.job)}
+            <b>Refreshing news…</b> {s?.job.running ? progressText(s.job) : ""}
           </span>
         ) : sum ? (
           <span data-testid="news-refresh-result" data-tone={sum.tone} className={styles[`r_${sum.tone}`]}>
@@ -35,6 +41,12 @@ export function NewsRefresh() {
           <span className={styles.faint} data-testid="news-last-ok">
             {" "}
             {lastOkText(s)}
+          </span>
+        )}
+        {msg && (
+          <span className={styles.faint} data-testid="news-refresh-message">
+            {" "}
+            {msg}
           </span>
         )}
         {!running && last?.sources_failed?.length ? (

@@ -1,0 +1,171 @@
+{
+  "refresh": {
+    "started": true,
+    "run_id": "news-20261112-101500-3c7e",
+    "job": {
+      "running": false,
+      "run_id": "news-20261112-101500-3c7e",
+      "stage": "done",
+      "trigger": "manual",
+      "started_at": "2026-11-12T10:15:00",
+      "feeds_done": 6,
+      "feeds_total": 6,
+      "ingested": true,
+      "new": 2,
+      "merged": 1
+    },
+    "last": {
+      "at": "2026-11-12T10:15:00",
+      "cards": 1,
+      "completed_at": "2026-11-12T10:15:41",
+      "cooldown": [],
+      "duplicates_skipped": 187,
+      "duration_s": 41.2,
+      "events_total": 10,
+      "feeds_checked": 6,
+      "items": 190,
+      "latest_published": "2026-11-12T09:40",
+      "material_new": 1,
+      "merged": 1,
+      "new": 2,
+      "noise_new": 0,
+      "per_feed": {
+        "Isar Startup Post": {
+          "ok": true,
+          "items": 40,
+          "latest": "2026-11-12T09:40"
+        },
+        "Alpine Wire": {
+          "ok": true,
+          "items": 40,
+          "latest": "2026-11-11T16:02"
+        },
+        "Channel Tech Review": {
+          "ok": true,
+          "items": 6,
+          "latest": "2026-11-12T08:10"
+        },
+        "Baltic Founders": {
+          "ok": true,
+          "items": 38,
+          "latest": "2026-11-10T09:00"
+        },
+        "Rhine Ventures News": {
+          "ok": true,
+          "items": 36,
+          "latest": "2026-11-11T08:45"
+        },
+        "swissticker.example": {
+          "ok": true,
+          "items": 30,
+          "reused": "Deal Flow scan (no fetch)"
+        }
+      },
+      "reclassified": 0,
+      "run_id": "news-20261112-101500-3c7e",
+      "seeded": 0,
+      "source_eval": {
+        "benchmark_events": 41,
+        "new_disagreements": 1,
+        "lifecycle_changes": 0,
+        "nominated": 0
+      },
+      "sources_failed": [],
+      "sources_ok": 6,
+      "stale_feeds": [],
+      "status": "ok",
+      "timings": {
+        "fetch_s": 21.3,
+        "ingest_s": 0.41,
+        "cards_s": 14.2,
+        "metrics_s": 2.5
+      },
+      "trigger": "manual",
+      "usd": 0.0021,
+      "watch_triggers": 0
+    },
+    "last_ok": {
+      "at": "2026-11-12T10:15:00",
+      "cards": 1,
+      "completed_at": "2026-11-12T10:15:41",
+      "cooldown": [],
+      "duplicates_skipped": 187,
+      "duration_s": 41.2,
+      "events_total": 10,
+      "feeds_checked": 6,
+      "items": 190,
+      "latest_published": "2026-11-12T09:40",
+      "material_new": 1,
+      "merged": 1,
+      "new": 2,
+      "noise_new": 0,
+      "per_feed": {
+        "Isar Startup Post": {
+          "ok": true,
+          "items": 40,
+          "latest": "2026-11-12T09:40"
+        },
+        "Alpine Wire": {
+          "ok": true,
+          "items": 40,
+          "latest": "2026-11-11T16:02"
+        },
+        "Channel Tech Review": {
+          "ok": true,
+          "items": 6,
+          "latest": "2026-11-12T08:10"
+        },
+        "Baltic Founders": {
+          "ok": true,
+          "items": 38,
+          "latest": "2026-11-10T09:00"
+        },
+        "Rhine Ventures News": {
+          "ok": true,
+          "items": 36,
+          "latest": "2026-11-11T08:45"
+        },
+        "swissticker.example": {
+          "ok": true,
+          "items": 30,
+          "reused": "Deal Flow scan (no fetch)"
+        }
+      },
+      "reclassified": 0,
+      "run_id": "news-20261112-101500-3c7e",
+      "seeded": 0,
+      "source_eval": {
+        "benchmark_events": 41,
+        "new_disagreements": 1,
+        "lifecycle_changes": 0,
+        "nominated": 0
+      },
+      "sources_failed": [],
+      "sources_ok": 6,
+      "stale_feeds": [],
+      "status": "ok",
+      "timings": {
+        "fetch_s": 21.3,
+        "ingest_s": 0.41,
+        "cards_s": 14.2,
+        "metrics_s": 2.5
+      },
+      "trigger": "manual",
+      "usd": 0.0021,
+      "watch_triggers": 0
+    },
+    "events_total": 10
+  },
+  "evaluate": {
+    "ok": true,
+    "evaluated_at": "2026-11-12T10:16:05"
+  },
+  "busy": {
+    "ok": false,
+    "error": "A news refresh is already running."
+  },
+  "deadline": {
+    "ok": false,
+    "error": "The news refresh did not finish within its time limit; nothing was saved."
+  }
+}

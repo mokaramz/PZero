@@ -139,3 +139,19 @@ append in memory (the data folder checked unchanged). Per step the seeding, the 
 Validation bytes, the saved event record (key order) and the next old News and Validation views (kept as sha-256
 digests per section) match, with no declared difference. Written and read as bytes
 (`python -m projectzero.ops.parity_news writes-goldens`).
+
+`oracle_news_refresh.json` (review 028c): the old News refresh run (`start_refresh` -> `run`, driven
+synchronously, twice: 10:00 then 10:25) over the `oracle_news.json` `main` world without its two unreadable stories,
+plus stored events to re-derive (an unclassified story, a missing and a broken company, a noise headline, a stale
+materiality, a `rules` card), an id collision and a syndicated headline, Swiss ticker candidates, known names, a
+cooldown and a third extra feed; the feed fetch replaced by recorded fixture bytes (new items, merges by entity /
+type / date, the same URL, a future date, a 23:30 -07:00 time, junk after `</rss>`, undeclared entities, a bad item,
+45 items, a stale feed, a 429, a feed in its cooldown, a 500, a TLS failure, Atom, an unparseable feed), never the
+network; the clock frozen (feed times read in Europe/Berlin), the model refused so the old code writes its
+deterministic cards, every write in memory (the data folder checked unchanged). Per run the answer, the events
+after the run (key order), every appended line byte for byte, the documents, the fetched URLs and the next News and
+sources views (sha-256 digests per section) match. Declared, normalised: (a) the TLS feed (the old insecure
+fallback fetched it; the strict run fails it with its reason and nothing else changes), (d) the deferred
+nominations (one `nomination_deferred` line each) and watch bridge (no trigger), (e) no run-state start marker, and
+028a's (e) / (s) inside the metric cache. Written and read as bytes
+(`python -m projectzero.ops.parity_news refresh-goldens`).

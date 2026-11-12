@@ -145,7 +145,7 @@ export type NewsRun = {
   per_feed?: Record<string, Feed>;
   note?: string;
 };
-/** No refresh runs in 028a (it arrives with 028c), so `job` is always idle: `{running: false, …}` with the old keys. */
+/** The old job keys. The run executes inside its request (028c), so a read normally finds it idle (`running: false`). */
 export type RefreshJob = {
   running: boolean;
   run_id?: string | null;

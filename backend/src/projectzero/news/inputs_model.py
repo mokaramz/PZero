@@ -28,7 +28,18 @@ from datetime import date
 from pathlib import Path
 from typing import Any
 
-from projectzero.news.catalog import ACTIONS, DISAGREE, EVENTS, EXTRA_FEEDS, LOG, RUNS, SNAPSHOT, STATE
+from projectzero.news.catalog import (
+    ACTIONS,
+    COOLDOWN,
+    DISAGREE,
+    EVENTS,
+    EXTRA_FEEDS,
+    HISTORY,
+    LOG,
+    RUNS,
+    SNAPSHOT,
+    STATE,
+)
 
 # the curated learning cases shipped with Project Zero (the old ``SEED_CASES``), copied byte for byte by
 # ``scripts/gen_news_catalog.py``
@@ -94,6 +105,13 @@ class NewsInputs:
     # old ``validation.source_alpha(validation.entities(today))`` (``_deal_flow_alpha``); ``None``: not computed (the
     # old ``try`` failed: the Deal Flow row is ``{}``)
     source_alpha: list[dict[str, Any]] | None = None
+    # review 028c (the refresh run and the source evaluation; read by nothing else): old
+    # ``storage.read_text("news/source_history.jsonl")``, the monthly source snapshots (line order: the last line
+    # decides whether a new one is due) ...
+    source_history_log: str = ""
+    # ... and old ``storage.load_json("news/feed_cooldown.json", {}, tolerant=True) or {}``: ``{feed name: until}``
+    # for the feeds that answered 429 (key order kept: the run pops and adds keys)
+    feed_cooldown: Any = field(default_factory=dict)
 
 
 MISSING = object()
@@ -141,6 +159,8 @@ def base_from_docs(docs: Mapping[str, Any]) -> NewsInputs:
         outcomes_log=text(docs.get(OUTCOMES)),
         audits_log=text(docs.get(AUDITS)),
         cases=_cases(docs),
+        source_history_log=text(docs.get(HISTORY)),
+        feed_cooldown=_doc(docs, COOLDOWN, {}) or {},
     )
 
 

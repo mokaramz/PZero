@@ -141,6 +141,9 @@ def apply_plan(plan: ImportPlan, *, schema: str, conn: psycopg.Connection[Any] |
             cur.execute(sql.SQL("select {}.backfill_news()").format(sql.Identifier(schema)))
             row = cur.fetchone()
             written["news"] = int(row[0]) if row else 0  # review 028b: the 0019 mapping, key / line order
+            cur.execute(sql.SQL("select {}.backfill_news_files()").format(sql.Identifier(schema)))
+            row = cur.fetchone()
+            written["news_files"] = int(row[0]) if row else 0  # review 028c: the 0020 mapping (logs, documents)
             # 028b: the curated News cases the reads seed in memory, stored once (the old guard), in this transaction
             from projectzero.network.view import BERLIN
             from projectzero.news.inputs_model import packaged_cases

@@ -3,9 +3,8 @@
  * Project Zero saw it coming. One read for the stories (`GET news`, see ./api); the weekly review, the sources view and
  * the refresh status are their own reads. The section is local state, as before (no query param).
  *
- * The outcome decisions, the miss audit and the early signal write (028b, ./api). "Refresh news" and "Re-measure now"
- * stay visible and disabled with their reason (028c, ./model/deferred). The old Scout Bridge research button is
- * removed.
+ * The outcome decisions, the miss audit and the early signal write (028b, ./api); "Refresh news" and "Re-measure now"
+ * run inside their request (028c, ./api). The old Scout Bridge research button is removed.
  */
 import { useState } from "react";
 

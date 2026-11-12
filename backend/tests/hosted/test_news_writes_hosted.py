@@ -68,7 +68,9 @@ def make(settings: Settings) -> Iterator[Any]:
         doc = {"events": {"nw-round": ROUND, "nw-miss": MISS}, "seeded": [CASE] if seeded is None else seeded}
         with transaction(settings.db_url) as conn:
             _archive(conn, name, "news/events.json", json.dumps(doc, indent=1))
-            conn.execute(f"select {name}.backfill_news()".encode())  # the importer's call (an existing installation)
+            conn.execute(
+                f"select {name}.backfill_news(), {name}.backfill_news_files()".encode()
+            )  # the importer's call (an existing installation)
         app = create_app(Settings(db_url=settings.db_url, schema=name))
         app.state.clock = lambda: NOW
         hexes = count()
