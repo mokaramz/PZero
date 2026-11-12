@@ -221,6 +221,34 @@ class RecordsMapper(BuilderState):
             kept.append((rid, r))
         return kept, items, skipped
 
+    def content_log(self) -> None:
+        """``content.json`` (review 020): its items are mapped by ``pz.backfill_content_items()`` from the archived
+        document (the apply calls it), the ONE mapping the 0011 upgrade shares. Checked here first so a malformed log
+        blocks the import before anything is written: the top level must be an object with an ``items`` list, and
+        every item a record with a non-empty string ``id``, no id repeated. A JSON number is never coerced to text."""
+        if "content.json" not in self.src.paths():
+            return
+        data = self.src.json("content.json")
+        if not isinstance(data, dict) or not isinstance(data.get("items"), list):
+            self.identity_blockers.append('content.json: the top level must be an object with an "items" list')
+            return
+        seen: dict[str, int] = {}
+        for position, item in enumerate(data["items"]):
+            iid = item.get("id") if isinstance(item, dict) else None
+            if not isinstance(iid, str) or iid == "":
+                self.identity_blockers.append(
+                    f"content.json item at position {position} is not a record with a non-empty string id "
+                    f"(found {type(iid).__name__ if isinstance(item, dict) else type(item).__name__}): fix it first"
+                )
+            elif iid in seen:
+                self.identity_blockers.append(
+                    f"content.json items at positions {seen[iid]} and {position} share the id {iid!r}: "
+                    "the old app edited only the first; rename one first"
+                )
+            else:
+                seen[iid] = position
+        self.report["reconciliation"]["content.json"] = {"items": len(data["items"])}
+
     def events(self) -> None:
         """``events.json`` -> events + event_leads (review 014).
 

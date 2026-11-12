@@ -1,0 +1,50 @@
+/* Public work (review 020) — the items table and the item drawer, ported from the old view. */
+.scroll {
+  overflow-x: auto;
+}
+.table {
+  min-width: 600px;
+}
+.w90 {
+  width: 90px;
+}
+.w110 {
+  width: 110px;
+}
+.w150 {
+  width: 150px;
+}
+.title {
+  font: 600 13px var(--font-ui);
+  color: var(--ink);
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+}
+.title:hover {
+  color: var(--blue);
+  text-decoration: underline;
+}
+.sub {
+  font-size: 12px;
+  color: var(--mut);
+}
+.empty {
+  color: var(--mut);
+  padding: 22px 14px;
+}
+.form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 12px 14px;
+}
+.form input,
+.form select,
+.form textarea {
+  width: 100%;
+}
+.full {
+  grid-column: 1 / -1;
+}

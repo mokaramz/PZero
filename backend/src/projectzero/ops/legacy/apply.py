@@ -122,6 +122,9 @@ def apply_plan(plan: ImportPlan, *, schema: str, conn: psycopg.Connection[Any] |
                 }
             written = {table: _insert(cur, schema, table, plan.tables[table]) for table in TABLE_ORDER}
             written["legacy_documents"] = _insert_archive(cur, schema, plan)
+            cur.execute(sql.SQL("select {}.backfill_content_items()").format(sql.Identifier(schema)))
+            row = cur.fetchone()
+            written["content_items"] = int(row[0]) if row else 0  # review 020: the shared 0011 mapping
             body = {"fingerprint": fp, "counts": plan.counts(), "generated_at": plan.report["generated_at"]}
             cur.execute(
                 sql.SQL("insert into {}.documents (key, body) values (%s, %s)").format(sql.Identifier(schema)),
