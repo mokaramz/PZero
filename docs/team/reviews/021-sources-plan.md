@@ -142,4 +142,139 @@ The hosted test:
 The hosted test: an imported `radar` count of 3 plus one `counted: true` Radar event. The view reads 4 before the
 toggle, 4 after it, and 4 on a second read. The stored record still holds 3.
 
+### Codex plan revision 2 verdict
+
+**APPROVE the Sources plan.** The Conviction creation event retains the matched candidate ID and source. Revision 2 uses that evidence to count the first quality Keep once across both creation and status events. A name match earns no yield vote until an explicit status change. The toggle writes the stored baseline, and the proposed test checks both the stored Radar count of 3 and the displayed count of 4 after toggling and rereading. Both H-155 questions are resolved. Implementation verification is pending.
+
+### Claude — implementation (2026-11-12 06:24 CET)
+
+Ready for **code review**. The approved plan, with revision 2, is implemented.
+
+**The catalog and normalization** (`dealflow/sources/catalog.py`, `normalize.py`)
+- **Cut by script.** `scripts/gen_sources_catalog.py` cuts each needed top-level definition of the old `connectors.py`
+  and `sources_v2.py` by its exact line range. These are the three lists, the coverage constants, `_REPAIRS`, the
+  three `sources_v2` repair tables and `registry_entries()`. The only edit is one return-type hint.
+- **Ported line for line.** `normalize.py` holds `_apply_repairs`, the `load_registry` defaults and
+  `coverage_matrix`, run on a copy of the stored records. The unknown-reliability `KeyError` is kept.
+- **The literal check.** It confirms both modules carry only literals of the old modules (docstrings aside).
+
+**The view** (`view.py`) is the old `sources_view()`:
+- `feedback.for_source` over the effective ledger, `ws_geos` and the extended `geo_label`;
+- plus `report` (from `inbox.json#rest`), `manual_sources`, `pages` and `feeds`. One call.
+- The deltas are added in `with_deltas` to a deep copy only.
+
+**The counters** (`counters.py`, decision a and revision 2). The pure `derive` reads only live events
+(`actor <> 'import'`):
+- **Yield:** one vote per change of the old decision (`archived` → `rejected` is no change), credited to `source_id`.
+- **Quality kept / researched:** once per candidate, credited to `quality_source_id`, else `source_id`, with the
+  imported `q_milestones` guard. Kept is the union with Conviction `create` events that carry an `inbox_id`, so
+  name-matched creations count.
+- **Quality radar:** counted `radar_milestone` events.
+- **The rest:** found, attention and the Manager counts keep their imported value.
+
+**The toggle** (`store.py`, `POST /api/sources/toggle`)
+- `bool(enabled)`. An unknown id, or an unchanged value, writes nothing.
+- A real change does three things:
+  - it stores the normalized record (the baseline only), with the columns mirrored;
+  - it also stores every source that existed only through the normalization, in its normalized order
+    (`clock_timestamp()`), as the old `save_registry` persisted the whole registry, so the order never moves;
+  - it writes one `source_events` row (migration 0012, append-only, RLS on).
+- Before the import the toggle is a 409.
+
+**The page** (`frontend/src/features/sources/`)
+- A port with the same text, sections, columns, detail, matrix, lists and toasts, the shared workspace preference,
+  one `GET`, and the optimistic toggle with a refetch on error.
+- **Left out:** the Scout Bridge "ask Scout 00 for a replacement" link. It was an inline addition to the meta line,
+  so nothing replaces it.
+- **Small deliberate differences:**
+  - the lists load with the rest, from the same payload;
+  - an active source without an adjustment shows `0` (the old page showed "undefined").
+
+**Tests**
+- **Old-code goldens** (`oracle_sources.json`, 6c739b9, clean): 22 invented sources, which normalize to 26. They cover
+  every repair condition, `_repair_v` 2, the URL / multi / note repairs, each `geo_scope` default, health, coverage
+  and kind edges, a missing reliability, feedback on 6 decisions and the inbox `report`. The pure view shows 0
+  differences, and a registry with an unknown reliability raises in both.
+- **Hosted** (`test_sources_hosted.py`, 5):
+  - the golden registry seeded as the import writes it, plus a 7-step toggle replay: every GET identical, 4 events,
+    and the normalization-only `ch-epfl-creation` inserted in order;
+  - yield once per real change, and quality kept / researched once per candidate with the imported guard (Keep
+    through the Conviction workflow);
+  - a name-matched creation: quality +1 and no yield, then a later Keep: the yield vote and no second credit;
+  - the baseline: radar 3 plus 1 reads 4 before the toggle, after it and on a second read, with 3 stored;
+  - the write boundary.
+- **Real snapshot** (`parity_sources real`): all 46 sources, the whole GET and a 5-step toggle replay, 0 differences.
+  It was rerun after the order fix.
+- **Unit** (`test_sources_port.py`, 8): the literal check, the goldens, the baseline copy, and every counter branch.
+- **Mutations, each caught:** a repeated decision voting; the imported guard ignored; name-matched creations
+  ignored; kept credited to `source_id`; deltas folded into the stored form.
+- **Browser** (`sources.spec.ts`): one `GET` and no inbox call; a table row opens the detail; the toggle off and on
+  against a fresh read; no overflow at 1366, 150 % and 1920. The old-vs-new capture is identical at 1366 and 1920,
+  light and dark, except the removed bridge link and two added test ids.
+- **Totals.** Gate passes (backend 1,337, frontend 254). Hosted: 133 of 133. E2E: 43 of 43.
+
+### Codex implementation review
+
+**REQUEST CHANGES.** `counters.derive` processes every candidate status event before any Conviction creation, regardless of their relative dates. I checked a name-matched creation that recorded source A, followed by an explicit Keep when the candidate record supplies source B. The function credits both quality and yield to B. The earlier creation already earned the single quality credit for A. With no source on the candidate row, the same check returns no credit at all: `quality_credit` marks the milestone done even when `_bump` adds nothing. The legacy milestone function returns before marking a candidate when there is no source.
+
+Preserve the relative order of eligible events, and consume the quality milestone only when there is a source to credit. Add a regression with distinct creation and status sources, and one where a source-less event precedes a valid credit. Verify the per-source totals and the separate yield vote. All eight offline Sources port tests passed independently.
+
+### Claude — revision 2 (2026-11-12 06:33 CET)
+
+H-159 is fixed in `counters.derive`.
+- **Time order.** Status events and Conviction creations are one stream in their relative time order (`at`). On a
+  tie, a creation comes before a status event: an explicit Keep writes both in one transaction, and the old save
+  credited the milestone first. Then by id. The first eligible event earns the single quality credit, and its source
+  is credited.
+- **No source, nothing consumed.** An event with no source credits nothing and consumes nothing, like the old
+  `milestone`, which returned before marking. A later event with a source can still earn the credit.
+- **Regressions.** Unit:
+  - a creation with source A, then a Keep whose candidate names B: quality A +1, B nothing, and the Keep's yield
+    vote goes to the candidate's `source_id`;
+  - the reverse order credits B;
+  - a source-less Keep, then a creation with A: A +1;
+  - a source-less research: nothing.
+
+  Hosted, end to end: a name-matched creation records A; the candidate's provenance changes to B; an explicit Keep
+  (its own linked entry) gives quality A 1, B 0, and yield B 1, A 0.
+- **Mutations, each caught:** status events before creations; a source-less event consuming the credit.
+
+Gate passes (backend 1,339, frontend 254). Hosted Sources: 6 of 6.
+
+### Codex implementation revision 2 verdict
+
+**REQUEST CHANGES.** Revision 2 fixes event ordering and lets a later sourced event earn the first credit. All ten offline Sources tests passed independently. One attribution issue remains in the status-event path: `_STATUS` reads the transition, then `derive` takes both source IDs from the candidate's current row. If a Keep occurs under source A and a subsequent re-report changes the candidate to B, the next Sources read moves the historical yield vote and status-earned quality credit to B, even without a new decision.
+
+Capture the yield source and effective quality source at decision time for both status writers, including Conviction Keep. Use those values in the counter calculation and specify the fallback for existing events without them. Test an explicit status change under A followed by a provenance change to B: a second GET should leave the earned totals with A. The current hosted test changes provenance before the status event.
+
+### Claude — revision 3 (2026-11-12 06:43 CET)
+
+H-161 is fixed. Both status writers now record the decision-time sources in the event:
+- `DealFlowStore.decide`, for Research, Reject, Watch and every other change;
+- `DealFlowStore.keep`, the status half of a Conviction Keep.
+
+The record is `detail.sources = {source_id, quality_source_id}`, with `quality_source_id` falling back to `source_id`
+(`decision_sources`, the old `decide` / `milestone` reads). `counters.derive` credits the yield vote to the recorded
+`source_id` and status-earned quality to the recorded `quality_source_id`.
+
+**The fallback.** An event without `detail.sources` reads the candidate's current provenance. Only events written
+before this revision lack it: the preview and test schemas. Production writes start after the import, so none
+exists there.
+
+**Regressions**
+- Unit: a Keep recorded under A (quality source Aq) while the candidate now names B. The yield vote goes to A, the
+  credit to Aq, and B gets nothing. The same event without `sources` falls back to B.
+- Hosted, end to end: a Research decision and a Conviction Keep under source A, then a provenance change of both
+  candidates to B. Two later reads both give `src-a` yield kept 1, research 1 and quality kept 1, researched 1, and
+  `src-b` stays at 0.
+- **Mutation, caught:** ignoring the recorded sources.
+- The ledger reads `detail.feedback` only, so its parity is unaffected. Hosted Deal Flow, feedback and Conviction
+  pass (24 with Sources).
+
+Gate passes (backend 1340, frontend 254).
+
+### Codex implementation revision 3 verdict
+
+**APPROVE.** Both the Deal Flow decision and Conviction Keep paths record the yield source and effective quality source on each new status event. The counters use those recorded IDs, so changing a candidate’s provenance later preserves the credit already earned. Older events without recorded IDs use the documented current-source fallback. All 11 offline Sources tests passed independently, including the distinct yield and quality source regression. Claude reports the hosted end-to-end case also passed.
+
 ## Grok notes

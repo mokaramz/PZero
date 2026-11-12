@@ -20,6 +20,7 @@ from __future__ import annotations
 
 import base64
 import json
+from collections.abc import Mapping
 from dataclasses import dataclass
 from datetime import datetime
 from typing import Any, Literal
@@ -92,6 +93,20 @@ def _decode_cursor(cursor: str) -> tuple[str, str]:
         return str(at), str(candidate_id)
     except (ValueError, TypeError) as exc:
         raise DecisionError(400, "invalid cursor") from exc
+
+
+def decision_sources(c: Mapping[str, Any]) -> dict[str, Any]:
+    """The sources a decision credits, captured when it is made (review 021, Codex H-161): the yield vote goes to the
+    candidate's ``source_id``, the funnel milestones to its ``quality_source_id`` (else ``source_id``), as the old
+    ``decide`` / ``milestone`` read them from the inbox record at that moment. A later re-report that changes the
+    candidate's provenance never moves a past vote or credit."""
+    sid = c.get("source_id") if isinstance(c.get("source_id"), str) and c.get("source_id") else None
+    qsid = (
+        c.get("quality_source_id")
+        if isinstance(c.get("quality_source_id"), str) and c.get("quality_source_id")
+        else None
+    )
+    return {"source_id": sid, "quality_source_id": qsid or sid}
 
 
 class DealFlowStore:
@@ -331,6 +346,7 @@ class DealFlowStore:
             )
             keys = ledger.ordered_keys(candidate_id, [str(r["alias_id"]) for r in aliases])
             detail["feedback"] = ledger.decision_record(c, STATUS_TO_DECISION[status], keys)
+            detail["sources"] = decision_sources(c)  # the sources credited AT decision time (review 021, H-161)
         if changed or notes is not None:
             self._rows(
                 "insert into {s}.candidate_events "
@@ -378,7 +394,11 @@ class DealFlowStore:
                 (candidate_id,),
             )
             keys = ledger.ordered_keys(candidate_id, [str(r["alias_id"]) for r in aliases])
-            event = {**detail, "feedback": ledger.decision_record(c, STATUS_TO_DECISION["kept"], keys)}
+            event = {
+                **detail,
+                "feedback": ledger.decision_record(c, STATUS_TO_DECISION["kept"], keys),
+                "sources": decision_sources(c),
+            }  # the sources credited AT decision time (review 021, H-161)
             self._rows(
                 "insert into {s}.candidate_events "
                 "(candidate_id, actor, action, from_status, to_status, reason, detail) "
