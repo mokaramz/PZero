@@ -66,6 +66,13 @@ def load_documents(conn: psycopg.Connection[Any], schema: str) -> dict[str, Any]
         )
         for r in cur.fetchall():
             out[r["path"]] = r["raw"] if r["path"] in JSONL else _parse(r["raw"])
+    # review 023: founder calls are modelled; the current records (written by the Founder Calls page) are read through
+    # the ONE shared reader, which keeps the archived order. A broken archive with no rows stays UNREADABLE.
+    from projectzero.founder_calls.store import FounderCallsStore
+
+    current = FounderCallsStore(conn, schema).load()
+    if current is not None:
+        out["founder_calls.json"] = current
     return out
 
 

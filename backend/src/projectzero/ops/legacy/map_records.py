@@ -221,6 +221,33 @@ class RecordsMapper(BuilderState):
             kept.append((rid, r))
         return kept, items, skipped
 
+    def founder_calls(self) -> None:
+        """``founder_calls.json`` (review 023): its records are mapped, in their ORIGINAL order, by
+        ``pz.backfill_founder_calls()`` from the byte-exact archive (the apply calls it). Checked here first so a
+        malformed file blocks the import before anything is written: an object whose ``companies`` / ``founders`` /
+        ``calls`` are objects keyed by a non-empty id, each record an object whose ``id`` (when present) is its key."""
+        if "founder_calls.json" not in self.src.paths():
+            return
+        data = self.src.json("founder_calls.json")
+        if not isinstance(data, dict):
+            self.identity_blockers.append("founder_calls.json: the top level must be an object")
+            return
+        for coll in ("companies", "founders", "calls"):
+            recs = data.get(coll)
+            if recs is None:
+                continue
+            if not isinstance(recs, dict):
+                self.identity_blockers.append(f'founder_calls.json: "{coll}" must be an object keyed by id')
+                continue
+            for key, rec in recs.items():
+                if key == "" or not isinstance(rec, dict) or ("id" in rec and rec["id"] != key):
+                    self.identity_blockers.append(
+                        f"founder_calls.json {coll} record {key!r} is not a record keyed by its own id: fix it first"
+                    )
+        self.report["reconciliation"]["founder_calls.json"] = {
+            k: len(data.get(k) or {}) for k in ("companies", "founders", "calls") if isinstance(data.get(k), dict)
+        }
+
     def content_log(self) -> None:
         """``content.json`` (review 020): its items are mapped by ``pz.backfill_content_items()`` from the archived
         document (the apply calls it), the ONE mapping the 0011 upgrade shares. Checked here first so a malformed log

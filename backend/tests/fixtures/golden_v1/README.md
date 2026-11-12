@@ -34,3 +34,7 @@ bytes, over a synthetic data folder of 40 invented companies, people and events 
 `coverage.report` and a 12-step `adopt_candidate` script with the coverage view and Deal Flow registry after each
 step, over synthetic data folders of invented names (a main corpus, a defaults / malformed variant, and broken
 regions) at 2026-11-11 12:00 (`python -m projectzero.ops.parity_ecosystems goldens`).
+`oracle_founder_calls.json` (review 023): the old Founder Calls routes (workspace, every call / memo / briefing and
+a 39-step save / follow-up / link script with the workspace and the stored document's key order after each step)
+over synthetic documents of invented names whose insertion order differs from JSONB order, at 2026-11-12 10:00
+(`python -m projectzero.ops.parity_founder_calls goldens`).

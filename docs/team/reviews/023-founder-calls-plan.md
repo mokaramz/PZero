@@ -121,4 +121,123 @@ H-175 is taken. Positions come from the byte-exact archive, never from JSONB.
   call is last, and the three ordered lists are unchanged apart from the new call.
 - **Both paths** run on this fixture: a pre-0014 import followed by 0014, and an import after 0014.
 
+## Codex plan revision 2 verdict
+
+**APPROVE (H-176).** Revision 2 resolves H-175. Both import paths derive record positions from the raw archive before converting record values to JSONB. The importer already inserts the archive before invoking backfills. The proposed tests check all three ordered ID lists, Conviction's tied-call result, and preservation of edits and appended calls on a second backfill. Run those checks before switching the reader.
+
+### Claude — implementation (2026-11-12 09:22 CET)
+
+Ready for **code review**. The approved plan, with revision 2, is implemented.
+
+**Migration 0014**
+- `fc_companies`, `fc_founders` and `fc_calls`: the old id, a unique `pos`, the mirrored text columns,
+  `attrs.record` and `legacy`. `fc_events` is append-only, with actions `save` / `followup` / `link`. Row-level
+  security is on and access is revoked.
+- **The order.** `pz.backfill_founder_calls()` parses `legacy_documents.raw` as Postgres `json`, which keeps the
+  text, and takes each record's `pos` from `json_each(...) with ordinality`. JSONB is never used for order
+  (Codex H-175).
+- **Validation first.** It checks the top level, the three objects, every record being an object keyed by its own
+  id, and repeated keys, and raises without writing anything. It is idempotent (`on conflict do nothing`).
+- **Both paths.** The migration calls it (existing imports), and `apply_plan` calls it right after the archive is
+  written (new imports). `RecordsMapper.founder_calls` reports the same malformed cases as plan blockers.
+- **PGlite.** The positions follow the raw insertion order (long ids first), a retry keeps an edit, five malformed
+  archives each raise with nothing written, and events are append-only.
+
+**The pure domain** (`founder_calls/`: `catalog`, `core`, `routes`)
+- **The catalog.** Cut by script (`scripts/gen_founder_calls_catalog.py`).
+- **The logic.** `core` is the old `domain/founder_calls.py` line for line, over a mutable document, with a `Clock`
+  (Berlin `now` / `today`, the id maker) instead of the old `_now` / `_today` / `_id`.
+- **The routes.** `routes` is the old router as pure functions. The writes (`save` / `followup` / `link`) return an
+  `Outcome(status, body, doc, changed)`: the input is never mutated, an unchanged write returns the input document,
+  and `changed` lists the new or modified ids in document order.
+- **Old behaviour.** The coercions, merges, error texts and codes, and the `pipeline_slug` in the save answer are
+  all kept. Case preparation is a no-op (a).
+
+**The database layer** (`founder_calls/store.py`, `api/routers/founder_calls.py`)
+- **The reader.** `FounderCallsStore.load()` rebuilds the old document: the top level in the archive's key order, and
+  the three objects from the tables in `pos` order.
+- **Conviction uses it.** `conviction/inputs.py` reads founder calls through it (an unreadable archive with no rows
+  stays unreadable), so the two can never diverge.
+- **The routes.** `/api/founder-calls/calls`, `/call`, `/memo`, `/briefing`, `/save`, `/followup` and `/link`.
+- **How a write runs.** It takes the one write lock, then loads, applies the pure function, and writes only the
+  changed records: `attrs.record` plus the mirrors, with a new record after the last position of its table, the old
+  dict append. It adds ONE `fc_events` row with those records before → after. Before the import it is a 409.
+
+**The page** (`frontend/src/features/founder-calls/`)
+- A port with the same header, counts, due box, tree, form, detail, drawers, `?log` / `?call` entries and the
+  redirect to Conviction.
+- A successful write also refreshes Conviction's pipeline.
+- **Deferred, with a visible reason (b):**
+  - the call-intelligence tabs "Prep card" and "After the call", reason "The prep card and claim checks arrive with
+    the claims & identity port". Nothing calls their old endpoints;
+  - the Scout Bridge button, disabled with `NOT_PORTED.bridge` (c);
+  - Conviction's `NOT_PORTED.traction`, reworded to the claims & identity port.
+- **Old wording kept:** the confirm text and the briefing file name `omar-briefing-<name>.md`. Please say if the file
+  name should become role-based ("manager-briefing-…") as the visible text did.
+
+**Tests**
+- **Old-code goldens** (`oracle_founder_calls.json`, 6c739b9, clean). Three synthetic sets of invented names, each
+  with an insertion order that differs from JSONB order, cover:
+  - every due state;
+  - external, pipeline and radar companies, aliases, merge chains and cycles;
+  - tied calls;
+  - a 39-step write script with the workspace and the stored document's key order (the top level, the three id
+    lists and each record's fields) after every step.
+
+  0 differences. `changed` and no-mutation are checked on every step.
+- **Real snapshot** (`parity_founder_calls real`): the whole workspace, every call, memo and briefing, an edit and a
+  follow-up of a real call, the stored document's key order, and a full read later. 0 differences.
+  `parity_conviction real` on the new reader: 0 differences.
+- **Hosted** (`test_founder_calls_hosted.py`, 5):
+  - **The upgrade path.** Every migration before 0014, the raw archive (long ids first, two calls tied on date and
+    updated), then 0014.
+  - **The import path.** 0014, the archive, then the backfill.
+  - **On both paths:**
+    - the three ordered id lists and the top-level key order are compared as lists;
+    - Conviction's `calls_for` tie result follows the raw order;
+    - after an edit and a new call, a second backfill keeps the edit, puts the new call last and leaves the
+      companies' order unchanged.
+  - **Writes:** one event per write and none for an unchanged save or a 404; two concurrent saves of one call stay
+    consistent (two events, serialized); the write boundary.
+- **Unit** (`tests/founder_calls`, 16): the goldens, provenance, the literal check, key-order preservation, and the
+  outcomes.
+- **Browser** (`founder-calls.spec.ts`):
+  - the workspace, a call's detail, the deferred intelligence (no request to its endpoints), the disabled Scout
+    button and the memo drawer;
+  - a save shown after a fresh load;
+  - no overflow at 1366, 150 % and 1920.
+
+  The old-vs-new capture is identical at 1366 and 1920, light and dark, apart from added test ids.
+- **Totals.** Gate passes (backend 1,370, frontend 318). Hosted: 145 of 145. E2E: 49 of 49.
+- **Note.** The pure domain and the page were built by two subagents against the plan; I verified both and wrote the
+  migration, the importer, the reader, the Conviction switch, the write path, the routes, the real parity and the
+  hosted and browser tests.
+
+## Codex implementation verdict
+
+**REQUEST CHANGES (H-178).** The ordered backfill addresses H-175 for archived records. One supported path still rebuilds a different document. When an import has no `founder_calls.json`, the first successful save starts from `core.empty()`, whose first keys are `version` and `label`. On a fresh read, `FounderCallsStore.load()` reconstructs only `companies`, `founders` and `calls`. I reproduced this with the store reader and simulated query results for one saved call. Applying `core.loaded()` afterward puts the two missing keys last.
+
+Preserve the pre-save empty-store result, then use the legacy empty document as the reconstruction baseline once rows exist without an archive. Add a database regression that saves through the API after an import lacking this file, reopens the store, and compares the document content and ordered top-level keys against the legacy first save. All 16 local Founder Calls unit tests passed.
+
+Keep `omar-briefing-<name>.md` for this port. It matches the legacy download and retaining it preserves the existing export convention.
+
+### Claude — revision 2 (2026-11-12 09:31 CET)
+
+H-179 is fixed. The shared reader now applies the old `load()` defaulting (`core.loaded`) to the archive, or to the
+empty document when there is none, and only then substitutes the three ordered tables. A first save without an
+archived file therefore reads back as the old first save wrote it: `version` and `label`, then the three objects, in
+the old empty document's order. An archive missing a top-level key gets it appended, as before.
+
+**Regression** (hosted). A schema with no archived `founder_calls.json`, then a first save. The fresh database read's
+top-level keys equal the old empty document's, compared as a list, and its `version` / `label` equal the old
+defaults. There is one company, one founder and one call. With the old reader this test fails.
+
+The legacy briefing file name `omar-briefing-…` is kept, as you asked.
+
+The real-snapshot parity was re-run on the changed reader: 0 differences. Gate passes. Hosted Founder Calls: 6 of 6.
+
+## Codex implementation revision 2 verdict
+
+**APPROVE (H-180).** The reader still returns `None` before the first save when both archive and tables are empty. Once rows exist, it rebuilds the document from the legacy defaults and puts `version` and `label` before the three record collections. The hosted regression saves through the API and checks key order, metadata values and collection counts in a fresh transaction. I reran all 16 local Founder Calls tests successfully. Claude reports all six hosted tests passed and the real-snapshot comparison found zero differences.
+
 ## Grok notes

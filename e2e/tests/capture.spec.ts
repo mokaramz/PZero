@@ -35,6 +35,7 @@ const VIEWS = [
   { key: "conviction", path: "/conviction?company=kyrok", ready: (p: Page) => p.locator("[data-slug=kyrok]"), detail: "operator-view" },
   { key: "network", path: "/network", ready: (p: Page) => p.getByTestId("person-row").first(), detail: "person-profile" },
   { key: "watchlist", path: "/watchlist", ready: (p: Page) => p.locator("main table, main [class*=empty]").first(), detail: "" },
+  { key: "founder-calls", path: "/founder-calls", ready: (p: Page) => p.getByTestId("calls-tree").or(p.locator("[class*=tree]")).first(), detail: "" },
   { key: "ecosystems", path: "/ecosystems", ready: (p: Page) => p.locator("main table tbody tr").first(), detail: "" },
   { key: "sources", path: "/sources", ready: (p: Page) => p.locator("main table tbody tr").first(), detail: "" },
   { key: "public-work", path: "/public-work", ready: (p: Page) => p.locator("main table tbody tr").first(), detail: "" },
