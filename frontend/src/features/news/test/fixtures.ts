@@ -12,7 +12,9 @@
  *   Europe-wide feed, a declining UK feed, the Swiss deal ticker reused from Deal Flow, a probation feed and an external
  *   benchmark); the 30-day window has too little overlap, so most purposes are COLLECTING DATA;
  * - `news_refresh_status.json`: the refresh status after a partial run, after a failed one, and before any run (the job
- *   is idle in each).
+ *   is idle in each);
+ * - `news_writes.json`: the old answers of the three writes (028b) — a confirm, a repeated decision after a confirm
+ *   (`already`), a reject, a not-enough, the prefilled miss audit and an added signal.
  */
 import emptyJson from "./news_empty.json";
 import fullJson from "./news.json";
@@ -20,6 +22,7 @@ import refreshJson from "./news_refresh_status.json";
 import sourcesJson from "./news_sources.json";
 import weeklyEmptyJson from "./news_weekly_empty.json";
 import weeklyJson from "./news_weekly.json";
+import writesJson from "./news_writes.json";
 import type { NewsPayload, RefreshStatus, SourcesPayload, Weekly, Window } from "../model/types";
 
 export const news = (): NewsPayload => structuredClone(fullJson) as unknown as NewsPayload;
@@ -30,6 +33,10 @@ export const sources = (window: Window = "90"): SourcesPayload => structuredClon
 export type RefreshCase = keyof typeof refreshJson;
 export const refreshStatus = (c: RefreshCase = "partial"): RefreshStatus => structuredClone(refreshJson[c]) as unknown as RefreshStatus;
 
-/** The old write endpoints, their 028b / 028c paths and the dropped Scout Bridge calls: none may ever be requested in 028a. */
+export type WriteCase = keyof typeof writesJson;
+export const writeAnswer = (c: WriteCase): Record<string, unknown> => structuredClone(writesJson[c]);
+
+/** The old write endpoints, the new write and refresh paths and the dropped Scout Bridge calls (every request that writes,
+ *  or would have). */
 export const WRITE_PATHS =
   /\/api\/(news_(outcome|audit_miss|backcast|backcast_job|refresh|sources_evaluate)\b|news\/(outcome|audit_miss|backcast|refresh|sources\/evaluate)\b|bridge_create\b)/;

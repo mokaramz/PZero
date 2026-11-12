@@ -2,10 +2,12 @@ import { fireEvent, screen, waitFor, within } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { ALL_ITEMS } from "@/app/nav";
-import { REFRESH_STATUS } from "./api";
+import { REFRESH_STATUS, VALIDATION } from "./api";
 import { NOT_PORTED } from "./model/deferred";
+import type { NewsPayload, Story, Window } from "./model/types";
 import { EMPTY, THEMES_EMPTY } from "./model/view";
-import { emptyNews, emptyWeekly, refreshStatus } from "./test/fixtures";
+import { SIGNAL_FORM } from "./model/writes";
+import { emptyNews, emptyWeekly, news, refreshStatus, sources, writeAnswer } from "./test/fixtures";
 import { fakeServer, renderPage } from "./test/server";
 
 const sections = () => screen.getByRole("tablist", { name: "News sections" });
@@ -13,6 +15,8 @@ const open = (name: string) => fireEvent.click(within(sections()).getByRole("tab
 const stories = () => screen.queryAllByTestId("news-story");
 const card = (company: string) => stories().find((s) => within(s).queryByText(company, { selector: "div" }))!;
 const settle = () => new Promise((r) => setTimeout(r, 0));
+const type = (el: Element, value: string) => fireEvent.change(el, { target: { value } });
+const dialog = () => screen.getByRole("dialog");
 
 async function opened() {
   const r = renderPage();
@@ -106,26 +110,28 @@ describe("News & Learning — the page", () => {
     expect(within(v).queryByTestId("news-audit")).toBeNull();
   });
 
-  it("the outcome decision buttons are disabled with the 028b reason and send nothing", async () => {
+  it("the outcome decision buttons are enabled (no click, no write); a story already decided shows no proposal", async () => {
     const server = fakeServer();
     await opened();
     const p = within(card("Vantor Kinetics")).getByTestId("news-outcome-proposal");
-    for (const b of within(p).getAllByRole("button")) expectDeferred(b, NOT_PORTED.writes);
-    expect(within(p).getByRole("button", { name: "Confirm outcome" })).not.toHaveAttribute("data-armed"); // never armed
+    for (const b of within(p).getAllByRole("button")) {
+      expect(b).toBeEnabled();
+      expect(b).not.toHaveAttribute("aria-disabled");
+    }
     await settle();
     expect(server.writes()).toEqual([]);
     expect(card("Lumora Grid")).toBeTruthy();
     expect(within(card("Lumora Grid")).queryByTestId("news-outcome-proposal")).toBeNull(); // rejected before
   });
 
-  it("Sources & learning: no backcast yet, 'Add an early signal' disabled, the sources and the card's provenance — no Scout Bridge", async () => {
+  it("Sources & learning: no backcast yet, 'Add an early signal' enabled, the sources and the card's provenance — no Scout Bridge", async () => {
     const server = fakeServer();
     await opened();
     const v = card("Vantor Kinetics");
     fireEvent.click(within(v).getByRole("button", { name: "Sources & learning" }));
     expect(within(v).getByRole("button", { name: "Hide analysis" })).toBeInTheDocument();
     expect(v).toHaveTextContent("No backcast yet: what public signals existed before this story? Add one signal with its source.");
-    expectDeferred(within(v).getByRole("button", { name: "Add an early signal" }), NOT_PORTED.writes);
+    expect(within(v).getByRole("button", { name: "Add an early signal" })).toBeEnabled();
     expect(screen.queryByRole("dialog")).toBeNull();
     expect(within(v).queryByRole("button", { name: /Prepare backcast research/ })).toBeNull();
     expect(screen.queryByText(/Scout Bridge/)).toBeNull();
@@ -170,7 +176,7 @@ describe("News & Learning — the page", () => {
     expect(l).not.toHaveTextContent("No backcast yet");
   });
 
-  it("Misses: the missed story's audit is disabled with the reason; its backcast reads in full", async () => {
+  it("Misses: the missed story can be audited; its backcast reads in full", async () => {
     const server = fakeServer();
     await opened();
     open("Misses");
@@ -178,7 +184,7 @@ describe("News & Learning — the page", () => {
     const b = card("Brightwell Bio");
     expect(b).toHaveTextContent("🔥 IMPORTANTMISSEDAcquisition · 3 Nov 2026 · 1 source");
     expect(within(b).getByTestId("news-check")).toHaveTextContent("A public signal existed while Project Zero was running, and Project Zero did not detect it.");
-    expectDeferred(within(b).getByTestId("news-audit"), NOT_PORTED.writes);
+    expect(within(b).getByTestId("news-audit")).toBeEnabled();
     expect(within(b).getByTestId("news-audit")).toHaveTextContent("Audit this miss");
     fireEvent.click(within(b).getByRole("button", { name: "Backcast & sources" }));
     const bc = within(b).getByTestId("news-backcast");
@@ -193,7 +199,7 @@ describe("News & Learning — the page", () => {
     expect(bc).toHaveTextContent("Learning: The earliest public signal was a grant signal (2026-10).");
     expect(bc).toHaveTextContent("A learning is a proposal for sourcing — it never changes scores, sources or themes on its own.");
     expect(within(b).queryByText(/No backcast yet/)).toBeNull();
-    expectDeferred(within(b).getByRole("button", { name: "Add an early signal" }), NOT_PORTED.writes);
+    expect(within(b).getByRole("button", { name: "Add an early signal" })).toBeEnabled();
     await settle();
     expect(server.writes()).toEqual([]);
   });
@@ -502,23 +508,20 @@ describe("News & Learning — empty and failing", () => {
     expect(await screen.findByTestId("news-concept")).toBeInTheDocument();
   });
 
-  it("every deferred control on the page names one of the two ports, and no write is ever sent", async () => {
+  it("only the refresh controls stay deferred (028c); the decisions are enabled and nothing is sent without a click", async () => {
     const server = fakeServer();
     await opened();
     const off = () => Array.from(document.querySelectorAll<HTMLElement>('[aria-disabled="true"]'));
     open("All stories");
     for (const s of stories()) fireEvent.click(within(s).getByRole("button", { name: /^(Backcast & sources|Sources & learning)$/ }));
-    expect(off().map((e) => [e.textContent, e.getAttribute("title")])).toEqual([
-      ["Refresh news", NOT_PORTED.refresh],
-      ["Confirm outcome", NOT_PORTED.writes],
-      ["Reject", NOT_PORTED.writes],
-      ["Not enough evidence", NOT_PORTED.writes],
-      ["Add an early signal", NOT_PORTED.writes], // Vantor Kinetics
-      ["Add an early signal", NOT_PORTED.writes], // Quillon Labs
-      ["Audit this miss", NOT_PORTED.writes], // Brightwell Bio
-      ["Add an early signal", NOT_PORTED.writes],
-      ["Add an early signal", NOT_PORTED.writes], // Halvard Robotics
-    ]);
+    expect(off().map((e) => [e.textContent, e.getAttribute("title")])).toEqual([["Refresh news", NOT_PORTED.refresh]]);
+    expect(Object.keys(NOT_PORTED)).toEqual(["refresh", "health"]); // the 028b reason is gone
+    const enabled = (name: string) => screen.getAllByRole("button", { name }).filter((b) => !b.hasAttribute("aria-disabled") && !(b as HTMLButtonElement).disabled);
+    expect(enabled("Confirm outcome")).toHaveLength(1);
+    expect(enabled("Reject")).toHaveLength(1);
+    expect(enabled("Not enough evidence")).toHaveLength(1);
+    expect(enabled("Audit this miss")).toHaveLength(1); // Brightwell Bio
+    expect(enabled("Add an early signal")).toHaveLength(4); // Vantor Kinetics, Quillon Labs, Brightwell Bio, Halvard Robotics
     for (const el of off()) expectDeferred(el, el.getAttribute("title")!);
     open("News sources");
     await screen.findByTestId("news-sources-best");
@@ -528,5 +531,272 @@ describe("News & Learning — empty and failing", () => {
     expect(server.writes()).toEqual([]);
     expect(server.calls.every((c) => c.method === "GET")).toBe(true);
     expect(screen.queryByRole("dialog")).toBeNull();
+  });
+});
+
+/* ------------------------------------------------------------------ the decisions (028b) */
+
+const VANTOR = "nw-3f9a1c0b7d2e";
+const BRIGHTWELL = "nw-1e8b5a6c4d90";
+
+/** The page with Validation's read in the cache, to see whether a write makes it stale. */
+async function openedWithValidation() {
+  const r = await opened();
+  r.qc.setQueryData([VALIDATION, {}], { cached: true });
+  const validationStale = () => r.qc.getQueryState([VALIDATION, {}])?.isInvalidated;
+  expect(validationStale()).toBe(false);
+  return { ...r, validationStale };
+}
+
+/** The server's next news answer after a write: the story carries the decision. */
+function after(id: string, patch: Partial<Story>): NewsPayload {
+  const d = news();
+  for (const list of [d.today, d.stories, d.caught_early, d.known_late, d.misses, d.historical, d.my_companies])
+    for (const s of list) if (s.event_id === id) Object.assign(s, patch);
+  return d;
+}
+
+describe("News & Learning — the outcome proposal", () => {
+  it("Confirm outcome takes two clicks; then one POST, the old toast, and News and Validation are read again", async () => {
+    let n = 0;
+    const server = fakeServer({ news: () => (++n === 1 ? news() : after(VANTOR, { outcome_decision: "confirm" })) });
+    const { validationStale } = await openedWithValidation();
+    const p = within(card("Vantor Kinetics")).getByTestId("news-outcome-proposal");
+    const confirm = within(p).getByRole("button", { name: "Confirm outcome" });
+    fireEvent.click(confirm);
+    expect(confirm).toHaveTextContent("Click again to confirm — records a verified outcome in Validation");
+    expect(confirm).toHaveAttribute("data-armed", "true");
+    await settle();
+    expect(server.posts()).toEqual([]); // the first click only arms it
+    fireEvent.click(confirm);
+    expect(await screen.findByText("Recorded")).toBeInTheDocument();
+    expect(server.posts()).toEqual([{ method: "POST", path: "/api/news/outcome", body: { event_id: VANTOR, decision: "confirm" } }]);
+    await waitFor(() => expect(server.reads()).toBe(2));
+    expect(validationStale()).toBe(true);
+    await waitFor(() => expect(within(card("Vantor Kinetics")).queryByTestId("news-outcome-proposal")).toBeNull());
+  });
+
+  it("Reject and Not enough evidence post their decision; News and Validation are read again, as the old page did", async () => {
+    const server = fakeServer();
+    const { validationStale } = await openedWithValidation();
+    const p = () => within(card("Vantor Kinetics")).getByTestId("news-outcome-proposal");
+    fireEvent.click(within(p()).getByRole("button", { name: "Reject" }));
+    expect(await screen.findByText("Recorded")).toBeInTheDocument();
+    await waitFor(() => expect(server.reads()).toBe(2));
+    fireEvent.click(within(p()).getByRole("button", { name: "Not enough evidence" }));
+    await waitFor(() => expect(server.reads()).toBe(3));
+    expect(server.posts()).toEqual([
+      { method: "POST", path: "/api/news/outcome", body: { event_id: VANTOR, decision: "reject" } },
+      { method: "POST", path: "/api/news/outcome", body: { event_id: VANTOR, decision: "not_enough" } },
+    ]);
+    expect(validationStale()).toBe(true); // the old page re-read Validation after every decision
+  });
+
+  it("an `already` answer (the event was confirmed before) is a success like any other, as before", async () => {
+    const server = fakeServer({ outcome: () => writeAnswer("already") });
+    await opened();
+    fireEvent.click(within(within(card("Vantor Kinetics")).getByTestId("news-outcome-proposal")).getByRole("button", { name: "Reject" }));
+    expect(await screen.findByText("Recorded")).toBeInTheDocument();
+    expect(screen.queryByText(/^✕/)).toBeNull();
+    expect(server.posts()).toEqual([{ method: "POST", path: "/api/news/outcome", body: { event_id: VANTOR, decision: "reject" } }]);
+    await waitFor(() => expect(server.reads()).toBe(2));
+  });
+
+  it("a refusal (400) is the failure toast with the old text; nothing is read again", async () => {
+    const server = fakeServer({ outcome: () => ({ status: 400, body: { ok: false, error: "this news event cannot become an outcome" } }) });
+    const { validationStale } = await openedWithValidation();
+    const confirm = within(within(card("Vantor Kinetics")).getByTestId("news-outcome-proposal")).getByRole("button", { name: "Confirm outcome" });
+    fireEvent.click(confirm);
+    fireEvent.click(confirm);
+    expect(await screen.findByText("✕ Recording the outcome failed — this news event cannot become an outcome")).toBeInTheDocument();
+    expect(server.posts()).toHaveLength(1);
+    await settle();
+    expect(server.reads()).toBe(1);
+    expect(validationStale()).toBe(false);
+    expect(within(card("Vantor Kinetics")).getByTestId("news-outcome-proposal")).toBeInTheDocument();
+  });
+});
+
+describe("News & Learning — Audit this miss", () => {
+  it("posts the event alone; the old toast; News and Validation are read again and the button gives way to 'miss audit recorded'", async () => {
+    let n = 0;
+    const server = fakeServer({ news: () => (++n === 1 ? news() : after(BRIGHTWELL, { audit_id: "au-20261112-brightwell-bio" })) });
+    const { validationStale } = await openedWithValidation();
+    open("Misses");
+    fireEvent.click(within(card("Brightwell Bio")).getByTestId("news-audit"));
+    expect(await screen.findByText("Miss audit created in Validation (prefilled)")).toBeInTheDocument();
+    expect(server.posts()).toEqual([{ method: "POST", path: "/api/news/audit_miss", body: { event_id: BRIGHTWELL } }]);
+    await waitFor(() => expect(server.reads()).toBe(2));
+    expect(validationStale()).toBe(true);
+    await waitFor(() => expect(within(card("Brightwell Bio")).queryByTestId("news-audit")).toBeNull());
+    expect(card("Brightwell Bio")).toHaveTextContent("miss audit recorded");
+  });
+
+  it("a refusal (400) is the failure toast; nothing is read again", async () => {
+    const server = fakeServer({ auditMiss: () => ({ status: 400, body: { ok: false, error: "no such news event with a named company" } }) });
+    await opened();
+    open("Misses");
+    fireEvent.click(within(card("Brightwell Bio")).getByTestId("news-audit"));
+    expect(await screen.findByText("✕ Creating the miss audit failed — no such news event with a named company")).toBeInTheDocument();
+    expect(server.posts()).toHaveLength(1);
+    await settle();
+    expect(server.reads()).toBe(1);
+    expect(within(card("Brightwell Bio")).getByTestId("news-audit")).toBeInTheDocument();
+  });
+});
+
+describe("News & Learning — Add an early signal", () => {
+  function fields(d: HTMLElement) {
+    return {
+      d,
+      date: within(d).getByRole("textbox", { name: "Date (YYYY, YYYY-MM or YYYY-MM-DD)" }),
+      text: within(d).getByRole("textbox", { name: "What was visible" }),
+      url: within(d).getByRole("textbox", { name: "Source URL" }),
+      family: within(d).getByRole("combobox", { name: "Signal family" }),
+      kind: within(d).getByRole("combobox", { name: "Knowable at the time?" }),
+      add: within(d).getByRole("button", { name: "Add" }),
+    };
+  }
+  function form(company = "Vantor Kinetics") {
+    const c = card(company);
+    fireEvent.click(within(c).getByRole("button", { name: /^(Backcast & sources|Sources & learning)$/ }));
+    fireEvent.click(within(c).getByRole("button", { name: "Add an early signal" }));
+    return fields(dialog());
+  }
+
+  it("the old form: its help, fields, placeholders, defaults and options; Add starts disabled", async () => {
+    fakeServer();
+    await opened();
+    const f = form();
+    expect(within(f.d).getByRole("heading", { name: "Add an early signal" })).toBeInTheDocument();
+    expect(f.d).toHaveTextContent(
+      "A public signal that existed BEFORE the story, with its source. Mark honestly whether it was knowable then, or only important in hindsight.",
+    );
+    expect(f.date).toHaveAttribute("placeholder", "2021-06");
+    expect(f.url).toHaveAttribute("placeholder", "https://…");
+    expect(f.date).toHaveValue("");
+    expect(f.text).toHaveValue("");
+    expect(f.family).toHaveValue("university_lab");
+    expect(f.kind).toHaveValue("known_early_signal");
+    expect(Array.from((f.family as HTMLSelectElement).options).map((o) => [o.value, o.textContent])).toEqual(
+      news().signal_families.map((x) => [x, x.replace(/_/g, " ")]),
+    );
+    expect(Array.from((f.kind as HTMLSelectElement).options).map((o) => [o.value, o.textContent])).toEqual([
+      ["known_early_signal", "Yes — a known early signal"],
+      ["in_retrospect", "No — only clear in retrospect"],
+    ]);
+    expect(f.add).toBeDisabled();
+  });
+
+  it("Add needs a date and an http URL — nothing is sent before; then the exact body, the toast, the form closes and News is read again", async () => {
+    const server = fakeServer();
+    const { validationStale } = await openedWithValidation();
+    const f = form();
+    type(f.date, "2026-06");
+    expect(f.add).toBeDisabled();
+    type(f.url, "meetups.example/munich-robotics-june");
+    expect(f.add).toBeDisabled(); // not an http URL
+    fireEvent.click(f.add);
+    type(f.date, "");
+    type(f.url, "https://meetups.example/munich-robotics-june");
+    expect(f.add).toBeDisabled(); // no date
+    fireEvent.click(f.add);
+    await settle();
+    expect(server.posts()).toEqual([]);
+
+    type(f.date, "2026-06");
+    type(f.text, "Vantor Kinetics demo at a Munich robotics meetup");
+    type(f.family, "event");
+    type(f.kind, "in_retrospect");
+    expect(f.add).toBeEnabled();
+    fireEvent.click(f.add);
+    expect(await screen.findByText("Signal added to the backcast")).toBeInTheDocument();
+    expect(server.posts()).toEqual([
+      {
+        method: "POST",
+        path: "/api/news/backcast",
+        body: {
+          date: "2026-06",
+          text: "Vantor Kinetics demo at a Munich robotics meetup",
+          url: "https://meetups.example/munich-robotics-june",
+          family: "event",
+          kind: "in_retrospect",
+          event_id: VANTOR,
+        },
+      },
+    ]);
+    expect(Object.keys(server.posts()[0].body!)).toEqual(["date", "text", "url", "family", "kind", "event_id"]); // the old key order
+    await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
+    await waitFor(() => expect(server.reads()).toBe(2));
+    expect(validationStale()).toBe(false); // a backcast writes no Validation row
+  });
+
+  it("the defaults are posted as they are, and the body names the card's own event", async () => {
+    const server = fakeServer();
+    await opened();
+    open("Misses");
+    const f = form("Brightwell Bio");
+    type(f.date, "2026");
+    type(f.url, "http://grants.example/2026");
+    fireEvent.click(f.add);
+    await screen.findByText("Signal added to the backcast");
+    expect(server.posts()).toEqual([
+      { method: "POST", path: "/api/news/backcast", body: { ...SIGNAL_FORM, date: "2026", url: "http://grants.example/2026", event_id: BRIGHTWELL } },
+    ]);
+  });
+
+  it("a refusal (400) is the failure toast; the form stays open with what was typed; nothing is read again", async () => {
+    const server = fakeServer({ backcast: () => ({ status: 400, body: { ok: false, error: "date as YYYY, YYYY-MM or YYYY-MM-DD" } }) });
+    await opened();
+    const f = form();
+    type(f.date, "June 2026");
+    type(f.url, "https://meetups.example/munich-robotics-june");
+    fireEvent.click(f.add);
+    expect(await screen.findByText("✕ Adding the early signal failed — date as YYYY, YYYY-MM or YYYY-MM-DD")).toBeInTheDocument();
+    expect(server.posts()).toHaveLength(1);
+    expect(dialog()).toBeInTheDocument();
+    expect(f.date).toHaveValue("June 2026");
+    await settle();
+    expect(server.reads()).toBe(1);
+  });
+
+  it("opening and closing (✕ or Escape) writes nothing; reopening keeps what was typed, as before", async () => {
+    const server = fakeServer();
+    await opened();
+    const f = form();
+    type(f.date, "2026-06");
+    type(f.url, "https://meetups.example/munich-robotics-june");
+    fireEvent.click(within(f.d).getByRole("button", { name: "Close" }));
+    expect(screen.queryByRole("dialog")).toBeNull();
+    fireEvent.click(within(card("Vantor Kinetics")).getByRole("button", { name: "Add an early signal" }));
+    const again = fields(dialog());
+    expect(again.date).toHaveValue("2026-06");
+    expect(again.url).toHaveValue("https://meetups.example/munich-robotics-june");
+    fireEvent.keyDown(document, { key: "Escape" });
+    expect(screen.queryByRole("dialog")).toBeNull();
+    await settle();
+    expect(server.writes()).toEqual([]);
+  });
+});
+
+describe("News & Learning — Codex H-253: a confirm refreshes the cached Sources windows", () => {
+  it("opens Sources, confirms a story, returns to the same window within its freshness period and sees the new benchmark", async () => {
+    let reads = 0;
+    const server = fakeServer({
+      sources: (w) => ({ ...sources(w as Window), benchmark_events: ++reads === 1 ? 11 : 12 }),
+      news: () => news(),
+    });
+    await opened();
+    open("News sources");
+    const box = await screen.findByTestId("news-sources");
+    await waitFor(() => expect(box).toHaveTextContent("separately on 11 material European events"));
+    open("Today");
+    const confirm = within(within(card("Vantor Kinetics")).getByTestId("news-outcome-proposal")).getByRole("button", { name: "Confirm outcome" });
+    fireEvent.click(confirm);
+    fireEvent.click(confirm);
+    expect(await screen.findByText("Recorded")).toBeInTheDocument();
+    open("News sources"); // well within the 60 s freshness period: only the invalidation makes it read again
+    await waitFor(() => expect(screen.getByTestId("news-sources")).toHaveTextContent("separately on 12 material European events"));
+    expect(server.gets().filter((p) => p === "/api/news/sources?window=90")).toHaveLength(2);
   });
 });

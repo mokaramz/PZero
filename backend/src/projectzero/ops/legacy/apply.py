@@ -18,6 +18,7 @@ import hashlib
 import json
 import secrets
 from collections.abc import Iterable
+from datetime import datetime
 from typing import Any
 
 import psycopg
@@ -137,6 +138,15 @@ def apply_plan(plan: ImportPlan, *, schema: str, conn: psycopg.Connection[Any] |
             cur.execute(sql.SQL("select {}.backfill_validation()").format(sql.Identifier(schema)))
             row = cur.fetchone()
             written["validation_log"] = int(row[0]) if row else 0  # review 027b: the 0018 mapping, line order
+            cur.execute(sql.SQL("select {}.backfill_news()").format(sql.Identifier(schema)))
+            row = cur.fetchone()
+            written["news"] = int(row[0]) if row else 0  # review 028b: the 0019 mapping, key / line order
+            # 028b: the curated News cases the reads seed in memory, stored once (the old guard), in this transaction
+            from projectzero.network.view import BERLIN
+            from projectzero.news.inputs_model import packaged_cases
+            from projectzero.news.store import ensure_seeded
+
+            written["news_seeded"] = ensure_seeded(cur.connection, schema, packaged_cases(), datetime.now(BERLIN))
             body = {"fingerprint": fp, "counts": plan.counts(), "generated_at": plan.report["generated_at"]}
             cur.execute(
                 sql.SQL("insert into {}.documents (key, body) values (%s, %s)").format(sql.Identifier(schema)),

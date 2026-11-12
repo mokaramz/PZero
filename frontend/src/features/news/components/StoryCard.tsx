@@ -1,8 +1,7 @@
 import { useState } from "react";
 
-import { DeferredButton } from "@/components/Deferred";
-import { Badge, Button } from "@/components/ui";
-import { NOT_PORTED } from "../model/deferred";
+import { Badge, Button, ConfirmButton } from "@/components/ui";
+import { useAuditMiss, useConfirmOutcome, useDecideOutcome } from "../api";
 import type { Backcast as BackcastT, Story } from "../model/types";
 import {
   analysisLabel,
@@ -21,15 +20,17 @@ import {
   takesSignals,
   whatHappened,
 } from "../model/view";
+import { auditMissBody, CONFIRM_TEXT, outcomeBody } from "../model/writes";
 import styles from "../News.module.css";
 import { Section } from "./Section";
+import { SignalForm } from "./SignalForm";
 
-export function StoryList({ stories, empty, pzStart }: { stories: Story[]; empty: string; pzStart: string }) {
+export function StoryList({ stories, empty, families, pzStart }: { stories: Story[]; empty: string; families: string[]; pzStart: string }) {
   if (!stories.length) return <div className={styles.empty}>{empty}</div>;
   return (
     <div className={styles.list}>
       {stories.map((s) => (
-        <StoryCard key={s.event_id} s={s} pzStart={pzStart} />
+        <StoryCard key={s.event_id} s={s} families={families} pzStart={pzStart} />
       ))}
     </div>
   );
@@ -37,12 +38,17 @@ export function StoryList({ stories, empty, pzStart }: { stories: Story[]; empty
 
 /**
  * One story: what happened and why it matters, the Project Zero check, and — opened — the backcast and the sources.
- * The outcome decision, the miss audit and "Add an early signal" write through Validation and arrive with 028b: they
- * keep their place, disabled with the reason. The old "Prepare backcast research (Scout Bridge, paid)" is removed.
+ * The decisions write (028b, ../api): the outcome proposal (Confirm outcome — two clicks — / Reject / Not enough
+ * evidence), "Audit this miss" and "Add an early signal" (its form). The old "Prepare backcast research (Scout Bridge,
+ * paid)" is removed.
  */
-export function StoryCard({ s, pzStart }: { s: Story; pzStart: string }) {
+export function StoryCard({ s, families, pzStart }: { s: Story; families: string[]; pzStart: string }) {
   const [open, setOpen] = useState(false);
   const [teach, setTeach] = useState(false);
+  const [addSignal, setAddSignal] = useState(false);
+  const confirm = useConfirmOutcome();
+  const decide = useDecideOutcome();
+  const audit = useAuditMiss();
   const st = stateBadge(s.state);
   const c = s.card;
   return (
@@ -76,15 +82,21 @@ export function StoryCard({ s, pzStart }: { s: Story; pzStart: string }) {
         <div className={styles.proposal} data-testid="news-outcome-proposal">
           <b>Propose outcome:</b>
           {proposalText(s)}{" "}
-          <DeferredButton size="sm" variant="primary" reason={NOT_PORTED.writes}>
+          <ConfirmButton
+            size="sm"
+            variant="primary"
+            busy={confirm.isPending || decide.isPending}
+            confirmText={CONFIRM_TEXT}
+            onConfirm={() => confirm.mutate(outcomeBody(s.event_id, "confirm"))}
+          >
             Confirm outcome
-          </DeferredButton>
-          <DeferredButton size="sm" reason={NOT_PORTED.writes}>
+          </ConfirmButton>
+          <Button size="sm" onClick={() => decide.mutate(outcomeBody(s.event_id, "reject"))}>
             Reject
-          </DeferredButton>
-          <DeferredButton size="sm" variant="ghost" reason={NOT_PORTED.writes}>
+          </Button>
+          <Button size="sm" variant="ghost" onClick={() => decide.mutate(outcomeBody(s.event_id, "not_enough"))}>
             Not enough evidence
-          </DeferredButton>
+          </Button>
         </div>
       )}
       <div className={styles.row}>
@@ -97,9 +109,9 @@ export function StoryCard({ s, pzStart }: { s: Story; pzStart: string }) {
           </Button>
         )}
         {canAudit(s) && (
-          <DeferredButton size="sm" reason={NOT_PORTED.writes} data-testid="news-audit">
+          <Button size="sm" onClick={() => audit.mutate(auditMissBody(s.event_id))} data-testid="news-audit">
             Audit this miss
-          </DeferredButton>
+          </Button>
         )}
         {s.audit_id && <span className={styles.faint}>miss audit recorded</span>}
       </div>
@@ -117,9 +129,9 @@ export function StoryCard({ s, pzStart }: { s: Story; pzStart: string }) {
           {s.backcast ? <Backcast b={s.backcast} /> : takesSignals(s) && <p className={styles.faint}>{NO_BACKCAST}</p>}
           {takesSignals(s) && (
             <div className={styles.row}>
-              <DeferredButton size="sm" variant="ghost" reason={NOT_PORTED.writes}>
+              <Button size="sm" variant="ghost" onClick={() => setAddSignal(true)}>
                 Add an early signal
-              </DeferredButton>
+              </Button>
             </div>
           )}
           {!!c?.watch_next.length && (
@@ -149,6 +161,7 @@ export function StoryCard({ s, pzStart }: { s: Story; pzStart: string }) {
           </Section>
         </div>
       )}
+      <SignalForm open={addSignal} onClose={() => setAddSignal(false)} eventId={s.event_id} families={families} />
     </article>
   );
 }

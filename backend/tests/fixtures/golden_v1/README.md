@@ -124,3 +124,18 @@ Clock frozen at 2026-11-12 10:00; the old GET's seeding save intercepted in memo
 normalised: the Swiss ticker's technical row (System health is not ported: the old `UNKNOWN` fallback, plus
 `reason`) and the key order of `unique.by_scope` (a counter over a set: the old string hashing)
 (`python -m projectzero.ops.parity_news goldens`).
+
+`oracle_news_writes.json` (review 028b): the old News writes (`decide_outcome`, `audit_miss`,
+`add_backcast_signal`) sequence by sequence, each from the fresh `main` folder of `oracle_news.json` plus eight write
+events (invented names): confirm; confirm then confirm, reject or not_enough (the prior confirmation answered again,
+nothing appended); reject then confirm; not_enough twice; an archived confirm; every outcome refusal in the old order,
+the source URL choice and the old 500 of an event without a source; miss audits with the defaults and with explicit
+fields, a bad `why_missed` refused after the frozen context, no company, an unknown event; backcasts with year,
+month and day dates, a time cut to its day, the kind and family fallbacks, a stripped URL, an event without
+`backcast`, on a curated and a non-curated event, and every backcast refusal in the old order; writes on the
+curated case not yet seeded. Before every write the old view's seeding runs (the store's `ensure_seeded`). Clock
+frozen at 2026-11-12 10:00, the old `_id` timestamp answering the same id seam as the new `new_hex`, every save and
+append in memory (the data folder checked unchanged). Per step the seeding, the answer, the appended action and
+Validation bytes, the saved event record (key order) and the next old News and Validation views (kept as sha-256
+digests per section) match, with no declared difference. Written and read as bytes
+(`python -m projectzero.ops.parity_news writes-goldens`).

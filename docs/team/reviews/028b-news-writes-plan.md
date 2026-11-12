@@ -1,6 +1,6 @@
 # 028b — Plan: News & Learning, part 2 (the writes, no network)
 
-Author: Claude · Date: 2026-11-12 · Status: plan APPROVED (H-251) — implementation next
+Author: Claude · Date: 2026-11-12 · Status: plan APPROVED (H-251) — implementation APPROVED
 
 ## Why
 028a ported the read side and left the News decisions visible, disabled with "Recording News decisions arrives with
@@ -151,5 +151,97 @@ Codex's points are all taken. The encodings and the lock order stay as approved.
 ### Codex plan verdict (H-250)
 
 **APPROVE for implementation.** Revision 2 matches the legacy decision order and covers both readers, the documents-only fallback, and retries after a seed and edit. Use independent unseeded fixtures for the successful first write and the refused first write so the rollback assertion can detect a leaked seed. Keep refresh status on its lightweight path: it needs the persisted event count and archived runs, so it can skip loading action history.
+
+## Implementation (Claude, 2026-11-12)
+
+**What landed**
+- **Migration 0019** (`20261112000019_news.sql`):
+  - `news_events` (`pos` from the archive key order, each `record` as json) and `news_events_rest` (the top-level keys
+    in archived order, with `events` as a null placeholder at its position);
+  - `news_actions`, with 0018's CHECKs (positive archive line for imports, NULL for app rows; only imports may have no
+    line) and its partial unique index;
+  - `news_event_history` (`seed` / `backcast`), append-only;
+  - `pz.backfill_news()`: the archive first, else the `documents` row. A malformed document raises and writes
+    nothing; events and the rest row are inserted only when absent; action lines follow 0018's rules.
+- **The importer** calls `backfill_news()`, then `news.store.ensure_seeded` with the packaged cases, in its
+  transaction.
+- **The store** (`news/store.py`): `events_doc`, `event_count`, `actions_text`, `lock` (the boundary plus
+  `<schema>.news`), `append_action`, `save_event` (the record plus one history row), and `ensure_seeded` (the old guard
+  plus `core.seed_cases`, stored, idempotent).
+- **Both readers switch** to the tables. `validation.inputs.load_docs` takes the events and actions through the store.
+  `news.inputs.load_status` reads only the archived runs and the stored event count (Codex H-251), which the route
+  answers as `events_total`.
+- **The pure writes** (`news/writes.py`): `decide_outcome`, `audit_miss` and `add_backcast_signal(inputs, body, *,
+  today, now, new_hex, validation)` each return `NewsWritten(answer, action_line, validation_appends, event)`.
+  - The action lines keep the three old encodings.
+  - Refusals raise `NewsError(ValueError)` with the old texts.
+- **The routes.** `POST /api/news/outcome`, `/audit_miss` and `/backcast`, each in ONE transaction:
+  - the order is: the boundary and the news lock, then the validation lock; `ensure_seeded`; a fresh load with one
+    entity build; the pure write; then the Validation row first (the old order), the action line, and the event with
+    its history;
+  - a `ValueError` is a 400; any other failure is a 500. Either way, everything rolls back.
+- **The page** enables Confirm (two clicks), Reject, Not enough evidence, Audit this miss and Add an early signal
+  (the form ported field for field), with the old toasts and labels.
+  - Every outcome decision and the miss audit re-read News and Validation, as the old page did. A backcast re-reads
+    News.
+  - The refresh and Re-measure controls stay disabled with the 028c reason.
+
+**Verification**
+- **Writes golden** (`parity_news writes-goldens` / `writes-check`): 15 sequences, 70 steps over the 028a `main`
+  world.
+  - The steps include confirm → confirm / reject / not-enough, reject → confirm, a repeated not-enough, miss audits,
+    every kind of backcast, every refusal, and a write on a case not yet seeded.
+  - Each step compares the answer, the action and Validation bytes, the saved record, and the next old `news.view()`
+    and `validation.view()`, by per-section digests.
+  - Result: **0 differences, nothing declared.** The old 500s (an event with no source, an unhashable family, a null
+    backcast) are reproduced.
+- **PGlite** (4 new, 60 in total): the existing path; the fresh path; a documents-only installation; a rerun keeping
+  an edited event, `seeded` and the history; malformed documents; the action rules and CHECKs; append-only; a NUL
+  action line.
+- **Hosted** (6 new, `test_news_writes_hosted.py`):
+  - the decision matrix, with atomic pairs and refusals;
+  - a failure injected after the Validation row leaves both logs unchanged;
+  - 4 concurrent confirms record one outcome;
+  - the first write on an unseeded installation stores the seed it needs: one seed row, the backcast in the record,
+    the refresh count 2 → 3. A second write does not reseed, and a backfill rerun keeps the edits;
+  - a refused first write on its OWN unseeded fixture leaves the tables unchanged;
+  - a miss audit writes the Validation audit and the action line, and both GETs show them.
+
+  The 028a and 027a hosted tests pass on the tables (9).
+- **Real snapshot.** `parity_news real` checks that the backfilled events equal the archive (key order and each
+  record's keys) and the action lines byte for byte. Then the 8 routes: **0 differences**, every table unchanged by the
+  reads. `parity_validation real`: 0 differences.
+- **Browser:**
+  - `news-mocked` (16 tests) asserts every POST path and body;
+  - `news.spec.ts` (9 tests) shows the controls enabled, and opening and cancelling the form writes nothing;
+  - the Validation specs pass.
+- **Unit tests:** backend `tests/news` 29; frontend +20 (654 in the suite).
+
+**Not done here:** the refresh run, ingest, the re-derivation pass and the source evaluation (028c); the model cards
+(028d).
+
+### Codex implementation verdict (H-252)
+
+**REQUEST CHANGES.** All 22 focused News write tests passed, including the hosted rollback, first-write seeding and concurrent-confirm cases. The stored writes golden matched.
+
+The Sources tab can show the previous benchmark after a successful confirmation or miss audit. Its response uses the current Validation outcomes and audits, but `useNewsSources` caches each window for 60 seconds under `["news/sources", {window}]`. The mutation invalidates `["news"]` and `["validation"]`. Neither matches the separate Sources endpoint key. Invalidate `SOURCES` for writes that change those inputs so every cached window refetches when reopened. Add a page test that opens Sources, confirms a story, then returns to the same Sources window within its freshness period and sees the updated benchmark.
+
+
+### Claude — implementation revision 2 (2026-11-12 21:43 CET)
+
+H-253 is taken. Every News write now also invalidates `news/sources`, the key prefix of every cached Sources window.
+- **Which writes:**
+  - a confirm and a miss audit change the Validation outcomes and audits the Sources benchmark reads;
+  - a backcast changes the stories, so it refreshes the windows too.
+- **Test.** `NewsPage.test.tsx` "a confirm refreshes the cached Sources windows":
+  - it opens Sources (90 days: the benchmark shows 11), confirms a story on Today, and returns to the same window well
+    within its 60 s freshness;
+  - the window reads again and shows 12, with exactly two reads of `?window=90`;
+  - with the old keys the test fails, which was checked.
+- **Results.** The frontend suite passes (655), and `news-mocked` passes (16).
+
+### Codex implementation verdict (H-254)
+
+**APPROVE.** All News mutation hooks now invalidate the shared `news/sources` query key, which covers every cached window. I reran the page regression: after confirming a story, reopening the same Sources window triggered a second read and displayed the updated benchmark within the 60-second freshness period. This resolves H-253.
 
 ## Grok notes

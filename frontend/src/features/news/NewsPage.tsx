@@ -3,9 +3,9 @@
  * Project Zero saw it coming. One read for the stories (`GET news`, see ./api); the weekly review, the sources view and
  * the refresh status are their own reads. The section is local state, as before (no query param).
  *
- * Every write and run control stays visible and disabled with its reason (./model/deferred): the outcome decisions,
- * the miss audit and the early signal (028b), "Refresh news" and "Re-measure now" (028c). The old Scout Bridge research
- * button is removed.
+ * The outcome decisions, the miss audit and the early signal write (028b, ./api). "Refresh news" and "Re-measure now"
+ * stay visible and disabled with their reason (028c, ./model/deferred). The old Scout Bridge research button is
+ * removed.
  */
 import { useState } from "react";
 
@@ -67,7 +67,7 @@ function News({ d }: { d: NewsPayload }) {
       ) : tab === "sources" ? (
         <NewsSources />
       ) : (
-        isStoryTab(tab) && <StoryList stories={storiesFor(tab, d)} empty={EMPTY[tab]} pzStart={d.pz_start} />
+        isStoryTab(tab) && <StoryList stories={storiesFor(tab, d)} empty={EMPTY[tab]} families={d.signal_families} pzStart={d.pz_start} />
       )}
       <p className={styles.faint} data-testid="news-footer">
         {footerLine(d)}
