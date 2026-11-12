@@ -699,3 +699,41 @@ describe("migration 0013 — a coverage adoption is one append-only row per cand
     assert.equal((await db.query(`select relrowsecurity from pg_class where relname = 'coverage_adoptions'`)).rows[0].relrowsecurity, true);
   });
 });
+
+describe("migration 0014 — founder calls in their ORIGINAL order, from the byte-exact archive", () => {
+  const archive = async (db, text) => {
+    const raw = Buffer.from(text, "utf8");
+    const sha = (await import("node:crypto")).createHash("sha256").update(raw).digest("hex");
+    await db.query(`insert into pz.legacy_documents (path, sha256, bytes, raw, parsed) values ('founder_calls.json', $1, $2, $3, $4)`,
+      [sha, raw.length, raw, text]);
+  };
+  // insertion order differs from JSONB order (JSONB sorts keys by length, then bytes): long ids first, a short id last
+  const text = JSON.stringify({ version: 1, label: "x", companies: { "co-zzzz-long": { id: "co-zzzz-long", name: "Zeta" }, "co-a": { id: "co-a", name: "Alpha" } },
+    founders: { "fo-yy-long": { id: "fo-yy-long", name: "Y", company_id: "co-zzzz-long" }, "fo-b": { id: "fo-b", name: "B", company_id: "co-a" } },
+    calls: { "ca-x-long-2": { id: "ca-x-long-2", date: "2026-11-01", founder_id: "fo-yy-long" }, "ca-1": { id: "ca-1", date: "2026-11-01", founder_id: "fo-b" } } });
+
+  test("positions follow the raw insertion order; a retry keeps edits", async () => {
+    const db = await freshDb();
+    await archive(db, text);
+    assert.equal((await db.query(`select pz.backfill_founder_calls() as n`)).rows[0].n, 6);
+    for (const [t, ids] of [["fc_companies", ["co-zzzz-long", "co-a"]], ["fc_founders", ["fo-yy-long", "fo-b"]], ["fc_calls", ["ca-x-long-2", "ca-1"]]]) {
+      assert.deepEqual((await db.query(`select id from pz.${t} order by pos`)).rows.map((r) => r.id), ids);
+    }
+    await db.query(`update pz.fc_calls set attrs = jsonb_set(attrs, '{record,date}', '"2026-11-02"') where id = 'ca-1'`);
+    assert.equal((await db.query(`select pz.backfill_founder_calls() as n`)).rows[0].n, 0);
+    assert.equal((await db.query(`select attrs->'record'->>'date' as d from pz.fc_calls where id = 'ca-1'`)).rows[0].d, "2026-11-02");
+  });
+
+  test("a malformed archive raises and writes nothing; events are append-only", async () => {
+    for (const bad of [`[1]`, `{"calls": []}`, `{"calls": {"ca-1": 5}}`, `{"calls": {"ca-1": {"id": "ca-2"}}}`, `{"calls": {"ca-1": {}, "ca-1": {}}}`]) {
+      const db = await freshDb();
+      await archive(db, bad);
+      await rejects(db.query(`select pz.backfill_founder_calls()`), /founder_calls\.json/);
+      assert.equal((await db.query(`select count(*)::int as n from pz.fc_calls`)).rows[0].n, 0);
+    }
+    const db = await freshDb();
+    await db.query(`insert into pz.fc_events (actor, action, before, after) values ('operator', 'save', '{}', '{}')`);
+    await rejects(db.query(`update pz.fc_events set actor = 'x'`), /append-only/);
+    await rejects(db.query(`insert into pz.fc_events (actor, action, before, after) values ('operator', 'delete', '{}', '{}')`), /fc_events_action_check/);
+  });
+});

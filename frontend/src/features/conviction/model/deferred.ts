@@ -13,5 +13,5 @@ export const NOT_PORTED = {
   bridge: "External research jobs arrive with the bridge port",
   evaluator: "The Active Evaluator arrives with the evaluator port",
   founders: "Founders and registries arrive with the identity port",
-  traction: "The traction review arrives with the founder-calls port",
+  traction: "The traction review reads the Claim Index — it arrives with the claims & identity port",
 } as const;

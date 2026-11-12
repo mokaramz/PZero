@@ -1,0 +1,396 @@
+/* Founder Calls — Company → Founder → calls tree beside the call detail / form. Two columns; one column when the page
+   container is narrower than ~980px (≈1100px viewport, and at 150 % zoom on 1366×768). ONE scroll owner (the page). */
+.page {
+  container-type: inline-size;
+}
+.wrap {
+  min-width: 0;
+}
+.bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+.sub {
+  font-size: 12px;
+  color: var(--mut);
+  overflow-wrap: anywhere;
+}
+.lnk {
+  font: inherit;
+  font-size: 11px;
+  color: var(--blue);
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+.lnk:hover {
+  text-decoration: underline;
+}
+.fclbl {
+  display: inline-block;
+  font-size: 9.5px;
+  padding: 1px 6px;
+  border: 1px solid var(--line-sand);
+  color: var(--amber);
+  background: var(--tint-cream);
+  border-radius: 3px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  vertical-align: middle;
+}
+.unk {
+  color: var(--amber);
+  font-weight: 600;
+}
+.tagN,
+.tagG {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 1px 7px;
+  border-radius: 999px;
+  color: var(--mut);
+  background: var(--well);
+}
+.tagG {
+  color: var(--green);
+  background: var(--green-soft);
+}
+
+/* ---------------- boxes */
+.box,
+.dueBox,
+.sec {
+  background: var(--paper);
+  border: 1px solid var(--hair);
+  border-radius: var(--r-lg);
+  box-shadow: var(--sh-1);
+  margin-bottom: 12px;
+  min-width: 0;
+}
+.dueBox {
+  box-shadow: var(--sh-2);
+}
+.boxHead {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--mut);
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--hair);
+}
+.boxHeadSub {
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 500;
+}
+.boxBody {
+  padding: 10px 14px;
+  font-size: 13px;
+  overflow-wrap: anywhere;
+  min-width: 0;
+}
+.dueRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  padding: 4px 0;
+}
+.dueRow + .dueRow {
+  border-top: 1px solid var(--hair);
+}
+.nameBtn {
+  font: inherit;
+  font-weight: 600;
+  color: var(--ink);
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+.nameBtn:hover {
+  color: var(--blue);
+}
+
+/* ---------------- split */
+.split {
+  display: grid;
+  grid-template-columns: 300px minmax(0, 1fr);
+  align-items: start;
+  background: var(--paper);
+  border: 1px solid var(--hair);
+  border-radius: var(--r-lg);
+  box-shadow: var(--sh-2);
+}
+.split > * {
+  min-width: 0;
+}
+.tree {
+  position: sticky;
+  top: calc(var(--topbar-h) + 8px);
+  max-height: calc(100vh - var(--topbar-h) - 16px);
+  overflow: auto;
+  border-right: 1px solid var(--hair);
+  padding: 10px 8px;
+  font-size: 12.5px;
+}
+.co + .co {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--hair);
+}
+.coName,
+.fName {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+  padding: 2px 4px;
+}
+.coName > span:first-child {
+  font-weight: 600;
+}
+.f {
+  margin: 4px 0 0 12px;
+}
+.callRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  align-items: center;
+  width: 100%;
+  font: inherit;
+  font-size: 12px;
+  color: inherit;
+  text-align: left;
+  background: none;
+  border: 0;
+  border-radius: var(--r-sm);
+  padding: 4px 8px;
+  cursor: pointer;
+}
+.callRow:hover {
+  background: var(--well);
+}
+.callSel,
+.callSel:hover {
+  background: var(--tint-blue-2);
+  box-shadow: inset 2px 0 0 var(--navy);
+}
+.num {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+}
+.noCalls {
+  padding: 2px 8px;
+  font-size: 12px;
+  color: var(--mut);
+}
+.treeEmpty {
+  padding: 14px 8px;
+  font-size: 12.5px;
+  color: var(--mut);
+}
+.det {
+  min-width: 0;
+}
+.detEmpty {
+  padding: 60px 10px;
+  text-align: center;
+  color: var(--faint);
+}
+
+/* ---------------- detail / form pane */
+.pane {
+  padding: 14px 18px;
+  max-width: 1000px;
+  overflow-wrap: anywhere;
+}
+.paneBar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 8px;
+  margin-bottom: 10px;
+}
+.paneTitle {
+  font-size: 15px;
+}
+.paneActs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.qa {
+  margin-bottom: 9px;
+}
+.q {
+  font-weight: 600;
+  font-size: 12.5px;
+}
+.a,
+.preWrap {
+  white-space: pre-wrap;
+}
+.fuList,
+.claims {
+  margin: 3px 0 0 18px;
+}
+.naRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ---------------- form */
+.form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 10px 12px;
+}
+.form > * {
+  min-width: 0;
+}
+.full {
+  grid-column: 1 / -1;
+}
+.fld {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.fld > span {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--mut);
+}
+.fld input,
+.fld select,
+.fld textarea {
+  width: 100%;
+  min-width: 0;
+}
+.form textarea {
+  min-height: 64px;
+}
+.dt {
+  display: flex;
+  gap: 6px;
+}
+.dt input {
+  min-width: 0;
+  flex: 1;
+}
+.dt input:last-child {
+  width: 90px;
+  flex: none;
+}
+.sections {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.sec .boxHead {
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 13px;
+  color: var(--ink);
+}
+.unkCb {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  margin-top: 6px;
+  font-size: 12px;
+}
+.fu {
+  margin-top: 8px;
+}
+.fu summary {
+  cursor: pointer;
+  font-size: 12px;
+  color: var(--blue);
+}
+.fu > .fld {
+  margin-top: 6px;
+}
+.na {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 140px 150px;
+  gap: 6px;
+}
+.judg {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 10px;
+  margin-top: 8px;
+}
+.form textarea.short {
+  min-height: 44px;
+}
+.formFoot {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+/* ---------------- drawers */
+.md {
+  white-space: pre-wrap;
+  font-size: 12px;
+}
+.pickQ {
+  width: 100%;
+  margin-bottom: 8px;
+}
+.pickList {
+  display: flex;
+  flex-direction: column;
+}
+.pickRow {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  font: inherit;
+  text-align: left;
+  color: inherit;
+  background: none;
+  border: 0;
+  border-bottom: 1px solid var(--hair);
+  padding: 8px 12px;
+  cursor: pointer;
+}
+.pickRow:hover {
+  background: var(--well);
+}
+
+@container (max-width: 980px) {
+  .split {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .tree {
+    position: static;
+    max-height: 240px;
+    border-right: 0;
+    border-bottom: 1px solid var(--hair);
+  }
+  .pane {
+    padding: 12px;
+  }
+  .form,
+  .judg,
+  .na {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
