@@ -25,7 +25,11 @@ import; a body that is not a JSON object is a 400):
 * ``POST /api/events/scout``    the old ``scout_event`` ``{id, action: add | monitor | ignore}`` -> ``{ok, status,
                                event_id}`` (``ok: false`` + error for an unknown report or action)
 
-The source scan (``event_find``) is review 017.
+* ``POST /api/events/find``     the old ``event_find`` (review 017), synchronous: scan every event source
+                               (``events.scan``: read, fetch with no transaction open, write in one transaction) ->
+                               ``{added, accepted,
+                               dropped_past, dropped_dupe, health, report}`` · 409 when a scan is already running or
+                               before the legacy import
 """
 
 from __future__ import annotations
@@ -42,7 +46,7 @@ from fastapi.responses import JSONResponse
 from projectzero.api.routers.conviction import Body
 from projectzero.core.db import read_only_transaction, transaction
 from projectzero.dealflow.intake.postgres import IntakeClosedError
-from projectzero.events import edits, store, view
+from projectzero.events import edits, scan, store, view
 from projectzero.events.edits import EventsError
 from projectzero.events.when import BERLIN
 from projectzero.events.writes import EventsWriter
@@ -154,3 +158,28 @@ def event_debrief(request: Request, body: Body) -> JSONResponse:
 @router.post("/scout")
 def scout_event(request: Request, body: Body) -> JSONResponse:
     return _write(request, body, "scout")
+
+
+@router.post("/find")
+def event_find(request: Request, body: Body) -> JSONResponse:
+    """The old ``event_find`` (its body is ignored). ``app.state.events_fetcher`` replaces the network in tests."""
+    if isinstance(body, JSONResponse):
+        return body
+    settings = request.app.state.settings
+    fetcher = getattr(request.app.state, "events_fetcher", None)
+    try:
+        state = request.app.state
+        health = scan.scan(
+            settings.db_url,
+            settings.schema,
+            _now(request),
+            fetcher,
+            deadline_s=getattr(state, "events_scan_deadline_s", scan.SCAN_DEADLINE_S),
+            transport=getattr(state, "events_transport", None),
+            resolver=getattr(state, "events_resolver", None),
+        )
+    except EventsError as exc:
+        return JSONResponse(jsonable_encoder({"ok": False, "error": str(exc), **exc.extra}), status_code=exc.status)
+    except IntakeClosedError as exc:
+        return JSONResponse({"ok": False, "error": str(exc)}, status_code=409)
+    return JSONResponse(jsonable_encoder(scan.find_answer(health)))

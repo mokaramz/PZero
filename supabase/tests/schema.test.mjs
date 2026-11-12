@@ -594,3 +594,34 @@ describe("migration 0008 — every Events write is an append-only history row; d
     await rejects(insert("event_scan", "c".repeat(64)), /intake_submissions_origin_check/);
   });
 });
+
+describe("migration 0009 — watcher baselines are live state; the scan writes its own history actions", () => {
+  test("one baseline per watcher source, always a JSON array, and the scan actions are known", async () => {
+    const db = await freshDb();
+    await db.query(`insert into pz.event_watch_snapshots (source_id, url, lines) values ('s-w', 'https://w.example.com/', '[]')`);
+    await db.query(
+      `insert into pz.event_watch_snapshots (source_id, url, lines, seeded_from) values ('s-v', 'https://v.example.com/', $1, '.watch/ev-abc.json')`,
+      [JSON.stringify(["a line"])],
+    );
+    await rejects(
+      db.query(`insert into pz.event_watch_snapshots (source_id, url, lines) values ('s-w', 'https://w.example.com/', '[]')`),
+      /event_watch_snapshots_pkey/,
+    );
+    await rejects(
+      db.query(`insert into pz.event_watch_snapshots (source_id, url, lines) values ('s-x', 'https://x.example.com/', '{}')`),
+      /event_watch_snapshots_lines_check/,
+    );
+    await db.query(`insert into pz.events (id, name) values ('ev-a', 'Demo day')`);
+    await db.query(`insert into pz.event_leads (id, title) values ('evlead-1', 'Meetup')`);
+    for (const action of ["scan_create", "scan_merge"]) {
+      await db.query(`insert into pz.event_history (event_id, actor, action, after) values ('ev-a', 'operator', $1, '{}')`, [action]);
+    }
+    await db.query(`insert into pz.event_history (lead_id, actor, action, after) values ('evlead-1', 'operator', 'scan_lead', '{}')`);
+    await rejects(
+      db.query(`insert into pz.event_history (event_id, actor, action, after) values ('ev-a', 'operator', 'scan_delete', '{}')`),
+      /event_history_action_check/,
+    );
+    const rls = await db.query(`select relrowsecurity from pg_class where relname = 'event_watch_snapshots'`);
+    assert.equal(rls.rows[0].relrowsecurity, true);
+  });
+});

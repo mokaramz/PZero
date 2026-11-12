@@ -1,7 +1,8 @@
 /**
  * The Events endpoints — the ONE place their paths live. The payloads are the old ones (`/api/events`,
- * `/api/event_health`, `/api/wsig`, `/api/event_suggest`, the old `POST /api/weekend`, which never wrote, and the
- * writes `event_save`, `event_verify`, `event_lead`, `event_debrief`, `scout_event`) under new paths.
+ * `/api/event_health`, `/api/wsig`, `/api/event_suggest`, the old `POST /api/weekend`, which never wrote, the
+ * writes `event_save`, `event_verify`, `event_lead`, `event_debrief`, `scout_event`, and the source scan `event_find`)
+ * under new paths.
  *
  * Reads (review 015): the old weekend POST is a GET now (decision b).
  * Writes (review 016), same-origin POSTs:
@@ -13,7 +14,10 @@
  * - `debrief {id, people_met, leads:[{name, desc, url}], notes}` → `{ok, people, leads}`; a startup lead without a
  *   public evidence URL is a 400 that carries `lead: <index in the sent list>`, and nothing is saved.
  * - `scout {id, action}` → `{ok, status, event_id}` (`ok:false, error` for an unknown report / action), once per report.
- * The source scan (`event_find`) arrives in review 017.
+ *
+ * Source scan (review 017): `find {}` → the old `event_find` body `{added, accepted, dropped_past, dropped_dupe, health,
+ * report}`. It runs synchronously (up to a few minutes); 409 `{ok:false, error}` while another scan runs or before the
+ * legacy import.
  */
 import { INBOX } from "@/features/deal-flow/hooks/useDealFlowData";
 import { GRAPH, PEOPLE } from "@/features/network/api";
@@ -31,6 +35,7 @@ export const VERIFY = "events/verify";
 export const LEAD = "events/lead";
 export const DEBRIEF = "events/debrief";
 export const SCOUT = "events/scout";
+export const FIND = "events/find";
 
 /** What an event write makes stale: every Events read. */
 export const EVENT_KEYS = [EVENTS, WSIG, EVENT_HEALTH];
@@ -44,6 +49,7 @@ export const LABEL = {
   verify: "Checking the event",
   lead: "Saving the lead",
   debrief: "Saving the debrief",
+  find: "Searching for events",
 } as const;
 
 export type WsigPayload = { ranked: WsigItem[] };

@@ -114,3 +114,12 @@ target named) or archived-only (with a reason).
     `documents['scout_intake.json#rest']`.
   - **Debrief leads.** Startup leads from a debrief enter Deal Flow through intake as a trusted batch with the origin
     `event_debrief`. Their evidence is the lead's URL, else the event's URL, and never `website`.
+- The event source scan (review [017](team/reviews/017-events-source-scan-plan.md), migration 0009):
+  - **Registry.** The registry is `documents['event_sources.json']`. Its repair and the newly offered default sources
+    are applied only inside a scan.
+  - **Watcher baselines.** Baselines live in `event_watch_snapshots`, one row per watcher, keyed by the source id. A
+    watcher's first baseline is taken once from its archived `.watch/ev-<uid(url)>.json`; an empty baseline is a
+    baseline, and a failed fetch keeps the last good one.
+  - **Writes.** The scan writes through the Events write model (`scan_create` / `scan_merge` / `scan_lead` history
+    rows) and stores `documents['event_health.json']`.
+  - **Leads.** Leads are never trimmed; new leads are listed first.

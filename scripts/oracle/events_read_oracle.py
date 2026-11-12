@@ -18,6 +18,13 @@ IN = {clock, steps: [{op: save | verify | lead | debrief | scout, body}]}
   -> per step: the HTTP code and body the old route returned (event_save / event_verify / event_lead / event_debrief
      / scout_event), then the stored events.json events + leads, the Scout 00 event reports and the people.
 
+    <old python> scripts/oracle/events_read_oracle.py scan IN.json OUT.json
+
+IN = {clock, responses: {url: {text} | {error, message}}, sets: [{name, files}]}
+  -> per set: the old ``event_sources.scan()`` with ``connectors._get_raw`` answering from ``responses`` (an unknown
+     URL raises ConnectionError("no recorded response")): the health document, then the stored events, leads,
+     event_sources.json and every ``.watch/`` baseline.
+
 The clock is frozen everywhere the old code read it: ``events.berlin_today`` (``datetime.now(BERLIN)``) and the
 machine's ``date.today()`` in ``events``, ``ecosys`` and ``people``. PZ_DATA must be a scratch folder.
 """
@@ -72,6 +79,7 @@ def _write(files: dict[str, Any]) -> None:
     for existing in ("events.json", "event_sources.json", "event_health.json", "scout_intake.json", "people.json"):
         (root / existing).unlink(missing_ok=True)
     for rel, doc in files.items():
+        (root / rel).parent.mkdir(parents=True, exist_ok=True)
         (root / rel).write_text(json.dumps(doc, ensure_ascii=False, indent=2), encoding="utf-8")
 
 
@@ -96,6 +104,52 @@ def reads(inp: dict[str, Any]) -> dict[str, Any]:
             }
         out["sets"][s["name"]] = per
     out["suggest"] = [_try(lambda b=b: events.suggest(b)) for b in inp.get("suggest", [])]
+    return out
+
+
+ERRORS = {"TimeoutError": TimeoutError, "ConnectionError": ConnectionError, "ValueError": ValueError}
+
+
+def scan_mode(inp: dict[str, Any]) -> dict[str, Any]:
+    import shutil
+
+    from projectzero.domain import connectors, event_sources, events
+
+    _freeze(inp["clock"])
+    fd, fdt = _clock(inp["clock"])
+    connectors.date = fd  # type: ignore[attr-defined]
+    for module in (connectors, event_sources):
+        module.datetime = fdt  # type: ignore[attr-defined]
+    responses = inp["responses"]
+
+    def fake(url: str) -> str:
+        r = responses.get(url)
+        if r is None:
+            raise ConnectionError("no recorded response")
+        if "error" in r:
+            raise ERRORS[r["error"]](r.get("message", ""))
+        return str(r["text"])
+
+    connectors._get_raw = fake  # the old tests' hook
+    root = Path(os.environ["PZ_DATA"])
+    out: dict[str, Any] = {"sets": {}}
+    for s in inp["sets"]:
+        if s["files"] is None:  # the data folder as it is (the real snapshot copy): touch nothing
+            files: dict[str, Any] = {}
+        else:
+            files = s["files"]
+            _write(files)
+            shutil.rmtree(root / ".watch", ignore_errors=True)
+        for rel, doc in files.items():
+            if rel.startswith(".watch/"):
+                (root / ".watch").mkdir(exist_ok=True)
+                (root / rel).write_text(json.dumps(doc), encoding="utf-8")
+        health = _try(event_sources.scan)
+        d = events.load()
+        watch = {f".watch/{p.name}": json.loads(p.read_text(encoding="utf-8")) for p in sorted((root / ".watch").glob("*.json"))} if (root / ".watch").exists() else {}
+        sources = json.loads((root / "event_sources.json").read_text(encoding="utf-8")) if (root / "event_sources.json").exists() else None
+        out["sets"][s["name"]] = {"health": health, "events": d.get("events", []), "leads": d.get("leads", []),
+                                  "event_sources": sources, "watch": watch}
     return out
 
 
@@ -152,7 +206,7 @@ def main() -> int:
         ["git", "-C", str(old_root), "status", "--porcelain", "--", "backend/src/projectzero"],
         capture_output=True, text=True, check=False,
     ).stdout.strip()  # fmt: skip
-    result = {"reads": reads, "writes": writes}[mode](inp)
+    result = {"reads": reads, "writes": writes, "scan": scan_mode}[mode](inp)
     meta = {"old_revision": revision, "old_dirty": bool(dirty), "mode": mode}
     dst.write_text(json.dumps({"meta": meta, **result}, ensure_ascii=False, default=str), encoding="utf-8")
     return 0

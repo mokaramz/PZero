@@ -26,10 +26,10 @@ def schema_ident(schema: str) -> sql.Identifier:
 IDLE_IN_TRANSACTION_TIMEOUT = "5min"
 
 
-def connect(db_url: str, *, autocommit: bool = False) -> psycopg.Connection[Any]:
+def connect(db_url: str, *, autocommit: bool = False, connect_timeout: int = 15) -> psycopg.Connection[Any]:
     """A session that can't outlive its client by long: if the client vanishes mid-transaction (network drop), the
     server ends the session after ``IDLE_IN_TRANSACTION_TIMEOUT`` instead of holding its locks indefinitely."""
-    conn = psycopg.connect(db_url, autocommit=True, connect_timeout=15, application_name="projectzero")
+    conn = psycopg.connect(db_url, autocommit=True, connect_timeout=connect_timeout, application_name="projectzero")
     conn.execute(
         sql.SQL("set idle_in_transaction_session_timeout = {}").format(sql.Literal(IDLE_IN_TRANSACTION_TIMEOUT))
     )
