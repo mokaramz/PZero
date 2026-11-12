@@ -13,9 +13,11 @@ Where each old input comes from:
 * ``sources.json``: the stored source registry.
 * ``queue_routing.json``: ``candidate_routing`` (routes) plus ``documents['queue_routing.json#rest']`` (``left_queue``).
 * ``inference_ledger.jsonl``: ``model_ledger`` in insertion order, each row as ``{ts, usd}``, ``ts`` in Berlin time.
-* ``triage_decisions.jsonl``, ``verification_decisions.jsonl``, the four ``validation/*.jsonl`` logs,
-  ``scout_intake.json``, ``news/events.json`` and ``sources/network.json``: the byte-exact archive (``utf-8-sig``) in
-  line / key order; a missing file reads as its old default. 027b moves the four Validation logs into a table.
+* the four ``validation/*.jsonl`` logs: ``validation_log`` (review 027b) through ``validation.store.texts``, each
+  log's lines in ``seq`` order.
+* ``triage_decisions.jsonl``, ``verification_decisions.jsonl``, ``scout_intake.json``, ``news/events.json`` and
+  ``sources/network.json``: the byte-exact archive (``utf-8-sig``) in line / key order; a missing file reads as its
+  old default.
 """
 
 from __future__ import annotations
@@ -31,76 +33,31 @@ from psycopg.rows import dict_row
 from projectzero.conviction.store import ConvictionStore
 from projectzero.conviction.store import record_of as conviction_record
 from projectzero.core.db import schema_ident
+from projectzero.dealflow import inbox_records
 from projectzero.dealflow.inbox_view import candidate_rows
-from projectzero.dealflow.ranking.service import is_legacy_inbox_record
 from projectzero.dealflow.sources.store import SourcesStore
 from projectzero.dealflow.triage.view import proposal_record, route_record
 from projectzero.founder_calls.store import FounderCallsStore
 from projectzero.map.inputs import RETIRED_ORIGINS
 from projectzero.network.view import berlin_now, berlin_today
+from projectzero.validation import store
 from projectzero.validation.inputs_model import ValidationInputs, candidate_record, inputs_from_docs
 
 JSON_ARCHIVES = ("scout_intake.json", "news/events.json", "sources/network.json")
 TEXT_ARCHIVES = (
     "triage_decisions.jsonl",
     "verification_decisions.jsonl",
-    "validation/outcomes.jsonl",
-    "validation/audits.jsonl",
-    "validation/snapshots.jsonl",
-    "validation/scout_feedback.jsonl",
 )
 LEDGER_TS = "%Y-%m-%dT%H:%M:%S"  # the old ``ledger.now_ts()``
 _PROPOSALS = (
     "select distinct on (candidate_id) * from {}.triage_proposals "
     "order by candidate_id, is_current desc, proposed_at desc, id desc"
 )
-_ABSORBED = (
-    "select candidate_id, payload->'merged_record' as record from {}.observations "
-    "where payload ? 'merged_record' order by id"
-)
-_POSITIONS = (
-    "select (e.value->>'id') as id, min(e.ord) as pos "
-    "from {}.legacy_documents d, jsonb_array_elements(d.parsed->'candidates') with ordinality as e(value, ord) "
-    "where d.path = 'inbox.json' and jsonb_typeof(d.parsed->'candidates') = 'array' group by 1"
-)
-_NO_POSITION = 1 << 62  # after every archived inbox position
 
 
 def _old_inbox(row: dict[str, Any]) -> bool:
     origins = row.get("origins") or []
     return not origins or not set(origins) <= RETIRED_ORIGINS
-
-
-def _inbox(
-    rows: list[dict[str, Any]],
-    absorbed: dict[str, list[dict[str, Any]]],
-    positions: dict[str, int],
-    proposal_rows: dict[str, dict[str, Any]],
-) -> tuple[list[dict[str, Any]], dict[str, Any]]:
-    """The old ``inbox.json`` candidates, one record per old inbox record, in the old order.
-
-    The importer merged inbox records that resolve to one company into a survivor; each absorbed record is kept as a
-    ``merged_record`` observation. The old inbox held every one of them, so each is read again AT ITS OWN archived
-    position, through the same ``candidate_record`` rule with the survivor's current status and notes. A survivor's
-    own record is read when it is an old inbox record, or when it absorbed none (a candidate the new intake created,
-    decision f); a survivor whose own record is a Scout Intake item but which absorbed an inbox record is that inbox
-    record (its Scout item is read from the archive, as before). Records without an archived position (the new
-    intake's) follow in the view order. The survivor's current proposal is the proposal of each of its records."""
-    out: list[tuple[int, int, dict[str, Any], dict[str, Any] | None]] = []
-    for i, row in enumerate(rows):
-        if not _old_inbox(row):
-            continue
-        own_inbox = is_legacy_inbox_record(row.get("legacy"))
-        records = [row] if own_inbox or not absorbed.get(str(row["id"])) else []
-        records += [{**row, "legacy": m} for m in absorbed.get(str(row["id"]), [])]
-        p = proposal_rows.get(str(row["id"]))
-        for r in records:
-            c = candidate_record(r)  # decision (f)
-            c.setdefault("id", row["id"])
-            out.append((positions.get(str(c["id"]), _NO_POSITION), i, c, p))
-    out.sort(key=lambda x: (x[0], x[1]))  # stable: a survivor's records keep their order on equal keys
-    proposals = {str(c["id"]): p for _pos, _i, c, p in out if p is not None}
-    return [c for _pos, _i, c, _p in out], proposals
 
 
 def _text(raw: Any) -> str:
@@ -137,15 +94,11 @@ def load(conn: psycopg.Connection[Any], schema: str, now: datetime) -> Validatio
             ([*JSON_ARCHIVES, *TEXT_ARCHIVES],),
         )
         archived = {r["path"]: r["raw"] for r in cur.fetchall()}
-        cur.execute(sql.SQL(_ABSORBED).format(s))
-        absorbed: dict[str, list[dict[str, Any]]] = {}
-        for r in cur.fetchall():
-            if is_legacy_inbox_record(r["record"]):
-                absorbed.setdefault(str(r["candidate_id"]), []).append(r["record"])
-        cur.execute(sql.SQL(_POSITIONS).format(s))
-        positions = {str(r["id"]): int(r["pos"]) for r in cur.fetchall()}
-
-    inbox, proposals = _inbox(rows, absorbed, positions, proposal_rows)
+    old = inbox_records.old_inbox(
+        [r for r in rows if _old_inbox(r)], inbox_records.load_absorbed(conn, schema), candidate_record
+    )  # decision (f); the absorbed inbox records (review 025b)
+    inbox = [r.record for r in old]
+    proposals = inbox_records.proposals_of(old, proposal_rows)
 
     rest_body = rest["body"] if rest and isinstance(rest["body"], dict) else {}
     docs: dict[str, Any] = {
@@ -163,4 +116,5 @@ def load(conn: psycopg.Connection[Any], schema: str, now: datetime) -> Validatio
             docs[path] = _parse(archived[path])
     for path in TEXT_ARCHIVES:
         docs[path] = _text(archived[path]) if path in archived else ""
+    docs.update(store.texts(conn, schema))  # the four Validation logs (027b), in seq order
     return inputs_from_docs(docs, berlin_today(now))

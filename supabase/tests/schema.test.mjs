@@ -1,9 +1,11 @@
 // Schema behaviour that review 001 asked to see demonstrated (findings #1, #2, #4) plus the core guarantees.
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { before, describe, test } from "node:test";
+
+import { PGlite } from "@electric-sql/pglite";
 
 import { FIXTURES, freshDb, MIGRATIONS, rejects } from "./helpers.mjs";
 
@@ -909,5 +911,136 @@ describe("migration 0017 — the Founder Radar runs' events", () => {
     await rejects(db.query(`insert into pz.radar_events (entity, key, actor, action, after) values ('people', 'k', 'operator', 'scan', '{}')`), /radar_events_entity_check/);
     await rejects(db.query(`insert into pz.radar_events (entity, key, actor, action, after) values ('document', 'k', 'operator', 'delete', '{}')`), /radar_events_action_check/);
     await rejects(db.query(`update pz.radar_events set actor = 'x'`), /append-only/);
+  });
+});
+
+describe("migration 0018 — the four Validation logs as one append-only table, backfilled by archive line", () => {
+  const MIGRATION = "20261112000018_validation_log.sql";
+  const archive = async (db, path, raw) => {
+    const bytes = Buffer.isBuffer(raw) ? raw : Buffer.from(raw, "utf8");
+    await db.query(`insert into pz.legacy_documents (path, sha256, bytes, raw, parsed) values ($1, $2, $3, $4, null)`,
+      [path, sha256(bytes), bytes.length, bytes]);
+  };
+  /** Every migration before 0018 applied (an existing database) with archives already imported, then 0018. */
+  const before0018 = async (archives = {}) => {
+    const db = new PGlite();
+    await db.exec("create role anon nologin; create role authenticated nologin;");
+    for (const file of readdirSync(MIGRATIONS).filter((f) => f.endsWith(".sql") && f < MIGRATION).sort()) {
+      await db.exec(readFileSync(join(MIGRATIONS, file), "utf8"));
+    }
+    for (const [path, raw] of Object.entries(archives)) await archive(db, path, raw);
+    await db.exec(readFileSync(join(MIGRATIONS, MIGRATION), "utf8"));
+    return db;
+  };
+  const rows = async (db, log) =>
+    (await db.query(`select line, source, archive_line from pz.validation_log where log = $1 order by seq`, [log])).rows;
+  const count = async (db) => (await db.query(`select count(*)::int as n from pz.validation_log`)).rows[0].n;
+  const backfill = async (db) => (await db.query(`select pz.backfill_validation() as n`)).rows[0].n;
+  const dup = `{"a": 1}`;
+  const OUT = `{"id": "oc-1"}\n${dup}\n${dup}\nnot json\n{"id": "oc-4"}\n`; // identical lines at different positions
+
+  test("the existing path: 0018 maps the imported archives; a rerun adds nothing; duplicates survive", async () => {
+    const db = await before0018({ "validation/outcomes.jsonl": OUT, "validation/snapshots.jsonl": `{"date": "2026-11-01"}\n` });
+    assert.deepEqual((await rows(db, "outcomes")).map((r) => [r.line, r.archive_line]),
+      [[`{"id": "oc-1"}`, 1], [dup, 2], [dup, 3], ["not json", 4], [`{"id": "oc-4"}`, 5]]);
+    assert.equal((await rows(db, "snapshots")).length, 1);
+    assert.equal(await backfill(db), 0);
+    assert.equal(await count(db), 6);
+  });
+
+  test("the fresh path: 0018 on an empty schema, then the importer's call after the archives arrive", async () => {
+    const db = await freshDb();
+    assert.equal(await count(db), 0);
+    await archive(db, "validation/audits.jsonl", `{"id": "au-1"}\n{"id": "au-2"}`); // no final line end: still 2 lines
+    assert.equal(await backfill(db), 2);
+    assert.deepEqual((await rows(db, "audits")).map((r) => r.line), [`{"id": "au-1"}`, `{"id": "au-2"}`]);
+    assert.equal(await backfill(db), 0);
+  });
+
+  test("a rerun after a live row adds nothing and keeps the order; a missing archived line is then refused", async () => {
+    const db = await freshDb();
+    await archive(db, "validation/outcomes.jsonl", OUT);
+    await backfill(db);
+    await db.query(`insert into pz.validation_log (log, line, source) values ('outcomes', $1, 'app'), ('outcomes', $1, 'app')`, [dup]);
+    const order = (await rows(db, "outcomes")).map((r) => r.line);
+    assert.equal(await backfill(db), 0);
+    assert.deepEqual((await rows(db, "outcomes")).map((r) => r.line), order);
+    assert.equal(order.filter((l) => l === dup).length, 4); // two archived, two identical operator submissions
+    // a log with live rows whose archive still has a line not imported (written past the importer): refused
+    const d2 = await freshDb();
+    await d2.query(`insert into pz.validation_log (log, line, source) values ('outcomes', $1, 'app')`, [dup]);
+    await archive(d2, "validation/outcomes.jsonl", OUT);
+    await rejects(d2.query(`select pz.backfill_validation()`), /not imported and the log already has live rows/);
+    assert.equal(await count(d2), 1);
+  });
+
+  test("a later archive line is added in order; a missing line BEFORE an imported one is refused", async () => {
+    // lines 1 and 2 imported earlier, the archive now holds a third: only line 3 is added, after them
+    const db = await freshDb();
+    await db.query(`insert into pz.validation_log (log, line, source, archive_line) values
+                    ('snapshots', '{"d": 1}', 'import', 1), ('snapshots', '{"d": 2}', 'import', 2)`);
+    await archive(db, "validation/snapshots.jsonl", `{"d": 1}
+{"d": 2}
+{"d": 3}
+`);
+    assert.equal(await backfill(db), 1);
+    assert.deepEqual((await rows(db, "snapshots")).map((r) => [r.line, r.archive_line]), [[`{"d": 1}`, 1], [`{"d": 2}`, 2], [`{"d": 3}`, 3]]);
+    // an imported row at line 2 without line 1: the missing line 1 cannot be placed first
+    const d2 = await freshDb();
+    await d2.query(`insert into pz.validation_log (log, line, source, archive_line) values ('snapshots', '{"d": 2}', 'import', 2)`);
+    await archive(d2, "validation/snapshots.jsonl", `{"d": 1}
+{"d": 2}
+`);
+    await rejects(d2.query(`select pz.backfill_validation()`), /archived line 1 is missing before imported line 2/);
+    assert.equal(await count(d2), 1);
+  });
+
+  test("BOM, CRLF, CR-only, a torn last line and an undecodable archive", async () => {
+    const db = await freshDb();
+    await archive(db, "validation/outcomes.jsonl", Buffer.concat([Buffer.from([0xef, 0xbb, 0xbf]), Buffer.from(`{"id": "a"}\r\n{"id": "b"}\r\n`)]));
+    await archive(db, "validation/audits.jsonl", `{"id": "c"}\r{"id": "d"}\r`); // CR-only line ends (old text mode)
+    await archive(db, "validation/snapshots.jsonl", `{"date": "2026-11-01"}\n{"date": "2026-11-0`); // torn
+    await archive(db, "validation/scout_feedback.jsonl", Buffer.from([0x7b, 0xff, 0xfe, 0x7d, 0x0a])); // not UTF-8
+    await backfill(db);
+    assert.deepEqual((await rows(db, "outcomes")).map((r) => r.line), [`{"id": "a"}`, `{"id": "b"}`]); // no BOM, no CR
+    assert.deepEqual((await rows(db, "audits")).map((r) => r.line), [`{"id": "c"}`, `{"id": "d"}`]);
+    assert.deepEqual((await rows(db, "snapshots")).map((r) => r.line), [`{"date": "2026-11-01"}`, `{"date": "2026-11-0`]);
+    assert.deepEqual(await rows(db, "scout_feedback"), []); // the old read_text: undecodable -> ""
+  });
+
+  test("append-only; an import has a positive archive line and an app row none; the log names", async () => {
+    const db = await freshDb();
+    await db.query(`insert into pz.validation_log (log, line, source) values ('outcomes', '{}', 'app')`);
+    await rejects(db.query(`update pz.validation_log set line = 'x'`), /append-only/);
+    await rejects(db.query(`delete from pz.validation_log`), /append-only/);
+    await rejects(db.query(`insert into pz.validation_log (log, line, source, archive_line) values ('outcomes', '{}', 'app', 3)`), /validation_log_archive_line_check/);
+    await rejects(db.query(`insert into pz.validation_log (log, line, source) values ('outcomes', '{}', 'import')`), /validation_log_archive_line_check/);
+    await rejects(db.query(`insert into pz.validation_log (log, line, source, archive_line) values ('outcomes', '{}', 'import', 0)`), /validation_log_archive_line_check/);
+    await rejects(db.query(`insert into pz.validation_log (log, line, source) values ('news', '{}', 'app')`), /validation_log_log_check/);
+    await db.query(`insert into pz.validation_log (log, line, source, archive_line) values ('audits', '{}', 'import', 1)`);
+    await rejects(db.query(`insert into pz.validation_log (log, line, source, archive_line) values ('audits', '{}', 'import', 1)`), /duplicate key/);
+  });
+
+  test("Codex H-241: a NUL line keeps its valid neighbours and its position; a rerun adds nothing (both paths)", async () => {
+    const nul = Buffer.concat([Buffer.from(`{"id": "oc-1"}\n{"id": `), Buffer.from([0x00]), Buffer.from(`"x"}\r\n{"id": "oc-3"}\n`)]);
+    for (const db of [await before0018({ "validation/outcomes.jsonl": nul }), await freshDb()]) {
+      if ((await count(db)) === 0) {
+        await archive(db, "validation/outcomes.jsonl", nul);
+        assert.equal(await backfill(db), 3);
+      }
+      assert.deepEqual((await rows(db, "outcomes")).map((r) => [r.line, r.archive_line]),
+        [[`{"id": "oc-1"}`, 1], [null, 2], [`{"id": "oc-3"}`, 3]]);
+      assert.equal(await backfill(db), 0);
+      assert.equal(await count(db), 3);
+      // the archive keeps the original bytes
+      const raw = (await db.query(`select raw from pz.legacy_documents where path = 'validation/outcomes.jsonl'`)).rows[0].raw;
+      assert.deepEqual(Buffer.from(raw), nul);
+    }
+    // a NUL line whose other bytes are not UTF-8 makes the whole file unreadable, as the old read_text
+    const bad = await freshDb();
+    await archive(bad, "validation/audits.jsonl", Buffer.concat([Buffer.from(`{"id": "au-1"}\n`), Buffer.from([0x00, 0xff]), Buffer.from(`\n`)]));
+    assert.equal(await backfill(bad), 0);
+    // only an imported row may have no line
+    await rejects(bad.query(`insert into pz.validation_log (log, line, source) values ('outcomes', null, 'app')`), /validation_log_line_check/);
   });
 });

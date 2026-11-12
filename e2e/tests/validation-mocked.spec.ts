@@ -5,8 +5,10 @@
  * needed: only the frontend (`npm run dev` in frontend/, or PZ_BASE_URL). Every company, source and URL in
  * fixtures/validation/ is invented.
  *
- * 027a is the read side: the old "record an outcome / a miss" and "import a benchmark" flows become checks that every
- * write control is visible, disabled with its reason, and sends no request (the writes arrive with review 027b).
+ * The writes (review 027b): the old "record an outcome / a miss" and "import a benchmark" flows, plus a false positive,
+ * a retraction, the Scout 00 handover mark (decision f: `{cycle, generated, sha}` of the packet shown, posted only after
+ * the copy succeeded), the 400 / 409 refusals, and opening / cancelling every form without a write. Every POST path and
+ * body is asserted exactly.
  *
  *   cd e2e && PZ_BASE_URL=http://localhost:5173 npx playwright test validation-mocked
  */
@@ -14,22 +16,42 @@ import { expect, test, type Page } from "@playwright/test";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 
-import { expand, expectNoHorizontalOverflow, watch, zoom150 } from "./helpers";
+import { expand, expectNoHorizontalOverflow, recordPosts, watch, zoom150 } from "./helpers";
 
 const FIX = resolve(import.meta.dirname, "fixtures", "validation");
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type J = any;
 const load = (n: string): J => JSON.parse(readFileSync(resolve(FIX, n), "utf8"));
 
-const WRITES = "Recording outcomes, audits and imports arrives with the Validation writes port (027b)";
 const NEWS = "News & Learning arrives with its port";
 const QUESTIONS = ["Are we early?", "Are we right?", "Which sources work?", "Where do we miss?", "What does it cost?"];
 /** the old write endpoints and their 027b paths */
 const WRITE_PATHS = /\/api\/(validation_(outcome|audit|retract|benchmark_import|scout_packet)|validation\/(outcome|audit|retract|benchmark_import))\b/;
 
-/** Mock the two Validation reads; anything else under /api answers 404 (the shell's not-ported reads are allowed by
- *  `watch`, any other 404 fails the test). Returns every API request (method + path + query), in order. */
-async function mockApi(page: Page, opts: { validation?: J } = {}) {
+/** The audit form's untouched fields (the old body sends all of them, whichever type). */
+const AUDIT = {
+  company: "",
+  earliest_signal: "",
+  earliest_signal_date: "",
+  signal_source: "",
+  should_have_found: "",
+  why_missed: "source_not_covered",
+  preventable: "unclear",
+  improvement: "",
+  causes: [],
+  lesson: "",
+  note: "",
+};
+const CSV = "Name,Date added\nKestrel Labs,2026-07-01\nFuture Co,2099-01-01\n";
+const STALE = "the packet changed since it was prepared — prepare it again";
+
+type Write = "outcome" | "audit" | "retract" | "benchmark_import" | "scout_packet";
+
+/** Mock the two Validation reads and the five writes (the old success shapes; `refuse` answers a write with its
+ *  refusal: 409 for the packet mark, 400 for the rest); anything else under /api answers 404 (the shell's not-ported
+ *  reads are allowed by `watch`, any other 404 fails the test). Returns every API request (method + path + query), in
+ *  order. */
+async function mockApi(page: Page, opts: { validation?: J; refuse?: Partial<Record<Write, string>> } = {}) {
   const data = opts.validation ?? load("validation.json");
   const packet = load("scout_packet.json");
   const requested: Array<{ method: string; path: string }> = [];
@@ -41,8 +63,21 @@ async function mockApi(page: Page, opts: { validation?: J } = {}) {
   await page.route(/\/api\//, (route) => route.fulfill({ status: 404, json: { ok: false, error: "not found" } }));
   await page.route(/\/api\/validation(\?.*)?$/, (route) => route.fulfill({ json: data }));
   await page.route(/\/api\/validation\/scout_packet(\?.*)?$/, (route) => {
+    if (route.request().method() === "POST") {
+      const body = route.request().postDataJSON() as { cycle: string };
+      const error = opts.refuse?.scout_packet;
+      return error ? route.fulfill({ status: 409, json: { ok: false, error } }) : route.fulfill({ json: { ...packet, cycle: body.cycle || "all" } });
+    }
     const cycle = new URL(route.request().url()).searchParams.get("cycle") ?? "";
     return route.fulfill({ json: { ...packet, cycle: cycle || "all" } });
+  });
+  await page.route(/\/api\/validation\/(outcome|audit|retract|benchmark_import)$/, (route) => {
+    const name = new URL(route.request().url()).pathname.split("/").pop() as Write;
+    const body = route.request().postDataJSON() as Record<string, unknown>;
+    const error = opts.refuse?.[name];
+    if (error) return route.fulfill({ status: 400, json: { ok: false, error } });
+    if (name === "benchmark_import") return route.fulfill({ json: { ...load("benchmark_summary.json"), imported: !!body.confirm } });
+    return route.fulfill({ json: { ok: true, entry: { id: "oc-0123456789", recorded_at: "2026-11-12T10:00:00", ...body } } });
   });
   return {
     requested,
@@ -62,18 +97,26 @@ async function open(page: Page) {
   await expect(page.getByTestId("val-edge")).toBeVisible();
 }
 
-/** Visible, focusable, disabled with the 027b reason. */
-async function expectDeferred(page: Page, testIdOrName: { testId?: string; name?: string }) {
-  const el = testIdOrName.testId ? page.getByTestId(testIdOrName.testId) : page.getByRole("button", { name: testIdOrName.name, exact: true }).first();
-  await expect(el).toBeVisible();
-  await expect(el).toHaveAttribute("aria-disabled", "true");
-  await expect(el).toHaveAttribute("title", WRITES);
-  await expect(el).toHaveAccessibleDescription(WRITES);
-  await el.click({ force: true }); // aria-disabled: Playwright would wait for it to become enabled
-  await el.focus();
-  await page.keyboard.press("Enter");
-  await page.keyboard.press("Space");
-  return el;
+/** navigator.clipboard as a recorder (`window.__copied`), so a copy never depends on the browser's permissions;
+ *  `failFirst` makes the first copy reject, as a blocked clipboard does. */
+async function stubClipboard(page: Page, { failFirst = false } = {}) {
+  await page.addInitScript((fail: boolean) => {
+    const copied: string[] = [];
+    let refuse = fail;
+    (window as unknown as { __copied: string[] }).__copied = copied;
+    Object.defineProperty(navigator, "clipboard", {
+      configurable: true,
+      value: {
+        writeText: async (text: string) => {
+          if (refuse) {
+            refuse = false;
+            throw new DOMException("Write permission denied.", "NotAllowedError");
+          }
+          copied.push(text);
+        },
+      },
+    });
+  }, failFirst);
 }
 
 test.beforeEach(async ({ page }) => {
@@ -160,57 +203,161 @@ test("reduced motion: the sparklines are final at once", async ({ page }) => {
   expect(long).toBe(0);
 });
 
-/* ------------------------------------------------------------------ the writes are deferred (027b), the reads still work */
-test("validation: every write control is visible and disabled with its reason; nothing is written", async ({ page }) => {
+/* ------------------------------------------------------------------ validation.spec.ts: the writes (027b) */
+test("validation: record an outcome and a miss — exact POSTs, toasts and a refresh", async ({ page }) => {
   const w = watch(page);
   const api = await mockApi(page);
-  let dialogs = 0;
+  const posted = recordPosts(page);
+  await open(page);
+
+  await page.getByTestId("record-outcome").click();
+  await expect(page.getByTestId("outcome-save")).toBeDisabled();
+  await page.getByTestId("outcome-company").fill("Kestrel Labs");
+  await page.getByTestId("outcome-date").fill("2026-09-01");
+  await expect(page.getByTestId("outcome-save")).toBeDisabled(); // a round needs its evidence URL
+  await page.getByTestId("outcome-url").fill("https://news.example/kestrel-seed");
+  await page.getByTestId("outcome-save").click();
+  await expect(page.getByText("Outcome recorded")).toBeVisible();
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+
+  await page.getByTestId("more-actions").locator("summary").click();
+  await page.getByTestId("record-miss").click();
+  await page.getByTestId("audit-company").fill("Tarnwick Robotics");
+  await page.getByTestId("audit-save").click();
+  await expect(page.getByText("Audit recorded")).toBeVisible();
+
+  expect(posted).toEqual([
+    {
+      path: "/api/validation/outcome",
+      body: { company: "Kestrel Labs", kind: "institutional_round", event_date: "2026-09-01", evidence_url: "https://news.example/kestrel-seed", benchmark_system: "", note: "" },
+    },
+    { path: "/api/validation/audit", body: { ...AUDIT, company: "Tarnwick Robotics", type: "miss" } },
+  ]);
+  await expect.poll(() => api.requested.filter((r) => r.method === "GET" && r.path === "/api/validation").length).toBeGreaterThanOrEqual(3); // refreshed after each write
+  w.expectClean();
+});
+
+test("validation: a false positive, a refused one (400) and a retraction", async ({ page }) => {
+  const w = watch(page, { expected: [400] });
+  await mockApi(page, { refuse: { audit: "company required" } });
+  const posted = recordPosts(page);
+  const prompts: string[] = [];
+  const answers = ["short", "wrong company recorded"];
   page.on("dialog", (d) => {
-    dialogs++;
-    void d.dismiss();
+    prompts.push(d.message());
+    void d.accept(answers.shift());
   });
   await open(page);
 
-  await expectDeferred(page, { testId: "record-outcome" });
-  await expect(page.getByRole("dialog")).toHaveCount(0);
-  await page.getByTestId("more-actions").locator("summary").click();
-  await expect(page.getByTestId("record-miss")).toBeVisible();
-  await expect(page.getByTestId("record-miss")).toBeDisabled();
-  await expect(page.getByTestId("record-miss")).toHaveAttribute("title", WRITES);
-  await page.keyboard.press("Escape");
+  await question(page, "Where do we miss?");
+  await page.getByTestId("record-fp").click();
+  await page.getByTestId("audit-company").fill("Graniteleaf Labs");
+  await expect(page.getByTestId("audit-save")).toBeDisabled(); // a false positive needs a cause
+  await page.getByRole("dialog").getByRole("checkbox", { name: "weak source", exact: true }).check();
+  await page.getByTestId("audit-save").click();
+  await expect(page.getByText("✕ Recording the audit failed — company required")).toBeVisible();
+  await page.getByRole("dialog").getByRole("button", { name: "Close" }).click();
 
   await question(page, "Are we right?");
-  await expect(page.getByTestId("val-outcomes")).toContainText("Aurelith Systems");
-  await expectDeferred(page, { name: "Retract" });
+  const retract = page.getByTestId("val-outcome").filter({ hasText: "Aurelith Systems" }).getByRole("button", { name: "Retract" });
+  await retract.click(); // too short: nothing is sent
+  await retract.click();
+  await expect(page.getByText("Retracted (kept in history)")).toBeVisible();
+  expect(prompts).toEqual(["Why retract this outcome? (kept in history)", "Why retract this outcome? (kept in history)"]);
 
+  expect(posted).toEqual([
+    { path: "/api/validation/audit", body: { ...AUDIT, company: "Graniteleaf Labs", causes: ["weak_source"], type: "false_positive" } },
+    { path: "/api/validation/retract", body: { id: "oc-3e4f5a6b7c", reason: "wrong company recorded" } },
+  ]);
+  w.expectClean();
+});
+
+test("validation: import a benchmark export (preview → import)", async ({ page }) => {
+  const w = watch(page);
+  await mockApi(page);
+  const posted = recordPosts(page);
+  await open(page);
   await question(page, "Which sources work?");
   const panel = page.getByTestId("val-benchmarks");
   await expect(panel).toContainText("No private database access is assumed");
   await panel.getByText("Import a benchmark export").click();
   await panel.getByPlaceholder("Dealroom").fill("Dealroom");
-  await panel.locator("textarea").fill("Name,Date added\nKestrel Labs,2026-07-01\nFuture Co,2099-01-01\n");
-  await expectDeferred(page, { name: "Preview" });
+  await panel.locator("textarea").fill(CSV);
+  await panel.getByRole("button", { name: "Preview" }).click();
+  await expect(panel).toContainText("2 rows · 1 usable · 1 skipped");
+  await panel.getByRole("button", { name: "Import 1 dates" }).click();
+  await expect(page.getByText("1 benchmark date(s) imported")).toBeVisible();
   await expect(panel.getByRole("button", { name: /^Import \d+ dates$/ })).toHaveCount(0);
-  await expect(page.getByTestId("val-news-deferred")).toHaveText(NEWS);
+  expect(posted).toEqual([
+    { path: "/api/validation/benchmark_import", body: { system: "Dealroom", csv: CSV } },
+    { path: "/api/validation/benchmark_import", body: { system: "Dealroom", csv: CSV, confirm: true } },
+  ]);
+  w.expectClean();
+});
 
+test("validation: copy & log the Scout 00 handover — the mark carries the packet's Generated time and sha", async ({ page }) => {
+  const w = watch(page);
+  const api = await mockApi(page);
+  const posted = recordPosts(page);
+  await stubClipboard(page);
+  await open(page);
   await question(page, "Where do we miss?");
-  await expect(page.getByTestId("val-misses")).toContainText("Orbelle Health");
-  await expectDeferred(page, { testId: "record-fp" });
   await page.getByTestId("scout-packet").click();
   await expect(page.getByTestId("scout-packet-text")).toContainText("PROJECT ZERO → CHIEF SCOUT 00");
   await expect(page.getByTestId("scout-packet-text")).toContainText("Orbelle Health"); // misses are fed back to the scouts
   await expect(page.getByTestId("scout-packet-text")).toContainText(`- not available: ${NEWS}`);
   await expect(page.getByTestId("scout-packet-deferred")).toContainText(NEWS);
-  await expectDeferred(page, { testId: "scout-packet-copy" });
+  expect(posted).toEqual([]); // preparing is a read
+  await page.getByTestId("scout-packet-copy").click();
+  await expect(page.getByText("Packet copied — paste it into Chief Scout 00")).toBeVisible();
+  await expect(page.getByText("✓ Preparing the Scout 00 packet — done")).toBeVisible();
+  expect(await page.evaluate(() => (window as unknown as { __copied: string[] }).__copied)).toEqual([load("scout_packet.json").text]);
+  expect(posted).toEqual([{ path: "/api/validation/scout_packet", body: { cycle: "c-2026-10-16", generated: "2026-11-12T09:15:00", sha: "5d1c0e9a7b3f2468" } }]);
+  expect(api.reads()).toContain("GET /api/validation/scout_packet?cycle=c-2026-10-16");
+  w.expectClean();
+});
 
+test("validation: a stale packet (409) is shown; a blocked clipboard logs nothing", async ({ page }) => {
+  const w = watch(page, { expected: [409] });
+  await mockApi(page, { refuse: { scout_packet: STALE } });
+  const posted = recordPosts(page);
+  await stubClipboard(page, { failFirst: true });
+  await open(page);
+  await question(page, "Where do we miss?");
+  await page.getByTestId("scout-packet").click();
+  await expect(page.getByTestId("scout-packet-text")).toBeVisible();
+  await page.getByTestId("scout-packet-copy").click(); // the clipboard refuses
+  await expect(page.getByText("Clipboard blocked — select the text and copy manually")).toBeVisible();
+  await page.waitForTimeout(300);
+  expect(posted).toEqual([]);
+  await page.getByTestId("scout-packet-copy").click(); // copied, but the data changed since
+  await expect(page.getByText(`✕ Preparing the Scout 00 packet failed — ${STALE}`)).toBeVisible();
+  expect(posted).toEqual([{ path: "/api/validation/scout_packet", body: { cycle: "c-2026-10-16", generated: "2026-11-12T09:15:00", sha: "5d1c0e9a7b3f2468" } }]);
+  w.expectClean();
+});
+
+test("validation: opening and cancelling every form writes nothing", async ({ page }) => {
+  const w = watch(page);
+  const api = await mockApi(page);
+  page.on("dialog", (d) => void d.dismiss());
+  await open(page);
+  await page.getByTestId("record-outcome").click();
+  await page.getByTestId("outcome-company").fill("Kestrel Labs");
+  await page.keyboard.press("Escape");
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+  await page.getByTestId("more-actions").locator("summary").click();
+  await page.getByTestId("record-miss").click();
+  await page.getByRole("dialog").getByRole("button", { name: "Close" }).click();
+  await question(page, "Are we right?");
+  await page.getByRole("button", { name: "Retract" }).first().click(); // the prompt is dismissed
+  await question(page, "Where do we miss?");
+  await page.getByTestId("record-fp").click();
+  await page.keyboard.press("Escape");
   await question(page, "What does it cost?");
   await expect(page.getByTestId("val-native-bridge")).toContainText("Native search bridge — production pilot");
   await expect(page.getByTestId("val-native-bridge-deferred")).toContainText("Scout search bridge");
-
   await page.waitForTimeout(300);
-  expect(dialogs).toBe(0);
   expect(api.writes()).toEqual([]);
-  expect(api.reads()).toEqual(["GET /api/validation", "GET /api/validation/scout_packet?cycle=c-2026-10-16"]);
   w.expectClean();
 });
 
@@ -254,4 +401,13 @@ test("validation stays inside a phone", async ({ page }) => {
   const row = page.getByTestId("val-measure").first();
   const cols = await row.evaluate((el) => getComputedStyle(el).gridTemplateColumns.split(" ").length);
   expect(cols).toBe(1);
+  // the forms fit too
+  await page.getByTestId("record-outcome").click();
+  await expect(page.getByRole("dialog")).toBeVisible();
+  await expectNoHorizontalOverflow(page);
+  await page.keyboard.press("Escape");
+  await question(page, "Where do we miss?");
+  await page.getByTestId("record-fp").click();
+  await expect(page.getByRole("dialog")).toBeVisible();
+  await expectNoHorizontalOverflow(page);
 });

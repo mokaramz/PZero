@@ -107,6 +107,7 @@ def _schema(settings: Settings, archives: dict[str, str], *, candidates: bool) -
     with transaction(settings.db_url) as conn:
         for path, text in archives.items():
             _archive(conn, name, path, text.encode("utf-8"))
+        conn.execute(f"select {name}.backfill_validation()".encode())  # the importer's call after the archives (027b)
         if candidates:
             _candidates(conn, name)
     return name
@@ -208,3 +209,25 @@ def test_an_absorbed_inbox_record_is_read_at_its_own_archived_position(settings:
     ents, _issues = build(inputs, TODAY)
     dunlin = next(e for e in ents.values() if e["name"] == "Invented Dunlin Robotics")
     assert (dunlin["first_seen"], dunlin["first_tier"]) == ("2026-10-20", "announcement")  # not the survivor's date
+
+
+def test_a_nul_line_keeps_its_valid_neighbours(settings: Settings, make: Any) -> None:
+    """Codex H-241: one archived line text cannot hold (a NUL byte) is skipped as the old reader skipped it; the valid
+    outcomes before and after it stay, at their positions."""
+    client, schema = make({})
+    before, after = (
+        _outcome(1, "Invented Kestrel 01", "2026-11-01T09:00:00"),
+        _outcome(2, "Invented Kestrel 02", "2026-11-02T09:00:00"),
+    )
+    raw = (
+        (json.dumps(before, sort_keys=True) + "\n").encode()
+        + b'{"id": "oc-\x00"}\n'
+        + (json.dumps(after, sort_keys=True) + "\n").encode()
+    )
+    with transaction(settings.db_url) as conn:
+        _archive(conn, schema, "validation/outcomes.jsonl", raw)
+        conn.execute(f"select {schema}.backfill_validation()".encode())
+        conn.execute(f"select {schema}.backfill_validation()".encode())  # a rerun adds nothing
+        n = conn.execute(f"select count(*) from {schema}.validation_log".encode()).fetchone()
+    assert n is not None and n[0] == 3
+    assert [o["id"] for o in client.get("/api/validation").json()["outcomes"]] == [before["id"], after["id"]]

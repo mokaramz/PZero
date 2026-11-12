@@ -1,0 +1,11 @@
+{
+  "system": "Dealroom",
+  "rows": 2,
+  "usable": 1,
+  "skipped": 1,
+  "matched_to_pz": 0,
+  "name_column": "Name",
+  "date_column": "Date added",
+  "imported": false,
+  "file_sha": "3f6a1c9e2b7d"
+}

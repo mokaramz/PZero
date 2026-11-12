@@ -4,6 +4,8 @@
 
     python -m projectzero.ops.parity_validation goldens   # (re)generates golden_v1/oracle_validation.json
     python -m projectzero.ops.parity_validation check     # the stored golden against the new code (no oracle)
+    python -m projectzero.ops.parity_validation writes-goldens  # (re)generates golden_v1/oracle_validation_writes.json
+    python -m projectzero.ops.parity_validation writes-check    # the stored writes golden against the new code
 
 The oracle (``scripts/oracle/validation_oracle.py``) runs the old ``services/validation.py`` over a scratch data
 folder: ``view(today)`` FIRST (its ``_snapshot`` append redirected to an in-memory log the old view's own subsequent
@@ -44,6 +46,22 @@ The synthetic data folders hold INVENTED names only:
   ``cycles``, Conviction records as an object.
 * ``empty``: no documents at all.
 
+The writes (review 027b, ``writes-goldens`` / ``writes-check``, ``golden_v1/oracle_validation_writes.json``): the
+oracle (``scripts/oracle/validation_writes_oracle.py``) runs the old ``record_outcome`` / ``record_audit`` /
+``retract`` / ``import_benchmark`` / ``scout_packet(mark=True)`` step by step over the ``main`` and ``empty``
+folders, the clock frozen and the old ``_id``'s ``datetime.now().timestamp()`` answering the step's ``seam``
+values; every append goes to in-memory logs the later old reads see (the folder is checked unchanged); then the old
+``view``. The new side is ``validation.writes`` with ``new_hex`` = the same seam, each step's lines appended to the
+inputs' log texts (``writes.appended``), then the 027a ``view``. The answers are compared value by value and as
+text, the appended lines BYTE for BYTE, then the next view. Declared, and nothing else:
+
+* (e) the CSV whose first data row has more fields than the header, and the one raising ``csv.Error``: the old
+  500, now a 400 ``the CSV could not be read: ...``; neither side appends anything;
+* (f) the packet mark: the new body is the ``{cycle, generated, sha}`` of the packet the GET shows; the answer is
+  compared through the 027a normalisation (c); the old line logged the sha of its regenerated text, checked equal
+  to the text at the frozen clock and replaced by the shown packet's sha (in the line and the next view's
+  ``scout.last_packet``); a stale sha (409) and a missing ``generated`` (400) are checked refused, nothing appended.
+
 Exit 1 on any difference.
 """
 
@@ -53,6 +71,7 @@ import copy
 import hashlib
 import json
 import os
+import re
 import subprocess
 import sys
 import tempfile
@@ -63,8 +82,9 @@ from typing import Any
 from projectzero.core.paths import REPO_ROOT
 from projectzero.dealflow.ranking.names import norm_company
 from projectzero.ops.parity_ranking import GOLDEN_DIR, OLD_REPO, diff, js
-from projectzero.validation import build, inputs_from_docs, scout_packet, view
-from projectzero.validation.core import NATIVE_BRIDGE_REASON, NEWS_REASON
+from projectzero.validation import build, inputs_from_docs, scout_packet, view, writes
+from projectzero.validation.catalog import MISS_REASONS
+from projectzero.validation.core import NATIVE_BRIDGE_REASON, NEWS_REASON, ValidationError
 from projectzero.validation.packet import DEFERRED
 
 ORACLE = REPO_ROOT / "scripts" / "oracle" / "validation_oracle.py"
@@ -621,11 +641,13 @@ def real() -> int:  # pragma: no cover - needs the hosted database and the old r
     from projectzero.ops.legacy.plan import build_plan
     from projectzero.ops.legacy.source import LegacySnapshot
     from projectzero.ops.parity_founder_calls import utc_instant
+    from projectzero.validation import store
 
     load_dotenv()
     settings = Settings.from_env()
     snapshot_ = LegacySnapshot.capture(Path(os.environ["PZ_LEGACY_DATA"]))
-    old = run_oracle({"clock": REAL_CLOCK, "extra_cycles": EXTRA_CYCLES}, {f.path: f.raw for f in snapshot_.files()})
+    files = {f.path: f.raw for f in snapshot_.files()}
+    old = run_oracle({"clock": REAL_CLOCK, "extra_cycles": EXTRA_CYCLES}, files)
     old.pop("meta", None)
     schema = f"pz_rehearse_{_secrets.token_hex(4)}"
     problems: list[str] = []
@@ -641,6 +663,20 @@ def real() -> int:  # pragma: no cover - needs the hosted database and the old r
             conn.close()
         with transaction(settings.db_url) as c:
             before = _fingerprint(c, schema)
+            stored_logs = store.texts(c, schema)
+        # review 027b: the importer's backfill holds every archived log line, in order, byte for byte
+        for path in store.PATHS.values():
+            raw = files.get(path)
+            if raw is None:
+                if stored_logs[path]:
+                    problems.append(f"/{path}: rows without an archive")
+                continue
+            lines = re.split(r"\r\n|\r|\n", raw.decode("utf-8-sig"))
+            if lines and lines[-1] == "":
+                lines.pop()
+            if stored_logs[path] != "".join(f"{line}\n" for line in lines):
+                problems.append(f"/{path}: the backfilled lines differ from the archive")
+        report_logs = {p: stored_logs[p].count("\n") for p in store.PATHS.values()}
         app = create_app(Settings(db_url=settings.db_url, schema=schema))
         app.state.clock = lambda: utc_instant(REAL_CLOCK)
         with TestClient(app, base_url="http://127.0.0.1:8177") as client:
@@ -676,7 +712,7 @@ def real() -> int:  # pragma: no cover - needs the hosted database and the old r
                   "old_appended": len(old.get("appended") or []), "sources": len(body.get("sources") or []),
                   "cycles": (body.get("scout") or {}).get("cycles"),
                   "packets": {c: (p.get("body") or {}).get("counts", p.get("code")) for c, p in packets.items()},
-                  "tables_checked": len(before), "old_changed": old.get("changed")}  # fmt: skip
+                  "tables_checked": len(before), "old_changed": old.get("changed"), "log_lines": report_logs}  # fmt: skip
     finally:
         admin.execute(_sql.SQL("drop schema if exists {} cascade").format(_sql.Identifier(schema)))
         admin.close()
@@ -688,11 +724,365 @@ def real() -> int:  # pragma: no cover - needs the hosted database and the old r
     return 1 if problems else 0
 
 
+# ------------------------------------------------------------------ review 027b: the writes
+WRITES_ORACLE = REPO_ROOT / "scripts" / "oracle" / "validation_writes_oracle.py"
+WRITES_GOLDEN = GOLDEN_DIR / "oracle_validation_writes.json"
+WRITE_WORLDS = ("main", "empty")
+SEAM_SIZE = 12  # id-seam values per step (the most ids one step makes: a confirmed import's usable rows)
+
+
+def seam(i: int) -> list[str]:
+    """The id seam of step ``i``: the old ``str(datetime.now().timestamp())`` answers, the new ``new_hex()``."""
+    return [f"{i:04x}{k:08x}" for k in range(SEAM_SIZE)]
+
+
+BENCH = "Name,First Seen\nInvented Alpha Robotics,2026-10-01\nInvented Unknown Benchmark Co,2026-09-01\n,2026-09-02\nInvented Bad Date Co,not a date\nInvented Future Bench Co,2027-01-01\nInvented Unknown Benchmark Co,2026-09-01\n"
+BENCH_OVERRIDE = "Org Label,When Listed,Company,Date\nInvented Kappa Kept,2026-10-02,Invented Ignored Name,2026-01-01\nInvented Override Only Co,2026-10-03,x,2026-01-01\n"
+BENCH_STRIP = "  Company Name  ,Launch Date,Last Funding Date\nInvented Batch Co 5,2026-09-09,2026-10-10\nInvented Strip Co,2026-09-10,\nInvented Late Extra Co,2026-09-11,2026-10-11,surplus\n"
+EXTRA = "name,date\nInvented Extra Co,2026-10-01,surplus\n"  # decision (e): the old None-key 500
+UNQUOTED_CR = (
+    "name,date\nInvented Good Co,2026-10-01\nInvented\rBroken,2026-10-01\n"  # decision (e): the old csv.Error 500
+)
+
+
+# fmt: off
+def _outcome_steps() -> list[dict[str, Any]]:
+    steps: list[dict[str, Any]] = []
+    for n, kind in enumerate(KIND_CYCLE):  # every outcome kind, with and without an evidence URL
+        for with_url in (True, False):
+            company = "Invented Kappa Kept" if kind == "institutional_round" and with_url else f"Invented Write Co {n}{'u' if with_url else ''}"
+            steps.append({"op": "outcome", "body": {"kind": kind, "company": f"  {company} ", "event_date": f"2026-11-0{n % 9 + 1}",
+                                                     "evidence_url": f" https://press.invented.example/w{n} " if with_url else "",
+                                                     "note": f"note {n}", "candidate_id": f"k{n}" if n % 2 else "",
+                                                     "benchmark_system": "Invented DB"}})
+    steps += [
+        {"op": "outcome", "body": {"kind": "rumour", "company": "Invented Write Co", "event_date": "2026-11-01"}},
+        {"op": "outcome", "body": {"company": "Invented Write Co", "event_date": "2026-11-01"}},
+        {"op": "outcome", "body": {"kind": "accelerator", "company": "   ", "event_date": "2026-11-01"}},
+        {"op": "outcome", "body": {"kind": "accelerator", "company": "Invented Write Co"}},
+        {"op": "outcome", "body": {"kind": "accelerator", "company": "Invented Write Co", "event_date": "2026-13-01"}},
+        {"op": "outcome", "body": {"kind": "accelerator", "company": "Invented Write Co", "event_date": "2026-11-13"}},  # the future
+        {"op": "outcome", "body": {"kind": "accelerator", "company": "Invented Today Co", "event_date": "2026-11-12"}},
+        {"op": "outcome", "body": {"kind": "accelerator", "company": "Invented Time Co", "event_date": " 2026-11-01T09:00:00 "}},
+        {"op": "outcome", "body": {"kind": "acquisition", "company": "Invented Write Co", "event_date": "2026-11-01", "evidence_url": "ftp://invented.example/x"}},
+        {"op": "outcome", "body": {"kind": "institutional_round", "company": batch(11), "event_date": "2026-10-17",
+                                   "evidence_url": "http://press.invented.example/11c", "supersedes": "oc-050"}},  # a supersede
+        {"op": "outcome", "body": {"kind": "external_db_listing", "company": "Invented Long " + "N" * 200, "event_date": "2026-10-01",
+                                   "evidence_url": "https://db.invented.example/" + "u" * 600, "note": "n" * 600, "candidate_id": "c" * 100,
+                                   "benchmark_system": "S" * 80}},
+        {"op": "outcome", "body": {"kind": "shutdown", "company": "Invented Café Œuvre GmbH", "event_date": "2026-10-02",
+                                   "note": "fermé — “quoted” and ünïcode", "supersedes": ""}},
+        {"op": "outcome", "body": {"kind": "weak_outcome", "company": "Invented Separator Co", "event_date": "2026-10-03",
+                                   "note": "a line" + chr(0x2028) + "separator"}},  # the old reader split the line: unreadable, on both sides
+        {"op": "outcome", "body": {"kind": "omar_declined", "company": 12345, "event_date": "2026-10-04", "note": 7, "candidate_id": 9}},
+    ]
+    return steps
+
+
+MISS_COMPANIES = ("Invented Missed New Co 1", "Invented Watch Optics", "Invented Rejected Grid", "Invented Beta Funded",
+                  "Invented Research Lab", "Invented Alpha Robotics", batch(5), "Invented Kappa Kept", "Invented Gamma Grid")
+
+
+def _audit_steps() -> list[dict[str, Any]]:
+    steps: list[dict[str, Any]] = []
+    for n, (reason, company) in enumerate(zip(MISS_REASONS, MISS_COMPANIES, strict=True)):  # every why_missed
+        steps.append({"op": "audit", "body": {"type": "miss", "company": company, "why_missed": reason,
+                                               "outcome_date": "2026-10-15" if n == 5 else "", "earliest_signal": f"signal {n}",
+                                               "earliest_signal_date": ("2026-06-01", "bad", "")[n % 3], "signal_source": "Invented Lab Site",
+                                               "should_have_found": "s-lab", "preventable": ("yes", "no", "unclear", "maybe", None)[n % 5],
+                                               "improvement": "watch it", "note": f"miss {n}"}})
+    steps += [
+        {"op": "audit", "body": {"type": "miss", "company": "Invented Watch Optics", "why_missed": "forgot"}},  # context, then refused
+        {"op": "audit", "body": {"type": "miss", "company": "Invented Missed New Co 2"}},
+        {"op": "audit", "body": {"type": "other", "company": "Invented FP Co"}},
+        {"op": "audit", "body": {"company": "Invented FP Co"}},
+        {"op": "audit", "body": {"type": "false_positive", "company": "  "}},
+        {"op": "audit", "body": {"type": "false_positive", "company": "Invented FP New Co", "causes": ["ai_wrapper", "nonsense", "model_error"],
+                                 "lesson": "l" * 600, "note": "x" * 900}},
+        {"op": "audit", "body": {"type": "false_positive", "company": "Invented FP New Co", "causes": []}},  # no cause
+        {"op": "audit", "body": {"type": "false_positive", "company": "Invented FP New Co", "causes": ["nonsense"]}},
+        {"op": "audit", "body": {"type": "false_positive", "company": "Invented FP New Co"}},
+        {"op": "audit", "body": {"type": "false_positive", "company": "Invented FP Co 3", "causes": ["poor_market"], "supersedes": "au-f03"}},
+        {"op": "audit", "body": {"type": "miss", "company": "Invented Missed Over Co", "why_missed": "other", "supersedes": "au-m02",
+                                 "earliest_signal": "s" * 400, "signal_source": "t" * 400, "should_have_found": "u" * 200, "improvement": "v" * 600}},
+    ]
+    return steps
+
+
+def _retract_steps(outcome_at: int, audit_at: int) -> list[dict[str, Any]]:
+    return [
+        {"op": "retract", "body": {"id": "oc-001", "reason": "duplicate entry, wrong company"}},
+        {"op": "retract", "body": {"id": "au-f05", "reason": "not a false positive after all"}},
+        {"op": "retract", "body": {"reason": "entered by mistake today"}, "id_from": outcome_at},
+        {"op": "retract", "body": {"reason": "entered by mistake today"}, "id_from": audit_at},
+        {"op": "retract", "body": {"id": "no-such-id", "reason": "nothing to retract here"}},
+        {"op": "retract", "body": {"id": "oc-001", "reason": "too sho"}},  # a short reason
+        {"op": "retract", "body": {"id": "oc-001", "reason": "   1234567   "}},
+        {"op": "retract", "body": {"id": "oc-c0", "reason": "12345678"}},
+        {"op": "retract", "body": {"id": "rx-1", "reason": "retract the retraction"}},
+        {"op": "retract", "body": {"reason": "no id given at all"}},
+        {"op": "retract", "body": {"id": "au-m03", "reason": "r" * 400}},
+    ]
+
+
+def _benchmark_steps() -> list[dict[str, Any]]:
+    return [
+        {"op": "benchmark", "body": {"system": "Invented DB", "csv": BENCH}},  # the preview
+        {"op": "benchmark", "body": {"system": " Invented DB ", "csv": BENCH, "confirm": True}},
+        {"op": "benchmark", "body": {"system": "Invented Other DB", "csv": BENCH_OVERRIDE, "name_column": "ORG LABEL", "date_column": "when listed", "confirm": 1}},
+        {"op": "benchmark", "body": {"system": "Invented Other DB", "csv": BENCH_OVERRIDE, "name_column": "no such", "date_column": ""}},
+        {"op": "benchmark", "body": {"system": "Invented Strip DB", "csv": BENCH_STRIP, "confirm": "yes"}},
+        {"op": "benchmark", "body": {"system": "Invented DB", "csv": "name,date\r\nInvented Crlf Co,2026-10-05\r\n", "confirm": True}},
+        {"op": "benchmark", "body": {"system": "Invented DB", "csv": "a,b\n1,2\n"}},  # too short
+        {"op": "benchmark", "body": {"csv": BENCH}},
+        {"op": "benchmark", "body": {"system": "Invented DB", "csv": "name,date\n"}},  # no rows
+        {"op": "benchmark", "body": {"system": "Invented DB", "csv": "foo,bar\n1,2\n3,4\n"}},  # unknown columns
+        {"op": "benchmark", "body": {"system": "Invented DB", "csv": "﻿name,date\nInvented Bom Co,2026-10-01\n"}},
+        {"op": "benchmark", "body": {"system": "Invented DB", "csv": EXTRA}, "declared": "e"},
+        {"op": "benchmark", "body": {"system": "Invented DB", "csv": EXTRA, "confirm": True}, "declared": "e"},
+        {"op": "benchmark", "body": {"system": "Invented DB", "csv": UNQUOTED_CR, "confirm": True}, "declared": "e"},
+    ]
+
+
+def _with_seams(steps: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    return [{**s, "seam": seam(i)} for i, s in enumerate(steps)]
+
+
+def main_steps() -> list[dict[str, Any]]:
+    outcomes = _outcome_steps()
+    steps = outcomes + _audit_steps()
+    steps += _retract_steps(0, len(outcomes) + 1) + _benchmark_steps()
+    steps += [{"op": "mark", "body": {"cycle": ""}}, {"op": "mark", "body": {"cycle": "c-9"}},
+              {"op": "mark", "body": {"cycle": "no-such-cycle"}},
+              {"op": "audit", "body": {"type": "miss", "company": "Invented Late Miss Co", "why_missed": "other", "earliest_signal": "a late signal"}},
+              {"op": "mark", "body": {"cycle": "c-9"}}]  # the packet after a new audit
+    return _with_seams(steps)
+
+
+def empty_steps() -> list[dict[str, Any]]:
+    return _with_seams([
+        {"op": "outcome", "body": {"kind": "accelerator", "company": "Invented Empty Co", "event_date": "2026-11-01"}},
+        {"op": "audit", "body": {"type": "miss", "company": "Invented Empty Co", "why_missed": "source_not_covered"}},
+        {"op": "audit", "body": {"type": "false_positive", "company": "Invented Empty FP", "causes": ["other"]}},
+        {"op": "retract", "body": {"reason": "entered by mistake today"}, "id_from": 0},
+        {"op": "retract", "body": {"reason": "entered by mistake today"}, "id_from": 1},
+        {"op": "retract", "body": {"id": "oc-none", "reason": "nothing to retract here"}},
+        {"op": "benchmark", "body": {"system": "Invented DB", "csv": BENCH}},
+        {"op": "benchmark", "body": {"system": "Invented DB", "csv": BENCH, "confirm": True}},
+        {"op": "benchmark", "body": {"system": "Invented DB", "csv": EXTRA, "confirm": True}, "declared": "e"},
+        {"op": "mark", "body": {}},
+    ])
+
+
+WRITE_STEPS: dict[str, Any] = {"main": main_steps, "empty": empty_steps}
+# fmt: on
+
+
+def run_writes_oracle(inp: dict[str, Any], files: dict[str, bytes]) -> dict[str, Any]:
+    python = OLD_REPO / "backend" / ".venv" / "Scripts" / "python.exe"
+    if not python.exists():
+        raise SystemExit(f"old interpreter not found: {python} (set PZ_OLD_REPO)")
+    with tempfile.TemporaryDirectory(prefix="pz-validation-writes-oracle-") as tmp:
+        data = Path(tmp) / "data"
+        data.mkdir(parents=True)
+        for rel, raw in files.items():
+            target = (data / rel).resolve()
+            if data.resolve() not in target.parents:
+                raise SystemExit(f"refusing a path outside the scratch folder: {rel}")
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes(raw)
+        srcf, dst = Path(tmp) / "io" / "in.json", Path(tmp) / "io" / "out.json"
+        srcf.parent.mkdir(parents=True, exist_ok=True)
+        srcf.write_text(json.dumps(inp, ensure_ascii=False), encoding="utf-8")
+        env = {**os.environ, "PZ_DATA": str(data), "PZ_TESTING": "1", "PZ_CASE_PREP": "0",
+               "PYTHONPATH": str(OLD_REPO / "backend" / "src")}  # fmt: skip
+        for k in [k for k in env if k == "SUPABASE_DB_URL" or k.endswith("_API_KEY") or k.endswith("_TOKEN")]:
+            env.pop(k)  # the oracle never needs, and never sees, the database or any key
+        cmd = [str(python), str(WRITES_ORACLE), str(srcf), str(dst)]
+        run = subprocess.run(cmd, env=env, capture_output=True, text=True)
+        if run.returncode != 0:
+            raise SystemExit(f"oracle failed:\n{run.stderr[-3000:]}")
+        out: dict[str, Any] = json.loads(dst.read_text(encoding="utf-8"))
+        return out
+
+
+def write_answer(fn: Any) -> tuple[dict[str, Any], list[list[str]], writes.Written | None]:
+    """The new route's answer for one pure write, the ``[log, text]`` it appends (``line + "\\n"``, what the old
+    ``storage.append_line`` wrote) and the ``Written``."""
+    try:
+        w = fn()
+    except writes.StalePacket as exc:
+        return {"code": 409, "error": str(exc)}, [], None
+    except ValidationError as exc:
+        return {"code": 400, "error": str(exc)}, [], None
+    except Exception as exc:  # the route would answer 500
+        return {"raises": type(exc).__name__}, [], None
+    return {"code": 200, "body": js(w.answer)}, [[log, line + "\n"] for log, line in w.appends], w
+
+
+def new_writes(docs: dict[str, Any], clock: str, steps: list[dict[str, Any]]) -> tuple[dict[str, Any], list[str]]:
+    """The pure writes over the inputs, each step's lines appended to the inputs' log texts (``writes.appended``),
+    then the 027a ``view``. Decision (f): a mark sends the ``{cycle, generated, sha}`` of the packet the GET shows at
+    that moment; a stale sha (409) and a missing ``generated`` (400) are checked refused with nothing appended."""
+    now = datetime.fromisoformat(clock)
+    today = now.date()
+    inputs = inputs_from_docs(docs, today)
+    problems: list[str] = []
+    fns = {
+        "outcome": writes.outcome,
+        "audit": writes.audit,
+        "retract": writes.retract,
+        "benchmark": writes.benchmark_import,
+    }
+    results: list[dict[str, Any]] = []
+    for i, step in enumerate(steps):
+        body = dict(step["body"])
+        if step.get("id_from") is not None:
+            body["id"] = results[step["id_from"]]["answer"]["body"]["entry"]["id"]
+        hexes = list(step["seam"])
+        before = copy.deepcopy(inputs)
+        sent: dict[str, Any] = {}
+        if step["op"] == "mark":
+            shown = scout_packet(inputs, str(body.get("cycle") or ""), today, now)
+            sent = {"cycle": body.get("cycle"), "generated": writes.generated_at(shown["text"]), "sha": shown["sha"]}
+            for bad, code in (({**sent, "sha": "0" * 16}, 409), ({**sent, "generated": ""}, 400)):
+                refused, lines, _ = write_answer(
+                    lambda bad=bad, ins=inputs: writes.packet_mark(ins, bad, today=today, now=now)
+                )
+                if refused.get("code") != code or lines:
+                    problems.append(f"/steps[{i}]/mark: {bad} answered {refused} (expected {code}, nothing appended)")
+            answer, lines, w = write_answer(lambda ins=inputs, b=sent: writes.packet_mark(ins, b, today=today, now=now))
+        else:
+            fn = fns[step["op"]]
+            answer, lines, w = write_answer(
+                lambda: fn(inputs, body, today=today, now=now, new_hex=lambda: hexes.pop(0))  # noqa: B023 - called now
+            )
+        if inputs != before:
+            problems.append(f"/steps[{i}]: the write changed its inputs")
+        if w is not None:
+            inputs = writes.appended(inputs, w.appends)
+        results.append({"answer": answer, "appended": lines, "sent": sent})
+    v = _answer(lambda: view(inputs, today, now))
+    if "body" in v:
+        v["body"] = old_view(v["body"], problems, "/view")
+    return {"steps": results, "view": v}, problems
+
+
+def _mark_problems(at: str, old: dict[str, Any], new: dict[str, Any], shas: dict[str, str]) -> list[str]:
+    """Decision (f): the answer is the packet (027a's normalisation (c)); the logged line is the old one with the
+    shown packet's sha in place of the regenerated one (equal at the frozen clock: checked)."""
+    problems: list[str] = []
+    old_body, new_body = old["answer"].get("body") or {}, new["answer"].get("body") or {}
+    norm = {**new["answer"], "body": old_packet(new_body)} if new_body else new["answer"]
+    problems += [f"{at}/answer{p}" for p in diff(js(old["answer"]), js(norm))]
+    if _text(old["answer"]) != _text(norm):
+        problems.append(f"{at}/answer: the serialized answer differs (key order)")
+    if len(old["appended"]) != 1 or len(new["appended"]) != 1:
+        return [*problems, f"{at}: appended {old['appended']} != {new['appended']}"]
+    old_sha, new_sha = json.loads(old["appended"][0][1])["sha"], str(new_body.get("sha"))
+    if old_sha != old_body.get("sha"):
+        problems.append(f"{at}: the old mark did not log the sha of the text at the frozen clock")
+    if new_sha != new["sent"].get("sha"):
+        problems.append(f"{at}: the new mark did not log the shown packet's sha")
+    shas[old_sha] = new_sha
+    want = [old["appended"][0][0], old["appended"][0][1].replace(old_sha, new_sha)]
+    if want != new["appended"][0]:
+        problems.append(f"{at}/appended: {want!r} != {new['appended'][0]!r}")
+    return problems
+
+
+def compare_writes_set(name: str, s: dict[str, Any], clock: str) -> tuple[list[str], dict[str, int]]:
+    expected = s["expected"]
+    problems: list[str] = []
+    declared = {"e": 0, "f": 0}
+    if expected.get("changed"):
+        problems.append(f"/{name}/changed: the OLD writes changed {expected['changed']}")
+    got, invariants = new_writes(s["docs"], clock, s["steps"])
+    problems += [f"/{name}{p}" for p in invariants]
+    shas: dict[str, str] = {}
+    for i, (step, old, new) in enumerate(zip(s["steps"], expected["steps"], got["steps"], strict=True)):
+        at = f"/{name}/steps[{i}]({step['op']})"
+        if step.get("declared") == "e":  # the old 500 -> a 400, nothing appended
+            declared["e"] += 1
+            ok = ("raises" in old["answer"] and not old["appended"] and new["answer"].get("code") == 400
+                  and str(new["answer"].get("error", "")).startswith(writes.CSV_UNREADABLE) and not new["appended"])  # fmt: skip
+            if not ok:
+                problems.append(f"{at}: declared (e) not as declared: old {old}, new {new['answer']} {new['appended']}")
+            continue
+        if step["op"] == "mark":
+            declared["f"] += 1
+            problems += _mark_problems(at, old, new, shas)
+            continue
+        problems += [f"{at}/answer{p}" for p in diff(js(old["answer"]), js(new["answer"]))]
+        if _text(old["answer"]) != _text(new["answer"]):
+            problems.append(f"{at}/answer: the serialized answer differs (key order)")
+        if old["appended"] != new["appended"]:  # byte for byte
+            problems.append(f"{at}/appended: {old['appended']!r} != {new['appended']!r}")
+    old_next = copy.deepcopy(expected["view"])
+    last = ((old_next.get("body") or {}).get("scout") or {}).get("last_packet")
+    if isinstance(last, dict) and last.get("sha") in shas:  # decision (f), as the next GET shows it
+        last["sha"] = shas[last["sha"]]
+    problems += [f"/{name}/view{p}" for p in diff(js(old_next), js(got["view"]))]
+    if _text(old_next) != _text(got["view"]):
+        problems.append(f"/{name}/view: the serialized answer differs (key order)")
+    return problems, declared
+
+
+def compare_writes(golden: dict[str, Any]) -> tuple[list[str], dict[str, int]]:
+    problems: list[str] = []
+    declared = {"e": 0, "f": 0}
+    for name, s in golden["sets"].items():
+        p, d = compare_writes_set(name, s, golden["clock"])
+        problems += p
+        declared = {k: declared[k] + d[k] for k in declared}
+    return problems, declared
+
+
+def writes_report(golden: dict[str, Any]) -> int:
+    problems, declared = compare_writes(golden)
+    for p in problems[:60]:
+        print("  DIFF", p)
+    print(f"declared: (e) {declared['e']} former-500 CSVs, (f) {declared['f']} packet marks")
+    print("VALIDATION WRITES GOLDENS MATCH" if not problems else f"VALIDATION WRITES GOLDENS DIFFER ({len(problems)})")
+    return 1 if problems else 0
+
+
+def write_writes_goldens() -> int:
+    sets: dict[str, Any] = {}
+    meta: dict[str, Any] = {}
+    for name in WRITE_WORLDS:
+        docs = SETS[name]()
+        steps = WRITE_STEPS[name]()
+        oracle = run_writes_oracle({"clock": CLOCK, "steps": steps}, _files(docs))
+        meta = oracle.pop("meta")
+        sets[name] = {"docs": docs, "steps": steps, "expected": oracle}
+    golden = {"provenance": meta, "clock": CLOCK, "sets": sets}
+    WRITES_GOLDEN.write_text(json.dumps(golden, ensure_ascii=False, indent=None) + "\n", encoding="utf-8", newline="\n")
+    summary_ = {
+        name: {
+            "steps": len(s["steps"]),
+            "ok": sum(1 for x in s["expected"]["steps"] if x["answer"].get("code") == 200),
+            "refused": sum(1 for x in s["expected"]["steps"] if x["answer"].get("code") == 400),
+            "raised": [x["answer"]["raises"] for x in s["expected"]["steps"] if "raises" in x["answer"]],
+            "appended": sum(len(x["appended"]) for x in s["expected"]["steps"]),
+            "changed": s["expected"]["changed"],
+        }
+        for name, s in sets.items()
+    }
+    print(json.dumps({"golden": str(WRITES_GOLDEN), "bytes": WRITES_GOLDEN.stat().st_size, "old": meta,
+                      "summary": summary_}, indent=1, ensure_ascii=False))  # fmt: skip
+    return writes_report(json.loads(WRITES_GOLDEN.read_text(encoding="utf-8")))
+
+
 def main(argv: list[str]) -> int:
     if argv[1:] == ["real"]:
         return real()
     if argv[1:] == ["goldens"]:
         return write_goldens()
+    if argv[1:] == ["writes-goldens"]:
+        return write_writes_goldens()
+    if argv[1:] == ["writes-check"]:  # the stored writes golden against the new code, without the oracle
+        return writes_report(json.loads(WRITES_GOLDEN.read_text(encoding="utf-8")))
     if argv[1:] == ["check"]:  # the stored golden against the new code, without the oracle
         problems = compare_goldens(json.loads(GOLDEN.read_text(encoding="utf-8")))
         for p in problems[:60]:

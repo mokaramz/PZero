@@ -26,7 +26,9 @@ from psycopg.types.json import Jsonb
 
 from projectzero.api.app import create_app
 from projectzero.core.config import Settings
-from projectzero.core.db import connect, transaction
+from projectzero.core.db import connect, read_only_transaction, transaction
+from projectzero.ecosystems.store import EcosystemsStore
+from projectzero.map import inputs as map_inputs
 from projectzero.ops.db_check import _scratch_sql
 from projectzero.ops.parity_founder_calls import utc_instant
 
@@ -228,3 +230,64 @@ def test_bom_prefixed_archives_keep_their_candidates_and_their_first_watch_recor
     assert "could not be interpreted" not in d["note"]
     company = next(x for x in d["companies"] if x["name"] == COMPANY)
     assert company["watch"] is True  # the first JSONL record, right after the BOM, was read
+
+
+def _inbox_record(cid: str, name: str, location: str) -> dict[str, Any]:
+    return {"id": cid, "name": name, "decision": "new", "discovery_tier": "announcement",
+            "source_id": "s-invented-wire", "first_seen": "2026-11-01", "location": location,
+            "description": f"{name}, invented."}  # fmt: skip
+
+
+def _absorbed_world(settings: Settings, schema: str, own: dict[str, Any] | None = None) -> None:
+    """Two old inbox records (Munich) absorbed into one survivor whose own record is a Scout item (or, with ``own``,
+    an inbox record itself, archived first); the survivor holds the current proposal."""
+    first = _inbox_record("c-absorbed-01", "Invented Dunlin Robotics", "Munich, Germany")
+    second = _inbox_record("c-absorbed-02", "Invented Dunlin Robotics GmbH", "Munich, Germany")
+    archived = [r for r in (own, first, second) if r]
+    inbox = json.dumps({"candidates": archived}).encode("utf-8")
+    scout = {"id": "si-005-invented-dunlin", "entity_name": "Invented Dunlin Robotics", "cycle_id": "005"}
+    with transaction(settings.db_url) as conn:
+        conn.execute(f"insert into {schema}.legacy_documents (path, sha256, bytes, raw, parsed) values "
+                     "(%s, %s, %s, %s, %s::jsonb)".encode(),
+                     ("inbox.json", hashlib.sha256(inbox).hexdigest(), len(inbox), inbox, inbox.decode()))  # fmt: skip
+        sid = own["id"] if own else "s-survivor-01"
+        conn.execute(f"insert into {schema}.candidates (id, name, status, origins, legacy) values "
+                     "(%s, 'Invented Dunlin Robotics', 'new', '{legacy_dealflow,legacy_scout00}', %s)".encode(),
+                     (sid, Jsonb(own or scout)))  # fmt: skip
+        for rec in (first, second):
+            conn.execute(f"insert into {schema}.observations (candidate_id, origin, payload) values (%s, %s, %s)".encode(),
+                         (sid, "legacy_dealflow", Jsonb({"merged_record": rec})))  # fmt: skip
+        conn.execute(f"insert into {schema}.triage_proposals (candidate_id, proposal, detail) values (%s, 'KEEP', '{{}}')".encode(),
+                     (sid,))  # fmt: skip
+
+
+def test_an_absorbed_inbox_record_keeps_its_place_on_the_map(settings: Settings, make: Any) -> None:
+    """Codex H-232 / H-237: two old inbox records (placed in Munich) were merged into a survivor whose own record is a
+    Scout Intake item. The old ``inbox.json`` held both, so the old Map counted both in Munich's Deal Flow, counted
+    both in ``new_signals`` while the decision was ``new``, and looked their proposals up by their own ids."""
+    c, schema = make({"news/events.json": NEWS})
+    _absorbed_world(settings, schema)
+    names = [x["name"] for x in c.get("/api/map/ecosystem", params={"city": CITY}).json()["companies"]]
+    assert {"Invented Dunlin Robotics", "Invented Dunlin Robotics GmbH"} <= set(names)
+    base = c.get("/api/map/pins").json()["new_signals"]
+    with read_only_transaction(settings.db_url) as conn:
+        inputs = map_inputs.load(conn, schema, NOW)
+        coverage = EcosystemsStore(conn, schema).inputs(NOW)
+    ids = [r["id"] for r in inputs.inbox]
+    assert ids[:2] == ["c-absorbed-01", "c-absorbed-02"] and "s-survivor-01" not in ids  # archived order; no Scout item
+    assert {k: v["proposal"] for k, v in inputs.proposals.items()} == {"c-absorbed-01": "KEEP", "c-absorbed-02": "KEEP"}
+    assert [r["id"] for r in coverage.inbox if "Dunlin" in r["name"]] == ["c-absorbed-01", "c-absorbed-02"]
+    with transaction(settings.db_url) as conn:
+        conn.execute(f"update {schema}.candidates set status = 'watch' where id = 's-survivor-01'".encode())
+    assert c.get("/api/map/pins").json()["new_signals"] == base - 2  # both records followed the survivor's decision
+
+
+def test_a_survivor_that_is_an_inbox_record_keeps_its_own_record_and_the_absorbed_one(
+    settings: Settings, make: Any
+) -> None:
+    own = _inbox_record("c-own-0001", "Invented Dunlin AG", "Munich, Germany")
+    _, schema = make({})
+    _absorbed_world(settings, schema, own=own)
+    with read_only_transaction(settings.db_url) as conn:
+        inputs = map_inputs.load(conn, schema, NOW)
+    assert [r["id"] for r in inputs.inbox][:3] == ["c-own-0001", "c-absorbed-01", "c-absorbed-02"]

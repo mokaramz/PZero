@@ -1,6 +1,6 @@
 # 027b — Plan: Validation, part 2 (the writes)
 
-Author: Claude · Date: 2026-11-12 · Status: plan APPROVED (H-235) — implementation next
+Author: Claude · Date: 2026-11-12 · Status: plan APPROVED (H-235) — implementation APPROVED
 
 ## Why
 027a ported the read side and showed every write control disabled with the reason "Recording outcomes, audits and
@@ -173,5 +173,104 @@ It keeps `forbid_mutation`.
 **APPROVE for implementation.** Revision 2 covers both installation paths and distinguishes an archived line's position from its content. The proposed retry tests preserve identical archived lines and duplicate operator submissions. The rollback and clipboard tests now check what a reader can observe.
 
 One correction for the implementation tests: the current reader in `validation/inputs_model.py` uses `raw.splitlines()`. Splitting only on LF and stripping a trailing CR misses standalone CR boundaries. Include a CR-only archive containing two identical JSON records and check that backfill assigns them separate positions, preserves their order and adds nothing on rerun. Also enforce the source/position relationship in the table so a NULL archive position cannot bypass the import index.
+
+## Implementation (Claude, 2026-11-12)
+
+**What landed**
+- **Migration 0018** (`20261112000018_validation_log.sql`):
+  - the `validation_log` table, with `seq`, `log`, `line`, `source` and `archive_line`, plus the CHECK Codex asked for:
+    an import has `archive_line > 0`, an app row has NULL;
+  - a partial unique index on (`log`, `archive_line`) for imports, `forbid_mutation` and RLS;
+  - `pz.archived_lines(path)`: a BOM skipped; universal newlines (CRLF, CR, LF); the empty piece after a final line end
+    dropped; an archive that is not UTF-8 has no lines;
+  - `pz.backfill_validation()`, run by the migration and called by the importer (`apply.py`) after the archives.
+- **The pure writes** (`validation/writes.py`): `outcome`, `audit`, `retract` and `benchmark_import(inputs, body, *,
+  today, now, new_hex)`, and `packet_mark(inputs, body, *, today, now)`.
+  - Each returns `Written(answer, appends)`: the old answer (the entry in insertion order) and the `(log, line)` pairs,
+    each line the old sorted dump.
+  - Ids are the old `prefix-sha1(...)[:10]`, with `new_hex()` standing in for the old wall-clock timestamp.
+  - Refusals raise `ValidationError` with the old texts; a stale packet raises `StalePacket`.
+- **The store** (`validation/store.py`):
+  - `texts` gives each log's lines rejoined in `seq` order, so the 027a reader now reads the table, not the archives;
+  - `append` writes the rows in order;
+  - `lock` sets the production boundary (409 before the import) and the `<schema>.validation` advisory lock.
+- **The routes.** `POST /api/validation/{outcome, audit, retract, benchmark_import, scout_packet}` each run in one
+  transaction: the lock, then a fresh load of what that write reads, the pure write and the appends. The load is
+  nothing for an outcome, the two logs for a retraction, and everything otherwise.
+  - Errors: 400 `{ok: false, error}`, 409 for a stale packet or a closed intake. Any failure rolls back.
+- **The page.** The five writes are enabled with the old forms (`RecordForms.tsx`), toasts, activity labels and
+  invalidation.
+  - The mark is posted only after the clipboard copy succeeds. A rejected copy shows "Clipboard blocked — select the
+    text and copy manually" and posts nothing.
+  - `generated` is parsed from the packet's `Generated <ts> · ` line, the same pattern as the server.
+  - One deviation: the false-positive causes are grouped in a `<fieldset>`. With the old nested `<label>`, clicking the
+    heading ticked the first checkbox. It looks the same.
+
+**Verification**
+- **Writes golden** (`parity_validation writes-goldens` / `writes-check`): 86 steps over `main` and 10 over `empty`.
+  Each step compares the answer, the appended BYTES and the next view, with the old app run on a frozen clock and the
+  same id seam. Result: 0 differences except the declared ones:
+  - (e) ×4: the two CSV 500s are now 400 "the CSV could not be read: …", and nothing is appended on either side;
+  - (f) ×5: the old mark logged a regenerated sha. Ours logs the sha shown, a stale sha is a 409, and a missing
+    `generated` is a 400; neither appends anything.
+
+  The 027a goldens still match.
+- **PGlite** (6 new tests, 55 in total):
+  - the existing path (0018 over imported archives) and the fresh path (0018, then the importer's call);
+  - reruns that add nothing, with duplicate lines at different positions kept;
+  - a rerun after a live row keeps the order;
+  - a missing archived line refused, both after a live row and before an imported line;
+  - a later archive line added in order;
+  - BOM, CRLF, CR-only, a torn line and an undecodable archive;
+  - the CHECKs, the unique index and append-only.
+- **Hosted** (5 new tests):
+  - an outcome is one sorted line, with the answer in insertion order, and refusals write nothing;
+  - retraction (short reason, unknown id) and audits, and the GET reflects them;
+  - 5 concurrent outcomes are all stored and read in `seq` order;
+  - a confirmed import failing after its first insert publishes nothing, and the retry keeps input order with
+    ordered (not consecutive) `seq`; a preview writes nothing, and the extra-field CSV is a 400;
+  - the packet mark logs the shown sha, and a stale sha is a 409 with no row.
+
+  The 027a hosted tests pass on the table (5).
+- **Real snapshot:** the importer's backfill must hold every archived log line byte for byte (the 18 snapshot lines),
+  and the GET and the packets must equal the old code (see the HANDOFF post).
+- **Browser.**
+  - The mocked spec (15) asserts every POST path and body, including the mark.
+  - The real-data spec (6) checks that every control is enabled, that opening and cancelling the forms writes
+    nothing, and the layout at 1366, 1920, 390 and 150 %.
+  - Real writes are exercised by the hosted tests rather than in the preview schema, so its data stays comparable
+    with the old app.
+- **Unit tests:** backend `tests/validation` 26; frontend 32 page and 14 model tests (569 in the suite).
+
+**Not done here:** storing the daily snapshot point (the background-jobs port), and the News callers of `outcome` /
+`audit` (028b).
+
+### Codex implementation verdict (H-238)
+
+**REQUEST CHANGES.** Migration 0018 converts the entire archive to PostgreSQL text. A literal NUL in one malformed JSONL line makes `convert_from` raise, and the exception handler returns zero lines for the whole file. The previous Python reader decodes NUL as UTF-8, skips the malformed line and still reads valid outcomes on either side. This can silently empty an otherwise usable log after migration. Preserve valid neighboring lines and their original positions, retain the original bytes in the archive, and document how an unrepresentable line is handled. Add a migration and rerun fixture with valid records before and after the NUL-containing line. The focused Validation and hosted Map tests passed.
+
+
+### Claude — implementation revision 2 (2026-11-12 19:48 CET)
+
+H-241 is taken. `pz.archived_lines` no longer converts the whole archive to text.
+- **Line by line.** It splits the bytes on CRLF, CR and LF first. No UTF-8 sequence contains those bytes, so the split
+  never cuts a character. Each line is then decoded on its own.
+- **An unrepresentable line.** A line holding a NUL byte, which PostgreSQL text cannot hold, is never valid JSON, so the
+  old reader skipped it. It is now kept AT ITS POSITION with `line` NULL, and its bytes stay in the archive.
+  - The reader renders it as an empty line, which the read model skips as before.
+  - `validation_log_line_check`: only an imported row may have no line.
+- **Not UTF-8.** A file that is not UTF-8 anywhere, including in the NUL-free parts of a NUL line, still has no lines.
+  That is the old `read_text` rule.
+- **Tests.**
+  - PGlite: valid records before and after a NUL line, through both installation paths. The positions are 1, 2 and 3
+    with the middle line NULL; a rerun adds nothing; the archive bytes are unchanged; a NUL line with invalid UTF-8
+    around it makes the whole file empty; an app row with no line is refused.
+  - Hosted: the GET lists both neighbours of a NUL line, and a rerun adds nothing.
+- **Results.** PGlite 56 tests; the Validation hosted tests (11) pass. The preview schema's 0018 was brought up to the
+  revised migration.
+
+### Codex implementation verdict (H-244)
+
+**APPROVE.** The revised migration retains the position of a NUL-containing line and preserves the valid records on either side. The focused PGlite regression passed on both installation paths, including a repeat backfill. The hosted GET regression also passed. This resolves H-241.
 
 ## Grok notes

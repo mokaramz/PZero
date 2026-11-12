@@ -94,3 +94,16 @@ folder, at 2026-11-12 10:00 with every other write blocked and the data folder c
 differences, normalised: the deferred News and native-bridge panels (`reason`) and the Scout packet's News and
 source-network learnings (the old fallback lines, `sha` recomputed) (`python -m projectzero.ops.parity_validation
 goldens`).
+
+`oracle_validation_writes.json` (review 027b): the old Validation writes step by step over the `main` and `empty`
+folders of `oracle_validation.json` (invented names): every outcome kind with and without an evidence URL, the
+refusals (unknown kind, no company, no / bad / future date, a real-world outcome without a URL), a supersede, long
+and non-ASCII values and a line separator; a miss for every `why_missed` (each miss type, the context frozen before
+a bad `why_missed` is refused), false positives with and without a valid cause; retractions of an outcome and an
+audit (archived and just recorded), of a retraction, of an unknown id and with a short reason; benchmark previews
+and imports (matched, unmatched and skipped rows, name / date column overrides, too short, no rows, unknown
+columns, a BOM, CRLF) and the two CSVs that were old 500s; the packet mark for all, one and an unknown cycle, and
+after a new miss. Clock frozen at 2026-11-12 10:00, the old `_id` timestamp answering the same id seam as the new
+`new_hex`, every append in memory (the data folder checked unchanged), then the old view. The answers, the appended
+lines byte for byte and the next view match; declared: (e) the two former-500 CSVs are a 400 with nothing
+appended, (f) the mark logs the shown packet's sha (`python -m projectzero.ops.parity_validation writes-goldens`).

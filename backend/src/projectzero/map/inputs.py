@@ -31,7 +31,7 @@ from psycopg import sql
 from psycopg.rows import dict_row
 
 from projectzero.core.db import schema_ident
-from projectzero.dealflow.ranking.service import ranking_input
+from projectzero.dealflow import inbox_records
 from projectzero.dealflow.triage.view import proposal_record
 from projectzero.ecosystems.store import EcosystemsStore
 from projectzero.map.inputs_model import MapInputs, coverage_of, inputs_from_docs
@@ -94,17 +94,10 @@ def load(conn: psycopg.Connection[Any], schema: str, now: datetime, *, for_pins:
             cur.execute(sql.SQL(_PROPOSALS).format(s))
             proposal_rows = {str(r["candidate_id"]): proposal_record(r) for r in cur.fetchall()}
 
-    inbox: list[dict[str, Any]] = []
-    proposals: dict[str, Any] = {}
-    for row in snap.candidate_rows:
-        if not _old_inbox(row):
-            continue
-        c, _ = ranking_input(row)
-        c.setdefault("id", row["id"])
-        inbox.append(c)
-        p = proposal_rows.get(str(row["id"]))
-        if p is not None:
-            proposals[str(c["id"])] = p
+    # the old inbox records (review 025b: an absorbed inbox record at its own archived position), decision (i) first
+    old = inbox_records.old_inbox([r for r in snap.candidate_rows if _old_inbox(r)], snap.absorbed)
+    inbox = [r.record for r in old]
+    proposals = inbox_records.proposals_of(old, proposal_rows)
 
     # the byte-exact archive first (the old key order of ``home_base``), else the stored document (Conviction's rule)
     config = _parse(archived[CONFIG]) if CONFIG in archived else documents.get(CONFIG)
