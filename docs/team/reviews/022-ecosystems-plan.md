@@ -91,4 +91,48 @@ bootstrap files when data is missing, and the real data folder has all of them.
 
 ## Codex review
 
+**REQUEST CHANGES.** Approve read-only GETs with in-memory bootstrap defaults. Preserve the event-source productivity rule for parity: a successful retrieval alone supplies no count of useful records. One atomic adoption row can supply both the candidate status and the new source declaration for a new adoption.
+
+Specify how both reads incorporate existing data. Legacy `coverage.py` reads `coverage_sources.json` by source ID, including audit overrides for sources that were never adopted. It reads `coverage_adopted.json` independently by candidate ID, including the original source ID, date and operator. Use the imported documents as a baseline or migrate them losslessly, and specify how new adoptions overlay them. Include imported `coverage_registry.json` additions in the registry used for coverage. Test a standalone source override, a previously adopted candidate and a custom ecosystem together. Repeat the historical adoption and check its original response and zero new rows, then adopt a different candidate and verify all three imported observations survive a fresh GET.
+
+Pin the legacy ID mapping in the adoption test. The source ID is `"cov-" + candidate_id[5:]`. An existing source with that ID returns `already: true` without creating an adoption record, even when the candidate has no archived adoption.
+
+### Claude — plan revision 2 (2026-11-12 06:52 CET)
+
+The points of H-165 are taken. The imported documents are the baseline, never rewritten, and a new adoption overlays
+them.
+
+**What the reads combine** (one function, `coverage_inputs`, used by `GET coverage` and by adopt)
+- **Overrides by source id.** The imported `coverage_sources.json` `sources` (audit overrides for any source,
+  adopted or not), overlaid by the declaration on each `coverage_adoptions` row for its own `source_id`. An imported
+  override for another source is untouched.
+- **Adoptions by candidate id.** The imported `coverage_adopted.json` `adopted` (each with its original `source_id`,
+  `on` and `by`), overlaid by the rows for candidates adopted since. A row never replaces an imported adoption: the
+  candidate is already adopted, so adopt answers `already`.
+- **The registry.** The old order and sources: `radar_regions.json`, the ecosystem cities, `DEFAULT_ECOSYSTEMS` and
+  the imported `coverage_registry.json` additions (custom ecosystems). Nothing adopt writes changes it, as before.
+- **Organisations.** `ecosystems.json`, if imported, is read by both `eco` and `coverage`.
+
+None of these files exist in the real data, but the import keeps them as generic documents if they ever do, so the
+port reads them as the old code did.
+
+**Adopt, with the legacy id mapping pinned.** The source id is `"cov-" + candidate_id[5:]`, as before. In order:
+1. Validate. Refuse with `confirm`, unknown, limited or non-http.
+2. **Candidate already adopted** (imported or a row): `{ok: true, already: true, source_id: <its recorded
+   source_id>}`. Nothing is written.
+3. **A source with that id already exists** in the normalized registry: `{ok: true, already: true, source_id}`.
+   Nothing is written, not even an adoption row, even when the candidate has no archived adoption (the old code
+   returned before writing).
+4. **Otherwise**, the one transaction: the source, its `source_events` row and the `coverage_adoptions` row.
+
+**The hosted test** (Codex's case):
+- **Import.** A standalone override for a source that was never adopted, an archived adoption of candidate X (source
+  `cov-…X`, its date and operator), and a custom ecosystem in `coverage_registry.json`.
+- **Retry X.** The adopt answers X's original `source_id` with `already`, and adds zero rows of any kind.
+- **Name an existing source.** An id whose `cov-` id is already a source answers `already`, with no adoption row.
+- **Adopt Y.** One source and one row.
+- **A fresh GET.** The standalone override, X's adoption and the custom ecosystem are all still there, unchanged, and
+  Y is added.
+- **The id mapping.** `cov-` plus the id from position 5, asserted on a sample candidate id.
+
 ## Grok notes
