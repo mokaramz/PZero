@@ -1,0 +1,30 @@
+{
+  "week_ending": "2026-11-12",
+  "top": [
+    {
+      "event_id": "nw-3f9a1c0b7d2e",
+      "headline": "Munich robotics start-up Vantor Kinetics raises €18M Series A led by Lindqvist Partners",
+      "state": "Caught early"
+    },
+    {
+      "event_id": "nw-7c41d9e2a0f3",
+      "headline": "Quillon Labs raises €25M Series B for battery diagnostics",
+      "state": "Not seen by Project Zero — not yet reviewed"
+    },
+    {
+      "event_id": "nw-5d2f8e1a9b47",
+      "headline": "Lumora Grid secures €3M seed round to balance neighbourhood grids",
+      "state": "Known, but late"
+    }
+  ],
+  "caught_early": [
+    "Vantor Kinetics"
+  ],
+  "missed": [],
+  "pattern": "3 ai companies in Germany with funding round, acquisition in the last 30 days",
+  "sourcing_lesson": "Most documented early signals pointed to: grant sources (EXIST, Innosuisse, EIC, UKRI, NIH/NSF).",
+  "vc_lesson": {
+    "title": "What is a lead investor?",
+    "text": "The fund that sets the terms and usually invests the most. Who leads tells you who did the deepest diligence."
+  }
+}

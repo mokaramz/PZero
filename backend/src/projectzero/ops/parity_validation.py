@@ -20,10 +20,12 @@ Declared differences, normalised here and nowhere else:
 
 * (a) the old view APPENDED today's snapshot (``appended``); the new one computes the same point in memory and stores
   nothing. The payloads are equal (``snapshots`` included): nothing to normalise in the answer.
-* (b) ``news``: the old panel (``news.view``, unavailable in the oracle) answered ``{available: false}``; the new one
-  adds its ``reason`` (dropped here after checking it).
-* (c) the packet's News and source-network learnings: each deferred section's ``- not available: <reason>`` line is
-  mapped to the old fallback line (``- none yet`` / ``- none in probation yet`` / ``- not evaluated yet``) and a card's
+* (b) closed by review 028a: the News panel (``news``) and the packet's NEWS LEARNING / NEWS SOURCE LEARNING are the
+  News port's; the oracle runs the old ``news.view`` / ``news.learnings`` / ``news_sources.scout_lines`` with the
+  GET-time seeding of the curated cases in memory (``news_oracle.install_news``; recorded as ``news_saved`` and
+  compared with the new ``news.seed_cases``): nothing to normalise.
+* (c) the packet's source-network learnings (the source network is not ported): the SOURCE NETWORK section's
+  ``- not available: <reason>`` line is mapped to the old fallback line (``- none in probation yet``) and a card's
   ``not available: <reason>`` to the old ``unavailable`` (text and JSON), then ``sha`` is recomputed.
 * (d) ``native_bridge``: the old ``None`` (the pilot, unavailable in the oracle); the new ``{available: false,
   reason}``.
@@ -37,14 +39,15 @@ The synthetic data folders hold INVENTED names only:
   outcomes, misses and false-positive audits AFTER filtering, each with a retraction of a row outside the raw tail and a
   superseded row; more than 60 snapshots (an out-of-order row dated today in the middle, the last row yesterday: today
   is appended and the window cuts); News events (MEDIUM / HIGH, LOW, NOISE, curated, a future date, an
-  earliest-observation tie decided by the archive key order); verification decisions; an inference ledger across
+  earliest-observation tie decided by the archive key order) with their actions, runs, metric cache, scan history and
+  an invented curated case the GET seeds (review 028a); verification decisions; an inference ledger across
   months; Scout Intake cycles in a key order JSONB would change (plus a cycle missing from ``cycles``); the routing
   store and the source network; a Scout log.
 * ``today``: the final stored snapshot row is dated TODAY (no append, an earlier today row too).
 * ``torn``: the snapshot log ends without a newline (the old append joined its last line: both rows are lost).
 * ``broken``: tolerance: unreadable News (an issue), network and routing documents, junk log lines, a list of
   ``cycles``, Conviction records as an object.
-* ``empty``: no documents at all.
+* ``empty``: no documents at all (and an empty curated case folder: every set names its own, ``CASES_KEY``).
 
 The writes (review 027b, ``writes-goldens`` / ``writes-check``, ``golden_v1/oracle_validation_writes.json``): the
 oracle (``scripts/oracle/validation_writes_oracle.py``) runs the old ``record_outcome`` / ``record_audit`` /
@@ -72,19 +75,21 @@ import hashlib
 import json
 import os
 import re
-import subprocess
 import sys
-import tempfile
 from datetime import datetime
 from pathlib import Path
 from typing import Any
 
 from projectzero.core.paths import REPO_ROOT
 from projectzero.dealflow.ranking.names import norm_company
-from projectzero.ops.parity_ranking import GOLDEN_DIR, OLD_REPO, diff, js
+from projectzero.news import seed_cases
+from projectzero.news.core import load as news_load
+from projectzero.news.inputs_model import CASES_KEY
+from projectzero.ops.parity_news import scratch_oracle, split_cases
+from projectzero.ops.parity_ranking import GOLDEN_DIR, diff, js
 from projectzero.validation import build, inputs_from_docs, scout_packet, view, writes
 from projectzero.validation.catalog import MISS_REASONS
-from projectzero.validation.core import NATIVE_BRIDGE_REASON, NEWS_REASON, ValidationError
+from projectzero.validation.core import NATIVE_BRIDGE_REASON, ValidationError
 from projectzero.validation.packet import DEFERRED
 
 ORACLE = REPO_ROOT / "scripts" / "oracle" / "validation_oracle.py"
@@ -337,8 +342,28 @@ def main_snapshots() -> str:
 
 
 def news_event(eid: str, ekey: str, mat: str, day: str, **kw: Any) -> dict[str, Any]:
-    return {"event_id": eid, "entity_key": ekey, "materiality": mat, "event_date": day, "headline": f"Headline {eid}",
-            "sources": [{"publisher": f"Invented Daily {eid}", "url": f"https://news.invented.example/{eid}"}], **kw}
+    """A stored News event; the fields the News view reads (review 028a) default to a German robotics funding round."""
+    return {"event_id": eid, "company": f"Company {eid}", "entity_key": ekey, "materiality": mat, "event_date": day, "headline": f"Headline {eid}",
+            "summary": "", "event_type": "funding", "round": "", "amount_m": None, "geo": ["DE"], "themes": ["robotics"], "noise": mat == "NOISE",
+            "sources": [{"publisher": f"Invented Daily {eid}", "url": f"https://news.invented.example/{eid}", "published": day,
+                         "headline": f"Headline {eid}", "independence": "independent"}],
+            "backcast": [], "card": None, "materiality_why": ["rule"], **kw}
+
+
+NEWS_CASE = {  # review 028a: an invented curated case the GET seeds (the old ``seed_cases``), in its file's key order
+    "event_id": "nw-case-1", "curated": True, "company": "Invented Case Robotics", "company_from": "curated case",
+    "headline": "Invented Case Robotics passes a $1 billion valuation", "summary": "A secondary sale set the price.",
+    "event_type": "valuation", "round": "", "amount_m": 1000, "event_date": "2026-10-05", "geo": ["DE"], "themes": ["robotics"],
+    "noise": False, "sources": [{"publisher": "Invented Wire", "url": "https://wire.invented.example/case", "published": "2026-10-05",
+                                 "headline": "Invented Case Robotics valued at $1bn", "text_sha": "case", "independence": "independent"}],
+    "backcast": [{"date": "2021", "precision": "year", "text": "an invented lab spinout", "family": "university_lab",
+                  "url": "https://lab.invented.example/", "kind": "known_early_signal"}],
+    "learning": "",
+}
+
+
+def news_cases() -> dict[str, str]:
+    return {"case-1.json": json.dumps(NEWS_CASE, ensure_ascii=False, indent=2) + "\n"}
 
 
 def main_news() -> dict[str, Any]:
@@ -353,8 +378,27 @@ def main_news() -> dict[str, Any]:
         "nw-f": news_event("nw-f", key(batch(5)), "MEDIUM", "2027-02-01"),
         "nw-e": news_event("nw-e", "", "HIGH", "2026-11-01"),
         "nw-s": news_event("nw-s", key("Invented Scout Only Find"), "MEDIUM", "2026-10-30"),
-        "nw-7": news_event("nw-7", key(batch(7)), "HIGH", "2026-11-09"),
-    }, "seeded": ["case-1"]}
+        "nw-7": news_event("nw-7", key(batch(7)), "HIGH", "2026-11-09", event_type="acquisition"),
+        "nw-m": news_event("nw-m", "invented backcast miss", "HIGH", "2026-11-03", backcast=[
+            {"date": "2026-10-01", "precision": "day", "text": "an invented grant list", "family": "grant",
+             "url": "https://grant.invented.example/", "kind": "known_early_signal"}]),
+    }, "seeded": []}
+
+
+def main_news_docs() -> dict[str, Any]:
+    """Review 028a: the rest of the News store the News panel and the packet read."""
+    pubs = {"Invented Daily nw-1": [{"role": "EARLY SIGNAL", "basis": "observed", "evidence": "mentioned 3 companies early"}],
+            "Invented Daily nw-a": [{"role": "SECONDARY COVERAGE", "basis": "observed", "evidence": "syndicated 9/16"}],
+            "Invented Daily nw-9": [{"role": "CORE EUROPEAN INTELLIGENCE", "basis": "observed", "evidence": "covered 9/15"}]}
+    window = {"benchmark_events": 7, "sources": {p: {"name": p, "kind": "feed", "roles": r} for p, r in pubs.items()}}
+    return {
+        "news/actions.jsonl": jl([{"kind": "outcome_decision", "event_id": "nw-7", "decision": "reject", "at": "2026-11-10T09:00:00"},
+                                  {"kind": "miss_audit", "event_id": "nw-m", "audit_id": "au-m04", "at": "2026-11-10T09:00:00"}]),
+        "news/runs.jsonl": jl([{"run_id": "news-1", "at": "2026-11-11T07:00:00", "status": "partial"}]),
+        "news/source_metrics.json": {"at": "2026-11-11T16:05:00", "windows": {"90": window}},
+        "scan_history.json": {"scans": [{"run_id": "2026-09-27T08-00-00"}]},
+        CASES_KEY: news_cases(),
+    }
 
 
 def main_docs() -> dict[str, Any]:
@@ -381,6 +425,7 @@ def main_docs() -> dict[str, Any]:
         "verification_decisions.jsonl": jl([{"flag": "founders", "decision": "accept"}, {"flag": "funding", "decision": "reject"},
                                             {"flag": "founders", "decision": "accept"}, {"decision": "accept"}, "nope"]),
         "inference_ledger.jsonl": jl(ledger),
+        **main_news_docs(),
     }
 
 
@@ -424,43 +469,21 @@ def broken_docs() -> dict[str, Any]:
     }
 
 
-SETS: dict[str, Any] = {"main": main_docs, "today": today_docs, "torn": torn_docs, "broken": broken_docs, "empty": lambda: {}}
+def _with_cases(fn: Any) -> Any:
+    """Every set names its own curated case folder (review 028a): an empty one unless it has cases."""
+    return lambda: {CASES_KEY: {}, **fn()}
+
+
+SETS: dict[str, Any] = {"main": main_docs, "today": _with_cases(today_docs), "torn": _with_cases(torn_docs),
+                        "broken": _with_cases(broken_docs), "empty": _with_cases(dict)}
 # fmt: on
 
 
 # ------------------------------------------------------------------ the oracle
-def _files(docs: dict[str, Any]) -> dict[str, bytes]:
-    out = {}
-    for k, v in docs.items():
-        out[k] = (v if isinstance(v, str) else json.dumps(v, ensure_ascii=False, indent=2)).encode("utf-8")
-    return out
-
-
-def run_oracle(inp: dict[str, Any], files: dict[str, bytes]) -> dict[str, Any]:
-    python = OLD_REPO / "backend" / ".venv" / "Scripts" / "python.exe"
-    if not python.exists():
-        raise SystemExit(f"old interpreter not found: {python} (set PZ_OLD_REPO)")
-    with tempfile.TemporaryDirectory(prefix="pz-validation-oracle-") as tmp:
-        data = Path(tmp) / "data"
-        data.mkdir(parents=True)
-        for rel, raw in files.items():
-            target = (data / rel).resolve()
-            if data.resolve() not in target.parents:
-                raise SystemExit(f"refusing a path outside the scratch folder: {rel}")
-            target.parent.mkdir(parents=True, exist_ok=True)
-            target.write_bytes(raw)
-        srcf, dst = Path(tmp) / "io" / "in.json", Path(tmp) / "io" / "out.json"
-        srcf.parent.mkdir(parents=True, exist_ok=True)
-        srcf.write_text(json.dumps(inp, ensure_ascii=False), encoding="utf-8")
-        env = {**os.environ, "PZ_DATA": str(data), "PZ_TESTING": "1", "PZ_CASE_PREP": "0",
-               "PYTHONPATH": str(OLD_REPO / "backend" / "src")}  # fmt: skip
-        for k in [k for k in env if k == "SUPABASE_DB_URL" or k.endswith("_API_KEY") or k.endswith("_TOKEN")]:
-            env.pop(k)  # the oracle never needs, and never sees, the database or any key
-        run = subprocess.run([str(python), str(ORACLE), str(srcf), str(dst)], env=env, capture_output=True, text=True)
-        if run.returncode != 0:
-            raise SystemExit(f"oracle failed:\n{run.stderr[-3000:]}")
-        out: dict[str, Any] = json.loads(dst.read_text(encoding="utf-8"))
-        return out
+def run_oracle(inp: dict[str, Any], files: dict[str, bytes], cases: Any = ...) -> dict[str, Any]:
+    """The 027a oracle over a scratch folder; ``cases``: the curated case folder (``...``: the old one, for the real
+    snapshot)."""
+    return scratch_oracle(ORACLE, inp, files, cases, prefix="pz-validation-oracle-")
 
 
 # ------------------------------------------------------------------ the new side and the declared normalisation
@@ -473,14 +496,12 @@ def _answer(fn: Any) -> dict[str, Any]:
 
 
 _FALLBACK = {  # decision (c): the section header -> the old fallback line
-    "== NEWS LEARNING": "- none yet",
     "== SOURCE NETWORK": "- none in probation yet",
-    "== NEWS SOURCE LEARNING": "- not evaluated yet",
 }
 
 
 def old_packet(body: dict[str, Any]) -> dict[str, Any]:
-    """Decision (c): the new packet as the old code answered with the deferred views unavailable."""
+    """Decision (c): the new packet as the old code answered with the source network unavailable."""
     out, section = [], ""
     for line in body["text"].split("\n"):
         if line.startswith("== "):
@@ -496,14 +517,11 @@ def old_packet(body: dict[str, Any]) -> dict[str, Any]:
 
 
 def old_view(body: dict[str, Any], problems: list[str], label: str) -> dict[str, Any]:
-    """Decisions (b) and (d): the deferred panels as the old code answered with them unavailable."""
+    """Decision (d): the deferred native-bridge panel as the old code answered with it unavailable."""
     body = dict(body)
-    if body.get("news") != {"available": False, "reason": NEWS_REASON}:
-        problems.append(f"{label}/news: not the deferred News panel")
     if body.get("native_bridge") != {"available": False, "reason": NATIVE_BRIDGE_REASON}:
         problems.append(f"{label}/native_bridge: not the deferred native-bridge panel")
     keys = list(body)
-    body["news"] = {"available": False}
     body["native_bridge"] = None
     return {k: body[k] for k in keys}
 
@@ -527,12 +545,24 @@ def new_side(docs: dict[str, Any], clock: str, cycles: list[str]) -> tuple[dict[
         e, issues = build(inputs, today)
         return {"entities": e, "issues": issues}
 
-    out = {"view": v, "packets": packets, "build": _answer(ents)}
+    out = {"view": v, "packets": packets, "build": _answer(ents), "news_saved": news_saved(inputs, now)}
     if inputs != inputs_before:
         problems.append("/inputs: Validation changed its inputs")
     if docs != docs_before:
         problems.append("/docs: inputs_from_docs changed the documents")
     return out, problems
+
+
+def news_saved(inputs: Any, now: datetime) -> Any:
+    """Review 028a: what the old News GET's seeding saved (the old guard, then ``seed_cases``), or ``None``."""
+    news = inputs.news_inputs
+    try:
+        if news.cases is not None and len(news_load(news.events)["seeded"]) < len(news.cases):
+            doc, added = seed_cases(news.events, news.cases, now)
+            return js(doc) if added else None
+    except Exception:
+        return None
+    return None
 
 
 def _text(v: Any) -> str:
@@ -546,7 +576,7 @@ def compare_set(name: str, s: dict[str, Any]) -> list[str]:
         problems.append(f"/{name}/changed: the OLD read changed {expected['changed']}")
     got, invariants = new_side(s["docs"], s["clock"], list(expected["packets"]))
     problems += [f"/{name}{p}" for p in invariants]
-    for part in ("view", "packets", "build"):
+    for part in ("view", "packets", "build", "news_saved"):
         problems += [f"/{name}/{part}{p}" for p in diff(js(expected[part]), js(got[part]))]
         if _text(expected[part]) != _text(got[part]):
             problems.append(f"/{name}/{part}: the serialized answer differs (key order)")
@@ -569,7 +599,8 @@ def write_goldens() -> int:
     meta: dict[str, Any] = {}
     for name, fn in SETS.items():
         docs = fn()
-        oracle = run_oracle({"clock": CLOCK, "extra_cycles": EXTRA_CYCLES}, _files(docs))
+        files, cases = split_cases(docs)
+        oracle = run_oracle({"clock": CLOCK, "extra_cycles": EXTRA_CYCLES}, files, cases)
         meta = oracle.pop("meta")
         sets[name] = {"docs": docs, "expected": oracle}
     golden = {"provenance": meta, "clock": CLOCK, "sets": sets}
@@ -878,32 +909,8 @@ WRITE_STEPS: dict[str, Any] = {"main": main_steps, "empty": empty_steps}
 # fmt: on
 
 
-def run_writes_oracle(inp: dict[str, Any], files: dict[str, bytes]) -> dict[str, Any]:
-    python = OLD_REPO / "backend" / ".venv" / "Scripts" / "python.exe"
-    if not python.exists():
-        raise SystemExit(f"old interpreter not found: {python} (set PZ_OLD_REPO)")
-    with tempfile.TemporaryDirectory(prefix="pz-validation-writes-oracle-") as tmp:
-        data = Path(tmp) / "data"
-        data.mkdir(parents=True)
-        for rel, raw in files.items():
-            target = (data / rel).resolve()
-            if data.resolve() not in target.parents:
-                raise SystemExit(f"refusing a path outside the scratch folder: {rel}")
-            target.parent.mkdir(parents=True, exist_ok=True)
-            target.write_bytes(raw)
-        srcf, dst = Path(tmp) / "io" / "in.json", Path(tmp) / "io" / "out.json"
-        srcf.parent.mkdir(parents=True, exist_ok=True)
-        srcf.write_text(json.dumps(inp, ensure_ascii=False), encoding="utf-8")
-        env = {**os.environ, "PZ_DATA": str(data), "PZ_TESTING": "1", "PZ_CASE_PREP": "0",
-               "PYTHONPATH": str(OLD_REPO / "backend" / "src")}  # fmt: skip
-        for k in [k for k in env if k == "SUPABASE_DB_URL" or k.endswith("_API_KEY") or k.endswith("_TOKEN")]:
-            env.pop(k)  # the oracle never needs, and never sees, the database or any key
-        cmd = [str(python), str(WRITES_ORACLE), str(srcf), str(dst)]
-        run = subprocess.run(cmd, env=env, capture_output=True, text=True)
-        if run.returncode != 0:
-            raise SystemExit(f"oracle failed:\n{run.stderr[-3000:]}")
-        out: dict[str, Any] = json.loads(dst.read_text(encoding="utf-8"))
-        return out
+def run_writes_oracle(inp: dict[str, Any], files: dict[str, bytes], cases: Any = ...) -> dict[str, Any]:
+    return scratch_oracle(WRITES_ORACLE, inp, files, cases, prefix="pz-validation-writes-oracle-")
 
 
 def write_answer(fn: Any) -> tuple[dict[str, Any], list[list[str]], writes.Written | None]:
@@ -1053,7 +1060,8 @@ def write_writes_goldens() -> int:
     for name in WRITE_WORLDS:
         docs = SETS[name]()
         steps = WRITE_STEPS[name]()
-        oracle = run_writes_oracle({"clock": CLOCK, "steps": steps}, _files(docs))
+        files, cases = split_cases(docs)
+        oracle = run_writes_oracle({"clock": CLOCK, "steps": steps}, files, cases)
         meta = oracle.pop("meta")
         sets[name] = {"docs": docs, "steps": steps, "expected": oracle}
     golden = {"provenance": meta, "clock": CLOCK, "sets": sets}

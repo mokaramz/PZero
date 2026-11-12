@@ -13,13 +13,16 @@ IN = {clock, extra_cycles: [cycle]} over a scratch PZ_DATA. Through the old ``se
 * ``build``: ``build(today)`` as ``{entities, issues}`` (the entity model News and the write side reuse);
 * ``changed``: the data-folder files whose bytes changed (must be empty).
 
-Every other write is BLOCKED (``storage.append_line`` / ``save_json`` / ``write_text`` raise). The deferred views are
-made unavailable so the old code takes its own fallback (declared differences b-d, normalised by the parity):
-``news.view`` and ``news.learnings`` (the News panel, the packet's NEWS LEARNING), ``native_planner.bridge_metrics``
-(the native-bridge panel), ``source_network.scout_lines`` / ``news_sources.scout_lines`` (the packet's SOURCE NETWORK
-and NEWS SOURCE LEARNING) and ``source_network._already_monitored`` (the cards' source learning). ``news.observations``
-is NOT stubbed: it is ported. Each answer is ``{code: 200, body}`` or ``{raises: name}``. The clock is frozen
-everywhere the old code read it (``date.today()`` / ``datetime.now()`` / ``ledger.now_ts()``).
+Every other write is BLOCKED (``storage.append_line`` / ``save_json`` / ``write_text`` raise), except the News
+events-document save: News is ported (review 028a), so the old ``news.view`` / ``news.learnings`` /
+``news_sources.scout_lines`` RUN (the News panel, the packet's NEWS LEARNING and NEWS SOURCE LEARNING); the GET-time
+seeding of the curated cases (``seed_cases`` -> ``_save``, then ``load``) goes to memory and is read back by the old
+``load`` (``news_oracle.install_news``; ``cases_dir`` replaces the old case folder; recorded as ``news_saved``). The
+views that stay deferred are made unavailable so the old code takes its own fallback (declared differences c-d,
+normalised by the parity): ``native_planner.bridge_metrics`` (the native-bridge panel), ``source_network.scout_lines``
+(the packet's SOURCE NETWORK) and ``source_network._already_monitored`` (the cards' source learning). Each answer is
+``{code: 200, body}`` or ``{raises: name}``. The clock is frozen everywhere the old code read it (``date.today()`` /
+``datetime.now()`` / ``ledger.now_ts()``).
 """
 
 from __future__ import annotations
@@ -33,6 +36,10 @@ import sys
 from datetime import date, datetime
 from pathlib import Path
 from typing import Any
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+from news_oracle import EVENTS, install_news  # the 028a oracle's in-memory events document, shared
 
 SNAPSHOTS = "validation/snapshots.jsonl"
 
@@ -98,17 +105,14 @@ def _guard(memory: list[str]) -> None:
 
 
 def _defer() -> None:
-    from projectzero.services import native_planner, news, news_sources, source_network
+    from projectzero.services import native_planner, source_network
 
     def unavailable(*_a: Any, **_k: Any) -> Any:
         raise Deferred("deferred view")
 
-    news.view = unavailable  # type: ignore[attr-defined]
-    news.learnings = unavailable  # type: ignore[attr-defined]
     native_planner.bridge_metrics = unavailable  # type: ignore[attr-defined]
     source_network.scout_lines = unavailable  # type: ignore[attr-defined]
     source_network._already_monitored = unavailable  # type: ignore[attr-defined]
-    news_sources.scout_lines = unavailable  # type: ignore[attr-defined]
 
 
 def _answer(fn: Any) -> dict[str, Any]:
@@ -139,6 +143,8 @@ def main() -> int:
     _freeze(inp["clock"])
     memory: list[str] = []
     _guard(memory)
+    news_memory: dict[str, str] = {}
+    install_news(news_memory, inp.get("cases_dir"))
     _defer()
     from projectzero.domain import taste  # the OLD package
     from projectzero.services import validation
@@ -154,6 +160,7 @@ def main() -> int:
         return {"entities": ents, "issues": issues}
 
     out["build"] = _answer(build)
+    out["news_saved"] = json.loads(news_memory[EVENTS]) if EVENTS in news_memory else None
     after = _hashes(Path(data_dir))
     out["changed"] = sorted(k for k in {**before, **after} if before.get(k) != after.get(k))
     old_root = Path(taste.__file__).resolve().parents[4]

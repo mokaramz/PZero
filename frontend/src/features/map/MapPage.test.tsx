@@ -354,15 +354,12 @@ describe("Map — ground sourcing", () => {
     expect(p.getByText(`(${NOT_PORTED.scoutIntake})`)).toBeVisible();
   });
 
-  it("a /news link the server sends is plain text with the News reason", async () => {
+  it("a /news link the server sends opens the News & Learning page (review 028a)", async () => {
     fakeServer({ ecosystem: (city) => (city === "Munich" ? { ...munich(), companies: [{ ...munich().companies[1], name: "Torvane news story", link: "/news" }] } : undefined) });
     renderPage();
     await openMunich();
     const p = within(geoPanel());
-    expect(p.queryByRole("link", { name: "Torvane news story" })).not.toBeInTheDocument();
-    expect(p.getByText("Torvane news story").closest("[data-deferred]")).toHaveAttribute("title", NOT_PORTED.news);
-    expect(p.getByText(`(${NOT_PORTED.news})`)).toBeInTheDocument();
-    expect(NOT_PORTED.news).toBe("News arrives with the News & Learning port");
+    expect(p.getByRole("link", { name: "Torvane news story" })).toHaveAttribute("href", "/news");
   });
 
   it("coverage not assessed, and an unknown city", async () => {

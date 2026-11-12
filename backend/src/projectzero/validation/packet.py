@@ -4,12 +4,14 @@
 revision 6c739b9, ported line for line, READ ONLY (decision c): ``mark`` (the old POST that appended the Scout log)
 is 027b's.
 
-Decision (c): the packet's News and source-network learnings are deferred behind the News reason. The old packet
-built them from ``news.learnings()`` (News), ``source_network.scout_lines()`` and ``news_sources.scout_lines()`` (the
-NEWS LEARNING, SOURCE NETWORK and NEWS SOURCE LEARNING sections: each now one ``- not available: <reason>`` line,
-their machine-readable lists empty) and, per card, ``_evidence_learning`` (whether an evidence domain is monitored by
-PZ or a source-network candidate: now ``not available: <reason>``; a card without an evidence URL still says
-``no evidence URL``). Everything else is the old text; ``Generated`` is the request instant as the old naive Berlin
+Review 028a closed the News part of decision (c): the NEWS LEARNING and NEWS SOURCE LEARNING sections read the News
+port (``news.learnings`` over the inputs' ``news_inputs`` completed with THIS packet's entity build, and
+``news.sources.scout_lines`` over the metric cache), each inside the old ``try`` (a failure is the old empty list and
+fallback line). The source-network learnings stay deferred until the source network is ported: the SOURCE NETWORK
+section (old ``source_network.scout_lines()``) is one ``- not available: <reason>`` line with an empty
+machine-readable list, and, per card, ``_evidence_learning`` (whether an evidence domain is monitored by PZ or a
+source-network candidate) is ``not available: <reason>`` (a card without an evidence URL still says ``no evidence
+URL``). Everything else is the old text; ``Generated`` is the request instant as the old naive Berlin
 ``ledger.now_ts()``, so ``sha`` changes with it, as before.
 """
 
@@ -26,18 +28,19 @@ from projectzero.conviction.records import records
 from projectzero.dealflow.triage.view import decisions as read_jsonl
 from projectzero.validation.catalog import MIN_N
 from projectzero.validation.core import (
-    NEWS_REASON,
     _classify,
     _live,
     _progression,
     _sources,
     entities,
+    news_inputs,
     source_alpha,
     ts,
 )
 from projectzero.validation.inputs_model import ValidationInputs
 
-DEFERRED = f"not available: {NEWS_REASON}"  # decision (c)
+SOURCE_NETWORK_REASON = "The source network arrives with its port"
+DEFERRED = f"not available: {SOURCE_NETWORK_REASON}"  # decision (c): the source-network learnings
 
 
 def _lane_learning(ents: dict[str, dict[str, Any]]) -> list[str]:
@@ -94,7 +97,8 @@ def _domain(url: str) -> str:
 
 def _evidence_learning(domains: list[str]) -> str:
     """Factual: is the evidence publisher already a Project Zero source, a source under test, or not monitored?
-    Decision (c): the monitoring check (the source network, the News feeds) arrives with News & Learning."""
+    Decision (c): the monitoring check (``source_network._already_monitored`` and its candidates) arrives with the
+    source network."""
     if not domains:
         return "no evidence URL"
     return DEFERRED
@@ -194,17 +198,27 @@ def scout_packet(inputs: ValidationInputs, cycle: str, today: date, now: datetim
     L += ["Noisy sources (mostly noise / baseline):"]
     L += [f"- {x}" for x in src["noisy"]] or ["- none"]
     L += ["", "== QUERY / LANE LEARNING ==", *(f"- {x}" for x in lanes or ["no lanes yet"])]
-    # decision (c): News (``news.learnings()``), the source network (``source_network.scout_lines()``) and the News
-    # sources (``news_sources.scout_lines()``) arrive with News & Learning
-    news_facts: list[dict[str, Any]] = []
+    news = news_inputs(inputs, ents)  # review 028a: this packet's ONE entity build
+    try:
+        from projectzero.news import core as news_core
+
+        news_facts = news_core.learnings(news, today, now)
+    except Exception:
+        news_facts = []
     L += ["", "== NEWS LEARNING (benchmarks from public news: facts and proposals, not commands) =="]
-    L += [f"- {DEFERRED}"]
+    L += [f"- {x['type']}: {x['company']} — {x['fact']}" for x in news_facts[:12]] or ["- none yet"]
+    # decision (c): the source network (``source_network.scout_lines()``) arrives with its port
     net_lines: list[str] = []
     L += ["", "== SOURCE NETWORK (new sources PZ is testing; evidence, not commands) =="]
     L += [f"- {DEFERRED}"]
-    news_src_lines: list[str] = []
+    try:
+        from projectzero.news import sources as news_sources
+
+        news_src_lines = news_sources.scout_lines(news_sources.cached(news.source_metrics))
+    except Exception:
+        news_src_lines = []
     L += ["", "== NEWS SOURCE LEARNING (which publications help sourcing; PZ keeps trust decisions) =="]
-    L += [f"- {DEFERRED}"]
+    L += [f"- {x}" for x in news_src_lines[:10]] or ["- not evaluated yet"]
     L += [
         "",
         f"== STILL PENDING ({len(pending)}) ==",

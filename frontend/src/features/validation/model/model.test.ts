@@ -164,10 +164,10 @@ describe("Validation model — lines", () => {
 
 describe("Validation model — deferred reasons", () => {
   it("are the agreed texts", () => {
-    expect(Object.keys(NOT_PORTED)).toEqual(["news", "bridge"]); // the writes arrived with 027b
-    expect(NOT_PORTED.news).toBe("News & Learning arrives with its port");
+    expect(Object.keys(NOT_PORTED)).toEqual(["sourceNetwork", "bridge"]); // the writes arrived with 027b, News with 028a
+    expect(NOT_PORTED.sourceNetwork).toBe("The source network arrives with its port");
     expect(NOT_PORTED.bridge).toMatch(/Scout search bridge/);
     // the server's News reason is the same text
-    expect(validation().news).toEqual({ available: false, reason: NOT_PORTED.news });
+    expect(validation().news).toEqual({ available: false });
   });
 });

@@ -223,9 +223,7 @@ describe("Validation — the page", () => {
     expect(systems[1]).toHaveTextContent("Public funding news (seen by a scan): 5 companies · PZ earlier for 4, same day or later for 1 · median 47 days");
     expect(within(systems[1]).getAllByRole("listitem")).toHaveLength(5);
 
-    const news = screen.getByTestId("val-news");
-    expect(within(news).getByRole("heading", { name: "News benchmark — did we know them before the news?" })).toBeInTheDocument();
-    expect(screen.getByTestId("val-news-deferred")).toHaveTextContent(/^News & Learning arrives with its port$/);
+    expect(screen.queryByTestId("val-news")).toBeNull(); // the old page: no panel while News is unavailable
   });
 
   it("the News panel shows the old numbers once News is available", async () => {
@@ -283,7 +281,7 @@ describe("Validation — the page", () => {
     expect(text.textContent).toBe(packet().text);
     expect(text).toHaveTextContent("PROJECT ZERO → CHIEF SCOUT 00");
     expect(text).toHaveTextContent("Orbelle Health"); // misses are fed back to the scouts
-    expect(screen.getByTestId("scout-packet-deferred")).toHaveTextContent("News and source-network learnings: News & Learning arrives with its port.");
+    expect(screen.getByTestId("scout-packet-deferred")).toHaveTextContent("Source-network learnings: The source network arrives with its port.");
     expect(screen.getByTestId("scout-packet-copy")).toHaveTextContent("Copy & log handover");
     // the packet survives a visit to another question
     ask("Are we early?");

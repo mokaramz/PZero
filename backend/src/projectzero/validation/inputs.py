@@ -1,5 +1,6 @@
-"""The database side of Validation (review 027a): ``load(conn, schema, now) -> ValidationInputs``, in ONE read
-transaction. Validation's reads never write (decision a).
+"""The database side of Validation (review 027a) and News & Learning (028a): ``load_docs(conn, schema, now)`` reads
+every old input document in ONE read transaction, ``load`` builds ``ValidationInputs`` from them (News builds
+``NewsInputs`` from the same documents, ``news.inputs.load``). The reads never write (decision a).
 
 Where each old input comes from:
 
@@ -15,9 +16,11 @@ Where each old input comes from:
 * ``inference_ledger.jsonl``: ``model_ledger`` in insertion order, each row as ``{ts, usd}``, ``ts`` in Berlin time.
 * the four ``validation/*.jsonl`` logs: ``validation_log`` (review 027b) through ``validation.store.texts``, each
   log's lines in ``seq`` order.
-* ``triage_decisions.jsonl``, ``verification_decisions.jsonl``, ``scout_intake.json``, ``news/events.json`` and
-  ``sources/network.json``: the byte-exact archive (``utf-8-sig``) in line / key order; a missing file reads as its
-  old default.
+* ``triage_decisions.jsonl``, ``verification_decisions.jsonl``, ``scout_intake.json``, ``sources/network.json`` and
+  every News file (``news/events.json``, ``news/{actions,runs,disagreements,source_log}.jsonl``,
+  ``news/{source_metrics,source_state,feeds_extra}.json``, ``scan_history.json``; review 028a, until their own
+  tables in 028b / 028c): the byte-exact archive (``utf-8-sig``) in line / key order, else (the JSON files) the
+  imported ``documents`` row; a missing file reads as its old default.
 """
 
 from __future__ import annotations
@@ -43,10 +46,22 @@ from projectzero.network.view import berlin_now, berlin_today
 from projectzero.validation import store
 from projectzero.validation.inputs_model import ValidationInputs, candidate_record, inputs_from_docs
 
-JSON_ARCHIVES = ("scout_intake.json", "news/events.json", "sources/network.json")
+JSON_ARCHIVES = (
+    "scout_intake.json",
+    "sources/network.json",
+    "news/events.json",
+    "news/source_metrics.json",
+    "news/source_state.json",
+    "news/feeds_extra.json",
+    "scan_history.json",
+)
 TEXT_ARCHIVES = (
     "triage_decisions.jsonl",
     "verification_decisions.jsonl",
+    "news/actions.jsonl",
+    "news/runs.jsonl",
+    "news/disagreements.jsonl",
+    "news/source_log.jsonl",
 )
 LEDGER_TS = "%Y-%m-%dT%H:%M:%S"  # the old ``ledger.now_ts()``
 _PROPOSALS = (
@@ -60,14 +75,14 @@ def _old_inbox(row: dict[str, Any]) -> bool:
     return not origins or not set(origins) <= RETIRED_ORIGINS
 
 
-def _text(raw: Any) -> str:
+def archived_text(raw: Any) -> str:
     try:
         return bytes(raw).decode("utf-8-sig")
     except UnicodeDecodeError:
         return ""  # the old ``storage.read_text``: undecodable -> ""
 
 
-def _parse(raw: Any) -> Any:
+def parse_archived(raw: Any) -> Any:
     try:
         return json.loads(bytes(raw).decode("utf-8-sig"))
     except (UnicodeDecodeError, ValueError):
@@ -75,6 +90,11 @@ def _parse(raw: Any) -> Any:
 
 
 def load(conn: psycopg.Connection[Any], schema: str, now: datetime) -> ValidationInputs:
+    return inputs_from_docs(load_docs(conn, schema, now), berlin_today(now))
+
+
+def load_docs(conn: psycopg.Connection[Any], schema: str, now: datetime) -> dict[str, Any]:
+    """Every old input document Validation and News read, as old-format documents (``inputs_from_docs``)."""
     s = schema_ident(schema)
     rows = candidate_rows(conn, schema)
     stored_sources = SourcesStore(conn, schema).stored()
@@ -94,6 +114,8 @@ def load(conn: psycopg.Connection[Any], schema: str, now: datetime) -> Validatio
             ([*JSON_ARCHIVES, *TEXT_ARCHIVES],),
         )
         archived = {r["path"]: r["raw"] for r in cur.fetchall()}
+        cur.execute(sql.SQL("select key, body from {}.documents where key = any(%s)").format(s), (list(JSON_ARCHIVES),))
+        stored = {r["key"]: r["body"] for r in cur.fetchall()}
     old = inbox_records.old_inbox(
         [r for r in rows if _old_inbox(r)], inbox_records.load_absorbed(conn, schema), candidate_record
     )  # decision (f); the absorbed inbox records (review 025b)
@@ -113,8 +135,10 @@ def load(conn: psycopg.Connection[Any], schema: str, now: datetime) -> Validatio
         docs["founder_calls.json"] = calls
     for path in JSON_ARCHIVES:
         if path in archived:
-            docs[path] = _parse(archived[path])
+            docs[path] = parse_archived(archived[path])
+        elif path in stored:
+            docs[path] = stored[path]
     for path in TEXT_ARCHIVES:
-        docs[path] = _text(archived[path]) if path in archived else ""
+        docs[path] = archived_text(archived[path]) if path in archived else ""
     docs.update(store.texts(conn, schema))  # the four Validation logs (027b), in seq order
-    return inputs_from_docs(docs, berlin_today(now))
+    return docs

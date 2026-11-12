@@ -1,0 +1,287 @@
+{
+  "partial": {
+    "job": {
+      "running": false,
+      "run_id": null,
+      "stage": null,
+      "trigger": null,
+      "started_at": null,
+      "feeds_done": null,
+      "feeds_total": null,
+      "ingested": null,
+      "new": null,
+      "merged": null
+    },
+    "last": {
+      "at": "2026-11-12T07:00:03",
+      "cards": 2,
+      "completed_at": "2026-11-12T07:00:41",
+      "cooldown": [],
+      "duplicates_skipped": 179,
+      "duration_s": 38.4,
+      "events_total": 8,
+      "feeds_checked": 6,
+      "items": 184,
+      "latest_published": "2026-11-11T18:20",
+      "material_new": 2,
+      "merged": 2,
+      "new": 3,
+      "noise_new": 1,
+      "per_feed": {
+        "Isar Startup Post": {
+          "ok": true,
+          "items": 40,
+          "latest": "2026-11-11T18:20"
+        },
+        "Alpine Wire": {
+          "ok": true,
+          "items": 40,
+          "latest": "2026-11-11T16:02"
+        },
+        "Channel Tech Review": {
+          "ok": false,
+          "error": "HTTPError: HTTP Error 429: Too Many Requests",
+          "rate_limited": true,
+          "cooldown_until": "2026-11-12T07:30:41"
+        },
+        "Baltic Founders": {
+          "ok": true,
+          "items": 38,
+          "latest": "2026-11-10T09:00"
+        },
+        "Rhine Ventures News": {
+          "ok": true,
+          "items": 36,
+          "latest": "2026-11-11T08:45"
+        },
+        "swissticker.example": {
+          "ok": true,
+          "items": 30,
+          "reused": "Deal Flow scan (no fetch)"
+        }
+      },
+      "reclassified": 0,
+      "run_id": "news-20261112-0700",
+      "seeded": 0,
+      "source_eval": {
+        "benchmark_events": 41,
+        "new_disagreements": 1,
+        "lifecycle_changes": 0,
+        "nominated": 0
+      },
+      "sources_failed": [
+        "Channel Tech Review: HTTPError: HTTP Error 429: Too Many Requests"
+      ],
+      "sources_ok": 5,
+      "stale_feeds": [],
+      "status": "partial",
+      "timings": {
+        "fetch_s": 21.3,
+        "ingest_s": 0.41,
+        "cards_s": 14.2,
+        "metrics_s": 2.5
+      },
+      "trigger": "schedule",
+      "usd": 0.0021,
+      "watch_triggers": 0
+    },
+    "last_ok": {
+      "at": "2026-11-12T07:00:03",
+      "cards": 2,
+      "completed_at": "2026-11-12T07:00:41",
+      "cooldown": [],
+      "duplicates_skipped": 179,
+      "duration_s": 38.4,
+      "events_total": 8,
+      "feeds_checked": 6,
+      "items": 184,
+      "latest_published": "2026-11-11T18:20",
+      "material_new": 2,
+      "merged": 2,
+      "new": 3,
+      "noise_new": 1,
+      "per_feed": {
+        "Isar Startup Post": {
+          "ok": true,
+          "items": 40,
+          "latest": "2026-11-11T18:20"
+        },
+        "Alpine Wire": {
+          "ok": true,
+          "items": 40,
+          "latest": "2026-11-11T16:02"
+        },
+        "Channel Tech Review": {
+          "ok": false,
+          "error": "HTTPError: HTTP Error 429: Too Many Requests",
+          "rate_limited": true,
+          "cooldown_until": "2026-11-12T07:30:41"
+        },
+        "Baltic Founders": {
+          "ok": true,
+          "items": 38,
+          "latest": "2026-11-10T09:00"
+        },
+        "Rhine Ventures News": {
+          "ok": true,
+          "items": 36,
+          "latest": "2026-11-11T08:45"
+        },
+        "swissticker.example": {
+          "ok": true,
+          "items": 30,
+          "reused": "Deal Flow scan (no fetch)"
+        }
+      },
+      "reclassified": 0,
+      "run_id": "news-20261112-0700",
+      "seeded": 0,
+      "source_eval": {
+        "benchmark_events": 41,
+        "new_disagreements": 1,
+        "lifecycle_changes": 0,
+        "nominated": 0
+      },
+      "sources_failed": [
+        "Channel Tech Review: HTTPError: HTTP Error 429: Too Many Requests"
+      ],
+      "sources_ok": 5,
+      "stale_feeds": [],
+      "status": "partial",
+      "timings": {
+        "fetch_s": 21.3,
+        "ingest_s": 0.41,
+        "cards_s": 14.2,
+        "metrics_s": 2.5
+      },
+      "trigger": "schedule",
+      "usd": 0.0021,
+      "watch_triggers": 0
+    },
+    "events_total": 8
+  },
+  "failed": {
+    "job": {
+      "running": false,
+      "run_id": null,
+      "stage": null,
+      "trigger": null,
+      "started_at": null,
+      "feeds_done": null,
+      "feeds_total": null,
+      "ingested": null,
+      "new": null,
+      "merged": null
+    },
+    "last": {
+      "at": "2026-11-12T12:00:02",
+      "completed_at": "2026-11-12T12:00:19",
+      "duplicates_skipped": 0,
+      "duration_s": 17.0,
+      "events_total": 8,
+      "feeds_checked": 6,
+      "items": 0,
+      "merged": 0,
+      "new": 0,
+      "run_id": "news-20261112-1200",
+      "sources_failed": [
+        "Isar Startup Post: URLError: <urlopen error [Errno 11001] getaddrinfo failed>",
+        "Alpine Wire: HTTPError: HTTP Error 403: Forbidden"
+      ],
+      "sources_ok": 0,
+      "status": "failed",
+      "trigger": "manual"
+    },
+    "last_ok": {
+      "at": "2026-11-12T07:00:03",
+      "cards": 2,
+      "completed_at": "2026-11-12T07:00:41",
+      "cooldown": [],
+      "duplicates_skipped": 179,
+      "duration_s": 38.4,
+      "events_total": 8,
+      "feeds_checked": 6,
+      "items": 184,
+      "latest_published": "2026-11-11T18:20",
+      "material_new": 2,
+      "merged": 2,
+      "new": 3,
+      "noise_new": 1,
+      "per_feed": {
+        "Isar Startup Post": {
+          "ok": true,
+          "items": 40,
+          "latest": "2026-11-11T18:20"
+        },
+        "Alpine Wire": {
+          "ok": true,
+          "items": 40,
+          "latest": "2026-11-11T16:02"
+        },
+        "Channel Tech Review": {
+          "ok": false,
+          "error": "HTTPError: HTTP Error 429: Too Many Requests",
+          "rate_limited": true,
+          "cooldown_until": "2026-11-12T07:30:41"
+        },
+        "Baltic Founders": {
+          "ok": true,
+          "items": 38,
+          "latest": "2026-11-10T09:00"
+        },
+        "Rhine Ventures News": {
+          "ok": true,
+          "items": 36,
+          "latest": "2026-11-11T08:45"
+        },
+        "swissticker.example": {
+          "ok": true,
+          "items": 30,
+          "reused": "Deal Flow scan (no fetch)"
+        }
+      },
+      "reclassified": 0,
+      "run_id": "news-20261112-0700",
+      "seeded": 0,
+      "source_eval": {
+        "benchmark_events": 41,
+        "new_disagreements": 1,
+        "lifecycle_changes": 0,
+        "nominated": 0
+      },
+      "sources_failed": [
+        "Channel Tech Review: HTTPError: HTTP Error 429: Too Many Requests"
+      ],
+      "sources_ok": 5,
+      "stale_feeds": [],
+      "status": "partial",
+      "timings": {
+        "fetch_s": 21.3,
+        "ingest_s": 0.41,
+        "cards_s": 14.2,
+        "metrics_s": 2.5
+      },
+      "trigger": "schedule",
+      "usd": 0.0021,
+      "watch_triggers": 0
+    },
+    "events_total": 8
+  },
+  "never": {
+    "job": {
+      "running": false,
+      "run_id": null,
+      "stage": null,
+      "trigger": null,
+      "started_at": null,
+      "feeds_done": null,
+      "feeds_total": null,
+      "ingested": null,
+      "new": null,
+      "merged": null
+    },
+    "last": null,
+    "last_ok": null,
+    "events_total": 0
+  }
+}

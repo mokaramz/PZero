@@ -175,7 +175,8 @@ def test_missing_logs_read_as_empty(make: Any) -> None:
     body = client.get("/api/validation").json()
     assert body["outcomes"] == [] and body["misses"] == [] and body["false_positive_audits"] == []
     assert [r["date"] for r in body["snapshots"]] == ["2026-11-12"]
-    assert body["news"]["available"] is False and body["native_bridge"]["available"] is False
+    assert body["news"]["available"] is True  # News & Learning arrived with 028a
+    assert body["native_bridge"]["available"] is False
 
 
 def _inbox_record(cid: str, name: str, tier: str, seen: str) -> dict[str, Any]:

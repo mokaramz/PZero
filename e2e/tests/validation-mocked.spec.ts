@@ -23,7 +23,7 @@ const FIX = resolve(import.meta.dirname, "fixtures", "validation");
 type J = any;
 const load = (n: string): J => JSON.parse(readFileSync(resolve(FIX, n), "utf8"));
 
-const NEWS = "News & Learning arrives with its port";
+const NEWS = "The source network arrives with its port"; // the packet's one deferred section (028a filled News)
 const QUESTIONS = ["Are we early?", "Are we right?", "Which sources work?", "Where do we miss?", "What does it cost?"];
 /** the old write endpoints and their 027b paths */
 const WRITE_PATHS = /\/api\/(validation_(outcome|audit|retract|benchmark_import|scout_packet)|validation\/(outcome|audit|retract|benchmark_import))\b/;

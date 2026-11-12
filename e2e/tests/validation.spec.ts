@@ -49,7 +49,7 @@ test.describe("Validation — new app, preview database", () => {
     await tabs.nth(2).click();
     await expect(page.getByTestId("val-sources")).toBeVisible();
     await expect(page.getByTestId("val-benchmarks")).toBeVisible();
-    await expect(page.getByText("News & Learning arrives with its port").first()).toBeVisible();
+    await expect(page.getByTestId("val-news")).toBeVisible(); // News & Learning arrived with 028a
     await tabs.nth(3).click();
     await expect(page.getByTestId("val-misses")).toBeVisible();
     await expect(page.getByTestId("val-scout")).toBeVisible();

@@ -1,0 +1,1812 @@
+{
+  "date": "2026-11-12",
+  "pz_start": "2026-09-27",
+  "today": [
+    {
+      "event_id": "nw-3f9a1c0b7d2e",
+      "company": "Vantor Kinetics",
+      "headline": "Munich robotics start-up Vantor Kinetics raises €18M Series A led by Lindqvist Partners",
+      "summary": "Vantor Kinetics, a Munich maker of autonomous handling robots for mid-sized factories, raised €18 million in a Series A led by Lindqvist Partners, with existing investors following on.",
+      "event_type": "funding",
+      "round": "Series A",
+      "amount_m": 18.0,
+      "event_date": "2026-11-10",
+      "geo": [
+        "DE"
+      ],
+      "themes": [
+        "robotics",
+        "ai"
+      ],
+      "materiality": "HIGH",
+      "materiality_why": [
+        "large round (18M)"
+      ],
+      "card": {
+        "what_happened": "Vantor Kinetics, a Munich maker of autonomous handling robots for mid-sized factories, raised €18 million in a Series A led by Lindqvist Partners, with existing investors following on.",
+        "why_it_matters": "Investors committed money: a signal about the market and the stage the company has reached.",
+        "the_company": "",
+        "vc_lesson": "Usually €5–20M once a repeatable way to win customers exists. The question changes from 'is this real?' to 'can this scale?'.",
+        "watch_next": [],
+        "generated_by": "rules"
+      },
+      "type_label": "Funding round",
+      "sources": [
+        {
+          "publisher": "Isar Startup Post",
+          "url": "https://isarpost.example/2026/11/vantor-kinetics-series-a",
+          "published": "2026-11-10",
+          "headline": "Vantor Kinetics raises €18M Series A",
+          "text_sha": "a1b2c3d4e5f6",
+          "independence": "independent"
+        },
+        {
+          "publisher": "Alpine Wire",
+          "url": "https://alpinewire.example/vantor-kinetics-20m",
+          "published": "2026-11-11",
+          "headline": "Vantor Kinetics closes $20M Series A for factory robots",
+          "text_sha": "b2c3d4e5f6a1",
+          "independence": "independent"
+        },
+        {
+          "publisher": "Vantor Kinetics",
+          "url": "https://vantor.example/press/series-a",
+          "published": "2026-11-10",
+          "headline": "Vantor Kinetics announces its Series A",
+          "text_sha": "c3d4e5f6a1b2",
+          "independence": "primary"
+        }
+      ],
+      "independent_sources": 3,
+      "check": {
+        "known": true,
+        "pz_first_seen": "2026-09-10",
+        "lead_days": 61,
+        "first_source": "northgate-spinouts",
+        "first_tier": "pre_company",
+        "stages": [
+          "discovered",
+          "triaged",
+          "conviction"
+        ],
+        "machine": "STRONG",
+        "mohamed": "PURSUE",
+        "capital_stage": "PRE_SEED",
+        "state": "CAUGHT_EARLY"
+      },
+      "state": "CAUGHT_EARLY",
+      "state_label": "Caught early",
+      "backcast": null,
+      "concepts": [
+        {
+          "id": "series_a",
+          "title": "What is Series A?",
+          "text": "Usually €5–20M once a repeatable way to win customers exists. The question changes from 'is this real?' to 'can this scale?'."
+        },
+        {
+          "id": "lead_investor",
+          "title": "What is a lead investor?",
+          "text": "The fund that sets the terms and usually invests the most. Who leads tells you who did the deepest diligence."
+        },
+        {
+          "id": "physical_ai",
+          "title": "Why do investors care about physical AI?",
+          "text": "AI that acts in the physical world (robots, machines). Labour shortages and cheaper sensors make automation of small factories newly economical — a large, under-served market."
+        }
+      ],
+      "my_company": true,
+      "in_deal_flow": true,
+      "outcome_proposal": {
+        "kind": "institutional_round",
+        "effect": "Project Zero first saw Vantor Kinetics 61 day(s) before this event"
+      },
+      "outcome_decision": null,
+      "audit_id": null,
+      "source_notes": [
+        "Isar Startup Post: regional intelligence — covered 9/14 Munich events reported elsewhere.",
+        "Alpine Wire: core european intelligence — covered 21/38 material European events reported elsewhere."
+      ],
+      "disagreements": [
+        {
+          "event_id": "nw-3f9a1c0b7d2e",
+          "company": "Vantor Kinetics",
+          "field": "amount_m",
+          "values": {
+            "Isar Startup Post": 18.0,
+            "Alpine Wire": 18.4
+          },
+          "event_date": "2026-11-10",
+          "status": "RESOLVED",
+          "basis": "primary source",
+          "agree": [
+            "Isar Startup Post",
+            "Vantor Kinetics"
+          ],
+          "contradicted": []
+        }
+      ]
+    },
+    {
+      "event_id": "nw-7c41d9e2a0f3",
+      "company": "Quillon Labs",
+      "headline": "Quillon Labs raises €25M Series B for battery diagnostics",
+      "summary": "Berlin-based Quillon Labs, which predicts battery failures from charging data, raised €25 million in a Series B led by Morrow Capital.",
+      "event_type": "funding",
+      "round": "Series B",
+      "amount_m": 25.0,
+      "event_date": "2026-11-08",
+      "geo": [
+        "DE"
+      ],
+      "themes": [
+        "ai",
+        "energy"
+      ],
+      "materiality": "HIGH",
+      "materiality_why": [
+        "large round (25M)"
+      ],
+      "card": {
+        "what_happened": "Quillon Labs, a Berlin company that predicts battery failures from charging data, raised €25M in a Series B.",
+        "why_it_matters": "A second large round shows the diagnostics market is maturing — and that the early-stage window for this company has closed.",
+        "the_company": "Quillon Labs sells software that reads charging data from fleets and warns before a battery fails.",
+        "vc_lesson": "By Series B the question is how fast a working model scales, not whether the problem is real.",
+        "watch_next": [
+          "Whether the round included a strategic investor from the automotive side",
+          "First customer outside Germany"
+        ],
+        "generated_by": "gemma-mini"
+      },
+      "type_label": "Funding round",
+      "sources": [
+        {
+          "publisher": "Alpine Wire",
+          "url": "https://alpinewire.example/quillon-labs-series-b",
+          "published": "2026-11-08",
+          "headline": "Quillon Labs raises €25M Series B led by Morrow Capital",
+          "text_sha": "d4e5f6a1b2c3",
+          "independence": "independent"
+        },
+        {
+          "publisher": "Baltic Founders",
+          "url": "https://balticfounders.example/quillon-labs",
+          "published": "2026-11-09",
+          "headline": "Quillon Labs raises €25M Series B led by Morrow Capital",
+          "text_sha": "d4e5f6a1b2c3",
+          "independence": "syndicated"
+        }
+      ],
+      "independent_sources": 1,
+      "check": {
+        "known": false,
+        "pz_first_seen": null,
+        "state": "UNKNOWN",
+        "possible_miss": true
+      },
+      "state": "UNKNOWN",
+      "state_label": "Not seen by Project Zero — not yet reviewed",
+      "backcast": null,
+      "concepts": [
+        {
+          "id": "series_b",
+          "title": "What is Series B and later?",
+          "text": "Larger rounds (€20M+) to scale something that already works: more markets, more sales, more product. Early-stage edge is mostly gone by now."
+        },
+        {
+          "id": "lead_investor",
+          "title": "What is a lead investor?",
+          "text": "The fund that sets the terms and usually invests the most. Who leads tells you who did the deepest diligence."
+        }
+      ],
+      "my_company": false,
+      "in_deal_flow": false,
+      "outcome_proposal": null,
+      "outcome_decision": null,
+      "audit_id": "au-20261111-quillon",
+      "source_notes": [],
+      "disagreements": [
+        {
+          "event_id": "nw-7c41d9e2a0f3",
+          "company": "Quillon Labs",
+          "field": "round",
+          "values": {
+            "Alpine Wire": "series b",
+            "Harbour Post": "series c"
+          },
+          "event_date": "2026-11-08",
+          "status": "OPEN",
+          "agree": [],
+          "contradicted": []
+        }
+      ]
+    },
+    {
+      "event_id": "nw-5d2f8e1a9b47",
+      "company": "Lumora Grid",
+      "headline": "Lumora Grid secures €3M seed round to balance neighbourhood grids",
+      "summary": "Lumora Grid, a Zurich start-up whose software balances solar and heat-pump load in neighbourhood grids, secured €3 million in seed funding.",
+      "event_type": "funding",
+      "round": "seed",
+      "amount_m": 3.0,
+      "event_date": "2026-11-06",
+      "geo": [
+        "CH"
+      ],
+      "themes": [
+        "energy"
+      ],
+      "materiality": "MEDIUM",
+      "materiality_why": [
+        "seed round (3M)"
+      ],
+      "card": null,
+      "type_label": "Funding round",
+      "sources": [
+        {
+          "publisher": "Swiss deal ticker",
+          "url": "https://swissticker.example/news/lumora-grid-seed",
+          "published": "2026-11-06",
+          "headline": "Lumora Grid secures €3M seed round",
+          "text_sha": "c4d5e6f7a2b3",
+          "independence": "independent"
+        }
+      ],
+      "independent_sources": 1,
+      "check": {
+        "known": true,
+        "pz_first_seen": "2026-11-06",
+        "lead_days": 0,
+        "first_source": "swiss-deal-ticker",
+        "first_tier": "announcement",
+        "stages": [
+          "discovered"
+        ],
+        "machine": "WEAK",
+        "mohamed": null,
+        "capital_stage": null,
+        "state": "KNOWN_LATE"
+      },
+      "state": "KNOWN_LATE",
+      "state_label": "Known, but late",
+      "backcast": null,
+      "concepts": [
+        {
+          "id": "seed",
+          "title": "What is a seed round?",
+          "text": "Typically €1–5M to find product-market fit: first customers, first team. Investors want proof the problem is real and the team can sell."
+        }
+      ],
+      "my_company": false,
+      "in_deal_flow": true,
+      "outcome_proposal": null,
+      "outcome_decision": "reject",
+      "audit_id": null,
+      "source_notes": [],
+      "disagreements": []
+    }
+  ],
+  "stories": [
+    {
+      "event_id": "nw-3f9a1c0b7d2e",
+      "company": "Vantor Kinetics",
+      "headline": "Munich robotics start-up Vantor Kinetics raises €18M Series A led by Lindqvist Partners",
+      "summary": "Vantor Kinetics, a Munich maker of autonomous handling robots for mid-sized factories, raised €18 million in a Series A led by Lindqvist Partners, with existing investors following on.",
+      "event_type": "funding",
+      "round": "Series A",
+      "amount_m": 18.0,
+      "event_date": "2026-11-10",
+      "geo": [
+        "DE"
+      ],
+      "themes": [
+        "robotics",
+        "ai"
+      ],
+      "materiality": "HIGH",
+      "materiality_why": [
+        "large round (18M)"
+      ],
+      "card": {
+        "what_happened": "Vantor Kinetics, a Munich maker of autonomous handling robots for mid-sized factories, raised €18 million in a Series A led by Lindqvist Partners, with existing investors following on.",
+        "why_it_matters": "Investors committed money: a signal about the market and the stage the company has reached.",
+        "the_company": "",
+        "vc_lesson": "Usually €5–20M once a repeatable way to win customers exists. The question changes from 'is this real?' to 'can this scale?'.",
+        "watch_next": [],
+        "generated_by": "rules"
+      },
+      "type_label": "Funding round",
+      "sources": [
+        {
+          "publisher": "Isar Startup Post",
+          "url": "https://isarpost.example/2026/11/vantor-kinetics-series-a",
+          "published": "2026-11-10",
+          "headline": "Vantor Kinetics raises €18M Series A",
+          "text_sha": "a1b2c3d4e5f6",
+          "independence": "independent"
+        },
+        {
+          "publisher": "Alpine Wire",
+          "url": "https://alpinewire.example/vantor-kinetics-20m",
+          "published": "2026-11-11",
+          "headline": "Vantor Kinetics closes $20M Series A for factory robots",
+          "text_sha": "b2c3d4e5f6a1",
+          "independence": "independent"
+        },
+        {
+          "publisher": "Vantor Kinetics",
+          "url": "https://vantor.example/press/series-a",
+          "published": "2026-11-10",
+          "headline": "Vantor Kinetics announces its Series A",
+          "text_sha": "c3d4e5f6a1b2",
+          "independence": "primary"
+        }
+      ],
+      "independent_sources": 3,
+      "check": {
+        "known": true,
+        "pz_first_seen": "2026-09-10",
+        "lead_days": 61,
+        "first_source": "northgate-spinouts",
+        "first_tier": "pre_company",
+        "stages": [
+          "discovered",
+          "triaged",
+          "conviction"
+        ],
+        "machine": "STRONG",
+        "mohamed": "PURSUE",
+        "capital_stage": "PRE_SEED",
+        "state": "CAUGHT_EARLY"
+      },
+      "state": "CAUGHT_EARLY",
+      "state_label": "Caught early",
+      "backcast": null,
+      "concepts": [
+        {
+          "id": "series_a",
+          "title": "What is Series A?",
+          "text": "Usually €5–20M once a repeatable way to win customers exists. The question changes from 'is this real?' to 'can this scale?'."
+        },
+        {
+          "id": "lead_investor",
+          "title": "What is a lead investor?",
+          "text": "The fund that sets the terms and usually invests the most. Who leads tells you who did the deepest diligence."
+        },
+        {
+          "id": "physical_ai",
+          "title": "Why do investors care about physical AI?",
+          "text": "AI that acts in the physical world (robots, machines). Labour shortages and cheaper sensors make automation of small factories newly economical — a large, under-served market."
+        }
+      ],
+      "my_company": true,
+      "in_deal_flow": true,
+      "outcome_proposal": {
+        "kind": "institutional_round",
+        "effect": "Project Zero first saw Vantor Kinetics 61 day(s) before this event"
+      },
+      "outcome_decision": null,
+      "audit_id": null,
+      "source_notes": [
+        "Isar Startup Post: regional intelligence — covered 9/14 Munich events reported elsewhere.",
+        "Alpine Wire: core european intelligence — covered 21/38 material European events reported elsewhere."
+      ],
+      "disagreements": [
+        {
+          "event_id": "nw-3f9a1c0b7d2e",
+          "company": "Vantor Kinetics",
+          "field": "amount_m",
+          "values": {
+            "Isar Startup Post": 18.0,
+            "Alpine Wire": 18.4
+          },
+          "event_date": "2026-11-10",
+          "status": "RESOLVED",
+          "basis": "primary source",
+          "agree": [
+            "Isar Startup Post",
+            "Vantor Kinetics"
+          ],
+          "contradicted": []
+        }
+      ]
+    },
+    {
+      "event_id": "nw-7c41d9e2a0f3",
+      "company": "Quillon Labs",
+      "headline": "Quillon Labs raises €25M Series B for battery diagnostics",
+      "summary": "Berlin-based Quillon Labs, which predicts battery failures from charging data, raised €25 million in a Series B led by Morrow Capital.",
+      "event_type": "funding",
+      "round": "Series B",
+      "amount_m": 25.0,
+      "event_date": "2026-11-08",
+      "geo": [
+        "DE"
+      ],
+      "themes": [
+        "ai",
+        "energy"
+      ],
+      "materiality": "HIGH",
+      "materiality_why": [
+        "large round (25M)"
+      ],
+      "card": {
+        "what_happened": "Quillon Labs, a Berlin company that predicts battery failures from charging data, raised €25M in a Series B.",
+        "why_it_matters": "A second large round shows the diagnostics market is maturing — and that the early-stage window for this company has closed.",
+        "the_company": "Quillon Labs sells software that reads charging data from fleets and warns before a battery fails.",
+        "vc_lesson": "By Series B the question is how fast a working model scales, not whether the problem is real.",
+        "watch_next": [
+          "Whether the round included a strategic investor from the automotive side",
+          "First customer outside Germany"
+        ],
+        "generated_by": "gemma-mini"
+      },
+      "type_label": "Funding round",
+      "sources": [
+        {
+          "publisher": "Alpine Wire",
+          "url": "https://alpinewire.example/quillon-labs-series-b",
+          "published": "2026-11-08",
+          "headline": "Quillon Labs raises €25M Series B led by Morrow Capital",
+          "text_sha": "d4e5f6a1b2c3",
+          "independence": "independent"
+        },
+        {
+          "publisher": "Baltic Founders",
+          "url": "https://balticfounders.example/quillon-labs",
+          "published": "2026-11-09",
+          "headline": "Quillon Labs raises €25M Series B led by Morrow Capital",
+          "text_sha": "d4e5f6a1b2c3",
+          "independence": "syndicated"
+        }
+      ],
+      "independent_sources": 1,
+      "check": {
+        "known": false,
+        "pz_first_seen": null,
+        "state": "UNKNOWN",
+        "possible_miss": true
+      },
+      "state": "UNKNOWN",
+      "state_label": "Not seen by Project Zero — not yet reviewed",
+      "backcast": null,
+      "concepts": [
+        {
+          "id": "series_b",
+          "title": "What is Series B and later?",
+          "text": "Larger rounds (€20M+) to scale something that already works: more markets, more sales, more product. Early-stage edge is mostly gone by now."
+        },
+        {
+          "id": "lead_investor",
+          "title": "What is a lead investor?",
+          "text": "The fund that sets the terms and usually invests the most. Who leads tells you who did the deepest diligence."
+        }
+      ],
+      "my_company": false,
+      "in_deal_flow": false,
+      "outcome_proposal": null,
+      "outcome_decision": null,
+      "audit_id": "au-20261111-quillon",
+      "source_notes": [],
+      "disagreements": [
+        {
+          "event_id": "nw-7c41d9e2a0f3",
+          "company": "Quillon Labs",
+          "field": "round",
+          "values": {
+            "Alpine Wire": "series b",
+            "Harbour Post": "series c"
+          },
+          "event_date": "2026-11-08",
+          "status": "OPEN",
+          "agree": [],
+          "contradicted": []
+        }
+      ]
+    },
+    {
+      "event_id": "nw-1e8b5a6c4d90",
+      "company": "Brightwell Bio",
+      "headline": "Brightwell Bio acquired by Corvane Diagnostics",
+      "summary": "Corvane Diagnostics acquired Brightwell Bio, a Heidelberg spinout building AI-assisted blood tests, for an undisclosed sum.",
+      "event_type": "acquisition",
+      "round": "",
+      "amount_m": null,
+      "event_date": "2026-11-03",
+      "geo": [
+        "DE"
+      ],
+      "themes": [
+        "ai",
+        "health"
+      ],
+      "materiality": "HIGH",
+      "materiality_why": [
+        "acquisition"
+      ],
+      "card": {
+        "what_happened": "Corvane Diagnostics bought Brightwell Bio, a Heidelberg university spinout building AI-assisted blood tests.",
+        "why_it_matters": "It shows who values this technology and how the market consolidates.",
+        "the_company": "Brightwell Bio develops blood tests that use machine learning to flag early disease markers.",
+        "vc_lesson": "It shows who values the technology and at what price. Small acquisitions are often acqui-hires (buying the team); large ones signal a strategic market.",
+        "watch_next": [
+          "Whether the founders stay with Corvane"
+        ],
+        "generated_by": "gemma-mini"
+      },
+      "type_label": "Acquisition",
+      "sources": [
+        {
+          "publisher": "Isar Startup Post",
+          "url": "https://isarpost.example/2026/11/brightwell-bio-acquired",
+          "published": "2026-11-03",
+          "headline": "Corvane Diagnostics acquires Brightwell Bio",
+          "text_sha": "e5f6a1b2c3d4",
+          "independence": "independent"
+        }
+      ],
+      "independent_sources": 1,
+      "check": {
+        "known": false,
+        "pz_first_seen": null,
+        "state": "MISSED",
+        "miss_window_signals": [
+          {
+            "date": "2026-10-02",
+            "precision": "day",
+            "text": "Brightwell Bio named in a regional health-innovation grant list (EUR 1.2M).",
+            "family": "grant",
+            "url": "https://grants.example/2026/health-innovation",
+            "kind": "known_early_signal"
+          }
+        ]
+      },
+      "state": "MISSED",
+      "state_label": "Missed",
+      "backcast": {
+        "timeline": [
+          {
+            "date": "2025-04",
+            "precision": "month",
+            "text": "Founders publish the blood-marker model paper (only clear in hindsight).",
+            "family": "research_paper",
+            "url": "https://papers.example/brightwell-markers",
+            "kind": "in_retrospect"
+          },
+          {
+            "date": "2026-10-02",
+            "precision": "day",
+            "text": "Brightwell Bio named in a regional health-innovation grant list (EUR 1.2M).",
+            "family": "grant",
+            "url": "https://grants.example/2026/health-innovation",
+            "kind": "known_early_signal"
+          }
+        ],
+        "earliest_plausible_signal": {
+          "date": "2026-10-02",
+          "precision": "day",
+          "text": "Brightwell Bio named in a regional health-innovation grant list (EUR 1.2M).",
+          "family": "grant",
+          "url": "https://grants.example/2026/health-innovation",
+          "kind": "known_early_signal"
+        },
+        "best_sensor": "grant sources (EXIST, Innosuisse, EIC, UKRI, NIH/NSF)",
+        "before_pz": false,
+        "learning": "The earliest public signal was a grant signal (2026-10). Today this is covered by: grant sources (EXIST, Innosuisse, EIC, UKRI, NIH/NSF)."
+      },
+      "concepts": [
+        {
+          "id": "acquisition",
+          "title": "What does an acquisition tell an investor?",
+          "text": "It shows who values the technology and at what price. Small acquisitions are often acqui-hires (buying the team); large ones signal a strategic market."
+        },
+        {
+          "id": "spinout",
+          "title": "What is a spinout?",
+          "text": "A company created from university research, often by PhDs or researchers. The technology is deep, but the team must learn to sell — and IP terms with the university matter."
+        }
+      ],
+      "my_company": false,
+      "in_deal_flow": false,
+      "outcome_proposal": null,
+      "outcome_decision": null,
+      "audit_id": null,
+      "source_notes": [],
+      "disagreements": []
+    },
+    {
+      "event_id": "nw-case-halvard-unicorn-2026-10",
+      "company": "Halvard Robotics",
+      "headline": "Stuttgart robotics company Halvard Robotics passes a $1 billion valuation",
+      "summary": "Halvard Robotics said it had passed a $1 billion valuation after a secondary sale of employee shares to new and existing investors, following a $90 million raise earlier in the year.",
+      "event_type": "valuation",
+      "round": "",
+      "amount_m": 1000,
+      "event_date": "2026-10-05",
+      "geo": [
+        "DE"
+      ],
+      "themes": [
+        "robotics",
+        "ai",
+        "industrial"
+      ],
+      "materiality": "HIGH",
+      "materiality_why": [
+        "valuation milestone"
+      ],
+      "card": {
+        "what_happened": "Halvard Robotics, a Stuttgart industrial-robotics company, said it passed a $1 billion valuation (5 Oct 2026), set mainly by employees selling existing shares.",
+        "why_it_matters": "It shows strong investor appetite for robots that small factories can deploy — and it is a late-stage event: the early-stage opportunity was years ago.",
+        "the_company": "Halvard Robotics builds modular industrial robots that mid-sized manufacturers configure for repetitive tasks.",
+        "vc_lesson": "A 'unicorn' headline can come from a secondary share sale: it tells you what buyers paid per share, not how much the company raised.",
+        "watch_next": [
+          "Whether a primary round follows the secondary sale",
+          "Hiring for a US sales team"
+        ],
+        "generated_by": "curated from the linked sources"
+      },
+      "type_label": "Valuation milestone",
+      "sources": [
+        {
+          "publisher": "Ledger Gazette",
+          "url": "https://ledgergazette.example/tech/halvard-robotics-billion",
+          "published": "2026-10-05",
+          "headline": "Halvard Robotics hits $1 billion valuation",
+          "text_sha": "f6a1b2c3d4e5",
+          "independence": "independent"
+        },
+        {
+          "publisher": "Isar Startup Post",
+          "url": "https://isarpost.example/2026/10/halvard-unicorn",
+          "published": "2026-10-05",
+          "headline": "Neues Unicorn: Halvard Robotics erreicht Milliardenbewertung",
+          "text_sha": "a2b3c4d5e6f7",
+          "independence": "independent"
+        },
+        {
+          "publisher": "Harbour Post",
+          "url": "https://harbourpost.example/halvard-robotics-1b",
+          "published": "2026-10-06",
+          "headline": "Halvard Robotics valued at $1B as investors buy employee shares",
+          "text_sha": "b3c4d5e6f7a2",
+          "independence": "independent"
+        }
+      ],
+      "independent_sources": 3,
+      "check": {
+        "known": false,
+        "pz_first_seen": null,
+        "state": "HISTORICAL",
+        "miss_window_signals": []
+      },
+      "state": "HISTORICAL",
+      "state_label": "Historical learning case",
+      "backcast": {
+        "timeline": [
+          {
+            "date": "2020",
+            "precision": "year",
+            "text": "Years of research at a Stuttgart robotics chair underpin the later company (per the founders).",
+            "family": "university_lab",
+            "url": "https://uni-stuttgart.example/robotics-chair",
+            "kind": "in_retrospect"
+          },
+          {
+            "date": "2020",
+            "precision": "year",
+            "text": "Halvard Robotics founded in Stuttgart (2020) by three research assistants of the university's robotics chair — a university spinout.",
+            "family": "university_lab",
+            "url": "https://spinouts.example/halvard-robotics",
+            "kind": "known_early_signal"
+          },
+          {
+            "date": "2021-06",
+            "precision": "month",
+            "text": "Seed round (amount not public in free sources).",
+            "family": "early_funding",
+            "url": "https://fundingdb.example/halvard-robotics",
+            "kind": "known_early_signal"
+          },
+          {
+            "date": "2024-02",
+            "precision": "month",
+            "text": "Series B, about $40M.",
+            "family": "early_funding",
+            "url": "https://fundingdb.example/halvard-robotics/b",
+            "kind": "known_early_signal"
+          }
+        ],
+        "earliest_plausible_signal": {
+          "date": "2020",
+          "precision": "year",
+          "text": "Halvard Robotics founded in Stuttgart (2020) by three research assistants of the university's robotics chair — a university spinout.",
+          "family": "university_lab",
+          "url": "https://spinouts.example/halvard-robotics",
+          "kind": "known_early_signal"
+        },
+        "best_sensor": "university spinout lists (TUM Venture Labs, UnternehmerTUM, ETH / EPFL, HIGHEST) + Scout 00 research lanes",
+        "before_pz": true,
+        "learning": "Halvard Robotics' earliest public signal was a university robotics spinout (2020), followed by a seed round (2021) — about five years before the unicorn headline and six years before Project Zero started. Today a similar company would most likely surface through the university spinout sensors; by its first funding news the earliest edge was already gone."
+      },
+      "concepts": [
+        {
+          "id": "valuation",
+          "title": "What does a valuation mean?",
+          "text": "The price of the whole company implied by a deal. A $1B 'unicorn' valuation is a market signal, not cash in the bank — and a small share sale can set it."
+        },
+        {
+          "id": "unicorn",
+          "title": "Why can a company become a unicorn without a normal round?",
+          "text": "A valuation can be set by any priced transaction — including a secondary sale. So 'unicorn' says what buyers paid per share, not how much the company raised."
+        },
+        {
+          "id": "secondary",
+          "title": "What is a secondary sale?",
+          "text": "Existing shareholders (often employees or early investors) sell shares to new investors. The company receives no new money, but the price sets a new valuation."
+        }
+      ],
+      "my_company": false,
+      "in_deal_flow": false,
+      "outcome_proposal": null,
+      "outcome_decision": null,
+      "audit_id": null,
+      "source_notes": [
+        "Ledger Gazette is used here as confirmation / authority (high-quality independent media), not as an early signal."
+      ],
+      "disagreements": []
+    },
+    {
+      "event_id": "nw-5d2f8e1a9b47",
+      "company": "Lumora Grid",
+      "headline": "Lumora Grid secures €3M seed round to balance neighbourhood grids",
+      "summary": "Lumora Grid, a Zurich start-up whose software balances solar and heat-pump load in neighbourhood grids, secured €3 million in seed funding.",
+      "event_type": "funding",
+      "round": "seed",
+      "amount_m": 3.0,
+      "event_date": "2026-11-06",
+      "geo": [
+        "CH"
+      ],
+      "themes": [
+        "energy"
+      ],
+      "materiality": "MEDIUM",
+      "materiality_why": [
+        "seed round (3M)"
+      ],
+      "card": null,
+      "type_label": "Funding round",
+      "sources": [
+        {
+          "publisher": "Swiss deal ticker",
+          "url": "https://swissticker.example/news/lumora-grid-seed",
+          "published": "2026-11-06",
+          "headline": "Lumora Grid secures €3M seed round",
+          "text_sha": "c4d5e6f7a2b3",
+          "independence": "independent"
+        }
+      ],
+      "independent_sources": 1,
+      "check": {
+        "known": true,
+        "pz_first_seen": "2026-11-06",
+        "lead_days": 0,
+        "first_source": "swiss-deal-ticker",
+        "first_tier": "announcement",
+        "stages": [
+          "discovered"
+        ],
+        "machine": "WEAK",
+        "mohamed": null,
+        "capital_stage": null,
+        "state": "KNOWN_LATE"
+      },
+      "state": "KNOWN_LATE",
+      "state_label": "Known, but late",
+      "backcast": null,
+      "concepts": [
+        {
+          "id": "seed",
+          "title": "What is a seed round?",
+          "text": "Typically €1–5M to find product-market fit: first customers, first team. Investors want proof the problem is real and the team can sell."
+        }
+      ],
+      "my_company": false,
+      "in_deal_flow": true,
+      "outcome_proposal": null,
+      "outcome_decision": "reject",
+      "audit_id": null,
+      "source_notes": [],
+      "disagreements": []
+    },
+    {
+      "event_id": "nw-9a0c3e7f1b26",
+      "company": "Ostra Systems",
+      "headline": "Ostra Systems launches an inspection camera for wind turbines",
+      "summary": "",
+      "event_type": "launch",
+      "round": "",
+      "amount_m": null,
+      "event_date": "2026-11-09",
+      "geo": [
+        "NORDICS"
+      ],
+      "themes": [
+        "ai"
+      ],
+      "materiality": "LOW",
+      "materiality_why": [
+        "routine company news"
+      ],
+      "card": null,
+      "type_label": "Product launch",
+      "sources": [
+        {
+          "publisher": "Baltic Founders",
+          "url": "https://balticfounders.example/ostra-systems-launch",
+          "published": "2026-11-09",
+          "headline": "Ostra Systems launches an inspection camera for wind turbines",
+          "text_sha": "d5e6f7a2b3c4",
+          "independence": "independent"
+        }
+      ],
+      "independent_sources": 1,
+      "check": {
+        "known": false,
+        "pz_first_seen": null,
+        "state": "UNKNOWN",
+        "possible_miss": false
+      },
+      "state": "UNKNOWN",
+      "state_label": "Not seen by Project Zero — not yet reviewed",
+      "backcast": null,
+      "concepts": [],
+      "my_company": false,
+      "in_deal_flow": false,
+      "outcome_proposal": null,
+      "outcome_decision": null,
+      "audit_id": null,
+      "source_notes": [],
+      "disagreements": []
+    },
+    {
+      "event_id": "nw-2b6e4d8c0a15",
+      "company": "Pinecrest Capital",
+      "headline": "Pinecrest Capital closes €200M Fund III for European deep tech",
+      "summary": "Pinecrest Capital closed its third fund at €200 million to back European deep-tech companies from seed to Series A.",
+      "event_type": "fund",
+      "round": "",
+      "amount_m": 200.0,
+      "event_date": "2026-11-07",
+      "geo": [
+        "UK"
+      ],
+      "themes": [
+        "deeptech"
+      ],
+      "materiality": "LOW",
+      "materiality_why": [
+        "investor / fund news — VC market context, not a company event"
+      ],
+      "card": null,
+      "type_label": "VC fund news",
+      "sources": [
+        {
+          "publisher": "Channel Tech Review",
+          "url": "https://channeltech.example/pinecrest-fund-iii",
+          "published": "2026-11-07",
+          "headline": "Pinecrest Capital closes €200M Fund III",
+          "text_sha": "e6f7a2b3c4d5",
+          "independence": "independent"
+        }
+      ],
+      "independent_sources": 1,
+      "check": {
+        "known": false,
+        "pz_first_seen": null,
+        "state": "NOT_RELEVANT"
+      },
+      "state": "NOT_RELEVANT",
+      "state_label": "Not relevant to Project Zero",
+      "backcast": null,
+      "concepts": [],
+      "my_company": false,
+      "in_deal_flow": false,
+      "outcome_proposal": null,
+      "outcome_decision": null,
+      "audit_id": null,
+      "source_notes": [],
+      "disagreements": []
+    }
+  ],
+  "caught_early": [
+    {
+      "event_id": "nw-3f9a1c0b7d2e",
+      "company": "Vantor Kinetics",
+      "headline": "Munich robotics start-up Vantor Kinetics raises €18M Series A led by Lindqvist Partners",
+      "summary": "Vantor Kinetics, a Munich maker of autonomous handling robots for mid-sized factories, raised €18 million in a Series A led by Lindqvist Partners, with existing investors following on.",
+      "event_type": "funding",
+      "round": "Series A",
+      "amount_m": 18.0,
+      "event_date": "2026-11-10",
+      "geo": [
+        "DE"
+      ],
+      "themes": [
+        "robotics",
+        "ai"
+      ],
+      "materiality": "HIGH",
+      "materiality_why": [
+        "large round (18M)"
+      ],
+      "card": {
+        "what_happened": "Vantor Kinetics, a Munich maker of autonomous handling robots for mid-sized factories, raised €18 million in a Series A led by Lindqvist Partners, with existing investors following on.",
+        "why_it_matters": "Investors committed money: a signal about the market and the stage the company has reached.",
+        "the_company": "",
+        "vc_lesson": "Usually €5–20M once a repeatable way to win customers exists. The question changes from 'is this real?' to 'can this scale?'.",
+        "watch_next": [],
+        "generated_by": "rules"
+      },
+      "type_label": "Funding round",
+      "sources": [
+        {
+          "publisher": "Isar Startup Post",
+          "url": "https://isarpost.example/2026/11/vantor-kinetics-series-a",
+          "published": "2026-11-10",
+          "headline": "Vantor Kinetics raises €18M Series A",
+          "text_sha": "a1b2c3d4e5f6",
+          "independence": "independent"
+        },
+        {
+          "publisher": "Alpine Wire",
+          "url": "https://alpinewire.example/vantor-kinetics-20m",
+          "published": "2026-11-11",
+          "headline": "Vantor Kinetics closes $20M Series A for factory robots",
+          "text_sha": "b2c3d4e5f6a1",
+          "independence": "independent"
+        },
+        {
+          "publisher": "Vantor Kinetics",
+          "url": "https://vantor.example/press/series-a",
+          "published": "2026-11-10",
+          "headline": "Vantor Kinetics announces its Series A",
+          "text_sha": "c3d4e5f6a1b2",
+          "independence": "primary"
+        }
+      ],
+      "independent_sources": 3,
+      "check": {
+        "known": true,
+        "pz_first_seen": "2026-09-10",
+        "lead_days": 61,
+        "first_source": "northgate-spinouts",
+        "first_tier": "pre_company",
+        "stages": [
+          "discovered",
+          "triaged",
+          "conviction"
+        ],
+        "machine": "STRONG",
+        "mohamed": "PURSUE",
+        "capital_stage": "PRE_SEED",
+        "state": "CAUGHT_EARLY"
+      },
+      "state": "CAUGHT_EARLY",
+      "state_label": "Caught early",
+      "backcast": null,
+      "concepts": [
+        {
+          "id": "series_a",
+          "title": "What is Series A?",
+          "text": "Usually €5–20M once a repeatable way to win customers exists. The question changes from 'is this real?' to 'can this scale?'."
+        },
+        {
+          "id": "lead_investor",
+          "title": "What is a lead investor?",
+          "text": "The fund that sets the terms and usually invests the most. Who leads tells you who did the deepest diligence."
+        },
+        {
+          "id": "physical_ai",
+          "title": "Why do investors care about physical AI?",
+          "text": "AI that acts in the physical world (robots, machines). Labour shortages and cheaper sensors make automation of small factories newly economical — a large, under-served market."
+        }
+      ],
+      "my_company": true,
+      "in_deal_flow": true,
+      "outcome_proposal": {
+        "kind": "institutional_round",
+        "effect": "Project Zero first saw Vantor Kinetics 61 day(s) before this event"
+      },
+      "outcome_decision": null,
+      "audit_id": null,
+      "source_notes": [
+        "Isar Startup Post: regional intelligence — covered 9/14 Munich events reported elsewhere.",
+        "Alpine Wire: core european intelligence — covered 21/38 material European events reported elsewhere."
+      ],
+      "disagreements": [
+        {
+          "event_id": "nw-3f9a1c0b7d2e",
+          "company": "Vantor Kinetics",
+          "field": "amount_m",
+          "values": {
+            "Isar Startup Post": 18.0,
+            "Alpine Wire": 18.4
+          },
+          "event_date": "2026-11-10",
+          "status": "RESOLVED",
+          "basis": "primary source",
+          "agree": [
+            "Isar Startup Post",
+            "Vantor Kinetics"
+          ],
+          "contradicted": []
+        }
+      ]
+    }
+  ],
+  "known_late": [
+    {
+      "event_id": "nw-5d2f8e1a9b47",
+      "company": "Lumora Grid",
+      "headline": "Lumora Grid secures €3M seed round to balance neighbourhood grids",
+      "summary": "Lumora Grid, a Zurich start-up whose software balances solar and heat-pump load in neighbourhood grids, secured €3 million in seed funding.",
+      "event_type": "funding",
+      "round": "seed",
+      "amount_m": 3.0,
+      "event_date": "2026-11-06",
+      "geo": [
+        "CH"
+      ],
+      "themes": [
+        "energy"
+      ],
+      "materiality": "MEDIUM",
+      "materiality_why": [
+        "seed round (3M)"
+      ],
+      "card": null,
+      "type_label": "Funding round",
+      "sources": [
+        {
+          "publisher": "Swiss deal ticker",
+          "url": "https://swissticker.example/news/lumora-grid-seed",
+          "published": "2026-11-06",
+          "headline": "Lumora Grid secures €3M seed round",
+          "text_sha": "c4d5e6f7a2b3",
+          "independence": "independent"
+        }
+      ],
+      "independent_sources": 1,
+      "check": {
+        "known": true,
+        "pz_first_seen": "2026-11-06",
+        "lead_days": 0,
+        "first_source": "swiss-deal-ticker",
+        "first_tier": "announcement",
+        "stages": [
+          "discovered"
+        ],
+        "machine": "WEAK",
+        "mohamed": null,
+        "capital_stage": null,
+        "state": "KNOWN_LATE"
+      },
+      "state": "KNOWN_LATE",
+      "state_label": "Known, but late",
+      "backcast": null,
+      "concepts": [
+        {
+          "id": "seed",
+          "title": "What is a seed round?",
+          "text": "Typically €1–5M to find product-market fit: first customers, first team. Investors want proof the problem is real and the team can sell."
+        }
+      ],
+      "my_company": false,
+      "in_deal_flow": true,
+      "outcome_proposal": null,
+      "outcome_decision": "reject",
+      "audit_id": null,
+      "source_notes": [],
+      "disagreements": []
+    }
+  ],
+  "misses": [
+    {
+      "event_id": "nw-7c41d9e2a0f3",
+      "company": "Quillon Labs",
+      "headline": "Quillon Labs raises €25M Series B for battery diagnostics",
+      "summary": "Berlin-based Quillon Labs, which predicts battery failures from charging data, raised €25 million in a Series B led by Morrow Capital.",
+      "event_type": "funding",
+      "round": "Series B",
+      "amount_m": 25.0,
+      "event_date": "2026-11-08",
+      "geo": [
+        "DE"
+      ],
+      "themes": [
+        "ai",
+        "energy"
+      ],
+      "materiality": "HIGH",
+      "materiality_why": [
+        "large round (25M)"
+      ],
+      "card": {
+        "what_happened": "Quillon Labs, a Berlin company that predicts battery failures from charging data, raised €25M in a Series B.",
+        "why_it_matters": "A second large round shows the diagnostics market is maturing — and that the early-stage window for this company has closed.",
+        "the_company": "Quillon Labs sells software that reads charging data from fleets and warns before a battery fails.",
+        "vc_lesson": "By Series B the question is how fast a working model scales, not whether the problem is real.",
+        "watch_next": [
+          "Whether the round included a strategic investor from the automotive side",
+          "First customer outside Germany"
+        ],
+        "generated_by": "gemma-mini"
+      },
+      "type_label": "Funding round",
+      "sources": [
+        {
+          "publisher": "Alpine Wire",
+          "url": "https://alpinewire.example/quillon-labs-series-b",
+          "published": "2026-11-08",
+          "headline": "Quillon Labs raises €25M Series B led by Morrow Capital",
+          "text_sha": "d4e5f6a1b2c3",
+          "independence": "independent"
+        },
+        {
+          "publisher": "Baltic Founders",
+          "url": "https://balticfounders.example/quillon-labs",
+          "published": "2026-11-09",
+          "headline": "Quillon Labs raises €25M Series B led by Morrow Capital",
+          "text_sha": "d4e5f6a1b2c3",
+          "independence": "syndicated"
+        }
+      ],
+      "independent_sources": 1,
+      "check": {
+        "known": false,
+        "pz_first_seen": null,
+        "state": "UNKNOWN",
+        "possible_miss": true
+      },
+      "state": "UNKNOWN",
+      "state_label": "Not seen by Project Zero — not yet reviewed",
+      "backcast": null,
+      "concepts": [
+        {
+          "id": "series_b",
+          "title": "What is Series B and later?",
+          "text": "Larger rounds (€20M+) to scale something that already works: more markets, more sales, more product. Early-stage edge is mostly gone by now."
+        },
+        {
+          "id": "lead_investor",
+          "title": "What is a lead investor?",
+          "text": "The fund that sets the terms and usually invests the most. Who leads tells you who did the deepest diligence."
+        }
+      ],
+      "my_company": false,
+      "in_deal_flow": false,
+      "outcome_proposal": null,
+      "outcome_decision": null,
+      "audit_id": "au-20261111-quillon",
+      "source_notes": [],
+      "disagreements": [
+        {
+          "event_id": "nw-7c41d9e2a0f3",
+          "company": "Quillon Labs",
+          "field": "round",
+          "values": {
+            "Alpine Wire": "series b",
+            "Harbour Post": "series c"
+          },
+          "event_date": "2026-11-08",
+          "status": "OPEN",
+          "agree": [],
+          "contradicted": []
+        }
+      ]
+    },
+    {
+      "event_id": "nw-1e8b5a6c4d90",
+      "company": "Brightwell Bio",
+      "headline": "Brightwell Bio acquired by Corvane Diagnostics",
+      "summary": "Corvane Diagnostics acquired Brightwell Bio, a Heidelberg spinout building AI-assisted blood tests, for an undisclosed sum.",
+      "event_type": "acquisition",
+      "round": "",
+      "amount_m": null,
+      "event_date": "2026-11-03",
+      "geo": [
+        "DE"
+      ],
+      "themes": [
+        "ai",
+        "health"
+      ],
+      "materiality": "HIGH",
+      "materiality_why": [
+        "acquisition"
+      ],
+      "card": {
+        "what_happened": "Corvane Diagnostics bought Brightwell Bio, a Heidelberg university spinout building AI-assisted blood tests.",
+        "why_it_matters": "It shows who values this technology and how the market consolidates.",
+        "the_company": "Brightwell Bio develops blood tests that use machine learning to flag early disease markers.",
+        "vc_lesson": "It shows who values the technology and at what price. Small acquisitions are often acqui-hires (buying the team); large ones signal a strategic market.",
+        "watch_next": [
+          "Whether the founders stay with Corvane"
+        ],
+        "generated_by": "gemma-mini"
+      },
+      "type_label": "Acquisition",
+      "sources": [
+        {
+          "publisher": "Isar Startup Post",
+          "url": "https://isarpost.example/2026/11/brightwell-bio-acquired",
+          "published": "2026-11-03",
+          "headline": "Corvane Diagnostics acquires Brightwell Bio",
+          "text_sha": "e5f6a1b2c3d4",
+          "independence": "independent"
+        }
+      ],
+      "independent_sources": 1,
+      "check": {
+        "known": false,
+        "pz_first_seen": null,
+        "state": "MISSED",
+        "miss_window_signals": [
+          {
+            "date": "2026-10-02",
+            "precision": "day",
+            "text": "Brightwell Bio named in a regional health-innovation grant list (EUR 1.2M).",
+            "family": "grant",
+            "url": "https://grants.example/2026/health-innovation",
+            "kind": "known_early_signal"
+          }
+        ]
+      },
+      "state": "MISSED",
+      "state_label": "Missed",
+      "backcast": {
+        "timeline": [
+          {
+            "date": "2025-04",
+            "precision": "month",
+            "text": "Founders publish the blood-marker model paper (only clear in hindsight).",
+            "family": "research_paper",
+            "url": "https://papers.example/brightwell-markers",
+            "kind": "in_retrospect"
+          },
+          {
+            "date": "2026-10-02",
+            "precision": "day",
+            "text": "Brightwell Bio named in a regional health-innovation grant list (EUR 1.2M).",
+            "family": "grant",
+            "url": "https://grants.example/2026/health-innovation",
+            "kind": "known_early_signal"
+          }
+        ],
+        "earliest_plausible_signal": {
+          "date": "2026-10-02",
+          "precision": "day",
+          "text": "Brightwell Bio named in a regional health-innovation grant list (EUR 1.2M).",
+          "family": "grant",
+          "url": "https://grants.example/2026/health-innovation",
+          "kind": "known_early_signal"
+        },
+        "best_sensor": "grant sources (EXIST, Innosuisse, EIC, UKRI, NIH/NSF)",
+        "before_pz": false,
+        "learning": "The earliest public signal was a grant signal (2026-10). Today this is covered by: grant sources (EXIST, Innosuisse, EIC, UKRI, NIH/NSF)."
+      },
+      "concepts": [
+        {
+          "id": "acquisition",
+          "title": "What does an acquisition tell an investor?",
+          "text": "It shows who values the technology and at what price. Small acquisitions are often acqui-hires (buying the team); large ones signal a strategic market."
+        },
+        {
+          "id": "spinout",
+          "title": "What is a spinout?",
+          "text": "A company created from university research, often by PhDs or researchers. The technology is deep, but the team must learn to sell — and IP terms with the university matter."
+        }
+      ],
+      "my_company": false,
+      "in_deal_flow": false,
+      "outcome_proposal": null,
+      "outcome_decision": null,
+      "audit_id": null,
+      "source_notes": [],
+      "disagreements": []
+    }
+  ],
+  "historical": [
+    {
+      "event_id": "nw-case-halvard-unicorn-2026-10",
+      "company": "Halvard Robotics",
+      "headline": "Stuttgart robotics company Halvard Robotics passes a $1 billion valuation",
+      "summary": "Halvard Robotics said it had passed a $1 billion valuation after a secondary sale of employee shares to new and existing investors, following a $90 million raise earlier in the year.",
+      "event_type": "valuation",
+      "round": "",
+      "amount_m": 1000,
+      "event_date": "2026-10-05",
+      "geo": [
+        "DE"
+      ],
+      "themes": [
+        "robotics",
+        "ai",
+        "industrial"
+      ],
+      "materiality": "HIGH",
+      "materiality_why": [
+        "valuation milestone"
+      ],
+      "card": {
+        "what_happened": "Halvard Robotics, a Stuttgart industrial-robotics company, said it passed a $1 billion valuation (5 Oct 2026), set mainly by employees selling existing shares.",
+        "why_it_matters": "It shows strong investor appetite for robots that small factories can deploy — and it is a late-stage event: the early-stage opportunity was years ago.",
+        "the_company": "Halvard Robotics builds modular industrial robots that mid-sized manufacturers configure for repetitive tasks.",
+        "vc_lesson": "A 'unicorn' headline can come from a secondary share sale: it tells you what buyers paid per share, not how much the company raised.",
+        "watch_next": [
+          "Whether a primary round follows the secondary sale",
+          "Hiring for a US sales team"
+        ],
+        "generated_by": "curated from the linked sources"
+      },
+      "type_label": "Valuation milestone",
+      "sources": [
+        {
+          "publisher": "Ledger Gazette",
+          "url": "https://ledgergazette.example/tech/halvard-robotics-billion",
+          "published": "2026-10-05",
+          "headline": "Halvard Robotics hits $1 billion valuation",
+          "text_sha": "f6a1b2c3d4e5",
+          "independence": "independent"
+        },
+        {
+          "publisher": "Isar Startup Post",
+          "url": "https://isarpost.example/2026/10/halvard-unicorn",
+          "published": "2026-10-05",
+          "headline": "Neues Unicorn: Halvard Robotics erreicht Milliardenbewertung",
+          "text_sha": "a2b3c4d5e6f7",
+          "independence": "independent"
+        },
+        {
+          "publisher": "Harbour Post",
+          "url": "https://harbourpost.example/halvard-robotics-1b",
+          "published": "2026-10-06",
+          "headline": "Halvard Robotics valued at $1B as investors buy employee shares",
+          "text_sha": "b3c4d5e6f7a2",
+          "independence": "independent"
+        }
+      ],
+      "independent_sources": 3,
+      "check": {
+        "known": false,
+        "pz_first_seen": null,
+        "state": "HISTORICAL",
+        "miss_window_signals": []
+      },
+      "state": "HISTORICAL",
+      "state_label": "Historical learning case",
+      "backcast": {
+        "timeline": [
+          {
+            "date": "2020",
+            "precision": "year",
+            "text": "Years of research at a Stuttgart robotics chair underpin the later company (per the founders).",
+            "family": "university_lab",
+            "url": "https://uni-stuttgart.example/robotics-chair",
+            "kind": "in_retrospect"
+          },
+          {
+            "date": "2020",
+            "precision": "year",
+            "text": "Halvard Robotics founded in Stuttgart (2020) by three research assistants of the university's robotics chair — a university spinout.",
+            "family": "university_lab",
+            "url": "https://spinouts.example/halvard-robotics",
+            "kind": "known_early_signal"
+          },
+          {
+            "date": "2021-06",
+            "precision": "month",
+            "text": "Seed round (amount not public in free sources).",
+            "family": "early_funding",
+            "url": "https://fundingdb.example/halvard-robotics",
+            "kind": "known_early_signal"
+          },
+          {
+            "date": "2024-02",
+            "precision": "month",
+            "text": "Series B, about $40M.",
+            "family": "early_funding",
+            "url": "https://fundingdb.example/halvard-robotics/b",
+            "kind": "known_early_signal"
+          }
+        ],
+        "earliest_plausible_signal": {
+          "date": "2020",
+          "precision": "year",
+          "text": "Halvard Robotics founded in Stuttgart (2020) by three research assistants of the university's robotics chair — a university spinout.",
+          "family": "university_lab",
+          "url": "https://spinouts.example/halvard-robotics",
+          "kind": "known_early_signal"
+        },
+        "best_sensor": "university spinout lists (TUM Venture Labs, UnternehmerTUM, ETH / EPFL, HIGHEST) + Scout 00 research lanes",
+        "before_pz": true,
+        "learning": "Halvard Robotics' earliest public signal was a university robotics spinout (2020), followed by a seed round (2021) — about five years before the unicorn headline and six years before Project Zero started. Today a similar company would most likely surface through the university spinout sensors; by its first funding news the earliest edge was already gone."
+      },
+      "concepts": [
+        {
+          "id": "valuation",
+          "title": "What does a valuation mean?",
+          "text": "The price of the whole company implied by a deal. A $1B 'unicorn' valuation is a market signal, not cash in the bank — and a small share sale can set it."
+        },
+        {
+          "id": "unicorn",
+          "title": "Why can a company become a unicorn without a normal round?",
+          "text": "A valuation can be set by any priced transaction — including a secondary sale. So 'unicorn' says what buyers paid per share, not how much the company raised."
+        },
+        {
+          "id": "secondary",
+          "title": "What is a secondary sale?",
+          "text": "Existing shareholders (often employees or early investors) sell shares to new investors. The company receives no new money, but the price sets a new valuation."
+        }
+      ],
+      "my_company": false,
+      "in_deal_flow": false,
+      "outcome_proposal": null,
+      "outcome_decision": null,
+      "audit_id": null,
+      "source_notes": [
+        "Ledger Gazette is used here as confirmation / authority (high-quality independent media), not as an early signal."
+      ],
+      "disagreements": []
+    }
+  ],
+  "my_companies": [
+    {
+      "event_id": "nw-3f9a1c0b7d2e",
+      "company": "Vantor Kinetics",
+      "headline": "Munich robotics start-up Vantor Kinetics raises €18M Series A led by Lindqvist Partners",
+      "summary": "Vantor Kinetics, a Munich maker of autonomous handling robots for mid-sized factories, raised €18 million in a Series A led by Lindqvist Partners, with existing investors following on.",
+      "event_type": "funding",
+      "round": "Series A",
+      "amount_m": 18.0,
+      "event_date": "2026-11-10",
+      "geo": [
+        "DE"
+      ],
+      "themes": [
+        "robotics",
+        "ai"
+      ],
+      "materiality": "HIGH",
+      "materiality_why": [
+        "large round (18M)"
+      ],
+      "card": {
+        "what_happened": "Vantor Kinetics, a Munich maker of autonomous handling robots for mid-sized factories, raised €18 million in a Series A led by Lindqvist Partners, with existing investors following on.",
+        "why_it_matters": "Investors committed money: a signal about the market and the stage the company has reached.",
+        "the_company": "",
+        "vc_lesson": "Usually €5–20M once a repeatable way to win customers exists. The question changes from 'is this real?' to 'can this scale?'.",
+        "watch_next": [],
+        "generated_by": "rules"
+      },
+      "type_label": "Funding round",
+      "sources": [
+        {
+          "publisher": "Isar Startup Post",
+          "url": "https://isarpost.example/2026/11/vantor-kinetics-series-a",
+          "published": "2026-11-10",
+          "headline": "Vantor Kinetics raises €18M Series A",
+          "text_sha": "a1b2c3d4e5f6",
+          "independence": "independent"
+        },
+        {
+          "publisher": "Alpine Wire",
+          "url": "https://alpinewire.example/vantor-kinetics-20m",
+          "published": "2026-11-11",
+          "headline": "Vantor Kinetics closes $20M Series A for factory robots",
+          "text_sha": "b2c3d4e5f6a1",
+          "independence": "independent"
+        },
+        {
+          "publisher": "Vantor Kinetics",
+          "url": "https://vantor.example/press/series-a",
+          "published": "2026-11-10",
+          "headline": "Vantor Kinetics announces its Series A",
+          "text_sha": "c3d4e5f6a1b2",
+          "independence": "primary"
+        }
+      ],
+      "independent_sources": 3,
+      "check": {
+        "known": true,
+        "pz_first_seen": "2026-09-10",
+        "lead_days": 61,
+        "first_source": "northgate-spinouts",
+        "first_tier": "pre_company",
+        "stages": [
+          "discovered",
+          "triaged",
+          "conviction"
+        ],
+        "machine": "STRONG",
+        "mohamed": "PURSUE",
+        "capital_stage": "PRE_SEED",
+        "state": "CAUGHT_EARLY"
+      },
+      "state": "CAUGHT_EARLY",
+      "state_label": "Caught early",
+      "backcast": null,
+      "concepts": [
+        {
+          "id": "series_a",
+          "title": "What is Series A?",
+          "text": "Usually €5–20M once a repeatable way to win customers exists. The question changes from 'is this real?' to 'can this scale?'."
+        },
+        {
+          "id": "lead_investor",
+          "title": "What is a lead investor?",
+          "text": "The fund that sets the terms and usually invests the most. Who leads tells you who did the deepest diligence."
+        },
+        {
+          "id": "physical_ai",
+          "title": "Why do investors care about physical AI?",
+          "text": "AI that acts in the physical world (robots, machines). Labour shortages and cheaper sensors make automation of small factories newly economical — a large, under-served market."
+        }
+      ],
+      "my_company": true,
+      "in_deal_flow": true,
+      "outcome_proposal": {
+        "kind": "institutional_round",
+        "effect": "Project Zero first saw Vantor Kinetics 61 day(s) before this event"
+      },
+      "outcome_decision": null,
+      "audit_id": null,
+      "source_notes": [
+        "Isar Startup Post: regional intelligence — covered 9/14 Munich events reported elsewhere.",
+        "Alpine Wire: core european intelligence — covered 21/38 material European events reported elsewhere."
+      ],
+      "disagreements": [
+        {
+          "event_id": "nw-3f9a1c0b7d2e",
+          "company": "Vantor Kinetics",
+          "field": "amount_m",
+          "values": {
+            "Isar Startup Post": 18.0,
+            "Alpine Wire": 18.4
+          },
+          "event_date": "2026-11-10",
+          "status": "RESOLVED",
+          "basis": "primary source",
+          "agree": [
+            "Isar Startup Post",
+            "Vantor Kinetics"
+          ],
+          "contradicted": []
+        }
+      ]
+    },
+    {
+      "event_id": "nw-5d2f8e1a9b47",
+      "company": "Lumora Grid",
+      "headline": "Lumora Grid secures €3M seed round to balance neighbourhood grids",
+      "summary": "Lumora Grid, a Zurich start-up whose software balances solar and heat-pump load in neighbourhood grids, secured €3 million in seed funding.",
+      "event_type": "funding",
+      "round": "seed",
+      "amount_m": 3.0,
+      "event_date": "2026-11-06",
+      "geo": [
+        "CH"
+      ],
+      "themes": [
+        "energy"
+      ],
+      "materiality": "MEDIUM",
+      "materiality_why": [
+        "seed round (3M)"
+      ],
+      "card": null,
+      "type_label": "Funding round",
+      "sources": [
+        {
+          "publisher": "Swiss deal ticker",
+          "url": "https://swissticker.example/news/lumora-grid-seed",
+          "published": "2026-11-06",
+          "headline": "Lumora Grid secures €3M seed round",
+          "text_sha": "c4d5e6f7a2b3",
+          "independence": "independent"
+        }
+      ],
+      "independent_sources": 1,
+      "check": {
+        "known": true,
+        "pz_first_seen": "2026-11-06",
+        "lead_days": 0,
+        "first_source": "swiss-deal-ticker",
+        "first_tier": "announcement",
+        "stages": [
+          "discovered"
+        ],
+        "machine": "WEAK",
+        "mohamed": null,
+        "capital_stage": null,
+        "state": "KNOWN_LATE"
+      },
+      "state": "KNOWN_LATE",
+      "state_label": "Known, but late",
+      "backcast": null,
+      "concepts": [
+        {
+          "id": "seed",
+          "title": "What is a seed round?",
+          "text": "Typically €1–5M to find product-market fit: first customers, first team. Investors want proof the problem is real and the team can sell."
+        }
+      ],
+      "my_company": false,
+      "in_deal_flow": true,
+      "outcome_proposal": null,
+      "outcome_decision": "reject",
+      "audit_id": null,
+      "source_notes": [],
+      "disagreements": []
+    }
+  ],
+  "themes": [
+    {
+      "theme": "ai",
+      "geo": "DE",
+      "companies": 3,
+      "confidence": "early signal",
+      "observation": "3 ai companies in Germany with funding round, acquisition in the last 30 days",
+      "why_it_matters": "Repeated activity can mean investor attention (and later competition for deals) is building in this area — useful context, never a reason to change sourcing on its own.",
+      "stories": [
+        {
+          "event_id": "nw-3f9a1c0b7d2e",
+          "headline": "Munich robotics start-up Vantor Kinetics raises €18M Series A led by Lindqvist Partners"
+        },
+        {
+          "event_id": "nw-7c41d9e2a0f3",
+          "headline": "Quillon Labs raises €25M Series B for battery diagnostics"
+        },
+        {
+          "event_id": "nw-1e8b5a6c4d90",
+          "headline": "Brightwell Bio acquired by Corvane Diagnostics"
+        }
+      ],
+      "pz_related": 7
+    },
+    {
+      "theme": "robotics",
+      "geo": "DE",
+      "companies": 5,
+      "confidence": "moderate",
+      "observation": "5 robotics companies in Germany with funding round, valuation milestone in the last 30 days",
+      "why_it_matters": "Repeated activity can mean investor attention (and later competition for deals) is building in this area — useful context, never a reason to change sourcing on its own.",
+      "stories": [
+        {
+          "event_id": "nw-3f9a1c0b7d2e",
+          "headline": "Munich robotics start-up Vantor Kinetics raises €18M Series A led by Lindqvist Partners"
+        }
+      ],
+      "pz_related": 1
+    }
+  ],
+  "counts": {
+    "events": 8,
+    "noise_hidden": 1,
+    "low_hidden_from_top": 2,
+    "CAUGHT_EARLY": 1,
+    "UNKNOWN": 2,
+    "MISSED": 1,
+    "HISTORICAL": 1,
+    "KNOWN_LATE": 1,
+    "NOT_RELEVANT": 1
+  },
+  "metrics": {
+    "median_lead_days": 61,
+    "caught_early": 1
+  },
+  "concept_of_the_day": {
+    "id": "lead_investor",
+    "title": "What is a lead investor?",
+    "text": "The fund that sets the terms and usually invests the most. Who leads tells you who did the deepest diligence."
+  },
+  "notice_earlier": "The earliest public signal was a grant signal (2026-10). Today this is covered by: grant sources (EXIST, Innosuisse, EIC, UKRI, NIH/NSF).",
+  "last_run": {
+    "at": "2026-11-12T07:00:03",
+    "cards": 2,
+    "completed_at": "2026-11-12T07:00:41",
+    "cooldown": [],
+    "duplicates_skipped": 179,
+    "duration_s": 38.4,
+    "events_total": 8,
+    "feeds_checked": 6,
+    "items": 184,
+    "latest_published": "2026-11-11T18:20",
+    "material_new": 2,
+    "merged": 2,
+    "new": 3,
+    "noise_new": 1,
+    "per_feed": {
+      "Isar Startup Post": {
+        "ok": true,
+        "items": 40,
+        "latest": "2026-11-11T18:20"
+      },
+      "Alpine Wire": {
+        "ok": true,
+        "items": 40,
+        "latest": "2026-11-11T16:02"
+      },
+      "Channel Tech Review": {
+        "ok": false,
+        "error": "HTTPError: HTTP Error 429: Too Many Requests",
+        "rate_limited": true,
+        "cooldown_until": "2026-11-12T07:30:41"
+      },
+      "Baltic Founders": {
+        "ok": true,
+        "items": 38,
+        "latest": "2026-11-10T09:00"
+      },
+      "Rhine Ventures News": {
+        "ok": true,
+        "items": 36,
+        "latest": "2026-11-11T08:45"
+      },
+      "swissticker.example": {
+        "ok": true,
+        "items": 30,
+        "reused": "Deal Flow scan (no fetch)"
+      }
+    },
+    "reclassified": 0,
+    "run_id": "news-20261112-0700",
+    "seeded": 0,
+    "source_eval": {
+      "benchmark_events": 41,
+      "new_disagreements": 1,
+      "lifecycle_changes": 0,
+      "nominated": 0
+    },
+    "sources_failed": [
+      "Channel Tech Review: HTTPError: HTTP Error 429: Too Many Requests"
+    ],
+    "sources_ok": 5,
+    "stale_feeds": [],
+    "status": "partial",
+    "timings": {
+      "fetch_s": 21.3,
+      "ingest_s": 0.41,
+      "cards_s": 14.2,
+      "metrics_s": 2.5
+    },
+    "trigger": "schedule",
+    "usd": 0.0021,
+    "watch_triggers": 0
+  },
+  "state_labels": {
+    "CAUGHT_EARLY": "Caught early",
+    "KNOWN_LATE": "Known, but late",
+    "MISSED": "Missed",
+    "HISTORICAL": "Historical learning case",
+    "NOT_RELEVANT": "Not relevant to Project Zero",
+    "UNKNOWN": "Not seen by Project Zero — not yet reviewed"
+  },
+  "signal_families": [
+    "accelerator",
+    "customer",
+    "early_funding",
+    "ecosystem",
+    "event",
+    "founder_move",
+    "github",
+    "grant",
+    "incorporation",
+    "patent",
+    "research_paper",
+    "university_lab"
+  ],
+  "note": "News is context and a benchmark — not sourcing alpha. Learnings are proposals; nothing here changes scores, sources, themes, Radar or IMQ."
+}

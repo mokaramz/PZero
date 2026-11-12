@@ -1,0 +1,5317 @@
+{
+  "30": {
+    "window": "30",
+    "start": "2026-10-13",
+    "today": "2026-11-12",
+    "benchmark_events": 10,
+    "bias": {
+      "events": 10,
+      "multi_source": 4,
+      "origin_top": {
+        "source": "Alpine Wire",
+        "events": 6
+      },
+      "warnings": [
+        "6/10 benchmark events were first (or only) reported by Alpine Wire — recall is measured leave-one-out, but the event universe itself leans on that source",
+        "the benchmark is the union of Project Zero's monitored feeds: an event none of them covered is invisible here (independent checks: Validation outcomes, miss audits, curated cases)"
+      ],
+      "independent_outcomes": 1,
+      "concentrated": true,
+      "overlap_ok": false
+    },
+    "best": [
+      {
+        "id": "EUROPE",
+        "label": "Best for Europe-wide coverage",
+        "state": "COLLECTING DATA",
+        "need": "sources overlap on only 4 events — coverage comparisons need ≥ 8 events reported by two or more sources"
+      },
+      {
+        "id": "DE",
+        "label": "Best for Germany",
+        "state": "COLLECTING DATA",
+        "need": "sources overlap on only 4 events — coverage comparisons need ≥ 8 events reported by two or more sources"
+      },
+      {
+        "id": "FR",
+        "label": "Best for France",
+        "state": "COLLECTING DATA",
+        "need": "sources overlap on only 4 events — coverage comparisons need ≥ 8 events reported by two or more sources"
+      },
+      {
+        "id": "UK",
+        "label": "Best for the UK",
+        "state": "COLLECTING DATA",
+        "need": "sources overlap on only 4 events — coverage comparisons need ≥ 8 events reported by two or more sources"
+      },
+      {
+        "id": "CH",
+        "label": "Best for Switzerland",
+        "state": "COLLECTING DATA",
+        "need": "sources overlap on only 4 events — coverage comparisons need ≥ 8 events reported by two or more sources"
+      },
+      {
+        "id": "NORDICS",
+        "label": "Best for the Nordics",
+        "state": "COLLECTING DATA",
+        "need": "sources overlap on only 4 events — coverage comparisons need ≥ 8 events reported by two or more sources"
+      },
+      {
+        "id": "MUNICH",
+        "label": "Best for Munich",
+        "state": "COLLECTING DATA",
+        "need": "sources overlap on only 4 events — coverage comparisons need ≥ 8 events reported by two or more sources"
+      },
+      {
+        "id": "EARLY",
+        "label": "Best for early signals",
+        "state": "COLLECTING DATA",
+        "need": "needs ≥ 3 observations for at least one source"
+      },
+      {
+        "id": "CONFIRM",
+        "label": "Best for fact confirmation",
+        "state": "COLLECTING DATA",
+        "need": "needs ≥ 8 observations for at least one source"
+      },
+      {
+        "id": "UNIQUE",
+        "label": "Best for unique discovery",
+        "state": "COLLECTING DATA",
+        "need": "sources overlap on only 4 events — coverage comparisons need ≥ 8 events reported by two or more sources"
+      },
+      {
+        "id": "DEEPTECH",
+        "label": "Best for physical AI / deeptech",
+        "state": "COLLECTING DATA",
+        "need": "sources overlap on only 4 events — coverage comparisons need ≥ 8 events reported by two or more sources"
+      },
+      {
+        "id": "TECH",
+        "label": "Best technical reliability",
+        "state": "RANKED",
+        "leader": {
+          "source": "Alpine Wire",
+          "why": "fetched 7/7 runs",
+          "n": 7
+        },
+        "runner_up": {
+          "source": "Isar Startup Post",
+          "why": "fetched 7/7 runs"
+        },
+        "confidence": "INSUFFICIENT DATA"
+      }
+    ],
+    "disagreements": [
+      {
+        "event_id": "nw-7c41d9e2a0f3",
+        "company": "Quillon Labs",
+        "field": "round",
+        "values": {
+          "Alpine Wire": "series b",
+          "Harbour Post": "series c"
+        },
+        "event_date": "2026-11-08",
+        "status": "OPEN",
+        "agree": [],
+        "contradicted": []
+      }
+    ],
+    "sources": [
+      {
+        "name": "Alpine Wire",
+        "kind": "feed",
+        "geo": "EU",
+        "home_scope": "EUROPE",
+        "lifecycle": "ESTABLISHED",
+        "domain": "alpinewire.example",
+        "articles": {
+          "n": 53,
+          "digests": 0,
+          "high": 8,
+          "relevant": 9,
+          "minor": 26,
+          "noise": {
+            "k": 10,
+            "n": 53,
+            "rate": 0.189,
+            "lb": 0.0,
+            "label": "MORE RELIABLE"
+          },
+          "precision": {
+            "k": 17,
+            "n": 53,
+            "rate": 0.321,
+            "lb": 0.121,
+            "label": "MORE RELIABLE"
+          }
+        },
+        "recall": {
+          "EUROPE": {
+            "k": 5,
+            "n": 10,
+            "rate": 0.5,
+            "lb": 0.3,
+            "label": "EARLY READ"
+          },
+          "DE": {
+            "k": 2,
+            "n": 4,
+            "rate": 0.5,
+            "lb": 0.3,
+            "label": "INSUFFICIENT DATA"
+          },
+          "CH": {
+            "k": 1,
+            "n": 2,
+            "rate": 0.5,
+            "lb": 0.3,
+            "label": "INSUFFICIENT DATA"
+          },
+          "UK": {
+            "k": 1,
+            "n": 2,
+            "rate": 0.5,
+            "lb": 0.3,
+            "label": "INSUFFICIENT DATA"
+          },
+          "DEEPTECH": {
+            "k": 2,
+            "n": 3,
+            "rate": 0.667,
+            "lb": 0.467,
+            "label": "INSUFFICIENT DATA"
+          }
+        },
+        "speed": {
+          "n": 3,
+          "label": "INSUFFICIENT DATA",
+          "precision": "hour",
+          "median_h": 3.0,
+          "p25_h": null,
+          "p75_h": null,
+          "within_24h": {
+            "k": 1,
+            "n": 3,
+            "rate": 0.333,
+            "lb": 0.133,
+            "label": "INSUFFICIENT DATA"
+          },
+          "within_72h": {
+            "k": 3,
+            "n": 3,
+            "rate": 1.0,
+            "lb": 0.8,
+            "label": "INSUFFICIENT DATA"
+          },
+          "first": {
+            "k": 2,
+            "n": 3,
+            "rate": 0.667,
+            "lb": 0.467,
+            "label": "INSUFFICIENT DATA"
+          }
+        },
+        "earliness": {
+          "companies": 0,
+          "median_lead_days": null,
+          "pre_funding": 0,
+          "precursor_types": {},
+          "share_of_important": {
+            "k": 0,
+            "n": 6,
+            "rate": 0.0,
+            "lb": 0.0,
+            "label": "INSUFFICIENT DATA"
+          },
+          "examples": [],
+          "deal_flow": null
+        },
+        "originality": {
+          "n": 53,
+          "syndicated": {
+            "k": 3,
+            "n": 53,
+            "rate": 0.057,
+            "lb": 0.0,
+            "label": "MORE RELIABLE"
+          },
+          "press_release": {
+            "k": 8,
+            "n": 53,
+            "rate": 0.151,
+            "lb": 0.0,
+            "label": "MORE RELIABLE"
+          },
+          "original": {
+            "k": 42,
+            "n": 53,
+            "rate": 0.792,
+            "lb": 0.592,
+            "label": "MORE RELIABLE"
+          },
+          "confidence": "headline-level estimate"
+        },
+        "unique": {
+          "events": 2,
+          "companies": 2,
+          "early_companies": 0,
+          "by_scope": {
+            "EUROPE": 2,
+            "UK": 0
+          },
+          "of_covered": {
+            "k": 2,
+            "n": 8,
+            "rate": 0.25,
+            "lb": 0.05,
+            "label": "EARLY READ"
+          }
+        },
+        "authority": {
+          "prior": "HIGH-QUALITY INDEPENDENT MEDIA",
+          "agree": 3,
+          "contradicted": 0,
+          "open": 0,
+          "observed": {
+            "k": 3,
+            "n": 3,
+            "rate": 1.0,
+            "lb": 0.9,
+            "label": "INSUFFICIENT DATA"
+          },
+          "basis": "prior (observations collecting)"
+        },
+        "technical": {
+          "basis": "News run log",
+          "state": "HEALTHY",
+          "runs": 7,
+          "ok": 7,
+          "ok_share": 1.0,
+          "lb": 0.85,
+          "label": "INSUFFICIENT DATA",
+          "streak": 0,
+          "last_ok": "2026-11-12T07:00:03",
+          "last_error": ""
+        },
+        "independent": {
+          "outcomes": 1,
+          "covered": 1
+        },
+        "hypothesis": "",
+        "sample": "MORE RELIABLE",
+        "roles": [],
+        "best_use": "Collecting data",
+        "not_for": "",
+        "limitations": [
+          "publication times are day-precision for older articles"
+        ],
+        "status": "ACTIVE",
+        "status_reasons": []
+      },
+      {
+        "name": "Isar Startup Post",
+        "kind": "feed",
+        "geo": "DE",
+        "home_scope": "MUNICH",
+        "lifecycle": "ESTABLISHED",
+        "domain": "isarpost.example",
+        "articles": {
+          "n": 24,
+          "digests": 0,
+          "high": 4,
+          "relevant": 4,
+          "minor": 12,
+          "noise": {
+            "k": 4,
+            "n": 24,
+            "rate": 0.167,
+            "lb": 0.0,
+            "label": "EARLY READ"
+          },
+          "precision": {
+            "k": 8,
+            "n": 24,
+            "rate": 0.333,
+            "lb": 0.133,
+            "label": "EARLY READ"
+          }
+        },
+        "recall": {
+          "EUROPE": {
+            "k": 3,
+            "n": 8,
+            "rate": 0.375,
+            "lb": 0.175,
+            "label": "EARLY READ"
+          },
+          "DE": {
+            "k": 2,
+            "n": 4,
+            "rate": 0.5,
+            "lb": 0.3,
+            "label": "INSUFFICIENT DATA"
+          },
+          "MUNICH": {
+            "k": 2,
+            "n": 4,
+            "rate": 0.5,
+            "lb": 0.3,
+            "label": "INSUFFICIENT DATA"
+          }
+        },
+        "speed": {
+          "n": 3,
+          "label": "INSUFFICIENT DATA",
+          "precision": "hour",
+          "median_h": 6.5,
+          "p25_h": null,
+          "p75_h": null,
+          "within_24h": {
+            "k": 1,
+            "n": 3,
+            "rate": 0.333,
+            "lb": 0.133,
+            "label": "INSUFFICIENT DATA"
+          },
+          "within_72h": {
+            "k": 3,
+            "n": 3,
+            "rate": 1.0,
+            "lb": 0.8,
+            "label": "INSUFFICIENT DATA"
+          },
+          "first": {
+            "k": 1,
+            "n": 3,
+            "rate": 0.333,
+            "lb": 0.133,
+            "label": "INSUFFICIENT DATA"
+          }
+        },
+        "earliness": {
+          "companies": 1,
+          "median_lead_days": 52,
+          "pre_funding": 0,
+          "precursor_types": {
+            "accelerator": 1
+          },
+          "share_of_important": {
+            "k": 1,
+            "n": 6,
+            "rate": 0.167,
+            "lb": 0.0,
+            "label": "INSUFFICIENT DATA"
+          },
+          "examples": [
+            {
+              "company": "Vantor Kinetics",
+              "first_mention": "2026-09-10",
+              "lead_days": 61,
+              "precursor": "accelerator",
+              "pre_funding": true,
+              "event": "Vantor Kinetics raises €18M Series A"
+            }
+          ],
+          "deal_flow": null
+        },
+        "originality": {
+          "n": 24,
+          "syndicated": {
+            "k": 1,
+            "n": 24,
+            "rate": 0.042,
+            "lb": 0.0,
+            "label": "EARLY READ"
+          },
+          "press_release": {
+            "k": 2,
+            "n": 24,
+            "rate": 0.083,
+            "lb": 0.0,
+            "label": "EARLY READ"
+          },
+          "original": {
+            "k": 21,
+            "n": 24,
+            "rate": 0.875,
+            "lb": 0.675,
+            "label": "EARLY READ"
+          },
+          "confidence": "headline-level estimate — low confidence (small sample)"
+        },
+        "unique": {
+          "events": 2,
+          "companies": 2,
+          "early_companies": 1,
+          "by_scope": {
+            "MUNICH": 1,
+            "DE": 1
+          },
+          "of_covered": {
+            "k": 2,
+            "n": 6,
+            "rate": 0.333,
+            "lb": 0.133,
+            "label": "INSUFFICIENT DATA"
+          }
+        },
+        "authority": {
+          "prior": "SPECIALIST MEDIA",
+          "agree": 2,
+          "contradicted": 0,
+          "open": 1,
+          "observed": {
+            "k": 2,
+            "n": 2,
+            "rate": 1.0,
+            "lb": 0.9,
+            "label": "INSUFFICIENT DATA"
+          },
+          "basis": "prior (observations collecting)"
+        },
+        "technical": {
+          "basis": "News run log",
+          "state": "HEALTHY",
+          "runs": 7,
+          "ok": 7,
+          "ok_share": 1.0,
+          "lb": 0.85,
+          "label": "INSUFFICIENT DATA",
+          "streak": 0,
+          "last_ok": "2026-11-12T07:00:03",
+          "last_error": ""
+        },
+        "independent": {
+          "outcomes": 1,
+          "covered": 1
+        },
+        "hypothesis": "sees Munich university spinouts weeks before national media",
+        "sample": "EARLY READ",
+        "roles": [],
+        "best_use": "Collecting data — hypothesis to test: sees Munich university spinouts weeks before national media",
+        "not_for": "Europe-wide recall — it is a Munich source by design",
+        "limitations": [],
+        "status": "ACTIVE",
+        "status_reasons": []
+      },
+      {
+        "name": "Channel Tech Review",
+        "kind": "feed",
+        "geo": "UK",
+        "home_scope": "UK",
+        "lifecycle": "ESTABLISHED",
+        "domain": "channeltech.example",
+        "articles": {
+          "n": 16,
+          "digests": 0,
+          "high": 2,
+          "relevant": 3,
+          "minor": 8,
+          "noise": {
+            "k": 3,
+            "n": 16,
+            "rate": 0.188,
+            "lb": 0.0,
+            "label": "EARLY READ"
+          },
+          "precision": {
+            "k": 5,
+            "n": 16,
+            "rate": 0.312,
+            "lb": 0.112,
+            "label": "EARLY READ"
+          }
+        },
+        "recall": {
+          "EUROPE": {
+            "k": 1,
+            "n": 9,
+            "rate": 0.111,
+            "lb": 0.0,
+            "label": "EARLY READ"
+          },
+          "UK": {
+            "k": 0,
+            "n": 2,
+            "rate": 0.0,
+            "lb": 0.0,
+            "label": "INSUFFICIENT DATA"
+          }
+        },
+        "speed": {
+          "n": 1,
+          "label": "INSUFFICIENT DATA",
+          "precision": "hour",
+          "median_h": 30.0,
+          "p25_h": null,
+          "p75_h": null,
+          "within_24h": {
+            "k": 1,
+            "n": 1,
+            "rate": 1.0,
+            "lb": 0.8,
+            "label": "INSUFFICIENT DATA"
+          },
+          "within_72h": {
+            "k": 1,
+            "n": 1,
+            "rate": 1.0,
+            "lb": 0.8,
+            "label": "INSUFFICIENT DATA"
+          },
+          "first": {
+            "k": 0,
+            "n": 1,
+            "rate": 0.0,
+            "lb": 0.0,
+            "label": "INSUFFICIENT DATA"
+          }
+        },
+        "earliness": {
+          "companies": 0,
+          "median_lead_days": null,
+          "pre_funding": 0,
+          "precursor_types": {},
+          "share_of_important": {
+            "k": 0,
+            "n": 6,
+            "rate": 0.0,
+            "lb": 0.0,
+            "label": "INSUFFICIENT DATA"
+          },
+          "examples": [],
+          "deal_flow": null
+        },
+        "originality": {
+          "n": 16,
+          "syndicated": {
+            "k": 5,
+            "n": 16,
+            "rate": 0.312,
+            "lb": 0.112,
+            "label": "EARLY READ"
+          },
+          "press_release": {
+            "k": 3,
+            "n": 16,
+            "rate": 0.188,
+            "lb": 0.0,
+            "label": "EARLY READ"
+          },
+          "original": {
+            "k": 8,
+            "n": 16,
+            "rate": 0.5,
+            "lb": 0.3,
+            "label": "EARLY READ"
+          },
+          "confidence": "headline-level estimate — low confidence (small sample)"
+        },
+        "unique": {
+          "events": 0,
+          "companies": 0,
+          "early_companies": 0,
+          "by_scope": {
+            "UK": 0
+          },
+          "of_covered": {
+            "k": 0,
+            "n": 1,
+            "rate": 0.0,
+            "lb": 0.0,
+            "label": "INSUFFICIENT DATA"
+          }
+        },
+        "authority": {
+          "prior": "SPECIALIST MEDIA",
+          "agree": 0,
+          "contradicted": 0,
+          "open": 0,
+          "observed": {
+            "k": 0,
+            "n": 0,
+            "rate": null,
+            "lb": 0.0,
+            "label": "INSUFFICIENT DATA"
+          },
+          "basis": "prior (observations collecting)"
+        },
+        "technical": {
+          "basis": "News run log",
+          "state": "DEGRADED",
+          "runs": 7,
+          "ok": 6,
+          "ok_share": 0.857,
+          "lb": 0.707,
+          "label": "INSUFFICIENT DATA",
+          "streak": 2,
+          "last_ok": "2026-11-12T07:00:03",
+          "last_error": "HTTPError: HTTP Error 429: Too Many Requests"
+        },
+        "independent": {
+          "outcomes": 1,
+          "covered": 1
+        },
+        "hypothesis": "",
+        "sample": "EARLY READ",
+        "roles": [],
+        "best_use": "Collecting data",
+        "not_for": "Europe-wide recall — it is a UK source by design",
+        "limitations": [],
+        "status": "DEGRADED",
+        "status_reasons": [
+          "2 failed fetches in a row (rate limited)",
+          "relevance fell from 21% to 9% in this window"
+        ]
+      },
+      {
+        "name": "Swiss deal ticker",
+        "kind": "deal_flow_reuse",
+        "geo": "CH",
+        "home_scope": "CH",
+        "lifecycle": "ESTABLISHED",
+        "domain": "swissticker.example",
+        "articles": {
+          "n": 12,
+          "digests": 0,
+          "high": 2,
+          "relevant": 2,
+          "minor": 6,
+          "noise": {
+            "k": 2,
+            "n": 12,
+            "rate": 0.167,
+            "lb": 0.0,
+            "label": "EARLY READ"
+          },
+          "precision": {
+            "k": 4,
+            "n": 12,
+            "rate": 0.333,
+            "lb": 0.133,
+            "label": "EARLY READ"
+          }
+        },
+        "recall": {
+          "EUROPE": {
+            "k": 1,
+            "n": 9,
+            "rate": 0.111,
+            "lb": 0.0,
+            "label": "EARLY READ"
+          },
+          "CH": {
+            "k": 1,
+            "n": 2,
+            "rate": 0.5,
+            "lb": 0.3,
+            "label": "INSUFFICIENT DATA"
+          }
+        },
+        "speed": {
+          "n": 0,
+          "label": "INSUFFICIENT DATA",
+          "precision": "day"
+        },
+        "earliness": {
+          "companies": 0,
+          "median_lead_days": null,
+          "pre_funding": 0,
+          "precursor_types": {},
+          "share_of_important": {
+            "k": 0,
+            "n": 6,
+            "rate": 0.0,
+            "lb": 0.0,
+            "label": "INSUFFICIENT DATA"
+          },
+          "examples": [],
+          "deal_flow": {
+            "discoveries": 3,
+            "median_lead_days": 40,
+            "lead_n": 0,
+            "pre_company": 0,
+            "strong": 0
+          }
+        },
+        "originality": {
+          "n": 12,
+          "syndicated": {
+            "k": 0,
+            "n": 12,
+            "rate": 0.0,
+            "lb": 0.0,
+            "label": "EARLY READ"
+          },
+          "press_release": {
+            "k": 2,
+            "n": 12,
+            "rate": 0.167,
+            "lb": 0.0,
+            "label": "EARLY READ"
+          },
+          "original": {
+            "k": 10,
+            "n": 12,
+            "rate": 0.833,
+            "lb": 0.633,
+            "label": "EARLY READ"
+          },
+          "confidence": "headline-level estimate — low confidence (small sample)"
+        },
+        "unique": {
+          "events": 0,
+          "companies": 0,
+          "early_companies": 0,
+          "by_scope": {
+            "CH": 0
+          },
+          "of_covered": {
+            "k": 0,
+            "n": 2,
+            "rate": 0.0,
+            "lb": 0.0,
+            "label": "INSUFFICIENT DATA"
+          }
+        },
+        "authority": {
+          "prior": "SPECIALIST MEDIA",
+          "agree": 1,
+          "contradicted": 0,
+          "open": 0,
+          "observed": {
+            "k": 1,
+            "n": 1,
+            "rate": 1.0,
+            "lb": 0.9,
+            "label": "INSUFFICIENT DATA"
+          },
+          "basis": "prior (observations collecting)"
+        },
+        "technical": {
+          "basis": "Deal Flow source health",
+          "state": "UNKNOWN",
+          "runs": null,
+          "ok_share": null,
+          "streak": 0,
+          "last_ok": null,
+          "last_error": "",
+          "ok": null,
+          "lb": null,
+          "label": "—"
+        },
+        "independent": {
+          "outcomes": 1,
+          "covered": 1
+        },
+        "hypothesis": "the Swiss deal ticker lists Swiss rounds before international media",
+        "sample": "EARLY READ",
+        "roles": [],
+        "best_use": "Collecting data — hypothesis to test: the Swiss deal ticker lists Swiss rounds before international media",
+        "not_for": "Europe-wide recall — it is a Switzerland source by design",
+        "limitations": [
+          "articles come from the Deal Flow scan and are dated by scan day (speed is approximate)"
+        ],
+        "status": "ACTIVE",
+        "status_reasons": []
+      },
+      {
+        "name": "Baltic Founders",
+        "kind": "feed",
+        "geo": "NORDICS",
+        "home_scope": "NORDICS",
+        "lifecycle": "PROBATION",
+        "domain": "balticfounders.example",
+        "articles": {
+          "n": 6,
+          "digests": 0,
+          "high": 1,
+          "relevant": 1,
+          "minor": 3,
+          "noise": {
+            "k": 1,
+            "n": 6,
+            "rate": 0.167,
+            "lb": 0.0,
+            "label": "INSUFFICIENT DATA"
+          },
+          "precision": {
+            "k": 2,
+            "n": 6,
+            "rate": 0.333,
+            "lb": 0.133,
+            "label": "INSUFFICIENT DATA"
+          }
+        },
+        "recall": {
+          "EUROPE": {
+            "k": 0,
+            "n": 9,
+            "rate": 0.0,
+            "lb": 0.0,
+            "label": "EARLY READ"
+          },
+          "NORDICS": {
+            "k": 0,
+            "n": 1,
+            "rate": 0.0,
+            "lb": 0.0,
+            "label": "INSUFFICIENT DATA"
+          }
+        },
+        "speed": {
+          "n": 0,
+          "label": "INSUFFICIENT DATA",
+          "precision": "day"
+        },
+        "earliness": {
+          "companies": 0,
+          "median_lead_days": null,
+          "pre_funding": 0,
+          "precursor_types": {},
+          "share_of_important": {
+            "k": 0,
+            "n": 6,
+            "rate": 0.0,
+            "lb": 0.0,
+            "label": "INSUFFICIENT DATA"
+          },
+          "examples": [],
+          "deal_flow": null
+        },
+        "originality": {
+          "n": 6,
+          "syndicated": {
+            "k": 2,
+            "n": 6,
+            "rate": 0.333,
+            "lb": 0.133,
+            "label": "INSUFFICIENT DATA"
+          },
+          "press_release": {
+            "k": 1,
+            "n": 6,
+            "rate": 0.167,
+            "lb": 0.0,
+            "label": "INSUFFICIENT DATA"
+          },
+          "original": {
+            "k": 3,
+            "n": 6,
+            "rate": 0.5,
+            "lb": 0.3,
+            "label": "INSUFFICIENT DATA"
+          },
+          "confidence": "headline-level estimate — low confidence (small sample)"
+        },
+        "unique": {
+          "events": 0,
+          "companies": 0,
+          "early_companies": 0,
+          "by_scope": {},
+          "of_covered": {
+            "k": 0,
+            "n": 0,
+            "rate": null,
+            "lb": 0.0,
+            "label": "INSUFFICIENT DATA"
+          }
+        },
+        "authority": {
+          "prior": "SPECIALIST MEDIA",
+          "agree": 0,
+          "contradicted": 0,
+          "open": 0,
+          "observed": {
+            "k": 0,
+            "n": 0,
+            "rate": null,
+            "lb": 0.0,
+            "label": "INSUFFICIENT DATA"
+          },
+          "basis": "prior (observations collecting)"
+        },
+        "technical": {
+          "basis": "News run log",
+          "state": "HEALTHY",
+          "runs": 2,
+          "ok": 2,
+          "ok_share": 1.0,
+          "lb": 0.85,
+          "label": "INSUFFICIENT DATA",
+          "streak": 0,
+          "last_ok": "2026-11-12T07:00:03",
+          "last_error": ""
+        },
+        "independent": {
+          "outcomes": 1,
+          "covered": 1
+        },
+        "hypothesis": "covers Baltic and Finnish seed rounds that Europe-wide media skip",
+        "sample": "INSUFFICIENT DATA",
+        "roles": [],
+        "best_use": "Collecting data — hypothesis to test: covers Baltic and Finnish seed rounds that Europe-wide media skip",
+        "not_for": "Europe-wide recall — it is a Nordics source by design",
+        "limitations": [
+          "only 6 article(s) in this window"
+        ],
+        "status": "PROBATION",
+        "status_reasons": []
+      },
+      {
+        "name": "Ledger Gazette",
+        "kind": "external",
+        "geo": "",
+        "home_scope": "",
+        "lifecycle": "EXTERNAL",
+        "domain": "ledgergazette.example",
+        "articles": {
+          "n": 1,
+          "digests": 0,
+          "high": 0,
+          "relevant": 0,
+          "minor": 1,
+          "noise": {
+            "k": 0,
+            "n": 1,
+            "rate": 0.0,
+            "lb": 0.0,
+            "label": "INSUFFICIENT DATA"
+          },
+          "precision": {
+            "k": 0,
+            "n": 1,
+            "rate": 0.0,
+            "lb": 0.0,
+            "label": "INSUFFICIENT DATA"
+          }
+        },
+        "recall": {},
+        "speed": {
+          "n": 0,
+          "label": "INSUFFICIENT DATA",
+          "precision": "day"
+        },
+        "earliness": {
+          "companies": 0,
+          "median_lead_days": null,
+          "pre_funding": 0,
+          "precursor_types": {},
+          "share_of_important": {
+            "k": 0,
+            "n": 6,
+            "rate": 0.0,
+            "lb": 0.0,
+            "label": "INSUFFICIENT DATA"
+          },
+          "examples": [],
+          "deal_flow": null
+        },
+        "originality": {
+          "n": 1,
+          "syndicated": {
+            "k": 0,
+            "n": 1,
+            "rate": 0.0,
+            "lb": 0.0,
+            "label": "INSUFFICIENT DATA"
+          },
+          "press_release": {
+            "k": 0,
+            "n": 1,
+            "rate": 0.0,
+            "lb": 0.0,
+            "label": "INSUFFICIENT DATA"
+          },
+          "original": {
+            "k": 1,
+            "n": 1,
+            "rate": 1.0,
+            "lb": 0.8,
+            "label": "INSUFFICIENT DATA"
+          },
+          "confidence": "headline-level estimate — low confidence (small sample)"
+        },
+        "unique": {
+          "events": 0,
+          "companies": 0,
+          "early_companies": 0,
+          "by_scope": {},
+          "of_covered": {
+            "k": 0,
+            "n": 0,
+            "rate": null,
+            "lb": 0.0,
+            "label": "INSUFFICIENT DATA"
+          }
+        },
+        "authority": {
+          "prior": "HIGH-QUALITY INDEPENDENT MEDIA",
+          "agree": 0,
+          "contradicted": 0,
+          "open": 0,
+          "observed": {
+            "k": 0,
+            "n": 0,
+            "rate": null,
+            "lb": 0.0,
+            "label": "INSUFFICIENT DATA"
+          },
+          "basis": "prior (observations collecting)"
+        },
+        "technical": {
+          "basis": "external — not fetched",
+          "state": "NOT FETCHED",
+          "runs": null,
+          "ok_share": null,
+          "streak": 0
+        },
+        "independent": {
+          "outcomes": 1,
+          "covered": 1
+        },
+        "hypothesis": "",
+        "sample": "INSUFFICIENT DATA",
+        "roles": [
+          {
+            "role": "CONFIRMATION / AUTHORITY",
+            "basis": "prior",
+            "evidence": "external publication (high-quality independent media); seen in 1 curated / cited report(s) — not fetched, not a sourcing signal"
+          }
+        ],
+        "best_use": "confirmation / authority (external publication (high-quality independent media); seen in 1 curated / cited report(s) — not fetched, not a sourcing signal)",
+        "not_for": "sourcing alpha (too late) and continuous monitoring",
+        "limitations": [
+          "not fetched — observed only through curated cases and citations",
+          "only 1 article(s) in this window"
+        ],
+        "status": "EXTERNAL",
+        "status_reasons": []
+      }
+    ],
+    "declining": [
+      {
+        "name": "Channel Tech Review",
+        "reasons": [
+          "2 failed fetches in a row (rate limited)",
+          "relevance fell from 21% to 9% in this window"
+        ]
+      }
+    ],
+    "missing": [],
+    "candidates": [],
+    "windows": [
+      "30",
+      "90",
+      "180",
+      "all"
+    ],
+    "scopes": {
+      "EUROPE": "Europe",
+      "DE": "Germany",
+      "FR": "France",
+      "UK": "UK",
+      "CH": "Switzerland",
+      "NORDICS": "Nordics",
+      "MUNICH": "Munich",
+      "AI": "AI",
+      "DEEPTECH": "Physical AI / deeptech"
+    },
+    "note": "Each source is measured per purpose — coverage, speed, early signal, originality, unique value, relevance, authority and technical health — never one universal score. Fewer than 8 observations = INSUFFICIENT DATA.",
+    "evaluated_at": "2026-11-12T07:00:39"
+  },
+  "90": {
+    "window": "90",
+    "start": "2026-08-14",
+    "today": "2026-11-12",
+    "benchmark_events": 41,
+    "bias": {
+      "events": 41,
+      "multi_source": 14,
+      "origin_top": {
+        "source": "Alpine Wire",
+        "events": 24
+      },
+      "warnings": [
+        "24/41 benchmark events were first (or only) reported by Alpine Wire — recall is measured leave-one-out, but the event universe itself leans on that source",
+        "the benchmark is the union of Project Zero's monitored feeds: an event none of them covered is invisible here (independent checks: Validation outcomes, miss audits, curated cases)"
+      ],
+      "independent_outcomes": 3,
+      "concentrated": true,
+      "overlap_ok": true
+    },
+    "best": [
+      {
+        "id": "EUROPE",
+        "label": "Best for Europe-wide coverage",
+        "state": "RANKED",
+        "leader": {
+          "source": "Alpine Wire",
+          "why": "covered 21/38 Europe events reported elsewhere",
+          "n": 38
+        },
+        "runner_up": {
+          "source": "Isar Startup Post",
+          "why": "covered 12/33 Europe events reported elsewhere"
+        },
+        "confidence": "MORE RELIABLE",
+        "warning": "24/41 benchmark events were first (or only) reported by Alpine Wire — recall is measured leave-one-out, but the event universe itself leans on that source"
+      },
+      {
+        "id": "DE",
+        "label": "Best for Germany",
+        "state": "RANKED",
+        "leader": {
+          "source": "Alpine Wire",
+          "why": "covered 10/17 Germany events reported elsewhere",
+          "n": 17
+        },
+        "runner_up": {
+          "source": "Isar Startup Post",
+          "why": "covered 9/16 Germany events reported elsewhere"
+        },
+        "confidence": "EARLY READ",
+        "warning": "24/41 benchmark events were first (or only) reported by Alpine Wire — recall is measured leave-one-out, but the event universe itself leans on that source"
+      },
+      {
+        "id": "FR",
+        "label": "Best for France",
+        "state": "COLLECTING DATA",
+        "need": "needs ≥ 8 France events reported by other sources, and a source covering ≥ 3 of them"
+      },
+      {
+        "id": "UK",
+        "label": "Best for the UK",
+        "state": "RANKED",
+        "leader": {
+          "source": "Alpine Wire",
+          "why": "covered 5/9 UK events reported elsewhere",
+          "n": 9
+        },
+        "runner_up": null,
+        "confidence": "EARLY READ",
+        "warning": "24/41 benchmark events were first (or only) reported by Alpine Wire — recall is measured leave-one-out, but the event universe itself leans on that source"
+      },
+      {
+        "id": "CH",
+        "label": "Best for Switzerland",
+        "state": "COLLECTING DATA",
+        "need": "needs ≥ 8 Switzerland events reported by other sources, and a source covering ≥ 3 of them"
+      },
+      {
+        "id": "NORDICS",
+        "label": "Best for the Nordics",
+        "state": "COLLECTING DATA",
+        "need": "needs ≥ 8 Nordics events reported by other sources, and a source covering ≥ 3 of them"
+      },
+      {
+        "id": "MUNICH",
+        "label": "Best for Munich",
+        "state": "RANKED",
+        "leader": {
+          "source": "Isar Startup Post",
+          "why": "covered 9/14 Munich events reported elsewhere",
+          "n": 14
+        },
+        "runner_up": null,
+        "confidence": "EARLY READ",
+        "warning": "24/41 benchmark events were first (or only) reported by Alpine Wire — recall is measured leave-one-out, but the event universe itself leans on that source"
+      },
+      {
+        "id": "EARLY",
+        "label": "Best for early signals",
+        "state": "RANKED",
+        "leader": {
+          "source": "Isar Startup Post",
+          "why": "4 companies mentioned ≥ 14 days before their material event (median 52 days)",
+          "n": 4
+        },
+        "runner_up": null,
+        "confidence": "INSUFFICIENT DATA"
+      },
+      {
+        "id": "CONFIRM",
+        "label": "Best for fact confirmation",
+        "state": "RANKED",
+        "leader": {
+          "source": "Alpine Wire",
+          "why": "facts agreed with other reports 11/12",
+          "n": 12
+        },
+        "runner_up": {
+          "source": "Isar Startup Post",
+          "why": "facts agreed with other reports 7/8"
+        },
+        "confidence": "EARLY READ"
+      },
+      {
+        "id": "UNIQUE",
+        "label": "Best for unique discovery",
+        "state": "RANKED",
+        "leader": {
+          "source": "Alpine Wire",
+          "why": "9 material events and 1 early companies no other source had",
+          "n": 9
+        },
+        "runner_up": {
+          "source": "Isar Startup Post",
+          "why": "6 material events and 3 early companies no other source had"
+        },
+        "confidence": "EARLY READ"
+      },
+      {
+        "id": "DEEPTECH",
+        "label": "Best for physical AI / deeptech",
+        "state": "RANKED",
+        "leader": {
+          "source": "Alpine Wire",
+          "why": "covered 6/11 Physical AI / deeptech events reported elsewhere",
+          "n": 11
+        },
+        "runner_up": null,
+        "confidence": "EARLY READ",
+        "warning": "24/41 benchmark events were first (or only) reported by Alpine Wire — recall is measured leave-one-out, but the event universe itself leans on that source"
+      },
+      {
+        "id": "TECH",
+        "label": "Best technical reliability",
+        "state": "RANKED",
+        "leader": {
+          "source": "Baltic Founders",
+          "why": "fetched 9/9 runs",
+          "n": 9
+        },
+        "runner_up": {
+          "source": "Isar Startup Post",
+          "why": "fetched 28/28 runs"
+        },
+        "confidence": "EARLY READ"
+      }
+    ],
+    "disagreements": [
+      {
+        "event_id": "nw-3f9a1c0b7d2e",
+        "company": "Vantor Kinetics",
+        "field": "amount_m",
+        "values": {
+          "Isar Startup Post": 18.0,
+          "Alpine Wire": 18.4
+        },
+        "event_date": "2026-11-10",
+        "status": "RESOLVED",
+        "basis": "primary source",
+        "agree": [
+          "Isar Startup Post",
+          "Vantor Kinetics"
+        ],
+        "contradicted": []
+      },
+      {
+        "event_id": "nw-7c41d9e2a0f3",
+        "company": "Quillon Labs",
+        "field": "round",
+        "values": {
+          "Alpine Wire": "series b",
+          "Harbour Post": "series c"
+        },
+        "event_date": "2026-11-08",
+        "status": "OPEN",
+        "agree": [],
+        "contradicted": []
+      }
+    ],
+    "sources": [
+      {
+        "name": "Alpine Wire",
+        "kind": "feed",
+        "geo": "EU",
+        "home_scope": "EUROPE",
+        "lifecycle": "ESTABLISHED",
+        "domain": "alpinewire.example",
+        "articles": {
+          "n": 212,
+          "digests": 0,
+          "high": 35,
+          "relevant": 35,
+          "minor": 100,
+          "noise": {
+            "k": 42,
+            "n": 212,
+            "rate": 0.198,
+            "lb": 0.0,
+            "label": "MORE RELIABLE"
+          },
+          "precision": {
+            "k": 70,
+            "n": 212,
+            "rate": 0.33,
+            "lb": 0.13,
+            "label": "MORE RELIABLE"
+          }
+        },
+        "recall": {
+          "EUROPE": {
+            "k": 21,
+            "n": 38,
+            "rate": 0.553,
+            "lb": 0.353,
+            "label": "MORE RELIABLE"
+          },
+          "DE": {
+            "k": 10,
+            "n": 17,
+            "rate": 0.588,
+            "lb": 0.388,
+            "label": "EARLY READ"
+          },
+          "CH": {
+            "k": 3,
+            "n": 6,
+            "rate": 0.5,
+            "lb": 0.3,
+            "label": "INSUFFICIENT DATA"
+          },
+          "UK": {
+            "k": 5,
+            "n": 9,
+            "rate": 0.556,
+            "lb": 0.356,
+            "label": "EARLY READ"
+          },
+          "DEEPTECH": {
+            "k": 6,
+            "n": 11,
+            "rate": 0.545,
+            "lb": 0.345,
+            "label": "EARLY READ"
+          }
+        },
+        "speed": {
+          "n": 13,
+          "label": "EARLY READ",
+          "precision": "hour",
+          "median_h": 3.0,
+          "p25_h": 1.5,
+          "p75_h": 6.0,
+          "within_24h": {
+            "k": 11,
+            "n": 13,
+            "rate": 0.846,
+            "lb": 0.646,
+            "label": "EARLY READ"
+          },
+          "within_72h": {
+            "k": 13,
+            "n": 13,
+            "rate": 1.0,
+            "lb": 0.8,
+            "label": "EARLY READ"
+          },
+          "first": {
+            "k": 8,
+            "n": 13,
+            "rate": 0.615,
+            "lb": 0.415,
+            "label": "EARLY READ"
+          }
+        },
+        "earliness": {
+          "companies": 1,
+          "median_lead_days": 18,
+          "pre_funding": 0,
+          "precursor_types": {
+            "accelerator": 1
+          },
+          "share_of_important": {
+            "k": 1,
+            "n": 6,
+            "rate": 0.167,
+            "lb": 0.0,
+            "label": "INSUFFICIENT DATA"
+          },
+          "examples": [
+            {
+              "company": "Quillon Labs",
+              "first_mention": "2026-10-21",
+              "lead_days": 18,
+              "precursor": "accelerator",
+              "pre_funding": true,
+              "event": "Quillon Labs raises €25M Series B"
+            }
+          ],
+          "deal_flow": null
+        },
+        "originality": {
+          "n": 212,
+          "syndicated": {
+            "k": 11,
+            "n": 212,
+            "rate": 0.052,
+            "lb": 0.0,
+            "label": "MORE RELIABLE"
+          },
+          "press_release": {
+            "k": 30,
+            "n": 212,
+            "rate": 0.142,
+            "lb": 0.0,
+            "label": "MORE RELIABLE"
+          },
+          "original": {
+            "k": 171,
+            "n": 212,
+            "rate": 0.807,
+            "lb": 0.607,
+            "label": "MORE RELIABLE"
+          },
+          "confidence": "headline-level estimate"
+        },
+        "unique": {
+          "events": 9,
+          "companies": 9,
+          "early_companies": 1,
+          "by_scope": {
+            "EUROPE": 9,
+            "UK": 2
+          },
+          "of_covered": {
+            "k": 9,
+            "n": 30,
+            "rate": 0.3,
+            "lb": 0.1,
+            "label": "MORE RELIABLE"
+          }
+        },
+        "authority": {
+          "prior": "HIGH-QUALITY INDEPENDENT MEDIA",
+          "agree": 11,
+          "contradicted": 1,
+          "open": 0,
+          "observed": {
+            "k": 11,
+            "n": 12,
+            "rate": 0.917,
+            "lb": 0.817,
+            "label": "EARLY READ"
+          },
+          "basis": "observed"
+        },
+        "technical": {
+          "basis": "News run log",
+          "state": "HEALTHY",
+          "runs": 28,
+          "ok": 27,
+          "ok_share": 0.964,
+          "lb": 0.814,
+          "label": "EARLY READ",
+          "streak": 0,
+          "last_ok": "2026-11-12T07:00:03",
+          "last_error": ""
+        },
+        "independent": {
+          "outcomes": 3,
+          "covered": 1
+        },
+        "hypothesis": "",
+        "sample": "MORE RELIABLE",
+        "roles": [
+          {
+            "role": "CORE EUROPEAN INTELLIGENCE",
+            "basis": "observed",
+            "evidence": "covered 21/38 material European events reported elsewhere"
+          },
+          {
+            "role": "CONFIRMATION / AUTHORITY",
+            "basis": "observed",
+            "evidence": "facts agreed with other reports 11/12"
+          }
+        ],
+        "best_use": "core european intelligence (covered 21/38 material European events reported elsewhere); confirmation / authority (facts agreed with other reports 11/12)",
+        "not_for": "",
+        "limitations": [
+          "publication times are day-precision for older articles"
+        ],
+        "status": "ACTIVE",
+        "status_reasons": []
+      },
+      {
+        "name": "Isar Startup Post",
+        "kind": "feed",
+        "geo": "DE",
+        "home_scope": "MUNICH",
+        "lifecycle": "ESTABLISHED",
+        "domain": "isarpost.example",
+        "articles": {
+          "n": 96,
+          "digests": 0,
+          "high": 16,
+          "relevant": 16,
+          "minor": 45,
+          "noise": {
+            "k": 19,
+            "n": 96,
+            "rate": 0.198,
+            "lb": 0.0,
+            "label": "MORE RELIABLE"
+          },
+          "precision": {
+            "k": 32,
+            "n": 96,
+            "rate": 0.333,
+            "lb": 0.133,
+            "label": "MORE RELIABLE"
+          }
+        },
+        "recall": {
+          "EUROPE": {
+            "k": 12,
+            "n": 33,
+            "rate": 0.364,
+            "lb": 0.164,
+            "label": "MORE RELIABLE"
+          },
+          "DE": {
+            "k": 9,
+            "n": 16,
+            "rate": 0.562,
+            "lb": 0.362,
+            "label": "EARLY READ"
+          },
+          "MUNICH": {
+            "k": 9,
+            "n": 14,
+            "rate": 0.643,
+            "lb": 0.443,
+            "label": "EARLY READ"
+          }
+        },
+        "speed": {
+          "n": 11,
+          "label": "EARLY READ",
+          "precision": "hour",
+          "median_h": 6.5,
+          "p25_h": 3.2,
+          "p75_h": 13.0,
+          "within_24h": {
+            "k": 9,
+            "n": 11,
+            "rate": 0.818,
+            "lb": 0.618,
+            "label": "EARLY READ"
+          },
+          "within_72h": {
+            "k": 11,
+            "n": 11,
+            "rate": 1.0,
+            "lb": 0.8,
+            "label": "EARLY READ"
+          },
+          "first": {
+            "k": 5,
+            "n": 11,
+            "rate": 0.455,
+            "lb": 0.255,
+            "label": "EARLY READ"
+          }
+        },
+        "earliness": {
+          "companies": 4,
+          "median_lead_days": 52,
+          "pre_funding": 3,
+          "precursor_types": {
+            "accelerator": 4
+          },
+          "share_of_important": {
+            "k": 4,
+            "n": 6,
+            "rate": 0.667,
+            "lb": 0.467,
+            "label": "INSUFFICIENT DATA"
+          },
+          "examples": [
+            {
+              "company": "Vantor Kinetics",
+              "first_mention": "2026-09-10",
+              "lead_days": 61,
+              "precursor": "accelerator",
+              "pre_funding": true,
+              "event": "Vantor Kinetics raises €18M Series A"
+            },
+            {
+              "company": "Fennick Audio",
+              "first_mention": "2026-09-02",
+              "lead_days": 33,
+              "precursor": "accelerator",
+              "pre_funding": true,
+              "event": "Fennick Audio raises €2M seed"
+            },
+            {
+              "company": "Trellis Mobility",
+              "first_mention": "2026-09-20",
+              "lead_days": 21,
+              "precursor": "accelerator",
+              "pre_funding": true,
+              "event": "Trellis Mobility raises €6M"
+            },
+            {
+              "company": "Norrland Optics",
+              "first_mention": "2026-10-01",
+              "lead_days": 15,
+              "precursor": "accelerator",
+              "pre_funding": true,
+              "event": "Norrland Optics seed"
+            }
+          ],
+          "deal_flow": null
+        },
+        "originality": {
+          "n": 96,
+          "syndicated": {
+            "k": 4,
+            "n": 96,
+            "rate": 0.042,
+            "lb": 0.0,
+            "label": "MORE RELIABLE"
+          },
+          "press_release": {
+            "k": 9,
+            "n": 96,
+            "rate": 0.094,
+            "lb": 0.0,
+            "label": "MORE RELIABLE"
+          },
+          "original": {
+            "k": 83,
+            "n": 96,
+            "rate": 0.865,
+            "lb": 0.665,
+            "label": "MORE RELIABLE"
+          },
+          "confidence": "headline-level estimate"
+        },
+        "unique": {
+          "events": 6,
+          "companies": 6,
+          "early_companies": 3,
+          "by_scope": {
+            "MUNICH": 4,
+            "DE": 5
+          },
+          "of_covered": {
+            "k": 6,
+            "n": 22,
+            "rate": 0.273,
+            "lb": 0.073,
+            "label": "EARLY READ"
+          }
+        },
+        "authority": {
+          "prior": "SPECIALIST MEDIA",
+          "agree": 7,
+          "contradicted": 1,
+          "open": 1,
+          "observed": {
+            "k": 7,
+            "n": 8,
+            "rate": 0.875,
+            "lb": 0.775,
+            "label": "EARLY READ"
+          },
+          "basis": "observed"
+        },
+        "technical": {
+          "basis": "News run log",
+          "state": "HEALTHY",
+          "runs": 28,
+          "ok": 28,
+          "ok_share": 1.0,
+          "lb": 0.85,
+          "label": "EARLY READ",
+          "streak": 0,
+          "last_ok": "2026-11-12T07:00:03",
+          "last_error": ""
+        },
+        "independent": {
+          "outcomes": 3,
+          "covered": 1
+        },
+        "hypothesis": "sees Munich university spinouts weeks before national media",
+        "sample": "MORE RELIABLE",
+        "roles": [
+          {
+            "role": "REGIONAL INTELLIGENCE",
+            "basis": "observed",
+            "evidence": "covered 9/14 Munich events reported elsewhere"
+          },
+          {
+            "role": "EARLY SIGNAL",
+            "basis": "observed",
+            "evidence": "mentioned 4 companies ≥ 14 days before their material event (median 52 days)"
+          }
+        ],
+        "best_use": "regional intelligence (covered 9/14 Munich events reported elsewhere); early signal (mentioned 4 companies ≥ 14 days before their material event (median 52 days))",
+        "not_for": "Europe-wide recall — it is a Munich source by design",
+        "limitations": [],
+        "status": "ACTIVE",
+        "status_reasons": []
+      },
+      {
+        "name": "Channel Tech Review",
+        "kind": "feed",
+        "geo": "UK",
+        "home_scope": "UK",
+        "lifecycle": "ESTABLISHED",
+        "domain": "channeltech.example",
+        "articles": {
+          "n": 64,
+          "digests": 0,
+          "high": 10,
+          "relevant": 11,
+          "minor": 31,
+          "noise": {
+            "k": 12,
+            "n": 64,
+            "rate": 0.188,
+            "lb": 0.0,
+            "label": "MORE RELIABLE"
+          },
+          "precision": {
+            "k": 21,
+            "n": 64,
+            "rate": 0.328,
+            "lb": 0.128,
+            "label": "MORE RELIABLE"
+          }
+        },
+        "recall": {
+          "EUROPE": {
+            "k": 3,
+            "n": 35,
+            "rate": 0.086,
+            "lb": 0.0,
+            "label": "MORE RELIABLE"
+          },
+          "UK": {
+            "k": 2,
+            "n": 8,
+            "rate": 0.25,
+            "lb": 0.05,
+            "label": "EARLY READ"
+          }
+        },
+        "speed": {
+          "n": 4,
+          "label": "INSUFFICIENT DATA",
+          "precision": "hour",
+          "median_h": 30.0,
+          "p25_h": null,
+          "p75_h": null,
+          "within_24h": {
+            "k": 2,
+            "n": 4,
+            "rate": 0.5,
+            "lb": 0.3,
+            "label": "INSUFFICIENT DATA"
+          },
+          "within_72h": {
+            "k": 4,
+            "n": 4,
+            "rate": 1.0,
+            "lb": 0.8,
+            "label": "INSUFFICIENT DATA"
+          },
+          "first": {
+            "k": 0,
+            "n": 4,
+            "rate": 0.0,
+            "lb": 0.0,
+            "label": "INSUFFICIENT DATA"
+          }
+        },
+        "earliness": {
+          "companies": 0,
+          "median_lead_days": null,
+          "pre_funding": 0,
+          "precursor_types": {},
+          "share_of_important": {
+            "k": 0,
+            "n": 6,
+            "rate": 0.0,
+            "lb": 0.0,
+            "label": "INSUFFICIENT DATA"
+          },
+          "examples": [],
+          "deal_flow": null
+        },
+        "originality": {
+          "n": 64,
+          "syndicated": {
+            "k": 20,
+            "n": 64,
+            "rate": 0.312,
+            "lb": 0.112,
+            "label": "MORE RELIABLE"
+          },
+          "press_release": {
+            "k": 12,
+            "n": 64,
+            "rate": 0.188,
+            "lb": 0.0,
+            "label": "MORE RELIABLE"
+          },
+          "original": {
+            "k": 32,
+            "n": 64,
+            "rate": 0.5,
+            "lb": 0.3,
+            "label": "MORE RELIABLE"
+          },
+          "confidence": "headline-level estimate"
+        },
+        "unique": {
+          "events": 1,
+          "companies": 1,
+          "early_companies": 0,
+          "by_scope": {
+            "UK": 1
+          },
+          "of_covered": {
+            "k": 1,
+            "n": 5,
+            "rate": 0.2,
+            "lb": 0.0,
+            "label": "INSUFFICIENT DATA"
+          }
+        },
+        "authority": {
+          "prior": "SPECIALIST MEDIA",
+          "agree": 2,
+          "contradicted": 1,
+          "open": 0,
+          "observed": {
+            "k": 2,
+            "n": 3,
+            "rate": 0.667,
+            "lb": 0.567,
+            "label": "INSUFFICIENT DATA"
+          },
+          "basis": "prior (observations collecting)"
+        },
+        "technical": {
+          "basis": "News run log",
+          "state": "DEGRADED",
+          "runs": 28,
+          "ok": 24,
+          "ok_share": 0.857,
+          "lb": 0.707,
+          "label": "EARLY READ",
+          "streak": 2,
+          "last_ok": "2026-11-12T07:00:03",
+          "last_error": "HTTPError: HTTP Error 429: Too Many Requests"
+        },
+        "independent": {
+          "outcomes": 3,
+          "covered": 1
+        },
+        "hypothesis": "",
+        "sample": "MORE RELIABLE",
+        "roles": [],
+        "best_use": "Collecting data",
+        "not_for": "Europe-wide recall — it is a UK source by design",
+        "limitations": [],
+        "status": "DEGRADED",
+        "status_reasons": [
+          "2 failed fetches in a row (rate limited)",
+          "relevance fell from 21% to 9% in this window"
+        ]
+      },
+      {
+        "name": "Swiss deal ticker",
+        "kind": "deal_flow_reuse",
+        "geo": "CH",
+        "home_scope": "CH",
+        "lifecycle": "ESTABLISHED",
+        "domain": "swissticker.example",
+        "articles": {
+          "n": 48,
+          "digests": 0,
+          "high": 8,
+          "relevant": 8,
+          "minor": 23,
+          "noise": {
+            "k": 9,
+            "n": 48,
+            "rate": 0.188,
+            "lb": 0.0,
+            "label": "MORE RELIABLE"
+          },
+          "precision": {
+            "k": 16,
+            "n": 48,
+            "rate": 0.333,
+            "lb": 0.133,
+            "label": "MORE RELIABLE"
+          }
+        },
+        "recall": {
+          "EUROPE": {
+            "k": 4,
+            "n": 36,
+            "rate": 0.111,
+            "lb": 0.0,
+            "label": "MORE RELIABLE"
+          },
+          "CH": {
+            "k": 4,
+            "n": 6,
+            "rate": 0.667,
+            "lb": 0.467,
+            "label": "INSUFFICIENT DATA"
+          }
+        },
+        "speed": {
+          "n": 0,
+          "label": "INSUFFICIENT DATA",
+          "precision": "day"
+        },
+        "earliness": {
+          "companies": 2,
+          "median_lead_days": 40,
+          "pre_funding": 1,
+          "precursor_types": {
+            "accelerator": 2
+          },
+          "share_of_important": {
+            "k": 2,
+            "n": 6,
+            "rate": 0.333,
+            "lb": 0.133,
+            "label": "INSUFFICIENT DATA"
+          },
+          "examples": [
+            {
+              "company": "Lumora Grid",
+              "first_mention": "2026-09-27",
+              "lead_days": 40,
+              "precursor": "accelerator",
+              "pre_funding": true,
+              "event": "Lumora Grid secures €3M seed round"
+            }
+          ],
+          "deal_flow": {
+            "discoveries": 12,
+            "median_lead_days": 40,
+            "lead_n": 2,
+            "pre_company": 1,
+            "strong": 0
+          }
+        },
+        "originality": {
+          "n": 48,
+          "syndicated": {
+            "k": 0,
+            "n": 48,
+            "rate": 0.0,
+            "lb": 0.0,
+            "label": "MORE RELIABLE"
+          },
+          "press_release": {
+            "k": 6,
+            "n": 48,
+            "rate": 0.125,
+            "lb": 0.0,
+            "label": "MORE RELIABLE"
+          },
+          "original": {
+            "k": 42,
+            "n": 48,
+            "rate": 0.875,
+            "lb": 0.675,
+            "label": "MORE RELIABLE"
+          },
+          "confidence": "headline-level estimate"
+        },
+        "unique": {
+          "events": 2,
+          "companies": 2,
+          "early_companies": 1,
+          "by_scope": {
+            "CH": 2
+          },
+          "of_covered": {
+            "k": 2,
+            "n": 6,
+            "rate": 0.333,
+            "lb": 0.133,
+            "label": "INSUFFICIENT DATA"
+          }
+        },
+        "authority": {
+          "prior": "SPECIALIST MEDIA",
+          "agree": 3,
+          "contradicted": 0,
+          "open": 0,
+          "observed": {
+            "k": 3,
+            "n": 3,
+            "rate": 1.0,
+            "lb": 0.9,
+            "label": "INSUFFICIENT DATA"
+          },
+          "basis": "prior (observations collecting)"
+        },
+        "technical": {
+          "basis": "Deal Flow source health",
+          "state": "UNKNOWN",
+          "runs": null,
+          "ok_share": null,
+          "streak": 0,
+          "last_ok": null,
+          "last_error": "",
+          "ok": null,
+          "lb": null,
+          "label": "—"
+        },
+        "independent": {
+          "outcomes": 3,
+          "covered": 1
+        },
+        "hypothesis": "the Swiss deal ticker lists Swiss rounds before international media",
+        "sample": "MORE RELIABLE",
+        "roles": [],
+        "best_use": "Collecting data — hypothesis to test: the Swiss deal ticker lists Swiss rounds before international media",
+        "not_for": "Europe-wide recall — it is a Switzerland source by design",
+        "limitations": [
+          "articles come from the Deal Flow scan and are dated by scan day (speed is approximate)"
+        ],
+        "status": "ACTIVE",
+        "status_reasons": []
+      },
+      {
+        "name": "Baltic Founders",
+        "kind": "feed",
+        "geo": "NORDICS",
+        "home_scope": "NORDICS",
+        "lifecycle": "PROBATION",
+        "domain": "balticfounders.example",
+        "articles": {
+          "n": 22,
+          "digests": 0,
+          "high": 3,
+          "relevant": 4,
+          "minor": 11,
+          "noise": {
+            "k": 4,
+            "n": 22,
+            "rate": 0.182,
+            "lb": 0.0,
+            "label": "EARLY READ"
+          },
+          "precision": {
+            "k": 7,
+            "n": 22,
+            "rate": 0.318,
+            "lb": 0.118,
+            "label": "EARLY READ"
+          }
+        },
+        "recall": {
+          "EUROPE": {
+            "k": 1,
+            "n": 37,
+            "rate": 0.027,
+            "lb": 0.0,
+            "label": "MORE RELIABLE"
+          },
+          "NORDICS": {
+            "k": 1,
+            "n": 3,
+            "rate": 0.333,
+            "lb": 0.133,
+            "label": "INSUFFICIENT DATA"
+          }
+        },
+        "speed": {
+          "n": 2,
+          "label": "INSUFFICIENT DATA",
+          "precision": "hour",
+          "median_h": 20.0,
+          "p25_h": null,
+          "p75_h": null,
+          "within_24h": {
+            "k": 1,
+            "n": 2,
+            "rate": 0.5,
+            "lb": 0.3,
+            "label": "INSUFFICIENT DATA"
+          },
+          "within_72h": {
+            "k": 2,
+            "n": 2,
+            "rate": 1.0,
+            "lb": 0.8,
+            "label": "INSUFFICIENT DATA"
+          },
+          "first": {
+            "k": 0,
+            "n": 2,
+            "rate": 0.0,
+            "lb": 0.0,
+            "label": "INSUFFICIENT DATA"
+          }
+        },
+        "earliness": {
+          "companies": 0,
+          "median_lead_days": null,
+          "pre_funding": 0,
+          "precursor_types": {},
+          "share_of_important": {
+            "k": 0,
+            "n": 6,
+            "rate": 0.0,
+            "lb": 0.0,
+            "label": "INSUFFICIENT DATA"
+          },
+          "examples": [],
+          "deal_flow": null
+        },
+        "originality": {
+          "n": 22,
+          "syndicated": {
+            "k": 9,
+            "n": 22,
+            "rate": 0.409,
+            "lb": 0.209,
+            "label": "EARLY READ"
+          },
+          "press_release": {
+            "k": 3,
+            "n": 22,
+            "rate": 0.136,
+            "lb": 0.0,
+            "label": "EARLY READ"
+          },
+          "original": {
+            "k": 10,
+            "n": 22,
+            "rate": 0.455,
+            "lb": 0.255,
+            "label": "EARLY READ"
+          },
+          "confidence": "headline-level estimate — low confidence (small sample)"
+        },
+        "unique": {
+          "events": 0,
+          "companies": 0,
+          "early_companies": 0,
+          "by_scope": {},
+          "of_covered": {
+            "k": 0,
+            "n": 2,
+            "rate": 0.0,
+            "lb": 0.0,
+            "label": "INSUFFICIENT DATA"
+          }
+        },
+        "authority": {
+          "prior": "SPECIALIST MEDIA",
+          "agree": 0,
+          "contradicted": 0,
+          "open": 0,
+          "observed": {
+            "k": 0,
+            "n": 0,
+            "rate": null,
+            "lb": 0.0,
+            "label": "INSUFFICIENT DATA"
+          },
+          "basis": "prior (observations collecting)"
+        },
+        "technical": {
+          "basis": "News run log",
+          "state": "HEALTHY",
+          "runs": 9,
+          "ok": 9,
+          "ok_share": 1.0,
+          "lb": 0.85,
+          "label": "EARLY READ",
+          "streak": 0,
+          "last_ok": "2026-11-12T07:00:03",
+          "last_error": ""
+        },
+        "independent": {
+          "outcomes": 3,
+          "covered": 1
+        },
+        "hypothesis": "covers Baltic and Finnish seed rounds that Europe-wide media skip",
+        "sample": "EARLY READ",
+        "roles": [],
+        "best_use": "Collecting data — hypothesis to test: covers Baltic and Finnish seed rounds that Europe-wide media skip",
+        "not_for": "Europe-wide recall — it is a Nordics source by design",
+        "limitations": [],
+        "status": "PROBATION",
+        "status_reasons": []
+      },
+      {
+        "name": "Ledger Gazette",
+        "kind": "external",
+        "geo": "",
+        "home_scope": "",
+        "lifecycle": "EXTERNAL",
+        "domain": "ledgergazette.example",
+        "articles": {
+          "n": 3,
+          "digests": 0,
+          "high": 0,
+          "relevant": 1,
+          "minor": 2,
+          "noise": {
+            "k": 0,
+            "n": 3,
+            "rate": 0.0,
+            "lb": 0.0,
+            "label": "INSUFFICIENT DATA"
+          },
+          "precision": {
+            "k": 1,
+            "n": 3,
+            "rate": 0.333,
+            "lb": 0.133,
+            "label": "INSUFFICIENT DATA"
+          }
+        },
+        "recall": {},
+        "speed": {
+          "n": 0,
+          "label": "INSUFFICIENT DATA",
+          "precision": "day"
+        },
+        "earliness": {
+          "companies": 0,
+          "median_lead_days": null,
+          "pre_funding": 0,
+          "precursor_types": {},
+          "share_of_important": {
+            "k": 0,
+            "n": 6,
+            "rate": 0.0,
+            "lb": 0.0,
+            "label": "INSUFFICIENT DATA"
+          },
+          "examples": [],
+          "deal_flow": null
+        },
+        "originality": {
+          "n": 3,
+          "syndicated": {
+            "k": 0,
+            "n": 3,
+            "rate": 0.0,
+            "lb": 0.0,
+            "label": "INSUFFICIENT DATA"
+          },
+          "press_release": {
+            "k": 0,
+            "n": 3,
+            "rate": 0.0,
+            "lb": 0.0,
+            "label": "INSUFFICIENT DATA"
+          },
+          "original": {
+            "k": 3,
+            "n": 3,
+            "rate": 1.0,
+            "lb": 0.8,
+            "label": "INSUFFICIENT DATA"
+          },
+          "confidence": "headline-level estimate — low confidence (small sample)"
+        },
+        "unique": {
+          "events": 0,
+          "companies": 0,
+          "early_companies": 0,
+          "by_scope": {},
+          "of_covered": {
+            "k": 0,
+            "n": 0,
+            "rate": null,
+            "lb": 0.0,
+            "label": "INSUFFICIENT DATA"
+          }
+        },
+        "authority": {
+          "prior": "HIGH-QUALITY INDEPENDENT MEDIA",
+          "agree": 0,
+          "contradicted": 0,
+          "open": 0,
+          "observed": {
+            "k": 0,
+            "n": 0,
+            "rate": null,
+            "lb": 0.0,
+            "label": "INSUFFICIENT DATA"
+          },
+          "basis": "prior (observations collecting)"
+        },
+        "technical": {
+          "basis": "external — not fetched",
+          "state": "NOT FETCHED",
+          "runs": null,
+          "ok_share": null,
+          "streak": 0
+        },
+        "independent": {
+          "outcomes": 3,
+          "covered": 1
+        },
+        "hypothesis": "",
+        "sample": "INSUFFICIENT DATA",
+        "roles": [
+          {
+            "role": "CONFIRMATION / AUTHORITY",
+            "basis": "prior",
+            "evidence": "external publication (high-quality independent media); seen in 3 curated / cited report(s) — not fetched, not a sourcing signal"
+          }
+        ],
+        "best_use": "confirmation / authority (external publication (high-quality independent media); seen in 3 curated / cited report(s) — not fetched, not a sourcing signal)",
+        "not_for": "sourcing alpha (too late) and continuous monitoring",
+        "limitations": [
+          "not fetched — observed only through curated cases and citations",
+          "only 3 article(s) in this window"
+        ],
+        "status": "EXTERNAL",
+        "status_reasons": []
+      }
+    ],
+    "declining": [
+      {
+        "name": "Channel Tech Review",
+        "reasons": [
+          "2 failed fetches in a row (rate limited)",
+          "relevance fell from 21% to 9% in this window"
+        ]
+      }
+    ],
+    "missing": [
+      {
+        "domain": "harbourpost.example",
+        "name": "Harbour Post",
+        "events": [
+          {
+            "event_id": "nw-case-halvard-unicorn-2026-10",
+            "company": "Halvard Robotics",
+            "date": "2026-10-05",
+            "headline": "Stuttgart robotics company Halvard Robotics passes a $1 billion valuation",
+            "how": "reported"
+          },
+          {
+            "event_id": "nw-7c41d9e2a0f3",
+            "company": "Quillon Labs",
+            "date": "2026-11-08",
+            "headline": "Quillon Labs raises €25M Series B for battery diagnostics",
+            "how": "cited"
+          },
+          {
+            "event_id": "nw-0d4c6b8a2e13",
+            "company": "Fennick Audio",
+            "date": "2026-09-30",
+            "headline": "Fennick Audio raises €2M seed",
+            "how": "cited"
+          }
+        ],
+        "how": {
+          "reported": 1,
+          "cited": 2
+        },
+        "n": 3,
+        "database": false,
+        "ready": true
+      },
+      {
+        "domain": "startupdb.example",
+        "name": "startupdb.example",
+        "events": [
+          {
+            "event_id": "nw-3f9a1c0b7d2e",
+            "company": "Vantor Kinetics",
+            "date": "2026-11-10",
+            "headline": "Munich robotics start-up Vantor Kinetics raises €18M Series A led by Lindqvist Partners",
+            "how": "cited"
+          },
+          {
+            "event_id": "nw-1e8b5a6c4d90",
+            "company": "Brightwell Bio",
+            "date": "2026-11-03",
+            "headline": "Brightwell Bio acquired by Corvane Diagnostics",
+            "how": "cited"
+          }
+        ],
+        "how": {
+          "cited": 2
+        },
+        "n": 2,
+        "database": true,
+        "ready": false
+      },
+      {
+        "domain": "lakesidetech.example",
+        "name": "Lakeside Tech",
+        "events": [
+          {
+            "event_id": "nw-5d2f8e1a9b47",
+            "company": "Lumora Grid",
+            "date": "2026-11-06",
+            "headline": "Lumora Grid secures €3M seed round to balance neighbourhood grids",
+            "how": "cited"
+          }
+        ],
+        "how": {
+          "cited": 1
+        },
+        "n": 1,
+        "database": false,
+        "ready": false
+      }
+    ],
+    "candidates": [
+      {
+        "id": "sn-harbourpost",
+        "name": "Harbour Post",
+        "url": "https://harbourpost.example/",
+        "state": "PROBATION"
+      },
+      {
+        "id": "sn-lakesidetech",
+        "name": "Lakeside Tech",
+        "url": "https://lakesidetech.example/",
+        "state": "DISCOVERED"
+      }
+    ],
+    "windows": [
+      "30",
+      "90",
+      "180",
+      "all"
+    ],
+    "scopes": {
+      "EUROPE": "Europe",
+      "DE": "Germany",
+      "FR": "France",
+      "UK": "UK",
+      "CH": "Switzerland",
+      "NORDICS": "Nordics",
+      "MUNICH": "Munich",
+      "AI": "AI",
+      "DEEPTECH": "Physical AI / deeptech"
+    },
+    "note": "Each source is measured per purpose — coverage, speed, early signal, originality, unique value, relevance, authority and technical health — never one universal score. Fewer than 8 observations = INSUFFICIENT DATA.",
+    "evaluated_at": "2026-11-12T07:00:39"
+  },
+  "180": {
+    "window": "180",
+    "start": "2026-05-16",
+    "today": "2026-11-12",
+    "benchmark_events": 66,
+    "bias": {
+      "events": 66,
+      "multi_source": 22,
+      "origin_top": {
+        "source": "Alpine Wire",
+        "events": 38
+      },
+      "warnings": [
+        "38/66 benchmark events were first (or only) reported by Alpine Wire — recall is measured leave-one-out, but the event universe itself leans on that source",
+        "the benchmark is the union of Project Zero's monitored feeds: an event none of them covered is invisible here (independent checks: Validation outcomes, miss audits, curated cases)"
+      ],
+      "independent_outcomes": 5,
+      "concentrated": true,
+      "overlap_ok": true
+    },
+    "best": [
+      {
+        "id": "EUROPE",
+        "label": "Best for Europe-wide coverage",
+        "state": "RANKED",
+        "leader": {
+          "source": "Alpine Wire",
+          "why": "covered 34/61 Europe events reported elsewhere",
+          "n": 61
+        },
+        "runner_up": {
+          "source": "Isar Startup Post",
+          "why": "covered 19/53 Europe events reported elsewhere"
+        },
+        "confidence": "MORE RELIABLE",
+        "warning": "38/66 benchmark events were first (or only) reported by Alpine Wire — recall is measured leave-one-out, but the event universe itself leans on that source"
+      },
+      {
+        "id": "DE",
+        "label": "Best for Germany",
+        "state": "RANKED",
+        "leader": {
+          "source": "Alpine Wire",
+          "why": "covered 16/27 Germany events reported elsewhere",
+          "n": 27
+        },
+        "runner_up": {
+          "source": "Isar Startup Post",
+          "why": "covered 14/26 Germany events reported elsewhere"
+        },
+        "confidence": "EARLY READ",
+        "warning": "38/66 benchmark events were first (or only) reported by Alpine Wire — recall is measured leave-one-out, but the event universe itself leans on that source"
+      },
+      {
+        "id": "FR",
+        "label": "Best for France",
+        "state": "COLLECTING DATA",
+        "need": "needs ≥ 8 France events reported by other sources, and a source covering ≥ 3 of them"
+      },
+      {
+        "id": "UK",
+        "label": "Best for the UK",
+        "state": "RANKED",
+        "leader": {
+          "source": "Alpine Wire",
+          "why": "covered 8/14 UK events reported elsewhere",
+          "n": 14
+        },
+        "runner_up": {
+          "source": "Channel Tech Review",
+          "why": "covered 3/13 UK events reported elsewhere"
+        },
+        "confidence": "EARLY READ",
+        "warning": "38/66 benchmark events were first (or only) reported by Alpine Wire — recall is measured leave-one-out, but the event universe itself leans on that source"
+      },
+      {
+        "id": "CH",
+        "label": "Best for Switzerland",
+        "state": "RANKED",
+        "leader": {
+          "source": "Swiss deal ticker",
+          "why": "covered 6/10 Switzerland events reported elsewhere",
+          "n": 10
+        },
+        "runner_up": {
+          "source": "Alpine Wire",
+          "why": "covered 5/10 Switzerland events reported elsewhere"
+        },
+        "confidence": "EARLY READ",
+        "warning": "38/66 benchmark events were first (or only) reported by Alpine Wire — recall is measured leave-one-out, but the event universe itself leans on that source"
+      },
+      {
+        "id": "NORDICS",
+        "label": "Best for the Nordics",
+        "state": "COLLECTING DATA",
+        "need": "needs ≥ 8 Nordics events reported by other sources, and a source covering ≥ 3 of them"
+      },
+      {
+        "id": "MUNICH",
+        "label": "Best for Munich",
+        "state": "RANKED",
+        "leader": {
+          "source": "Isar Startup Post",
+          "why": "covered 14/22 Munich events reported elsewhere",
+          "n": 22
+        },
+        "runner_up": null,
+        "confidence": "EARLY READ",
+        "warning": "38/66 benchmark events were first (or only) reported by Alpine Wire — recall is measured leave-one-out, but the event universe itself leans on that source"
+      },
+      {
+        "id": "EARLY",
+        "label": "Best for early signals",
+        "state": "RANKED",
+        "leader": {
+          "source": "Isar Startup Post",
+          "why": "6 companies mentioned ≥ 14 days before their material event (median 52 days)",
+          "n": 6
+        },
+        "runner_up": {
+          "source": "Swiss deal ticker",
+          "why": "3 companies mentioned ≥ 14 days before their material event (median 40 days)"
+        },
+        "confidence": "INSUFFICIENT DATA"
+      },
+      {
+        "id": "CONFIRM",
+        "label": "Best for fact confirmation",
+        "state": "RANKED",
+        "leader": {
+          "source": "Alpine Wire",
+          "why": "facts agreed with other reports 18/20",
+          "n": 20
+        },
+        "runner_up": {
+          "source": "Isar Startup Post",
+          "why": "facts agreed with other reports 11/13"
+        },
+        "confidence": "EARLY READ"
+      },
+      {
+        "id": "UNIQUE",
+        "label": "Best for unique discovery",
+        "state": "RANKED",
+        "leader": {
+          "source": "Alpine Wire",
+          "why": "14 material events and 2 early companies no other source had",
+          "n": 14
+        },
+        "runner_up": {
+          "source": "Isar Startup Post",
+          "why": "10 material events and 5 early companies no other source had"
+        },
+        "confidence": "EARLY READ"
+      },
+      {
+        "id": "DEEPTECH",
+        "label": "Best for physical AI / deeptech",
+        "state": "RANKED",
+        "leader": {
+          "source": "Alpine Wire",
+          "why": "covered 10/18 Physical AI / deeptech events reported elsewhere",
+          "n": 18
+        },
+        "runner_up": null,
+        "confidence": "EARLY READ",
+        "warning": "38/66 benchmark events were first (or only) reported by Alpine Wire — recall is measured leave-one-out, but the event universe itself leans on that source"
+      },
+      {
+        "id": "TECH",
+        "label": "Best technical reliability",
+        "state": "RANKED",
+        "leader": {
+          "source": "Baltic Founders",
+          "why": "fetched 14/14 runs",
+          "n": 14
+        },
+        "runner_up": {
+          "source": "Isar Startup Post",
+          "why": "fetched 45/45 runs"
+        },
+        "confidence": "EARLY READ"
+      }
+    ],
+    "disagreements": [
+      {
+        "event_id": "nw-3f9a1c0b7d2e",
+        "company": "Vantor Kinetics",
+        "field": "amount_m",
+        "values": {
+          "Isar Startup Post": 18.0,
+          "Alpine Wire": 18.4
+        },
+        "event_date": "2026-11-10",
+        "status": "RESOLVED",
+        "basis": "primary source",
+        "agree": [
+          "Isar Startup Post",
+          "Vantor Kinetics"
+        ],
+        "contradicted": []
+      },
+      {
+        "event_id": "nw-7c41d9e2a0f3",
+        "company": "Quillon Labs",
+        "field": "round",
+        "values": {
+          "Alpine Wire": "series b",
+          "Harbour Post": "series c"
+        },
+        "event_date": "2026-11-08",
+        "status": "OPEN",
+        "agree": [],
+        "contradicted": []
+      }
+    ],
+    "sources": [
+      {
+        "name": "Alpine Wire",
+        "kind": "feed",
+        "geo": "EU",
+        "home_scope": "EUROPE",
+        "lifecycle": "ESTABLISHED",
+        "domain": "alpinewire.example",
+        "articles": {
+          "n": 339,
+          "digests": 0,
+          "high": 56,
+          "relevant": 57,
+          "minor": 159,
+          "noise": {
+            "k": 67,
+            "n": 339,
+            "rate": 0.198,
+            "lb": 0.0,
+            "label": "MORE RELIABLE"
+          },
+          "precision": {
+            "k": 113,
+            "n": 339,
+            "rate": 0.333,
+            "lb": 0.133,
+            "label": "MORE RELIABLE"
+          }
+        },
+        "recall": {
+          "EUROPE": {
+            "k": 34,
+            "n": 61,
+            "rate": 0.557,
+            "lb": 0.357,
+            "label": "MORE RELIABLE"
+          },
+          "DE": {
+            "k": 16,
+            "n": 27,
+            "rate": 0.593,
+            "lb": 0.393,
+            "label": "EARLY READ"
+          },
+          "CH": {
+            "k": 5,
+            "n": 10,
+            "rate": 0.5,
+            "lb": 0.3,
+            "label": "EARLY READ"
+          },
+          "UK": {
+            "k": 8,
+            "n": 14,
+            "rate": 0.571,
+            "lb": 0.371,
+            "label": "EARLY READ"
+          },
+          "DEEPTECH": {
+            "k": 10,
+            "n": 18,
+            "rate": 0.556,
+            "lb": 0.356,
+            "label": "EARLY READ"
+          }
+        },
+        "speed": {
+          "n": 21,
+          "label": "EARLY READ",
+          "precision": "hour",
+          "median_h": 3.0,
+          "p25_h": 1.5,
+          "p75_h": 6.0,
+          "within_24h": {
+            "k": 19,
+            "n": 21,
+            "rate": 0.905,
+            "lb": 0.705,
+            "label": "EARLY READ"
+          },
+          "within_72h": {
+            "k": 21,
+            "n": 21,
+            "rate": 1.0,
+            "lb": 0.8,
+            "label": "EARLY READ"
+          },
+          "first": {
+            "k": 13,
+            "n": 21,
+            "rate": 0.619,
+            "lb": 0.419,
+            "label": "EARLY READ"
+          }
+        },
+        "earliness": {
+          "companies": 2,
+          "median_lead_days": 18,
+          "pre_funding": 1,
+          "precursor_types": {
+            "accelerator": 2
+          },
+          "share_of_important": {
+            "k": 2,
+            "n": 6,
+            "rate": 0.333,
+            "lb": 0.133,
+            "label": "INSUFFICIENT DATA"
+          },
+          "examples": [
+            {
+              "company": "Quillon Labs",
+              "first_mention": "2026-10-21",
+              "lead_days": 18,
+              "precursor": "accelerator",
+              "pre_funding": true,
+              "event": "Quillon Labs raises €25M Series B"
+            }
+          ],
+          "deal_flow": null
+        },
+        "originality": {
+          "n": 339,
+          "syndicated": {
+            "k": 18,
+            "n": 339,
+            "rate": 0.053,
+            "lb": 0.0,
+            "label": "MORE RELIABLE"
+          },
+          "press_release": {
+            "k": 48,
+            "n": 339,
+            "rate": 0.142,
+            "lb": 0.0,
+            "label": "MORE RELIABLE"
+          },
+          "original": {
+            "k": 273,
+            "n": 339,
+            "rate": 0.805,
+            "lb": 0.605,
+            "label": "MORE RELIABLE"
+          },
+          "confidence": "headline-level estimate"
+        },
+        "unique": {
+          "events": 14,
+          "companies": 14,
+          "early_companies": 2,
+          "by_scope": {
+            "EUROPE": 14,
+            "UK": 3
+          },
+          "of_covered": {
+            "k": 14,
+            "n": 48,
+            "rate": 0.292,
+            "lb": 0.092,
+            "label": "MORE RELIABLE"
+          }
+        },
+        "authority": {
+          "prior": "HIGH-QUALITY INDEPENDENT MEDIA",
+          "agree": 18,
+          "contradicted": 2,
+          "open": 0,
+          "observed": {
+            "k": 18,
+            "n": 20,
+            "rate": 0.9,
+            "lb": 0.8,
+            "label": "EARLY READ"
+          },
+          "basis": "observed"
+        },
+        "technical": {
+          "basis": "News run log",
+          "state": "HEALTHY",
+          "runs": 45,
+          "ok": 43,
+          "ok_share": 0.956,
+          "lb": 0.806,
+          "label": "MORE RELIABLE",
+          "streak": 0,
+          "last_ok": "2026-11-12T07:00:03",
+          "last_error": ""
+        },
+        "independent": {
+          "outcomes": 5,
+          "covered": 1
+        },
+        "hypothesis": "",
+        "sample": "MORE RELIABLE",
+        "roles": [
+          {
+            "role": "CORE EUROPEAN INTELLIGENCE",
+            "basis": "observed",
+            "evidence": "covered 34/61 material European events reported elsewhere"
+          },
+          {
+            "role": "CONFIRMATION / AUTHORITY",
+            "basis": "observed",
+            "evidence": "facts agreed with other reports 18/19"
+          }
+        ],
+        "best_use": "core european intelligence (covered 34/61 material European events reported elsewhere); confirmation / authority (facts agreed with other reports 18/19)",
+        "not_for": "",
+        "limitations": [
+          "publication times are day-precision for older articles"
+        ],
+        "status": "ACTIVE",
+        "status_reasons": []
+      },
+      {
+        "name": "Isar Startup Post",
+        "kind": "feed",
+        "geo": "DE",
+        "home_scope": "MUNICH",
+        "lifecycle": "ESTABLISHED",
+        "domain": "isarpost.example",
+        "articles": {
+          "n": 154,
+          "digests": 0,
+          "high": 25,
+          "relevant": 26,
+          "minor": 73,
+          "noise": {
+            "k": 30,
+            "n": 154,
+            "rate": 0.195,
+            "lb": 0.0,
+            "label": "MORE RELIABLE"
+          },
+          "precision": {
+            "k": 51,
+            "n": 154,
+            "rate": 0.331,
+            "lb": 0.131,
+            "label": "MORE RELIABLE"
+          }
+        },
+        "recall": {
+          "EUROPE": {
+            "k": 19,
+            "n": 53,
+            "rate": 0.358,
+            "lb": 0.158,
+            "label": "MORE RELIABLE"
+          },
+          "DE": {
+            "k": 14,
+            "n": 26,
+            "rate": 0.538,
+            "lb": 0.338,
+            "label": "EARLY READ"
+          },
+          "MUNICH": {
+            "k": 14,
+            "n": 22,
+            "rate": 0.636,
+            "lb": 0.436,
+            "label": "EARLY READ"
+          }
+        },
+        "speed": {
+          "n": 18,
+          "label": "EARLY READ",
+          "precision": "hour",
+          "median_h": 6.5,
+          "p25_h": 3.2,
+          "p75_h": 13.0,
+          "within_24h": {
+            "k": 16,
+            "n": 18,
+            "rate": 0.889,
+            "lb": 0.689,
+            "label": "EARLY READ"
+          },
+          "within_72h": {
+            "k": 18,
+            "n": 18,
+            "rate": 1.0,
+            "lb": 0.8,
+            "label": "EARLY READ"
+          },
+          "first": {
+            "k": 8,
+            "n": 18,
+            "rate": 0.444,
+            "lb": 0.244,
+            "label": "EARLY READ"
+          }
+        },
+        "earliness": {
+          "companies": 6,
+          "median_lead_days": 52,
+          "pre_funding": 5,
+          "precursor_types": {
+            "accelerator": 6
+          },
+          "share_of_important": {
+            "k": 6,
+            "n": 6,
+            "rate": 1.0,
+            "lb": 0.8,
+            "label": "INSUFFICIENT DATA"
+          },
+          "examples": [
+            {
+              "company": "Vantor Kinetics",
+              "first_mention": "2026-09-10",
+              "lead_days": 61,
+              "precursor": "accelerator",
+              "pre_funding": true,
+              "event": "Vantor Kinetics raises €18M Series A"
+            },
+            {
+              "company": "Fennick Audio",
+              "first_mention": "2026-09-02",
+              "lead_days": 33,
+              "precursor": "accelerator",
+              "pre_funding": true,
+              "event": "Fennick Audio raises €2M seed"
+            },
+            {
+              "company": "Trellis Mobility",
+              "first_mention": "2026-09-20",
+              "lead_days": 21,
+              "precursor": "accelerator",
+              "pre_funding": true,
+              "event": "Trellis Mobility raises €6M"
+            },
+            {
+              "company": "Norrland Optics",
+              "first_mention": "2026-10-01",
+              "lead_days": 15,
+              "precursor": "accelerator",
+              "pre_funding": true,
+              "event": "Norrland Optics seed"
+            }
+          ],
+          "deal_flow": null
+        },
+        "originality": {
+          "n": 154,
+          "syndicated": {
+            "k": 6,
+            "n": 154,
+            "rate": 0.039,
+            "lb": 0.0,
+            "label": "MORE RELIABLE"
+          },
+          "press_release": {
+            "k": 14,
+            "n": 154,
+            "rate": 0.091,
+            "lb": 0.0,
+            "label": "MORE RELIABLE"
+          },
+          "original": {
+            "k": 134,
+            "n": 154,
+            "rate": 0.87,
+            "lb": 0.67,
+            "label": "MORE RELIABLE"
+          },
+          "confidence": "headline-level estimate"
+        },
+        "unique": {
+          "events": 10,
+          "companies": 10,
+          "early_companies": 5,
+          "by_scope": {
+            "MUNICH": 6,
+            "DE": 8
+          },
+          "of_covered": {
+            "k": 10,
+            "n": 35,
+            "rate": 0.286,
+            "lb": 0.086,
+            "label": "MORE RELIABLE"
+          }
+        },
+        "authority": {
+          "prior": "SPECIALIST MEDIA",
+          "agree": 11,
+          "contradicted": 2,
+          "open": 1,
+          "observed": {
+            "k": 11,
+            "n": 13,
+            "rate": 0.846,
+            "lb": 0.746,
+            "label": "EARLY READ"
+          },
+          "basis": "observed"
+        },
+        "technical": {
+          "basis": "News run log",
+          "state": "HEALTHY",
+          "runs": 45,
+          "ok": 45,
+          "ok_share": 1.0,
+          "lb": 0.85,
+          "label": "MORE RELIABLE",
+          "streak": 0,
+          "last_ok": "2026-11-12T07:00:03",
+          "last_error": ""
+        },
+        "independent": {
+          "outcomes": 5,
+          "covered": 1
+        },
+        "hypothesis": "sees Munich university spinouts weeks before national media",
+        "sample": "MORE RELIABLE",
+        "roles": [
+          {
+            "role": "REGIONAL INTELLIGENCE",
+            "basis": "observed",
+            "evidence": "covered 14/22 Munich events reported elsewhere"
+          },
+          {
+            "role": "EARLY SIGNAL",
+            "basis": "observed",
+            "evidence": "mentioned 6 companies ≥ 14 days before their material event (median 52 days)"
+          }
+        ],
+        "best_use": "regional intelligence (covered 14/22 Munich events reported elsewhere); early signal (mentioned 6 companies ≥ 14 days before their material event (median 52 days))",
+        "not_for": "Europe-wide recall — it is a Munich source by design",
+        "limitations": [],
+        "status": "ACTIVE",
+        "status_reasons": []
+      },
+      {
+        "name": "Channel Tech Review",
+        "kind": "feed",
+        "geo": "UK",
+        "home_scope": "UK",
+        "lifecycle": "ESTABLISHED",
+        "domain": "channeltech.example",
+        "articles": {
+          "n": 102,
+          "digests": 0,
+          "high": 17,
+          "relevant": 17,
+          "minor": 48,
+          "noise": {
+            "k": 20,
+            "n": 102,
+            "rate": 0.196,
+            "lb": 0.0,
+            "label": "MORE RELIABLE"
+          },
+          "precision": {
+            "k": 34,
+            "n": 102,
+            "rate": 0.333,
+            "lb": 0.133,
+            "label": "MORE RELIABLE"
+          }
+        },
+        "recall": {
+          "EUROPE": {
+            "k": 5,
+            "n": 56,
+            "rate": 0.089,
+            "lb": 0.0,
+            "label": "MORE RELIABLE"
+          },
+          "UK": {
+            "k": 3,
+            "n": 13,
+            "rate": 0.231,
+            "lb": 0.031,
+            "label": "EARLY READ"
+          }
+        },
+        "speed": {
+          "n": 6,
+          "label": "INSUFFICIENT DATA",
+          "precision": "hour",
+          "median_h": 30.0,
+          "p25_h": null,
+          "p75_h": null,
+          "within_24h": {
+            "k": 4,
+            "n": 6,
+            "rate": 0.667,
+            "lb": 0.467,
+            "label": "INSUFFICIENT DATA"
+          },
+          "within_72h": {
+            "k": 6,
+            "n": 6,
+            "rate": 1.0,
+            "lb": 0.8,
+            "label": "INSUFFICIENT DATA"
+          },
+          "first": {
+            "k": 0,
+            "n": 6,
+            "rate": 0.0,
+            "lb": 0.0,
+            "label": "INSUFFICIENT DATA"
+          }
+        },
+        "earliness": {
+          "companies": 0,
+          "median_lead_days": null,
+          "pre_funding": 0,
+          "precursor_types": {},
+          "share_of_important": {
+            "k": 0,
+            "n": 6,
+            "rate": 0.0,
+            "lb": 0.0,
+            "label": "INSUFFICIENT DATA"
+          },
+          "examples": [],
+          "deal_flow": null
+        },
+        "originality": {
+          "n": 102,
+          "syndicated": {
+            "k": 32,
+            "n": 102,
+            "rate": 0.314,
+            "lb": 0.114,
+            "label": "MORE RELIABLE"
+          },
+          "press_release": {
+            "k": 19,
+            "n": 102,
+            "rate": 0.186,
+            "lb": 0.0,
+            "label": "MORE RELIABLE"
+          },
+          "original": {
+            "k": 51,
+            "n": 102,
+            "rate": 0.5,
+            "lb": 0.3,
+            "label": "MORE RELIABLE"
+          },
+          "confidence": "headline-level estimate"
+        },
+        "unique": {
+          "events": 2,
+          "companies": 2,
+          "early_companies": 0,
+          "by_scope": {
+            "UK": 2
+          },
+          "of_covered": {
+            "k": 2,
+            "n": 8,
+            "rate": 0.25,
+            "lb": 0.05,
+            "label": "EARLY READ"
+          }
+        },
+        "authority": {
+          "prior": "SPECIALIST MEDIA",
+          "agree": 3,
+          "contradicted": 2,
+          "open": 0,
+          "observed": {
+            "k": 3,
+            "n": 5,
+            "rate": 0.6,
+            "lb": 0.5,
+            "label": "INSUFFICIENT DATA"
+          },
+          "basis": "prior (observations collecting)"
+        },
+        "technical": {
+          "basis": "News run log",
+          "state": "DEGRADED",
+          "runs": 45,
+          "ok": 38,
+          "ok_share": 0.844,
+          "lb": 0.694,
+          "label": "MORE RELIABLE",
+          "streak": 2,
+          "last_ok": "2026-11-12T07:00:03",
+          "last_error": "HTTPError: HTTP Error 429: Too Many Requests"
+        },
+        "independent": {
+          "outcomes": 5,
+          "covered": 1
+        },
+        "hypothesis": "",
+        "sample": "MORE RELIABLE",
+        "roles": [],
+        "best_use": "Collecting data",
+        "not_for": "Europe-wide recall — it is a UK source by design",
+        "limitations": [],
+        "status": "DEGRADED",
+        "status_reasons": [
+          "2 failed fetches in a row (rate limited)",
+          "relevance fell from 21% to 9% in this window"
+        ]
+      },
+      {
+        "name": "Swiss deal ticker",
+        "kind": "deal_flow_reuse",
+        "geo": "CH",
+        "home_scope": "CH",
+        "lifecycle": "ESTABLISHED",
+        "domain": "swissticker.example",
+        "articles": {
+          "n": 77,
+          "digests": 0,
+          "high": 12,
+          "relevant": 13,
+          "minor": 37,
+          "noise": {
+            "k": 15,
+            "n": 77,
+            "rate": 0.195,
+            "lb": 0.0,
+            "label": "MORE RELIABLE"
+          },
+          "precision": {
+            "k": 25,
+            "n": 77,
+            "rate": 0.325,
+            "lb": 0.125,
+            "label": "MORE RELIABLE"
+          }
+        },
+        "recall": {
+          "EUROPE": {
+            "k": 6,
+            "n": 58,
+            "rate": 0.103,
+            "lb": 0.0,
+            "label": "MORE RELIABLE"
+          },
+          "CH": {
+            "k": 6,
+            "n": 10,
+            "rate": 0.6,
+            "lb": 0.4,
+            "label": "EARLY READ"
+          }
+        },
+        "speed": {
+          "n": 0,
+          "label": "INSUFFICIENT DATA",
+          "precision": "day"
+        },
+        "earliness": {
+          "companies": 3,
+          "median_lead_days": 40,
+          "pre_funding": 2,
+          "precursor_types": {
+            "accelerator": 3
+          },
+          "share_of_important": {
+            "k": 3,
+            "n": 6,
+            "rate": 0.5,
+            "lb": 0.3,
+            "label": "INSUFFICIENT DATA"
+          },
+          "examples": [
+            {
+              "company": "Lumora Grid",
+              "first_mention": "2026-09-27",
+              "lead_days": 40,
+              "precursor": "accelerator",
+              "pre_funding": true,
+              "event": "Lumora Grid secures €3M seed round"
+            }
+          ],
+          "deal_flow": {
+            "discoveries": 19,
+            "median_lead_days": 40,
+            "lead_n": 3,
+            "pre_company": 2,
+            "strong": 0
+          }
+        },
+        "originality": {
+          "n": 77,
+          "syndicated": {
+            "k": 0,
+            "n": 77,
+            "rate": 0.0,
+            "lb": 0.0,
+            "label": "MORE RELIABLE"
+          },
+          "press_release": {
+            "k": 10,
+            "n": 77,
+            "rate": 0.13,
+            "lb": 0.0,
+            "label": "MORE RELIABLE"
+          },
+          "original": {
+            "k": 67,
+            "n": 77,
+            "rate": 0.87,
+            "lb": 0.67,
+            "label": "MORE RELIABLE"
+          },
+          "confidence": "headline-level estimate"
+        },
+        "unique": {
+          "events": 3,
+          "companies": 3,
+          "early_companies": 2,
+          "by_scope": {
+            "CH": 3
+          },
+          "of_covered": {
+            "k": 3,
+            "n": 10,
+            "rate": 0.3,
+            "lb": 0.1,
+            "label": "EARLY READ"
+          }
+        },
+        "authority": {
+          "prior": "SPECIALIST MEDIA",
+          "agree": 5,
+          "contradicted": 0,
+          "open": 0,
+          "observed": {
+            "k": 5,
+            "n": 5,
+            "rate": 1.0,
+            "lb": 0.9,
+            "label": "INSUFFICIENT DATA"
+          },
+          "basis": "prior (observations collecting)"
+        },
+        "technical": {
+          "basis": "Deal Flow source health",
+          "state": "UNKNOWN",
+          "runs": null,
+          "ok_share": null,
+          "streak": 0,
+          "last_ok": null,
+          "last_error": "",
+          "ok": null,
+          "lb": null,
+          "label": "—"
+        },
+        "independent": {
+          "outcomes": 5,
+          "covered": 1
+        },
+        "hypothesis": "the Swiss deal ticker lists Swiss rounds before international media",
+        "sample": "MORE RELIABLE",
+        "roles": [],
+        "best_use": "Collecting data — hypothesis to test: the Swiss deal ticker lists Swiss rounds before international media",
+        "not_for": "Europe-wide recall — it is a Switzerland source by design",
+        "limitations": [
+          "articles come from the Deal Flow scan and are dated by scan day (speed is approximate)"
+        ],
+        "status": "ACTIVE",
+        "status_reasons": []
+      },
+      {
+        "name": "Baltic Founders",
+        "kind": "feed",
+        "geo": "NORDICS",
+        "home_scope": "NORDICS",
+        "lifecycle": "PROBATION",
+        "domain": "balticfounders.example",
+        "articles": {
+          "n": 35,
+          "digests": 0,
+          "high": 5,
+          "relevant": 6,
+          "minor": 17,
+          "noise": {
+            "k": 7,
+            "n": 35,
+            "rate": 0.2,
+            "lb": 0.0,
+            "label": "MORE RELIABLE"
+          },
+          "precision": {
+            "k": 11,
+            "n": 35,
+            "rate": 0.314,
+            "lb": 0.114,
+            "label": "MORE RELIABLE"
+          }
+        },
+        "recall": {
+          "EUROPE": {
+            "k": 2,
+            "n": 59,
+            "rate": 0.034,
+            "lb": 0.0,
+            "label": "MORE RELIABLE"
+          },
+          "NORDICS": {
+            "k": 2,
+            "n": 5,
+            "rate": 0.4,
+            "lb": 0.2,
+            "label": "INSUFFICIENT DATA"
+          }
+        },
+        "speed": {
+          "n": 3,
+          "label": "INSUFFICIENT DATA",
+          "precision": "hour",
+          "median_h": 20.0,
+          "p25_h": null,
+          "p75_h": null,
+          "within_24h": {
+            "k": 1,
+            "n": 3,
+            "rate": 0.333,
+            "lb": 0.133,
+            "label": "INSUFFICIENT DATA"
+          },
+          "within_72h": {
+            "k": 3,
+            "n": 3,
+            "rate": 1.0,
+            "lb": 0.8,
+            "label": "INSUFFICIENT DATA"
+          },
+          "first": {
+            "k": 0,
+            "n": 3,
+            "rate": 0.0,
+            "lb": 0.0,
+            "label": "INSUFFICIENT DATA"
+          }
+        },
+        "earliness": {
+          "companies": 0,
+          "median_lead_days": null,
+          "pre_funding": 0,
+          "precursor_types": {},
+          "share_of_important": {
+            "k": 0,
+            "n": 6,
+            "rate": 0.0,
+            "lb": 0.0,
+            "label": "INSUFFICIENT DATA"
+          },
+          "examples": [],
+          "deal_flow": null
+        },
+        "originality": {
+          "n": 35,
+          "syndicated": {
+            "k": 14,
+            "n": 35,
+            "rate": 0.4,
+            "lb": 0.2,
+            "label": "MORE RELIABLE"
+          },
+          "press_release": {
+            "k": 5,
+            "n": 35,
+            "rate": 0.143,
+            "lb": 0.0,
+            "label": "MORE RELIABLE"
+          },
+          "original": {
+            "k": 16,
+            "n": 35,
+            "rate": 0.457,
+            "lb": 0.257,
+            "label": "MORE RELIABLE"
+          },
+          "confidence": "headline-level estimate"
+        },
+        "unique": {
+          "events": 0,
+          "companies": 0,
+          "early_companies": 0,
+          "by_scope": {},
+          "of_covered": {
+            "k": 0,
+            "n": 3,
+            "rate": 0.0,
+            "lb": 0.0,
+            "label": "INSUFFICIENT DATA"
+          }
+        },
+        "authority": {
+          "prior": "SPECIALIST MEDIA",
+          "agree": 0,
+          "contradicted": 0,
+          "open": 0,
+          "observed": {
+            "k": 0,
+            "n": 0,
+            "rate": null,
+            "lb": 0.0,
+            "label": "INSUFFICIENT DATA"
+          },
+          "basis": "prior (observations collecting)"
+        },
+        "technical": {
+          "basis": "News run log",
+          "state": "HEALTHY",
+          "runs": 14,
+          "ok": 14,
+          "ok_share": 1.0,
+          "lb": 0.85,
+          "label": "EARLY READ",
+          "streak": 0,
+          "last_ok": "2026-11-12T07:00:03",
+          "last_error": ""
+        },
+        "independent": {
+          "outcomes": 5,
+          "covered": 1
+        },
+        "hypothesis": "covers Baltic and Finnish seed rounds that Europe-wide media skip",
+        "sample": "MORE RELIABLE",
+        "roles": [],
+        "best_use": "Collecting data — hypothesis to test: covers Baltic and Finnish seed rounds that Europe-wide media skip",
+        "not_for": "Europe-wide recall — it is a Nordics source by design",
+        "limitations": [],
+        "status": "PROBATION",
+        "status_reasons": []
+      },
+      {
+        "name": "Ledger Gazette",
+        "kind": "external",
+        "geo": "",
+        "home_scope": "",
+        "lifecycle": "EXTERNAL",
+        "domain": "ledgergazette.example",
+        "articles": {
+          "n": 5,
+          "digests": 0,
+          "high": 0,
+          "relevant": 1,
+          "minor": 3,
+          "noise": {
+            "k": 1,
+            "n": 5,
+            "rate": 0.2,
+            "lb": 0.0,
+            "label": "INSUFFICIENT DATA"
+          },
+          "precision": {
+            "k": 1,
+            "n": 5,
+            "rate": 0.2,
+            "lb": 0.0,
+            "label": "INSUFFICIENT DATA"
+          }
+        },
+        "recall": {},
+        "speed": {
+          "n": 0,
+          "label": "INSUFFICIENT DATA",
+          "precision": "day"
+        },
+        "earliness": {
+          "companies": 0,
+          "median_lead_days": null,
+          "pre_funding": 0,
+          "precursor_types": {},
+          "share_of_important": {
+            "k": 0,
+            "n": 6,
+            "rate": 0.0,
+            "lb": 0.0,
+            "label": "INSUFFICIENT DATA"
+          },
+          "examples": [],
+          "deal_flow": null
+        },
+        "originality": {
+          "n": 5,
+          "syndicated": {
+            "k": 0,
+            "n": 5,
+            "rate": 0.0,
+            "lb": 0.0,
+            "label": "INSUFFICIENT DATA"
+          },
+          "press_release": {
+            "k": 0,
+            "n": 5,
+            "rate": 0.0,
+            "lb": 0.0,
+            "label": "INSUFFICIENT DATA"
+          },
+          "original": {
+            "k": 5,
+            "n": 5,
+            "rate": 1.0,
+            "lb": 0.8,
+            "label": "INSUFFICIENT DATA"
+          },
+          "confidence": "headline-level estimate — low confidence (small sample)"
+        },
+        "unique": {
+          "events": 0,
+          "companies": 0,
+          "early_companies": 0,
+          "by_scope": {},
+          "of_covered": {
+            "k": 0,
+            "n": 0,
+            "rate": null,
+            "lb": 0.0,
+            "label": "INSUFFICIENT DATA"
+          }
+        },
+        "authority": {
+          "prior": "HIGH-QUALITY INDEPENDENT MEDIA",
+          "agree": 0,
+          "contradicted": 0,
+          "open": 0,
+          "observed": {
+            "k": 0,
+            "n": 0,
+            "rate": null,
+            "lb": 0.0,
+            "label": "INSUFFICIENT DATA"
+          },
+          "basis": "prior (observations collecting)"
+        },
+        "technical": {
+          "basis": "external — not fetched",
+          "state": "NOT FETCHED",
+          "runs": null,
+          "ok_share": null,
+          "streak": 0
+        },
+        "independent": {
+          "outcomes": 5,
+          "covered": 1
+        },
+        "hypothesis": "",
+        "sample": "INSUFFICIENT DATA",
+        "roles": [
+          {
+            "role": "CONFIRMATION / AUTHORITY",
+            "basis": "prior",
+            "evidence": "external publication (high-quality independent media); seen in 5 curated / cited report(s) — not fetched, not a sourcing signal"
+          }
+        ],
+        "best_use": "confirmation / authority (external publication (high-quality independent media); seen in 5 curated / cited report(s) — not fetched, not a sourcing signal)",
+        "not_for": "sourcing alpha (too late) and continuous monitoring",
+        "limitations": [
+          "not fetched — observed only through curated cases and citations",
+          "only 5 article(s) in this window"
+        ],
+        "status": "EXTERNAL",
+        "status_reasons": []
+      }
+    ],
+    "declining": [
+      {
+        "name": "Channel Tech Review",
+        "reasons": [
+          "2 failed fetches in a row (rate limited)",
+          "relevance fell from 21% to 9% in this window"
+        ]
+      }
+    ],
+    "missing": [
+      {
+        "domain": "harbourpost.example",
+        "name": "Harbour Post",
+        "events": [
+          {
+            "event_id": "nw-case-halvard-unicorn-2026-10",
+            "company": "Halvard Robotics",
+            "date": "2026-10-05",
+            "headline": "Stuttgart robotics company Halvard Robotics passes a $1 billion valuation",
+            "how": "reported"
+          },
+          {
+            "event_id": "nw-7c41d9e2a0f3",
+            "company": "Quillon Labs",
+            "date": "2026-11-08",
+            "headline": "Quillon Labs raises €25M Series B for battery diagnostics",
+            "how": "cited"
+          },
+          {
+            "event_id": "nw-0d4c6b8a2e13",
+            "company": "Fennick Audio",
+            "date": "2026-09-30",
+            "headline": "Fennick Audio raises €2M seed",
+            "how": "cited"
+          }
+        ],
+        "how": {
+          "reported": 1,
+          "cited": 2
+        },
+        "n": 3,
+        "database": false,
+        "ready": true
+      },
+      {
+        "domain": "startupdb.example",
+        "name": "startupdb.example",
+        "events": [
+          {
+            "event_id": "nw-3f9a1c0b7d2e",
+            "company": "Vantor Kinetics",
+            "date": "2026-11-10",
+            "headline": "Munich robotics start-up Vantor Kinetics raises €18M Series A led by Lindqvist Partners",
+            "how": "cited"
+          },
+          {
+            "event_id": "nw-1e8b5a6c4d90",
+            "company": "Brightwell Bio",
+            "date": "2026-11-03",
+            "headline": "Brightwell Bio acquired by Corvane Diagnostics",
+            "how": "cited"
+          }
+        ],
+        "how": {
+          "cited": 2
+        },
+        "n": 2,
+        "database": true,
+        "ready": false
+      },
+      {
+        "domain": "lakesidetech.example",
+        "name": "Lakeside Tech",
+        "events": [
+          {
+            "event_id": "nw-5d2f8e1a9b47",
+            "company": "Lumora Grid",
+            "date": "2026-11-06",
+            "headline": "Lumora Grid secures €3M seed round to balance neighbourhood grids",
+            "how": "cited"
+          }
+        ],
+        "how": {
+          "cited": 1
+        },
+        "n": 1,
+        "database": false,
+        "ready": false
+      }
+    ],
+    "candidates": [
+      {
+        "id": "sn-harbourpost",
+        "name": "Harbour Post",
+        "url": "https://harbourpost.example/",
+        "state": "PROBATION"
+      },
+      {
+        "id": "sn-lakesidetech",
+        "name": "Lakeside Tech",
+        "url": "https://lakesidetech.example/",
+        "state": "DISCOVERED"
+      }
+    ],
+    "windows": [
+      "30",
+      "90",
+      "180",
+      "all"
+    ],
+    "scopes": {
+      "EUROPE": "Europe",
+      "DE": "Germany",
+      "FR": "France",
+      "UK": "UK",
+      "CH": "Switzerland",
+      "NORDICS": "Nordics",
+      "MUNICH": "Munich",
+      "AI": "AI",
+      "DEEPTECH": "Physical AI / deeptech"
+    },
+    "note": "Each source is measured per purpose — coverage, speed, early signal, originality, unique value, relevance, authority and technical health — never one universal score. Fewer than 8 observations = INSUFFICIENT DATA.",
+    "evaluated_at": "2026-11-12T07:00:39"
+  },
+  "all": {
+    "window": "all",
+    "start": "2000-01-01",
+    "today": "2026-11-12",
+    "benchmark_events": 90,
+    "bias": {
+      "events": 90,
+      "multi_source": 31,
+      "origin_top": {
+        "source": "Alpine Wire",
+        "events": 53
+      },
+      "warnings": [
+        "53/90 benchmark events were first (or only) reported by Alpine Wire — recall is measured leave-one-out, but the event universe itself leans on that source",
+        "the benchmark is the union of Project Zero's monitored feeds: an event none of them covered is invisible here (independent checks: Validation outcomes, miss audits, curated cases)"
+      ],
+      "independent_outcomes": 7,
+      "concentrated": true,
+      "overlap_ok": true
+    },
+    "best": [
+      {
+        "id": "EUROPE",
+        "label": "Best for Europe-wide coverage",
+        "state": "RANKED",
+        "leader": {
+          "source": "Alpine Wire",
+          "why": "covered 46/84 Europe events reported elsewhere",
+          "n": 84
+        },
+        "runner_up": {
+          "source": "Isar Startup Post",
+          "why": "covered 26/73 Europe events reported elsewhere"
+        },
+        "confidence": "MORE RELIABLE",
+        "warning": "53/90 benchmark events were first (or only) reported by Alpine Wire — recall is measured leave-one-out, but the event universe itself leans on that source"
+      },
+      {
+        "id": "DE",
+        "label": "Best for Germany",
+        "state": "RANKED",
+        "leader": {
+          "source": "Alpine Wire",
+          "why": "covered 22/37 Germany events reported elsewhere",
+          "n": 37
+        },
+        "runner_up": {
+          "source": "Isar Startup Post",
+          "why": "covered 20/35 Germany events reported elsewhere"
+        },
+        "confidence": "MORE RELIABLE",
+        "warning": "53/90 benchmark events were first (or only) reported by Alpine Wire — recall is measured leave-one-out, but the event universe itself leans on that source"
+      },
+      {
+        "id": "FR",
+        "label": "Best for France",
+        "state": "COLLECTING DATA",
+        "need": "needs ≥ 8 France events reported by other sources, and a source covering ≥ 3 of them"
+      },
+      {
+        "id": "UK",
+        "label": "Best for the UK",
+        "state": "RANKED",
+        "leader": {
+          "source": "Alpine Wire",
+          "why": "covered 11/20 UK events reported elsewhere",
+          "n": 20
+        },
+        "runner_up": {
+          "source": "Channel Tech Review",
+          "why": "covered 4/18 UK events reported elsewhere"
+        },
+        "confidence": "EARLY READ",
+        "warning": "53/90 benchmark events were first (or only) reported by Alpine Wire — recall is measured leave-one-out, but the event universe itself leans on that source"
+      },
+      {
+        "id": "CH",
+        "label": "Best for Switzerland",
+        "state": "RANKED",
+        "leader": {
+          "source": "Swiss deal ticker",
+          "why": "covered 9/13 Switzerland events reported elsewhere",
+          "n": 13
+        },
+        "runner_up": {
+          "source": "Alpine Wire",
+          "why": "covered 7/13 Switzerland events reported elsewhere"
+        },
+        "confidence": "EARLY READ",
+        "warning": "53/90 benchmark events were first (or only) reported by Alpine Wire — recall is measured leave-one-out, but the event universe itself leans on that source"
+      },
+      {
+        "id": "NORDICS",
+        "label": "Best for the Nordics",
+        "state": "COLLECTING DATA",
+        "need": "needs ≥ 8 Nordics events reported by other sources, and a source covering ≥ 3 of them"
+      },
+      {
+        "id": "MUNICH",
+        "label": "Best for Munich",
+        "state": "RANKED",
+        "leader": {
+          "source": "Isar Startup Post",
+          "why": "covered 20/31 Munich events reported elsewhere",
+          "n": 31
+        },
+        "runner_up": null,
+        "confidence": "MORE RELIABLE",
+        "warning": "53/90 benchmark events were first (or only) reported by Alpine Wire — recall is measured leave-one-out, but the event universe itself leans on that source"
+      },
+      {
+        "id": "EARLY",
+        "label": "Best for early signals",
+        "state": "RANKED",
+        "leader": {
+          "source": "Isar Startup Post",
+          "why": "9 companies mentioned ≥ 14 days before their material event (median 52 days)",
+          "n": 9
+        },
+        "runner_up": {
+          "source": "Swiss deal ticker",
+          "why": "4 companies mentioned ≥ 14 days before their material event (median 40 days)"
+        },
+        "confidence": "EARLY READ"
+      },
+      {
+        "id": "CONFIRM",
+        "label": "Best for fact confirmation",
+        "state": "RANKED",
+        "leader": {
+          "source": "Alpine Wire",
+          "why": "facts agreed with other reports 24/26",
+          "n": 26
+        },
+        "runner_up": {
+          "source": "Isar Startup Post",
+          "why": "facts agreed with other reports 15/17"
+        },
+        "confidence": "EARLY READ"
+      },
+      {
+        "id": "UNIQUE",
+        "label": "Best for unique discovery",
+        "state": "RANKED",
+        "leader": {
+          "source": "Alpine Wire",
+          "why": "20 material events and 2 early companies no other source had",
+          "n": 20
+        },
+        "runner_up": {
+          "source": "Isar Startup Post",
+          "why": "13 material events and 7 early companies no other source had"
+        },
+        "confidence": "EARLY READ"
+      },
+      {
+        "id": "DEEPTECH",
+        "label": "Best for physical AI / deeptech",
+        "state": "RANKED",
+        "leader": {
+          "source": "Alpine Wire",
+          "why": "covered 13/24 Physical AI / deeptech events reported elsewhere",
+          "n": 24
+        },
+        "runner_up": null,
+        "confidence": "EARLY READ",
+        "warning": "53/90 benchmark events were first (or only) reported by Alpine Wire — recall is measured leave-one-out, but the event universe itself leans on that source"
+      },
+      {
+        "id": "TECH",
+        "label": "Best technical reliability",
+        "state": "RANKED",
+        "leader": {
+          "source": "Baltic Founders",
+          "why": "fetched 20/20 runs",
+          "n": 20
+        },
+        "runner_up": {
+          "source": "Isar Startup Post",
+          "why": "fetched 62/62 runs"
+        },
+        "confidence": "EARLY READ"
+      }
+    ],
+    "disagreements": [
+      {
+        "event_id": "nw-3f9a1c0b7d2e",
+        "company": "Vantor Kinetics",
+        "field": "amount_m",
+        "values": {
+          "Isar Startup Post": 18.0,
+          "Alpine Wire": 18.4
+        },
+        "event_date": "2026-11-10",
+        "status": "RESOLVED",
+        "basis": "primary source",
+        "agree": [
+          "Isar Startup Post",
+          "Vantor Kinetics"
+        ],
+        "contradicted": []
+      },
+      {
+        "event_id": "nw-7c41d9e2a0f3",
+        "company": "Quillon Labs",
+        "field": "round",
+        "values": {
+          "Alpine Wire": "series b",
+          "Harbour Post": "series c"
+        },
+        "event_date": "2026-11-08",
+        "status": "OPEN",
+        "agree": [],
+        "contradicted": []
+      }
+    ],
+    "sources": [
+      {
+        "name": "Alpine Wire",
+        "kind": "feed",
+        "geo": "EU",
+        "home_scope": "EUROPE",
+        "lifecycle": "ESTABLISHED",
+        "domain": "alpinewire.example",
+        "articles": {
+          "n": 466,
+          "digests": 0,
+          "high": 77,
+          "relevant": 78,
+          "minor": 218,
+          "noise": {
+            "k": 93,
+            "n": 466,
+            "rate": 0.2,
+            "lb": 0.0,
+            "label": "MORE RELIABLE"
+          },
+          "precision": {
+            "k": 155,
+            "n": 466,
+            "rate": 0.333,
+            "lb": 0.133,
+            "label": "MORE RELIABLE"
+          }
+        },
+        "recall": {
+          "EUROPE": {
+            "k": 46,
+            "n": 84,
+            "rate": 0.548,
+            "lb": 0.348,
+            "label": "MORE RELIABLE"
+          },
+          "DE": {
+            "k": 22,
+            "n": 37,
+            "rate": 0.595,
+            "lb": 0.395,
+            "label": "MORE RELIABLE"
+          },
+          "CH": {
+            "k": 7,
+            "n": 13,
+            "rate": 0.538,
+            "lb": 0.338,
+            "label": "EARLY READ"
+          },
+          "UK": {
+            "k": 11,
+            "n": 20,
+            "rate": 0.55,
+            "lb": 0.35,
+            "label": "EARLY READ"
+          },
+          "DEEPTECH": {
+            "k": 13,
+            "n": 24,
+            "rate": 0.542,
+            "lb": 0.342,
+            "label": "EARLY READ"
+          }
+        },
+        "speed": {
+          "n": 29,
+          "label": "EARLY READ",
+          "precision": "hour",
+          "median_h": 3.0,
+          "p25_h": 1.5,
+          "p75_h": 6.0,
+          "within_24h": {
+            "k": 27,
+            "n": 29,
+            "rate": 0.931,
+            "lb": 0.731,
+            "label": "EARLY READ"
+          },
+          "within_72h": {
+            "k": 29,
+            "n": 29,
+            "rate": 1.0,
+            "lb": 0.8,
+            "label": "EARLY READ"
+          },
+          "first": {
+            "k": 18,
+            "n": 29,
+            "rate": 0.621,
+            "lb": 0.421,
+            "label": "EARLY READ"
+          }
+        },
+        "earliness": {
+          "companies": 2,
+          "median_lead_days": 18,
+          "pre_funding": 1,
+          "precursor_types": {
+            "accelerator": 2
+          },
+          "share_of_important": {
+            "k": 2,
+            "n": 6,
+            "rate": 0.333,
+            "lb": 0.133,
+            "label": "INSUFFICIENT DATA"
+          },
+          "examples": [
+            {
+              "company": "Quillon Labs",
+              "first_mention": "2026-10-21",
+              "lead_days": 18,
+              "precursor": "accelerator",
+              "pre_funding": true,
+              "event": "Quillon Labs raises €25M Series B"
+            }
+          ],
+          "deal_flow": null
+        },
+        "originality": {
+          "n": 466,
+          "syndicated": {
+            "k": 24,
+            "n": 466,
+            "rate": 0.052,
+            "lb": 0.0,
+            "label": "MORE RELIABLE"
+          },
+          "press_release": {
+            "k": 66,
+            "n": 466,
+            "rate": 0.142,
+            "lb": 0.0,
+            "label": "MORE RELIABLE"
+          },
+          "original": {
+            "k": 376,
+            "n": 466,
+            "rate": 0.807,
+            "lb": 0.607,
+            "label": "MORE RELIABLE"
+          },
+          "confidence": "headline-level estimate"
+        },
+        "unique": {
+          "events": 20,
+          "companies": 20,
+          "early_companies": 2,
+          "by_scope": {
+            "EUROPE": 20,
+            "UK": 4
+          },
+          "of_covered": {
+            "k": 20,
+            "n": 66,
+            "rate": 0.303,
+            "lb": 0.103,
+            "label": "MORE RELIABLE"
+          }
+        },
+        "authority": {
+          "prior": "HIGH-QUALITY INDEPENDENT MEDIA",
+          "agree": 24,
+          "contradicted": 2,
+          "open": 0,
+          "observed": {
+            "k": 24,
+            "n": 26,
+            "rate": 0.923,
+            "lb": 0.823,
+            "label": "EARLY READ"
+          },
+          "basis": "observed"
+        },
+        "technical": {
+          "basis": "News run log",
+          "state": "HEALTHY",
+          "runs": 62,
+          "ok": 59,
+          "ok_share": 0.952,
+          "lb": 0.802,
+          "label": "MORE RELIABLE",
+          "streak": 0,
+          "last_ok": "2026-11-12T07:00:03",
+          "last_error": ""
+        },
+        "independent": {
+          "outcomes": 7,
+          "covered": 1
+        },
+        "hypothesis": "",
+        "sample": "MORE RELIABLE",
+        "roles": [
+          {
+            "role": "CORE EUROPEAN INTELLIGENCE",
+            "basis": "observed",
+            "evidence": "covered 46/84 material European events reported elsewhere"
+          },
+          {
+            "role": "CONFIRMATION / AUTHORITY",
+            "basis": "observed",
+            "evidence": "facts agreed with other reports 24/26"
+          }
+        ],
+        "best_use": "core european intelligence (covered 46/84 material European events reported elsewhere); confirmation / authority (facts agreed with other reports 24/26)",
+        "not_for": "",
+        "limitations": [
+          "publication times are day-precision for older articles"
+        ],
+        "status": "ACTIVE",
+        "status_reasons": []
+      },
+      {
+        "name": "Isar Startup Post",
+        "kind": "feed",
+        "geo": "DE",
+        "home_scope": "MUNICH",
+        "lifecycle": "ESTABLISHED",
+        "domain": "isarpost.example",
+        "articles": {
+          "n": 211,
+          "digests": 0,
+          "high": 35,
+          "relevant": 35,
+          "minor": 99,
+          "noise": {
+            "k": 42,
+            "n": 211,
+            "rate": 0.199,
+            "lb": 0.0,
+            "label": "MORE RELIABLE"
+          },
+          "precision": {
+            "k": 70,
+            "n": 211,
+            "rate": 0.332,
+            "lb": 0.132,
+            "label": "MORE RELIABLE"
+          }
+        },
+        "recall": {
+          "EUROPE": {
+            "k": 26,
+            "n": 73,
+            "rate": 0.356,
+            "lb": 0.156,
+            "label": "MORE RELIABLE"
+          },
+          "DE": {
+            "k": 20,
+            "n": 35,
+            "rate": 0.571,
+            "lb": 0.371,
+            "label": "MORE RELIABLE"
+          },
+          "MUNICH": {
+            "k": 20,
+            "n": 31,
+            "rate": 0.645,
+            "lb": 0.445,
+            "label": "MORE RELIABLE"
+          }
+        },
+        "speed": {
+          "n": 24,
+          "label": "EARLY READ",
+          "precision": "hour",
+          "median_h": 6.5,
+          "p25_h": 3.2,
+          "p75_h": 13.0,
+          "within_24h": {
+            "k": 22,
+            "n": 24,
+            "rate": 0.917,
+            "lb": 0.717,
+            "label": "EARLY READ"
+          },
+          "within_72h": {
+            "k": 24,
+            "n": 24,
+            "rate": 1.0,
+            "lb": 0.8,
+            "label": "EARLY READ"
+          },
+          "first": {
+            "k": 11,
+            "n": 24,
+            "rate": 0.458,
+            "lb": 0.258,
+            "label": "EARLY READ"
+          }
+        },
+        "earliness": {
+          "companies": 9,
+          "median_lead_days": 52,
+          "pre_funding": 8,
+          "precursor_types": {
+            "accelerator": 9
+          },
+          "share_of_important": {
+            "k": 9,
+            "n": 9,
+            "rate": 1.0,
+            "lb": 0.8,
+            "label": "EARLY READ"
+          },
+          "examples": [
+            {
+              "company": "Vantor Kinetics",
+              "first_mention": "2026-09-10",
+              "lead_days": 61,
+              "precursor": "accelerator",
+              "pre_funding": true,
+              "event": "Vantor Kinetics raises €18M Series A"
+            },
+            {
+              "company": "Fennick Audio",
+              "first_mention": "2026-09-02",
+              "lead_days": 33,
+              "precursor": "accelerator",
+              "pre_funding": true,
+              "event": "Fennick Audio raises €2M seed"
+            },
+            {
+              "company": "Trellis Mobility",
+              "first_mention": "2026-09-20",
+              "lead_days": 21,
+              "precursor": "accelerator",
+              "pre_funding": true,
+              "event": "Trellis Mobility raises €6M"
+            },
+            {
+              "company": "Norrland Optics",
+              "first_mention": "2026-10-01",
+              "lead_days": 15,
+              "precursor": "accelerator",
+              "pre_funding": true,
+              "event": "Norrland Optics seed"
+            }
+          ],
+          "deal_flow": null
+        },
+        "originality": {
+          "n": 211,
+          "syndicated": {
+            "k": 9,
+            "n": 211,
+            "rate": 0.043,
+            "lb": 0.0,
+            "label": "MORE RELIABLE"
+          },
+          "press_release": {
+            "k": 20,
+            "n": 211,
+            "rate": 0.095,
+            "lb": 0.0,
+            "label": "MORE RELIABLE"
+          },
+          "original": {
+            "k": 182,
+            "n": 211,
+            "rate": 0.863,
+            "lb": 0.663,
+            "label": "MORE RELIABLE"
+          },
+          "confidence": "headline-level estimate"
+        },
+        "unique": {
+          "events": 13,
+          "companies": 13,
+          "early_companies": 7,
+          "by_scope": {
+            "MUNICH": 9,
+            "DE": 11
+          },
+          "of_covered": {
+            "k": 13,
+            "n": 48,
+            "rate": 0.271,
+            "lb": 0.071,
+            "label": "MORE RELIABLE"
+          }
+        },
+        "authority": {
+          "prior": "SPECIALIST MEDIA",
+          "agree": 15,
+          "contradicted": 2,
+          "open": 1,
+          "observed": {
+            "k": 15,
+            "n": 17,
+            "rate": 0.882,
+            "lb": 0.782,
+            "label": "EARLY READ"
+          },
+          "basis": "observed"
+        },
+        "technical": {
+          "basis": "News run log",
+          "state": "HEALTHY",
+          "runs": 62,
+          "ok": 62,
+          "ok_share": 1.0,
+          "lb": 0.85,
+          "label": "MORE RELIABLE",
+          "streak": 0,
+          "last_ok": "2026-11-12T07:00:03",
+          "last_error": ""
+        },
+        "independent": {
+          "outcomes": 7,
+          "covered": 1
+        },
+        "hypothesis": "sees Munich university spinouts weeks before national media",
+        "sample": "MORE RELIABLE",
+        "roles": [
+          {
+            "role": "REGIONAL INTELLIGENCE",
+            "basis": "observed",
+            "evidence": "covered 20/31 Munich events reported elsewhere"
+          },
+          {
+            "role": "EARLY SIGNAL",
+            "basis": "observed",
+            "evidence": "mentioned 9 companies ≥ 14 days before their material event (median 52 days)"
+          }
+        ],
+        "best_use": "regional intelligence (covered 20/31 Munich events reported elsewhere); early signal (mentioned 9 companies ≥ 14 days before their material event (median 52 days))",
+        "not_for": "Europe-wide recall — it is a Munich source by design",
+        "limitations": [],
+        "status": "ACTIVE",
+        "status_reasons": []
+      },
+      {
+        "name": "Channel Tech Review",
+        "kind": "feed",
+        "geo": "UK",
+        "home_scope": "UK",
+        "lifecycle": "ESTABLISHED",
+        "domain": "channeltech.example",
+        "articles": {
+          "n": 141,
+          "digests": 0,
+          "high": 23,
+          "relevant": 24,
+          "minor": 66,
+          "noise": {
+            "k": 28,
+            "n": 141,
+            "rate": 0.199,
+            "lb": 0.0,
+            "label": "MORE RELIABLE"
+          },
+          "precision": {
+            "k": 47,
+            "n": 141,
+            "rate": 0.333,
+            "lb": 0.133,
+            "label": "MORE RELIABLE"
+          }
+        },
+        "recall": {
+          "EUROPE": {
+            "k": 7,
+            "n": 77,
+            "rate": 0.091,
+            "lb": 0.0,
+            "label": "MORE RELIABLE"
+          },
+          "UK": {
+            "k": 4,
+            "n": 18,
+            "rate": 0.222,
+            "lb": 0.022,
+            "label": "EARLY READ"
+          }
+        },
+        "speed": {
+          "n": 9,
+          "label": "EARLY READ",
+          "precision": "hour",
+          "median_h": 30.0,
+          "p25_h": 15.0,
+          "p75_h": 60.0,
+          "within_24h": {
+            "k": 7,
+            "n": 9,
+            "rate": 0.778,
+            "lb": 0.578,
+            "label": "EARLY READ"
+          },
+          "within_72h": {
+            "k": 9,
+            "n": 9,
+            "rate": 1.0,
+            "lb": 0.8,
+            "label": "EARLY READ"
+          },
+          "first": {
+            "k": 0,
+            "n": 9,
+            "rate": 0.0,
+            "lb": 0.0,
+            "label": "EARLY READ"
+          }
+        },
+        "earliness": {
+          "companies": 0,
+          "median_lead_days": null,
+          "pre_funding": 0,
+          "precursor_types": {},
+          "share_of_important": {
+            "k": 0,
+            "n": 6,
+            "rate": 0.0,
+            "lb": 0.0,
+            "label": "INSUFFICIENT DATA"
+          },
+          "examples": [],
+          "deal_flow": null
+        },
+        "originality": {
+          "n": 141,
+          "syndicated": {
+            "k": 44,
+            "n": 141,
+            "rate": 0.312,
+            "lb": 0.112,
+            "label": "MORE RELIABLE"
+          },
+          "press_release": {
+            "k": 26,
+            "n": 141,
+            "rate": 0.184,
+            "lb": 0.0,
+            "label": "MORE RELIABLE"
+          },
+          "original": {
+            "k": 71,
+            "n": 141,
+            "rate": 0.504,
+            "lb": 0.304,
+            "label": "MORE RELIABLE"
+          },
+          "confidence": "headline-level estimate"
+        },
+        "unique": {
+          "events": 2,
+          "companies": 2,
+          "early_companies": 0,
+          "by_scope": {
+            "UK": 2
+          },
+          "of_covered": {
+            "k": 2,
+            "n": 11,
+            "rate": 0.182,
+            "lb": 0.0,
+            "label": "EARLY READ"
+          }
+        },
+        "authority": {
+          "prior": "SPECIALIST MEDIA",
+          "agree": 4,
+          "contradicted": 2,
+          "open": 0,
+          "observed": {
+            "k": 4,
+            "n": 6,
+            "rate": 0.667,
+            "lb": 0.567,
+            "label": "INSUFFICIENT DATA"
+          },
+          "basis": "prior (observations collecting)"
+        },
+        "technical": {
+          "basis": "News run log",
+          "state": "DEGRADED",
+          "runs": 62,
+          "ok": 53,
+          "ok_share": 0.855,
+          "lb": 0.705,
+          "label": "MORE RELIABLE",
+          "streak": 2,
+          "last_ok": "2026-11-12T07:00:03",
+          "last_error": "HTTPError: HTTP Error 429: Too Many Requests"
+        },
+        "independent": {
+          "outcomes": 7,
+          "covered": 1
+        },
+        "hypothesis": "",
+        "sample": "MORE RELIABLE",
+        "roles": [],
+        "best_use": "Collecting data",
+        "not_for": "Europe-wide recall — it is a UK source by design",
+        "limitations": [],
+        "status": "DEGRADED",
+        "status_reasons": [
+          "2 failed fetches in a row (rate limited)",
+          "relevance fell from 21% to 9% in this window"
+        ]
+      },
+      {
+        "name": "Swiss deal ticker",
+        "kind": "deal_flow_reuse",
+        "geo": "CH",
+        "home_scope": "CH",
+        "lifecycle": "ESTABLISHED",
+        "domain": "swissticker.example",
+        "articles": {
+          "n": 106,
+          "digests": 0,
+          "high": 17,
+          "relevant": 18,
+          "minor": 50,
+          "noise": {
+            "k": 21,
+            "n": 106,
+            "rate": 0.198,
+            "lb": 0.0,
+            "label": "MORE RELIABLE"
+          },
+          "precision": {
+            "k": 35,
+            "n": 106,
+            "rate": 0.33,
+            "lb": 0.13,
+            "label": "MORE RELIABLE"
+          }
+        },
+        "recall": {
+          "EUROPE": {
+            "k": 9,
+            "n": 79,
+            "rate": 0.114,
+            "lb": 0.0,
+            "label": "MORE RELIABLE"
+          },
+          "CH": {
+            "k": 9,
+            "n": 13,
+            "rate": 0.692,
+            "lb": 0.492,
+            "label": "EARLY READ"
+          }
+        },
+        "speed": {
+          "n": 0,
+          "label": "INSUFFICIENT DATA",
+          "precision": "day"
+        },
+        "earliness": {
+          "companies": 4,
+          "median_lead_days": 40,
+          "pre_funding": 3,
+          "precursor_types": {
+            "accelerator": 4
+          },
+          "share_of_important": {
+            "k": 4,
+            "n": 6,
+            "rate": 0.667,
+            "lb": 0.467,
+            "label": "INSUFFICIENT DATA"
+          },
+          "examples": [
+            {
+              "company": "Lumora Grid",
+              "first_mention": "2026-09-27",
+              "lead_days": 40,
+              "precursor": "accelerator",
+              "pre_funding": true,
+              "event": "Lumora Grid secures €3M seed round"
+            }
+          ],
+          "deal_flow": {
+            "discoveries": 26,
+            "median_lead_days": 40,
+            "lead_n": 4,
+            "pre_company": 2,
+            "strong": 0
+          }
+        },
+        "originality": {
+          "n": 106,
+          "syndicated": {
+            "k": 0,
+            "n": 106,
+            "rate": 0.0,
+            "lb": 0.0,
+            "label": "MORE RELIABLE"
+          },
+          "press_release": {
+            "k": 13,
+            "n": 106,
+            "rate": 0.123,
+            "lb": 0.0,
+            "label": "MORE RELIABLE"
+          },
+          "original": {
+            "k": 93,
+            "n": 106,
+            "rate": 0.877,
+            "lb": 0.677,
+            "label": "MORE RELIABLE"
+          },
+          "confidence": "headline-level estimate"
+        },
+        "unique": {
+          "events": 4,
+          "companies": 4,
+          "early_companies": 2,
+          "by_scope": {
+            "CH": 4
+          },
+          "of_covered": {
+            "k": 4,
+            "n": 13,
+            "rate": 0.308,
+            "lb": 0.108,
+            "label": "EARLY READ"
+          }
+        },
+        "authority": {
+          "prior": "SPECIALIST MEDIA",
+          "agree": 7,
+          "contradicted": 0,
+          "open": 0,
+          "observed": {
+            "k": 7,
+            "n": 7,
+            "rate": 1.0,
+            "lb": 0.9,
+            "label": "INSUFFICIENT DATA"
+          },
+          "basis": "prior (observations collecting)"
+        },
+        "technical": {
+          "basis": "Deal Flow source health",
+          "state": "UNKNOWN",
+          "runs": null,
+          "ok_share": null,
+          "streak": 0,
+          "last_ok": null,
+          "last_error": "",
+          "ok": null,
+          "lb": null,
+          "label": "—"
+        },
+        "independent": {
+          "outcomes": 7,
+          "covered": 1
+        },
+        "hypothesis": "the Swiss deal ticker lists Swiss rounds before international media",
+        "sample": "MORE RELIABLE",
+        "roles": [],
+        "best_use": "Collecting data — hypothesis to test: the Swiss deal ticker lists Swiss rounds before international media",
+        "not_for": "Europe-wide recall — it is a Switzerland source by design",
+        "limitations": [
+          "articles come from the Deal Flow scan and are dated by scan day (speed is approximate)"
+        ],
+        "status": "ACTIVE",
+        "status_reasons": []
+      },
+      {
+        "name": "Baltic Founders",
+        "kind": "feed",
+        "geo": "NORDICS",
+        "home_scope": "NORDICS",
+        "lifecycle": "PROBATION",
+        "domain": "balticfounders.example",
+        "articles": {
+          "n": 48,
+          "digests": 0,
+          "high": 8,
+          "relevant": 8,
+          "minor": 23,
+          "noise": {
+            "k": 9,
+            "n": 48,
+            "rate": 0.188,
+            "lb": 0.0,
+            "label": "MORE RELIABLE"
+          },
+          "precision": {
+            "k": 16,
+            "n": 48,
+            "rate": 0.333,
+            "lb": 0.133,
+            "label": "MORE RELIABLE"
+          }
+        },
+        "recall": {
+          "EUROPE": {
+            "k": 2,
+            "n": 81,
+            "rate": 0.025,
+            "lb": 0.0,
+            "label": "MORE RELIABLE"
+          },
+          "NORDICS": {
+            "k": 2,
+            "n": 7,
+            "rate": 0.286,
+            "lb": 0.086,
+            "label": "INSUFFICIENT DATA"
+          }
+        },
+        "speed": {
+          "n": 4,
+          "label": "INSUFFICIENT DATA",
+          "precision": "hour",
+          "median_h": 20.0,
+          "p25_h": null,
+          "p75_h": null,
+          "within_24h": {
+            "k": 2,
+            "n": 4,
+            "rate": 0.5,
+            "lb": 0.3,
+            "label": "INSUFFICIENT DATA"
+          },
+          "within_72h": {
+            "k": 4,
+            "n": 4,
+            "rate": 1.0,
+            "lb": 0.8,
+            "label": "INSUFFICIENT DATA"
+          },
+          "first": {
+            "k": 0,
+            "n": 4,
+            "rate": 0.0,
+            "lb": 0.0,
+            "label": "INSUFFICIENT DATA"
+          }
+        },
+        "earliness": {
+          "companies": 0,
+          "median_lead_days": null,
+          "pre_funding": 0,
+          "precursor_types": {},
+          "share_of_important": {
+            "k": 0,
+            "n": 6,
+            "rate": 0.0,
+            "lb": 0.0,
+            "label": "INSUFFICIENT DATA"
+          },
+          "examples": [],
+          "deal_flow": null
+        },
+        "originality": {
+          "n": 48,
+          "syndicated": {
+            "k": 20,
+            "n": 48,
+            "rate": 0.417,
+            "lb": 0.217,
+            "label": "MORE RELIABLE"
+          },
+          "press_release": {
+            "k": 7,
+            "n": 48,
+            "rate": 0.146,
+            "lb": 0.0,
+            "label": "MORE RELIABLE"
+          },
+          "original": {
+            "k": 21,
+            "n": 48,
+            "rate": 0.438,
+            "lb": 0.237,
+            "label": "MORE RELIABLE"
+          },
+          "confidence": "headline-level estimate"
+        },
+        "unique": {
+          "events": 0,
+          "companies": 0,
+          "early_companies": 0,
+          "by_scope": {},
+          "of_covered": {
+            "k": 0,
+            "n": 4,
+            "rate": 0.0,
+            "lb": 0.0,
+            "label": "INSUFFICIENT DATA"
+          }
+        },
+        "authority": {
+          "prior": "SPECIALIST MEDIA",
+          "agree": 0,
+          "contradicted": 0,
+          "open": 0,
+          "observed": {
+            "k": 0,
+            "n": 0,
+            "rate": null,
+            "lb": 0.0,
+            "label": "INSUFFICIENT DATA"
+          },
+          "basis": "prior (observations collecting)"
+        },
+        "technical": {
+          "basis": "News run log",
+          "state": "HEALTHY",
+          "runs": 20,
+          "ok": 20,
+          "ok_share": 1.0,
+          "lb": 0.85,
+          "label": "EARLY READ",
+          "streak": 0,
+          "last_ok": "2026-11-12T07:00:03",
+          "last_error": ""
+        },
+        "independent": {
+          "outcomes": 7,
+          "covered": 1
+        },
+        "hypothesis": "covers Baltic and Finnish seed rounds that Europe-wide media skip",
+        "sample": "MORE RELIABLE",
+        "roles": [],
+        "best_use": "Collecting data — hypothesis to test: covers Baltic and Finnish seed rounds that Europe-wide media skip",
+        "not_for": "Europe-wide recall — it is a Nordics source by design",
+        "limitations": [],
+        "status": "PROBATION",
+        "status_reasons": []
+      },
+      {
+        "name": "Ledger Gazette",
+        "kind": "external",
+        "geo": "",
+        "home_scope": "",
+        "lifecycle": "EXTERNAL",
+        "domain": "ledgergazette.example",
+        "articles": {
+          "n": 7,
+          "digests": 0,
+          "high": 1,
+          "relevant": 1,
+          "minor": 4,
+          "noise": {
+            "k": 1,
+            "n": 7,
+            "rate": 0.143,
+            "lb": 0.0,
+            "label": "INSUFFICIENT DATA"
+          },
+          "precision": {
+            "k": 2,
+            "n": 7,
+            "rate": 0.286,
+            "lb": 0.086,
+            "label": "INSUFFICIENT DATA"
+          }
+        },
+        "recall": {},
+        "speed": {
+          "n": 0,
+          "label": "INSUFFICIENT DATA",
+          "precision": "day"
+        },
+        "earliness": {
+          "companies": 0,
+          "median_lead_days": null,
+          "pre_funding": 0,
+          "precursor_types": {},
+          "share_of_important": {
+            "k": 0,
+            "n": 6,
+            "rate": 0.0,
+            "lb": 0.0,
+            "label": "INSUFFICIENT DATA"
+          },
+          "examples": [],
+          "deal_flow": null
+        },
+        "originality": {
+          "n": 7,
+          "syndicated": {
+            "k": 0,
+            "n": 7,
+            "rate": 0.0,
+            "lb": 0.0,
+            "label": "INSUFFICIENT DATA"
+          },
+          "press_release": {
+            "k": 0,
+            "n": 7,
+            "rate": 0.0,
+            "lb": 0.0,
+            "label": "INSUFFICIENT DATA"
+          },
+          "original": {
+            "k": 7,
+            "n": 7,
+            "rate": 1.0,
+            "lb": 0.8,
+            "label": "INSUFFICIENT DATA"
+          },
+          "confidence": "headline-level estimate — low confidence (small sample)"
+        },
+        "unique": {
+          "events": 0,
+          "companies": 0,
+          "early_companies": 0,
+          "by_scope": {},
+          "of_covered": {
+            "k": 0,
+            "n": 0,
+            "rate": null,
+            "lb": 0.0,
+            "label": "INSUFFICIENT DATA"
+          }
+        },
+        "authority": {
+          "prior": "HIGH-QUALITY INDEPENDENT MEDIA",
+          "agree": 0,
+          "contradicted": 0,
+          "open": 0,
+          "observed": {
+            "k": 0,
+            "n": 0,
+            "rate": null,
+            "lb": 0.0,
+            "label": "INSUFFICIENT DATA"
+          },
+          "basis": "prior (observations collecting)"
+        },
+        "technical": {
+          "basis": "external — not fetched",
+          "state": "NOT FETCHED",
+          "runs": null,
+          "ok_share": null,
+          "streak": 0
+        },
+        "independent": {
+          "outcomes": 7,
+          "covered": 1
+        },
+        "hypothesis": "",
+        "sample": "INSUFFICIENT DATA",
+        "roles": [
+          {
+            "role": "CONFIRMATION / AUTHORITY",
+            "basis": "prior",
+            "evidence": "external publication (high-quality independent media); seen in 7 curated / cited report(s) — not fetched, not a sourcing signal"
+          }
+        ],
+        "best_use": "confirmation / authority (external publication (high-quality independent media); seen in 7 curated / cited report(s) — not fetched, not a sourcing signal)",
+        "not_for": "sourcing alpha (too late) and continuous monitoring",
+        "limitations": [
+          "not fetched — observed only through curated cases and citations",
+          "only 7 article(s) in this window"
+        ],
+        "status": "EXTERNAL",
+        "status_reasons": []
+      }
+    ],
+    "declining": [
+      {
+        "name": "Channel Tech Review",
+        "reasons": [
+          "2 failed fetches in a row (rate limited)",
+          "relevance fell from 21% to 9% in this window"
+        ]
+      }
+    ],
+    "missing": [
+      {
+        "domain": "harbourpost.example",
+        "name": "Harbour Post",
+        "events": [
+          {
+            "event_id": "nw-case-halvard-unicorn-2026-10",
+            "company": "Halvard Robotics",
+            "date": "2026-10-05",
+            "headline": "Stuttgart robotics company Halvard Robotics passes a $1 billion valuation",
+            "how": "reported"
+          },
+          {
+            "event_id": "nw-7c41d9e2a0f3",
+            "company": "Quillon Labs",
+            "date": "2026-11-08",
+            "headline": "Quillon Labs raises €25M Series B for battery diagnostics",
+            "how": "cited"
+          },
+          {
+            "event_id": "nw-0d4c6b8a2e13",
+            "company": "Fennick Audio",
+            "date": "2026-09-30",
+            "headline": "Fennick Audio raises €2M seed",
+            "how": "cited"
+          }
+        ],
+        "how": {
+          "reported": 1,
+          "cited": 2
+        },
+        "n": 3,
+        "database": false,
+        "ready": true
+      },
+      {
+        "domain": "startupdb.example",
+        "name": "startupdb.example",
+        "events": [
+          {
+            "event_id": "nw-3f9a1c0b7d2e",
+            "company": "Vantor Kinetics",
+            "date": "2026-11-10",
+            "headline": "Munich robotics start-up Vantor Kinetics raises €18M Series A led by Lindqvist Partners",
+            "how": "cited"
+          },
+          {
+            "event_id": "nw-1e8b5a6c4d90",
+            "company": "Brightwell Bio",
+            "date": "2026-11-03",
+            "headline": "Brightwell Bio acquired by Corvane Diagnostics",
+            "how": "cited"
+          }
+        ],
+        "how": {
+          "cited": 2
+        },
+        "n": 2,
+        "database": true,
+        "ready": false
+      },
+      {
+        "domain": "lakesidetech.example",
+        "name": "Lakeside Tech",
+        "events": [
+          {
+            "event_id": "nw-5d2f8e1a9b47",
+            "company": "Lumora Grid",
+            "date": "2026-11-06",
+            "headline": "Lumora Grid secures €3M seed round to balance neighbourhood grids",
+            "how": "cited"
+          }
+        ],
+        "how": {
+          "cited": 1
+        },
+        "n": 1,
+        "database": false,
+        "ready": false
+      }
+    ],
+    "candidates": [
+      {
+        "id": "sn-harbourpost",
+        "name": "Harbour Post",
+        "url": "https://harbourpost.example/",
+        "state": "PROBATION"
+      },
+      {
+        "id": "sn-lakesidetech",
+        "name": "Lakeside Tech",
+        "url": "https://lakesidetech.example/",
+        "state": "DISCOVERED"
+      }
+    ],
+    "windows": [
+      "30",
+      "90",
+      "180",
+      "all"
+    ],
+    "scopes": {
+      "EUROPE": "Europe",
+      "DE": "Germany",
+      "FR": "France",
+      "UK": "UK",
+      "CH": "Switzerland",
+      "NORDICS": "Nordics",
+      "MUNICH": "Munich",
+      "AI": "AI",
+      "DEEPTECH": "Physical AI / deeptech"
+    },
+    "note": "Each source is measured per purpose — coverage, speed, early signal, originality, unique value, relevance, authority and technical health — never one universal score. Fewer than 8 observations = INSUFFICIENT DATA.",
+    "evaluated_at": "2026-11-12T07:00:39"
+  }
+}
