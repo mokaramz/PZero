@@ -22,7 +22,7 @@ with Scout Intake (merged), Conviction, Network (people, watchlist), Events.
 | 3 | Sources (`/sources`) | `sources.json` is modelled; the toggle is a single write. |
 | 4 | Ecosystems (`/ecosystems`) | Deterministic ecosystem and coverage code that Map needs; one small write. |
 | 5 | Founder Calls (`/founder-calls`) | The domain the Evaluator and Today reuse; no LLM. |
-| 6 | Active Evaluator (`/evaluator`) | Needs only the founder-calls, IMQ and founder-radar domains; no LLM or network. |
+| 6 | Active Evaluator (`/evaluator`) | Needs the founder-calls and IMQ domains, plus two Founder Radar operations it owns, with their separate persistence kept: `add_evidence` (validates and returns an evidence row, which a public resolution appends to the claim ledger) and the `verified_facts` read (separately confirmed company facts). Founder Radar (step 8) reuses them. Acceptance (Codex H-139): after a reload, a resolved public claim still has its evidence in the claim ledger, and the company's verified facts are unchanged (a public resolution does not promote a fact). No LLM or network. |
 | 7 | Map (`/map`) | Mostly read-only once Ecosystems is in; must tolerate missing News and source-network data. |
 | 8 | Founder Radar (`/founder-radar`) | Large, with heavy writes and web fetching, but nothing depends on it. |
 | 9 | Validation (`/validation`) | Append-only, no LLM; the read side first. |

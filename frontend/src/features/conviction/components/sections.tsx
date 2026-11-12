@@ -1,17 +1,17 @@
 /**
  * The deeper layers of a Conviction company, grouped by the question they answer. Rendered inside collapsed
- * <Section>s (CasePanel), so nothing renders until it is opened. What reads the record is live; what needs a later
- * port (verification proposals, traction review, founders / registries, the outreach email, the Manager card, the
- * Scout memo, the why-now trigger, Scout 00 and the evaluator) keeps its place with the reason instead.
+ * <Section>s (CasePanel), so nothing renders until it is opened. What reads the record is live, the outreach email and
+ * the Scout memo included (review 019); what needs a later port (verification proposals, traction review, founders /
+ * registries, the Manager card, the why-now trigger, Scout 00 and the evaluator) keeps its place with the reason instead.
  */
 import { useMemo, type ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { DeferredLink } from "@/components/Deferred";
 import { useToast } from "@/components/Toast";
-import { Badge } from "@/components/ui";
-import { useAction } from "@/lib/hooks";
-import { CONVICTION_KEYS, SAVE } from "../api";
+import { Async, Badge, Button } from "@/components/ui";
+import { useAction, useCopy } from "@/lib/hooks";
+import { CONVICTION_KEYS, SAVE, useOutreachEmail, useScoutMemo } from "../api";
 import { NOT_PORTED } from "../model/deferred";
 import { archetypeOf, human, isGated, verifyListText } from "../model/logic";
 import type { Meta, SaveBody, ScoutProvenance, Signal } from "../model/types";
@@ -172,7 +172,29 @@ export function Founders({ e, children }: { e: Signal; children?: ReactNode }) {
           Open Network
         </button>
       </p>
-      <NotPortedPart title="Outreach email — timing-aware" reason={NOT_PORTED.memo} testId="outreach-draft" />
+      <OutreachDraft slug={e.slug} />
+    </>
+  );
+}
+
+function OutreachDraft({ slug }: { slug: string }) {
+  const email = useOutreachEmail(slug);
+  const copy = useCopy();
+  return (
+    <>
+      <Sub2>Outreach email — timing-aware</Sub2>
+      <Async q={email}>
+        {(d) => (
+          <>
+            <pre className={styles.cardText} data-testid="outreach-draft">
+              {d.text}
+            </pre>
+            <Button size="sm" variant="ghost" onClick={() => copy(d.text ?? "")}>
+              Copy email
+            </Button>
+          </>
+        )}
+      </Async>
     </>
   );
 }
@@ -263,6 +285,7 @@ export function ManagerTeam({ e }: { e: Signal }) {
 
 /* ---------------------------------------------------------------- 7 · full audit (company-side part) */
 export function AuditExtras({ e, all, meta }: { e: Signal; all: Signal[]; meta?: Meta }) {
+  const memo = useScoutMemo(e.slug);
   const themes = useMemo(() => {
     const m = new Map<string, number>();
     for (const x of all) if (x.status !== "dropped") m.set(String(x.archetype ?? "other"), (m.get(String(x.archetype ?? "other")) ?? 0) + 1);
@@ -319,7 +342,14 @@ export function AuditExtras({ e, all, meta }: { e: Signal; all: Signal[]; meta?:
             })
           : "—"}
       </div>
-      <NotPortedPart title="Scout memo" reason={NOT_PORTED.memo} testId="scout-memo" />
+      <Sub2>Scout memo</Sub2>
+      <Async q={memo}>
+        {(d) => (
+          <pre className={styles.memoText} data-testid="scout-memo">
+            {(d.text ?? "").slice(0, 4000)}
+          </pre>
+        )}
+      </Async>
     </>
   );
 }

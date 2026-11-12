@@ -34,7 +34,7 @@ from psycopg import sql
 from psycopg.rows import dict_row
 from psycopg.types.json import Jsonb
 
-from projectzero.conviction import entries, imq, operator, pipeline
+from projectzero.conviction import entries, imq, operator, pipeline, radar, weekly
 from projectzero.conviction.inputs import load_inputs
 from projectzero.core.db import schema_ident
 from projectzero.dealflow.candidates import DealFlowStore
@@ -44,6 +44,9 @@ from projectzero.dealflow.intake.postgres import ensure_intake_open
 from projectzero.dealflow.ranking.names import norm_company
 from projectzero.dealflow.ranking.names import slug as radar_slug
 from projectzero.dealflow.ranking.service import ranking_input
+from projectzero.events import store as events_store
+from projectzero.network.store import load_people
+from projectzero.network.view import berlin_today
 
 DUPLICATE = "a company with this name already exists — open it in Conviction to edit it"
 KEEP_REASON = "Keep — scored in Conviction"
@@ -155,11 +158,14 @@ class ConvictionStore:
             return None
         return {"from": (before or {}).get("state"), "to": ev["state"]}
 
-    def _event(self, entry_id: Any, slug: str, action: str, before: Any, after: Any, detail: dict[str, Any]) -> None:
+    def _event(
+        self, entry_id: Any, slug: str, action: str, before: Any, after: Any, detail: dict[str, Any],
+        actor: str = "operator",
+    ) -> None:  # fmt: skip
         self._rows(
             "insert into {s}.conviction_events (entry_id, slug, actor, action, before, after, detail) "
-            "values (%s, %s, 'operator', %s, %s, %s, %s)",
-            (entry_id, slug, action, None if before is None else Jsonb(before), Jsonb(after), Jsonb(detail)),
+            "values (%s, %s, %s, %s, %s, %s, %s)",
+            (entry_id, slug, actor, action, None if before is None else Jsonb(before), Jsonb(after), Jsonb(detail)),
         )
 
     def _write_row(self, row: dict[str, Any], record: dict[str, Any], slug: str) -> None:
@@ -349,3 +355,86 @@ class ConvictionStore:
             )
             return str(hit["slug"]) if hit else None
         return None
+
+    # ── the Radar, memos, emails and the weekly update (review 019) ────────────────────────────────────────────
+    def signals(self, now: datetime) -> list[dict[str, Any]]:
+        """The pipeline's signals (the old ``pipeline()["signals"]``), which the Radar, memos and emails read."""
+        return list(self.pipeline_view(now)["signals"])
+
+    @staticmethod
+    def radar_of(signals: list[dict[str, Any]]) -> tuple[dict[str, list[dict[str, Any]]], set[str]]:
+        """The old ``radar_view`` body (``_`` keys stripped) and the slugs it places in the Top 10."""
+        composed = radar.compose_radar(copy.deepcopy(signals))
+        view = {k: [{kk: vv for kk, vv in e.items() if not kk.startswith("_")} for e in v] for k, v in composed.items()}
+        placed = {radar_slug(str(e.get("company") or "")) for k in radar.RADAR_SLOTS for e in composed.get(k, [])}
+        placed.discard("")
+        return view, placed
+
+    def _radar_due(self, placed: set[str]) -> list[dict[str, Any]]:
+        """Entry rows the composition places that have no Radar milestone yet (the old loop's filter)."""
+        due = []
+        for row in self.entry_rows():
+            record = record_of(row)
+            company = record.get("company")
+            if company in (None, "") or radar_slug(str(company)) not in placed:
+                continue
+            if "radar" not in (record.get("q_milestones") or []):
+                due.append(row)
+        return due
+
+    def radar_due(self, placed: set[str]) -> bool:
+        return bool(placed) and bool(self._radar_due(placed))
+
+    def _legacy_radar_credits(self) -> set[Any]:
+        """Old inbox candidate ids carrying the PRE-FIX (Keep-time) Radar credit: the imported ``inbox.json`` as the
+        old ``credit_radar_milestones`` read it (by id; a later duplicate id wins, as in its dict)."""
+        rows = self._rows(
+            "select e.value->>'id' as id, e.value->'q_milestones' as qm "
+            "from {s}.legacy_documents d, jsonb_array_elements(d.parsed->'candidates') with ordinality as e(value, ord) "
+            "where d.path = 'inbox.json' and jsonb_typeof(d.parsed->'candidates') = 'array' "
+            "and jsonb_typeof(e.value) = 'object' order by e.ord"
+        )
+        latest: dict[Any, Any] = {}
+        for r in rows:
+            latest[r["id"]] = r["qm"]
+        return {i for i, qm in latest.items() if isinstance(qm, list) and "radar" in qm}
+
+    def credit_radar(self, placed: set[str]) -> int:
+        """The old ``credit_radar_milestones`` (review 019, decision a, Codex H-137): under the Conviction lock, every
+        newly placed entry gains ``radar`` in ``q_milestones`` and ONE ``radar_milestone`` event with
+        ``counted = bool(source_id) and not legacy_credit``. Re-checked under the lock, so a concurrent view adds
+        nothing. Returns the counted credits (the old return value)."""
+        if not placed:
+            return 0
+        self._lock()
+        due = self._radar_due(placed)
+        legacy = self._legacy_radar_credits() if due else set()
+        counted_total = 0
+        for row in due:
+            before = record_of(row)
+            record = copy.deepcopy(before)
+            qm = record.setdefault("q_milestones", [])
+            qm.append("radar")
+            source_id = record.get("source_id")
+            legacy_credit = record.get("inbox_id") in legacy
+            counted = bool(source_id) and not legacy_credit
+            self._write_row(row, record, str(row["slug"]))
+            old_b, new_a = entries.changes(before, record)
+            detail = {"source_id": source_id or None, "legacy_credit": legacy_credit, "counted": counted}
+            self._event(row["id"], str(row["slug"]), "radar_milestone", old_b, new_a, detail, actor="system")
+            counted_total += counted
+        return counted_total
+
+    def signal(self, slug: str, now: datetime) -> dict[str, Any] | None:
+        """The old ``find_signal``: the pipeline signal with this slug."""
+        return next((e for e in self.signals(now) if e["slug"] == slug), None)
+
+    def weekly_text(self, body: dict[str, Any], now: datetime) -> str:
+        """The old ``POST /api/weekly``: the stored records (not the enriched view), people and events; no write."""
+        today = berlin_today(now)
+        stored = [record_of(r) for r in self.entry_rows()]
+        events = events_store.load(self.conn, self._schema, today, people=False).events
+        return weekly.weekly_update(
+            stored, load_people(self.conn, self._schema), events, today,
+            str(body.get("insight", "") or ""), str(body.get("question", "") or ""),
+        )  # fmt: skip

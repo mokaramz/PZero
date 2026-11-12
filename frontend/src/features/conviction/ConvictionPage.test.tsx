@@ -1,8 +1,9 @@
 import { fireEvent, screen, waitFor, within } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
+import { CONVICTION_KEYS, EMAIL, MEMO, RADAR } from "./api";
 import { preparedCase } from "./test/fixtures";
-import { fakeServer, renderPage, type Routes } from "./test/server";
+import { fakeServer, RADAR_HTML, renderPage, type Routes } from "./test/server";
 
 const rowSlugs = () => Array.from(document.querySelectorAll("[data-slug]")).map((r) => r.getAttribute("data-slug"));
 const detailName = () => screen.getByRole("article").querySelector("h2")?.textContent;
@@ -189,9 +190,10 @@ describe("Conviction — the company workspace", () => {
     await loaded();
     await waitFor(() => expect(screen.getByTestId("case-state")).toHaveTextContent("NOT STARTED"));
     openActions();
-    expect(checkInert(server)).toEqual(expect.arrayContaining(["Weekly update", "Generate Radar", "Email draft", "Send to Manager", "Prepare case"]));
-    expect(screen.getByRole("button", { name: "Weekly update" })).toHaveAttribute("title", "The weekly update arrives with the memo & email port");
-    expect(screen.getByRole("button", { name: "Generate Radar" })).toHaveAttribute("title", "Generating the Radar arrives with the Radar port");
+    const off = checkInert(server);
+    expect(off).toEqual(expect.arrayContaining(["Send to Manager", "Prepare case"]));
+    // live since review 019: the weekly update, the Radar download and the email draft
+    for (const live of ["Weekly update", "Generate Radar", "Email draft"]) expect(off).not.toContain(live);
     expect(screen.getByRole("button", { name: "Send to Manager" })).toHaveAttribute("title", "The Manager handoff arrives with the Manager / IMQ port");
 
     openSection("sec-funding", "Funding & timing");
@@ -208,7 +210,7 @@ describe("Conviction — the company workspace", () => {
 
     openSection("sec-founders", "Founders & relationship");
     await waitFor(() => expect(screen.getByTestId("founders-block")).toHaveTextContent("Founders and registries arrive with the identity port"));
-    expect(screen.getByTestId("outreach-draft")).toHaveTextContent("Memos and emails arrive with the memo & email port");
+    await waitFor(() => expect(screen.getByTestId("outreach-draft")).toHaveTextContent("Outreach email to Alpha"));
     checkInert(server);
   });
 });
@@ -338,5 +340,170 @@ describe("Conviction — writes", () => {
     await screen.findByText(/signal date is in the future/);
     expect(screen.getByRole("dialog")).toBeInTheDocument();
     expect(within(dlg).queryByTestId("save-duplicate")).toBeNull();
+  });
+});
+
+/** navigator.clipboard as a spy (jsdom has none). */
+function stubClipboard() {
+  const writeText = vi.fn(async (_text: string) => {});
+  Object.defineProperty(navigator, "clipboard", { value: { writeText }, configurable: true });
+  return writeText;
+}
+
+const EMPTY_RADAR = { high: [], emerging: [], wildcard: [], research_queue: [], gated: [], watch: [] };
+
+describe("Conviction — memo, email, weekly update & Radar download (review 019)", () => {
+  it("the founders section shows the timing-aware outreach email; Copy email copies it", async () => {
+    const writeText = stubClipboard();
+    const server = fakeServer({ email: (slug) => (slug === "alpha" ? "Hi Alpha team,\nWe noticed your pre-seed round." : undefined) });
+    renderPage();
+    await loaded();
+    openSection("sec-founders", "Founders & relationship");
+    await waitFor(() => expect(screen.getByTestId("outreach-draft")).toHaveTextContent("We noticed your pre-seed round."));
+    expect(screen.getByText("Outreach email — timing-aware")).toBeInTheDocument();
+    expect(server.reads("/api/conviction/email?c=alpha")).toBe(1);
+    fireEvent.click(screen.getByRole("button", { name: "Copy email" }));
+    await waitFor(() => expect(writeText).toHaveBeenCalledWith("Hi Alpha team,\nWe noticed your pre-seed round."));
+    expect(await screen.findByText("Copied")).toBeInTheDocument();
+    expect(server.posts()).toEqual([]);
+  });
+
+  it("an edit that changes the timing refreshes the open draft before Copy takes it (Codex H-141)", async () => {
+    const writeText = stubClipboard();
+    let timing = "unknown";
+    const server = fakeServer({
+      email: (slug) => (slug === "alpha" ? `Hi Alpha team — timing ${timing}` : undefined),
+      save: (body) => {
+        timing = String(body.fundraising_timing);
+        return undefined; // the default save merges the body
+      },
+    });
+    renderPage();
+    await loaded();
+    openSection("sec-founders", "Founders & relationship");
+    await waitFor(() => expect(screen.getByTestId("outreach-draft")).toHaveTextContent("Hi Alpha team — timing unknown"));
+    openActions();
+    fireEvent.click(within(screen.getByRole("group", { name: "Company actions" })).getByRole("button", { name: "Edit & verify" }));
+    const dlg = await openForm("Edit & verify: Alpha");
+    fireEvent.change(field(dlg, "fundraising_timing"), { target: { value: "raising_now" } });
+    fireEvent.click(within(dlg).getByRole("button", { name: "Save to pipeline" }));
+    await screen.findByText("Saved & scored");
+    await waitFor(() => expect(screen.getByTestId("outreach-draft")).toHaveTextContent("Hi Alpha team — timing raising_now"));
+    expect(server.reads("/api/conviction/email?c=alpha")).toBe(2);
+    fireEvent.click(screen.getByRole("button", { name: "Copy email" }));
+    await waitFor(() => expect(writeText).toHaveBeenCalledWith("Hi Alpha team — timing raising_now"));
+  });
+
+  it("a status change refreshes the open memo too; the Radar is among the derived views a write makes stale", async () => {
+    let status = "new";
+    const server = fakeServer({ memo: (slug) => (slug === "alpha" ? `Scout memo — Alpha (${status})` : undefined) });
+    renderPage();
+    await loaded();
+    openSection("case-details", "Full audit");
+    await waitFor(() => expect(screen.getByTestId("scout-memo")).toHaveTextContent("Scout memo — Alpha (new)"));
+    status = "contacted";
+    openActions();
+    fireEvent.change(screen.getByLabelText("Change status"), { target: { value: "contacted" } });
+    await screen.findByText("Status → contacted");
+    await waitFor(() => expect(screen.getByTestId("scout-memo")).toHaveTextContent("Scout memo — Alpha (contacted)"));
+    expect(server.reads("/api/conviction/memo?c=alpha")).toBe(2);
+    expect(CONVICTION_KEYS).toEqual(expect.arrayContaining([MEMO, EMAIL, RADAR]));
+  });
+
+  it("the full audit shows the Scout memo, cut at 4000 characters", async () => {
+    const long = `${"m".repeat(3990)}0123456789TAIL`;
+    const server = fakeServer({ memo: (slug) => (slug === "alpha" ? long : undefined) });
+    renderPage();
+    await loaded();
+    openSection("case-details", "Full audit");
+    const memo = await screen.findByTestId("scout-memo");
+    expect(memo.textContent).toBe(long.slice(0, 4000));
+    expect(memo.textContent).toMatch(/0123456789$/);
+    expect(screen.getByText("Scout memo")).toBeInTheDocument();
+    expect(server.reads("/api/conviction/memo?c=alpha")).toBe(1);
+  });
+
+  it("Actions → Email draft opens the outreach email of the selected company with a Copy button", async () => {
+    const writeText = stubClipboard();
+    fakeServer();
+    renderPage("/conviction?company=beta");
+    await loaded();
+    openActions();
+    fireEvent.click(screen.getByRole("button", { name: "Email draft" }));
+    const dlg = await screen.findByRole("dialog", { name: "Outreach email" });
+    await waitFor(() => expect(dlg).toHaveTextContent("Outreach email to Beta"));
+    fireEvent.click(within(dlg).getByRole("button", { name: "Copy" }));
+    await waitFor(() => expect(writeText).toHaveBeenCalledWith("Outreach email to Beta"));
+    fireEvent.click(within(dlg).getByRole("button", { name: "Close" }));
+    expect(screen.queryByRole("dialog", { name: "Outreach email" })).not.toBeInTheDocument();
+  });
+
+  it("an unknown company's email (404) shows the error in place and nothing to copy", async () => {
+    fakeServer({ email: () => undefined });
+    renderPage();
+    await loaded();
+    openActions();
+    fireEvent.click(screen.getByRole("button", { name: "Email draft" }));
+    const dlg = await screen.findByRole("dialog", { name: "Outreach email" });
+    await waitFor(() => expect(within(dlg).getByRole("alert")).toHaveTextContent("not found"));
+    expect(within(dlg).getByRole("button", { name: "Copy" })).toBeDisabled();
+  });
+
+  it("Weekly update posts {insight, question} and shows the text with a Copy button", async () => {
+    const writeText = stubClipboard();
+    const server = fakeServer({ weekly: (b) => ({ status: 200, body: { text: `WEEKLY · ${String(b.insight)} · ${String(b.question)}` } }) });
+    renderPage();
+    await loaded();
+    fireEvent.click(screen.getByRole("button", { name: "Weekly update" }));
+    const dlg = await screen.findByRole("dialog", { name: "Weekly Sourcing Update" });
+    expect(within(dlg).queryByTestId("weekly-text")).not.toBeInTheDocument();
+    fireEvent.change(within(dlg).getByLabelText("Optional: one sourcing insight"), { target: { value: "Robotics is heating up" } });
+    fireEvent.change(within(dlg).getByLabelText("Optional: one question for Manager"), { target: { value: "Meet Zentro?" } });
+    fireEvent.click(within(dlg).getByRole("button", { name: "Generate" }));
+    await waitFor(() => expect(within(dlg).getByTestId("weekly-text")).toHaveTextContent("WEEKLY · Robotics is heating up · Meet Zentro?"));
+    expect(server.posts()).toEqual([{ method: "POST", path: "/api/conviction/weekly", body: { insight: "Robotics is heating up", question: "Meet Zentro?" } }]);
+    fireEvent.click(within(dlg).getByRole("button", { name: "Copy" }));
+    await waitFor(() => expect(writeText).toHaveBeenCalledWith("WEEKLY · Robotics is heating up · Meet Zentro?"));
+  });
+
+  describe("Generate Radar", () => {
+    let clicked: Array<{ href: string; download: string }>;
+    beforeEach(() => {
+      clicked = [];
+      Object.defineProperty(URL, "createObjectURL", { value: vi.fn((_b: Blob) => "blob:radar"), configurable: true });
+      Object.defineProperty(URL, "revokeObjectURL", { value: vi.fn(), configurable: true });
+      vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(function (this: HTMLAnchorElement) {
+        clicked.push({ href: this.getAttribute("href") ?? "", download: this.download });
+      });
+    });
+    afterEach(() => vi.restoreAllMocks());
+
+    it("keeps its place, says it downloads weekly_memo.html, GETs radar.html and refreshes the Radar", async () => {
+      const server = fakeServer();
+      const { qc } = renderPage();
+      await loaded();
+      qc.setQueryData(["conviction/radar", {}], EMPTY_RADAR);
+      const run = within(screen.getByRole("group", { name: "System" })).getByRole("button", { name: "Generate Radar" });
+      expect(run).toHaveAttribute("title", "Downloads weekly_memo.html (Radar)");
+      fireEvent.click(run);
+      expect(await screen.findByText("weekly_memo.html (Radar) downloaded")).toBeInTheDocument();
+      expect(server.reads("/api/conviction/radar.html")).toBe(1);
+      expect(server.posts()).toEqual([]);
+      expect(clicked).toEqual([{ href: "blob:radar", download: "weekly_memo.html" }]);
+      const blob = vi.mocked(URL.createObjectURL).mock.calls[0][0] as Blob;
+      expect(await blob.text()).toBe(RADAR_HTML);
+      expect(qc.getQueryState(["conviction/radar", {}])?.isInvalidated).toBe(true);
+    });
+
+    it("a failed download says so, saves nothing and leaves the Radar as it was", async () => {
+      fakeServer({ radarHtml: () => new Response(JSON.stringify({ ok: false, error: "radar unavailable" }), { status: 500 }) });
+      const { qc } = renderPage();
+      await loaded();
+      qc.setQueryData(["conviction/radar", {}], EMPTY_RADAR);
+      fireEvent.click(screen.getByRole("button", { name: "Generate Radar" }));
+      expect(await screen.findByText(/Generating the Radar failed/)).toBeInTheDocument();
+      expect(clicked).toEqual([]);
+      expect(qc.getQueryState(["conviction/radar", {}])?.isInvalidated).toBe(false);
+    });
   });
 });

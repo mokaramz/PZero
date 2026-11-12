@@ -1,7 +1,8 @@
 /**
  * Conviction — the core cases of the old `e2e/tests/conviction.spec.ts` plus review 011's Keep paths, against the new
  * app on a preview database (the real snapshot in a scratch schema; writes land only there).
- * Changed on purpose: the Manager card, memo / email and case preparation are not ported — their controls are disabled.
+ * Changed on purpose: the Manager card and case preparation are not ported — their controls are disabled. The memo,
+ * the email, the weekly update and the Radar download are live (review 019); the download replaces the old output files.
  */
 import { expect, test, type Page } from "@playwright/test";
 
@@ -133,6 +134,30 @@ test.describe("Conviction — new app, preview database", () => {
     const again = await page.request.post("/api/conviction/save", { data: { company: name, inbox_id: id }, headers: { Origin: new URL(page.url()).origin } });
     expect(again.status()).toBe(409);
     expect((await again.json()).slug).toBeTruthy();
+    w.expectClean();
+  });
+
+  test("memo, outreach email, email draft, weekly update and the Radar download (review 019)", async ({ page }) => {
+    const w = watch(page);
+    await openCompany(page, "aereus", "Aereus");
+    await expand(page, "sec-founders");
+    await expect(page.getByTestId("outreach-draft")).toContainText("# Outreach — Aereus", { timeout: 30_000 });
+    await expect(page.getByRole("button", { name: "Copy email" })).toBeVisible();
+    await expand(page, "case-details");
+    await expect(page.getByTestId("scout-memo")).toContainText("# Scout memo — Aereus", { timeout: 30_000 });
+    await companyAction(page, "Email draft");
+    const drawer = page.getByRole("dialog", { name: "Outreach email" });
+    await expect(drawer).toContainText("**Subject:**");
+    await drawer.getByRole("button", { name: /close/i }).first().click();
+    await page.getByRole("button", { name: "Weekly update" }).click();
+    const weekly = page.getByRole("dialog", { name: "Weekly Sourcing Update" });
+    await weekly.getByLabel("Optional: one sourcing insight").fill("E2E: buyers ask for audit trails.");
+    await weekly.getByRole("button", { name: "Generate" }).click();
+    await expect(weekly.getByTestId("weekly-text")).toContainText("Sourcing update — week of");
+    await expect(weekly.getByTestId("weekly-text")).toContainText("Observation: E2E: buyers ask for audit trails.");
+    await weekly.getByRole("button", { name: /close/i }).first().click();
+    const [file] = await Promise.all([page.waitForEvent("download"), page.getByRole("button", { name: "Generate Radar" }).click()]);
+    expect(file.suggestedFilename()).toBe("weekly_memo.html");
     w.expectClean();
   });
 

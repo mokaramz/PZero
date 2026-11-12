@@ -66,3 +66,37 @@ def test_a_body_that_is_not_a_json_object_is_refused(client: TestClient, raw: by
 def test_case_needs_a_slug(client: TestClient) -> None:
     r = client.get("/api/conviction/case")
     assert r.status_code == 400 and r.json() == {"ok": False, "error": "slug required"}
+
+
+def test_before_the_import_the_radar_is_shown_without_crediting(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Review 019: the production schema refuses writes until the legacy import; the view must still answer."""
+    from projectzero.dealflow.intake.postgres import IntakeClosedError
+
+    monkeypatch.delenv("PZ_AUTH_TOKEN", raising=False)
+    view: dict[str, list[Any]] = {k: [] for k in ("high", "emerging", "wildcard", "research_queue", "gated", "watch")}
+    monkeypatch.setattr(router, "_radar_read", lambda request, now: ([], view, {"placed-co"}, True))
+    attempts: list[str] = []
+
+    class ClosedStore:
+        def __init__(self, *_: Any) -> None:
+            pass
+
+        def credit_radar(self, placed: set[str]) -> int:
+            attempts.append(next(iter(placed)))
+            raise IntakeClosedError("intake opens after the legacy import")
+
+    class NoopTx:
+        def __init__(self, *_: Any) -> None:
+            pass
+
+        def __enter__(self) -> object:
+            return object()
+
+        def __exit__(self, *_: Any) -> None:
+            return None
+
+    monkeypatch.setattr(router, "ConvictionStore", ClosedStore)
+    monkeypatch.setattr(router, "transaction", NoopTx)
+    with TestClient(create_app(UNREACHABLE), base_url="http://127.0.0.1:8177") as c:
+        r = c.get("/api/conviction/radar")
+    assert (r.status_code, r.json(), attempts) == (200, view, ["placed-co"])

@@ -65,10 +65,34 @@ export async function post<T = unknown>(path: string, body: object = {}, opts: {
   return data;
 }
 
+/** `attachment; filename="weekly_memo.html"` → `weekly_memo.html` (RFC 5987 `filename*=UTF-8''…` too). */
+export function filenameOf(disposition: string | null): string | undefined {
+  const m = disposition?.match(/filename\*?=(?:UTF-8'')?"?([^";]+)"?/i);
+  return m ? decodeURIComponent(m[1].trim()) : undefined;
+}
+
+/** A GET whose answer is a file to save (the Radar HTML): read like every other GET (same-origin credentials, the same
+ *  `{error}` failures as an ApiError), then handed to the browser as a download under the server's filename. Resolves
+ *  to the saved filename. */
+export async function download(path: string, query?: Query, fallbackName = "download"): Promise<string> {
+  const res = await fetch(apiUrl(path, query), { credentials: "same-origin" });
+  if (!res.ok) await parse(res); // always throws for a non-2xx answer
+  const name = filenameOf(res.headers.get("Content-Disposition")) ?? fallbackName;
+  const href = URL.createObjectURL(await res.blob());
+  const a = document.createElement("a");
+  a.href = href;
+  a.download = name;
+  document.body.append(a);
+  a.click();
+  a.remove();
+  window.setTimeout(() => URL.revokeObjectURL(href), 1000); // after the browser has picked the file up
+  return name;
+}
+
 /** True when the endpoint does not exist on this server (yet): a view that is not ported stays quiet instead of
  *  showing an error. */
 export function isMissingEndpoint(error: unknown): boolean {
   return error instanceof ApiError && error.status === 404;
 }
 
-export const api = { get, post };
+export const api = { get, post, download };

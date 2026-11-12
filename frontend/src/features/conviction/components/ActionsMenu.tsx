@@ -13,6 +13,8 @@ import styles from "../Conviction.module.css";
 export type DetailActions = {
   /** opens Edit & verify for the selected company */
   onEdit: () => void;
+  /** opens the outreach email draft of the selected company */
+  onEmail: () => void;
 };
 
 /** Secondary company actions — all still one click away, none competing with the decision. */
@@ -62,7 +64,7 @@ export function ActionsMenu({ e, actions }: { e: Signal; actions: DetailActions 
       <div className={styles.menuPanel} role="group" aria-label="Company actions">
         {item("Edit & verify", actions.onEdit)}
         {item("Log founder call", logCall)}
-        <DeferredItem label="Email draft" reason={NOT_PORTED.memo} />
+        {item("Email draft", actions.onEmail)}
         <DeferredItem label="Send to Manager" reason={NOT_PORTED.manager} />
         {item("Ask PZ Associate", () => navigate(`/associate?company=${encodeURIComponent(e.slug)}`))}
         <label className={styles.menuStatus} data-testid="status-bar">

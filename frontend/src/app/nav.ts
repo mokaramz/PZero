@@ -44,7 +44,7 @@ export const NAV: NavSection[] = [
     title: "Judgment",
     items: [
       { path: "/conviction", label: "Conviction", icon: "conviction", legacyView: "pipe", page: lazy(() => import("@/features/conviction/ConvictionPage")) },
-      { path: "/radar", label: "Radar", icon: "radar", legacyView: "radar" },
+      { path: "/radar", label: "Radar", icon: "radar", legacyView: "radar", page: lazy(() => import("@/features/radar/RadarPage")) },
       { path: "/founder-calls", label: "Founder Calls", icon: "phone", legacyView: "calls" },
       { path: "/evaluator", label: "Active Evaluator", icon: "chat", legacyView: "evaluator" },
       { path: "/validation", label: "Validation", icon: "validate", legacyView: "validation" },

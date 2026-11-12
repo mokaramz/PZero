@@ -118,6 +118,12 @@ export type Signal = {
 
 export type Pipeline = { week?: string; signals: Signal[] };
 
+/** `GET /api/conviction/radar` (the old `/api/radar`): the Top 10 slots and the lists that follow them. */
+export type Radar = { high: Signal[]; emerging: Signal[]; wildcard: Signal[]; research_queue: Signal[]; gated: Signal[]; watch: Signal[] };
+
+/** `GET memo` / `GET email` / `POST weekly` (the old `/api/memo`, `/api/email`, `/api/weekly`). */
+export type DocText = { text: string };
+
 /** Body of `POST /api/conviction/save` (Keep & score / Edit & verify / Add company / the checklist). `inbox_id` is the
  *  Deal Flow candidate a Keep decides; `slug` names the entry an edit changes. */
 export type SaveBody = Partial<Omit<Signal, "sc" | "imq_eval" | "slug">> & { slug?: string; inbox_id?: string };
