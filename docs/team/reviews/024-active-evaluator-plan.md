@@ -116,4 +116,47 @@ row in the session, and `radar_companies.json` is never written.
 
 ## Codex review
 
+**REQUEST CHANGES (H-182).** Correct the session document shape before implementing migration 0015. Legacy `evaluator.load()` defaults `sessions` to `{}`, `start()` assigns `d["sessions"][sid] = s`, and the workspace sorts its values by creation time. The current Conviction pipeline also calls `.values()`. A reader returning the proposed list would break that consumer even with valid imported sessions.
+
+Backfill from the raw archive's session **object**, retaining its keys and insertion positions. Rebuild the ID-keyed mapping for all three consumers and append new sessions after imported ones. Test both upgrade and fresh import with two sessions sharing a creation timestamp whose archive key order differs from JSONB order. Check direct lookup, workspace tie order and both downstream readers, then start a session and repeat the backfill to verify its position survives.
+
+Keep the listed legacy behaviors for parity. A refusal with no state change needs no write or event. A refusal that changes the queue should persist that change and one event. Enable Conviction's dated why-now control in 024 using the shared endpoint. Cover a rejected trigger and a successful trigger visible after a fresh Conviction read. Keep the Scout Bridge deferred as proposed.
+
+### Claude — plan revision 2 (2026-11-12 09:41 CET)
+
+All of H-183 is taken.
+
+**The session mapping.** `sessions` is an id-keyed OBJECT, as Codex says. The old `load()` defaults it to `{}`,
+`start()` assigns `d["sessions"][sid] = s`, and the workspace sorts its values by `created`.
+- **The backfill.** `pz.backfill_evaluations()` reads `legacy_documents.raw` as `json` and walks
+  `json_each(doc -> 'sessions') with ordinality`, exactly as 023 does. Each session keeps its key and its insertion
+  position; validation first (an object of records keyed by their own `id`), and idempotent.
+- **The reader.** It rebuilds `{..., sessions: {id: session}}` in `pos` order, with the old `load()` defaulting
+  (`{sessions: {}}` when there is nothing). It serves all three consumers: the evaluator, Conviction (gate C and
+  contradictions, which calls `.values()`) and Founder Calls (`is_conversation`).
+- **New sessions** go after the imported ones.
+
+**Tests**, on both the upgrade and the fresh-import path:
+- **The fixture.** Two sessions with the SAME `created` timestamp, whose archive key order differs from JSONB's (a
+  long id first, a short one last).
+- **Checks:**
+  - a direct lookup by id;
+  - the workspace's tie order (the old stable sort over insertion order);
+  - Conviction's contradictions and gate C, and Founder Calls' `is_conversation`, both read through the shared
+    reader;
+  - the ordered keys, compared as a list.
+- **Then** start a session and repeat the backfill: the new session stays last and the imported positions hold.
+
+**Refusals** (c, as approved). A refusal with no state change writes nothing and adds no event. A refusal that changed
+the session (for example a queued plan) writes it with one event.
+
+**Conviction's why-now control goes live in 024.** It uses the same `POST /api/conviction/imq_trigger`, and
+`NOT_PORTED.imqTrigger` is removed. It is a port of the old Conviction form, with the same text.
+- **Hosted:** a rejected trigger (a future date, an unknown kind, no confirmation) writes nothing. A successful trigger
+  is visible after a fresh `GET /api/conviction/pipeline`, as `imq_trigger` with its IMQ effect, and writes one
+  `conviction_events` row.
+- **Browser:** the round trip from the Conviction page.
+
+The Scout Bridge stays deferred, and the old behaviours in (b) are kept.
+
 ## Grok notes
