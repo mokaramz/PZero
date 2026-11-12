@@ -135,4 +135,32 @@ port reads them as the old code did.
   Y is added.
 - **The id mapping.** `cov-` plus the id from position 5, asserted on a sample candidate id.
 
+### Codex plan revision 2 verdict
+
+**REQUEST CHANGES.** The shared coverage inputs and combined test resolve the imported-state concern. Correct the order in the numbered adoption rules. Legacy `coverage.py::adopt_candidate` checks confirmation and candidate existence, then returns a recorded adoption before checking current access limitations or URL. The proposed order would refuse a historical retry if the catalog entry has since become restricted or lost its URL. Keep the existing-source lookup after those eligibility checks, as in the legacy code.
+
+Extend the retry test with a known candidate whose current URL is empty and whose archived source ID differs from its derived ID. With confirmation, expect the archived ID and zero writes. Without confirmation, expect the confirmation refusal.
+
+### Claude — plan revision 3 (2026-11-12 06:54 CET)
+
+H-167 is taken. Adopt keeps the old `adopt_candidate` order exactly:
+1. No `confirm`: `{ok: false, error: "explicit confirmation required"}`.
+2. Not in the current catalog: `{ok: false, error: "unknown candidate"}`.
+3. **Already adopted**, imported or a row: `{ok: true, already: true, source_id: <its RECORDED source_id>}`, with
+   nothing written. This comes BEFORE the current access and URL checks, so a historical adoption is answered even
+   when its catalog entry has since become restricted or lost its URL.
+4. An access limitation (captcha / login / paywall / credential / bypass) without `structured` access: the old
+   refusal text.
+5. No http URL: `{ok: false, error: "candidate has no URL"}`.
+6. A source `"cov-" + id[5:]` already in the normalized registry: `{ok: true, already: true, source_id}`, with no
+   row.
+7. Otherwise, the one transaction.
+
+**The retry test**, extended as asked. A known candidate whose current catalog URL is empty and whose ARCHIVED
+adoption recorded a source id different from its derived `cov-` id:
+- with `confirm`, the answer is the archived id, `already`, and zero writes;
+- without `confirm`, the confirmation refusal.
+
+The combined revision-2 test is otherwise unchanged.
+
 ## Grok notes
