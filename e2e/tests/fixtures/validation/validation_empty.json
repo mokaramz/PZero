@@ -1,0 +1,203 @@
+{
+  "date": "2026-11-12",
+  "headline": {
+    "found_this_month": 0,
+    "pre_funding_share": null,
+    "pre_funding_this_month": 0,
+    "median_lead_days": null,
+    "lead_n": 0,
+    "found_at_announcement": 0,
+    "strong_cases": 0,
+    "strong_found_early": 0,
+    "strong_found_late": 0,
+    "exceptional_recall": null,
+    "strong_universe": 0,
+    "strong_found_and_kept": 0,
+    "false_negatives": 0,
+    "never_seen": 0,
+    "unique_source_this_month": 0,
+    "conviction": 0
+  },
+  "sources": [],
+  "conversion": {
+    "tier": [],
+    "pre_funding": [],
+    "capital_stage": [],
+    "theme": [],
+    "ecosystem": [],
+    "scout": []
+  },
+  "stage_labels": {
+    "discovered": "Discovered",
+    "machine_keep_research": "Machine KEEP / RESEARCH",
+    "mohamed_accepted": "Mohamed accepted",
+    "conviction": "Conviction",
+    "verified": "Fully verified",
+    "radar": "Radar",
+    "imq": "IMQ qualified",
+    "omar": "Sent to Omar"
+  },
+  "lead_times": [],
+  "strength": {},
+  "horizon": {},
+  "calibration": {
+    "decisions": 0,
+    "agreement": null,
+    "agreed": 0,
+    "machine_rejects_overturned": 0,
+    "machine_keeps_rejected": 0,
+    "matrix": {},
+    "by_tier": {},
+    "who_was_right": {},
+    "disagreements": [],
+    "review_minutes_est": 0,
+    "note": "Real operating decisions only — the development and holdout labels are excluded on purpose."
+  },
+  "patterns": [],
+  "misses": [],
+  "false_positive_audits": [],
+  "false_positive_watch": [],
+  "outcomes": [],
+  "scout": {
+    "cycles": [],
+    "items": 0,
+    "classification": {},
+    "last_packet": null
+  },
+  "snapshots": [
+    {
+      "agreement": null,
+      "at": "2026-11-12T07:05:12",
+      "conviction": 0,
+      "date": "2026-11-12",
+      "decisions": 0,
+      "exceptional_recall": null,
+      "false_negatives": 1,
+      "found_at_announcement": 4,
+      "found_this_month": 0,
+      "lead_n": 0,
+      "median_lead_days": null,
+      "never_seen": 1,
+      "pre_funding_share": null,
+      "pre_funding_this_month": 8,
+      "strong_cases": 2,
+      "strong_found_and_kept": 1,
+      "strong_found_early": 1,
+      "strong_found_late": 1,
+      "strong_universe": 3,
+      "unique_source_this_month": 9
+    }
+  ],
+  "measurement": [
+    {
+      "metric": "Exceptional recall",
+      "meaning": "Of the companies that later proved strong, how many did we catch?",
+      "state": "NOT YET MEASURABLE",
+      "n": 0,
+      "needs": "real-world outcomes (rounds, customers) and miss audits — months, not days"
+    },
+    {
+      "metric": "Signal lead time",
+      "meaning": "How many days before a later public event did we first see the company?",
+      "state": "NOT YET MEASURABLE",
+      "n": 0,
+      "needs": "dated later events: recorded outcomes, or scans seeing early finds in funding news"
+    },
+    {
+      "metric": "Quality conversion",
+      "meaning": "How many discoveries progress to your acceptance, Conviction, verification?",
+      "state": "NOT YET MEASURABLE",
+      "n": 0,
+      "needs": "about 20 of your decisions on discovered companies, so group rates mean something"
+    },
+    {
+      "metric": "Misses",
+      "meaning": "Strong companies we rejected, watched passively, or never saw.",
+      "state": "NOT YET MEASURABLE",
+      "n": 0,
+      "needs": "outcomes and miss audits"
+    },
+    {
+      "metric": "Source alpha",
+      "meaning": "Which sources produce early, unique, high-value companies (not the most companies)?",
+      "state": "PARTLY KNOWN",
+      "n": 0,
+      "needs": "volume, uniqueness and pre-funding share are known; downstream value needs your decisions and outcomes"
+    },
+    {
+      "metric": "Your leverage",
+      "meaning": "Serious opportunities per hour of your attention; you vs the machine.",
+      "state": "NOT YET MEASURABLE",
+      "n": 0,
+      "needs": "your triage decisions (time is estimated from decision timestamps)"
+    }
+  ],
+  "benchmarks": {
+    "systems": [],
+    "note": "Only dates we actually hold: scan observations, outcomes you recorded, exports you imported. No private database access is assumed and no date is estimated."
+  },
+  "news": {
+    "available": false,
+    "reason": "News & Learning arrives with its port"
+  },
+  "verification_calibration": {},
+  "data_issues": [],
+  "cost": {
+    "month": "2026-11",
+    "ai_usd_this_month": 0.0,
+    "validation_usd": 0.0
+  },
+  "routing": null,
+  "native_bridge": {
+    "available": false,
+    "reason": "The native search bridge pilot is not part of the rewrite"
+  },
+  "vocab": {
+    "kinds": {
+      "institutional_round": "Institutional funding round announced",
+      "accelerator": "Accelerator / programme acceptance announced",
+      "mainstream_press": "First mainstream startup-news appearance",
+      "commercial_milestone": "Material commercial milestone (customer, launch, revenue)",
+      "acquisition": "Acquired (positive exit)",
+      "omar_interested": "Omar interested / requested follow-up",
+      "project_a_invested": "Project A invested",
+      "shutdown": "Company shut down / founders left",
+      "weak_outcome": "Proved weak on closer inspection (Mohamed)",
+      "omar_declined": "Omar not interested",
+      "external_db_listing": "Visible in an external database (Dealroom / Crunchbase / …)"
+    },
+    "miss_reasons": [
+      "source_not_covered",
+      "source_covered_but_failed",
+      "entity_extraction",
+      "filtered_as_noise",
+      "machine_reject",
+      "mohamed_reject",
+      "watch_not_followed",
+      "too_late_signal_only",
+      "other"
+    ],
+    "fp_causes": [
+      "weak_source",
+      "bad_entity_extraction",
+      "duplicated_pr_as_independent",
+      "late_stage_mistaken_for_early",
+      "founder_quality_overestimated",
+      "technical_novelty_not_venture",
+      "ai_wrapper",
+      "portfolio_conflict",
+      "poor_market",
+      "insufficient_evidence",
+      "model_error",
+      "mohamed_judgment_error",
+      "other"
+    ],
+    "evidence_class": {
+      "1": "verified real-world outcome",
+      "2": "human decision / response (Mohamed, Omar)",
+      "3": "deterministic Project Zero gate (verification, Radar, IMQ)",
+      "4": "independent external observation (e.g. later funding news seen by a scan)"
+    },
+    "min_n": 5
+  }
+}

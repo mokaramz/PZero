@@ -1,0 +1,17 @@
+/* a grounded sparkline: real observations only, drawn once (global .pz-trace) */
+.spark {
+  display: block;
+  width: 120px;
+  height: 30px;
+  overflow: visible;
+}
+.sparkLine {
+  fill: none;
+  stroke: var(--navy);
+  stroke-width: 1.4;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+.sparkEnd {
+  fill: var(--navy);
+}

@@ -1,0 +1,941 @@
+{
+  "date": "2026-11-12",
+  "headline": {
+    "found_this_month": 14,
+    "pre_funding_share": 0.571,
+    "pre_funding_this_month": 8,
+    "median_lead_days": 61,
+    "lead_n": 6,
+    "found_at_announcement": 4,
+    "strong_cases": 2,
+    "strong_found_early": 1,
+    "strong_found_late": 1,
+    "exceptional_recall": null,
+    "strong_universe": 3,
+    "strong_found_and_kept": 1,
+    "false_negatives": 1,
+    "never_seen": 1,
+    "unique_source_this_month": 9,
+    "conviction": 3
+  },
+  "sources": [
+    {
+      "source_id": "src-northgate-spinouts",
+      "source": "Northgate University spin-outs",
+      "discoveries": 14,
+      "unique": 11,
+      "pre_company": 6,
+      "pre_funding": 7,
+      "machine_keep_research": 4,
+      "mohamed_accepted": 1,
+      "conviction": 1,
+      "strong": 1,
+      "review_min": 2.5,
+      "at_announcement": 0,
+      "duplicate_rate": 0.214,
+      "pre_funding_share": 0.5,
+      "keep_research_rate": 0.286,
+      "median_lead_days": 74,
+      "lead_n": 3,
+      "value_per_discovery": 1.395,
+      "lifecycle": "ESTABLISHED"
+    },
+    {
+      "source_id": "src-riverside-grants",
+      "source": "Riverside Grants Register",
+      "discoveries": 13,
+      "unique": 10,
+      "pre_company": 5,
+      "pre_funding": 6,
+      "machine_keep_research": 3,
+      "mohamed_accepted": 1,
+      "conviction": 1,
+      "strong": 0,
+      "review_min": 2.3,
+      "at_announcement": 0,
+      "duplicate_rate": 0.231,
+      "pre_funding_share": 0.462,
+      "keep_research_rate": 0.231,
+      "median_lead_days": 58.5,
+      "lead_n": 2,
+      "value_per_discovery": 0.806,
+      "lifecycle": "ESTABLISHED"
+    },
+    {
+      "source_id": "src-forge-demo",
+      "source": "Founder Forge demo days",
+      "discoveries": 12,
+      "unique": 9,
+      "pre_company": 4,
+      "pre_funding": 5,
+      "machine_keep_research": 2,
+      "mohamed_accepted": 1,
+      "conviction": 0,
+      "strong": 0,
+      "review_min": 2.1,
+      "at_announcement": 0,
+      "duplicate_rate": 0.25,
+      "pre_funding_share": 0.417,
+      "keep_research_rate": 0.167,
+      "median_lead_days": null,
+      "lead_n": 0,
+      "value_per_discovery": 0.5,
+      "lifecycle": "ESTABLISHED"
+    },
+    {
+      "source_id": "src-seedline",
+      "source": "Seedline newsletter",
+      "discoveries": 11,
+      "unique": 8,
+      "pre_company": 3,
+      "pre_funding": 4,
+      "machine_keep_research": 1,
+      "mohamed_accepted": 0,
+      "conviction": 0,
+      "strong": 0,
+      "review_min": 1.9,
+      "at_announcement": 0,
+      "duplicate_rate": 0.273,
+      "pre_funding_share": 0.364,
+      "keep_research_rate": 0.091,
+      "median_lead_days": null,
+      "lead_n": 0,
+      "value_per_discovery": 0.281,
+      "lifecycle": "ESTABLISHED"
+    },
+    {
+      "source_id": "src-harbor-accel",
+      "source": "Harbor Accelerator cohort pages",
+      "discoveries": 10,
+      "unique": 7,
+      "pre_company": 2,
+      "pre_funding": 3,
+      "machine_keep_research": 0,
+      "mohamed_accepted": 0,
+      "conviction": 0,
+      "strong": 0,
+      "review_min": 0.0,
+      "at_announcement": 0,
+      "duplicate_rate": 0.3,
+      "pre_funding_share": 0.3,
+      "keep_research_rate": 0.0,
+      "median_lead_days": null,
+      "lead_n": 0,
+      "value_per_discovery": 0.167,
+      "lifecycle": "ESTABLISHED"
+    },
+    {
+      "source_id": "src-alpine-patents",
+      "source": "Alpine patent filings",
+      "discoveries": 9,
+      "unique": 6,
+      "pre_company": 1,
+      "pre_funding": 2,
+      "machine_keep_research": 0,
+      "mohamed_accepted": 0,
+      "conviction": 0,
+      "strong": 0,
+      "review_min": 0.0,
+      "at_announcement": 0,
+      "duplicate_rate": 0.333,
+      "pre_funding_share": 0.222,
+      "keep_research_rate": 0.0,
+      "median_lead_days": null,
+      "lead_n": 0,
+      "value_per_discovery": 0.107,
+      "lifecycle": "ESTABLISHED"
+    },
+    {
+      "source_id": "src-kestrel-github",
+      "source": "Kestrel open-source trending",
+      "discoveries": 8,
+      "unique": 5,
+      "pre_company": 0,
+      "pre_funding": 1,
+      "machine_keep_research": 0,
+      "mohamed_accepted": 0,
+      "conviction": 0,
+      "strong": 0,
+      "review_min": 0.0,
+      "at_announcement": 0,
+      "duplicate_rate": 0.375,
+      "pre_funding_share": 0.125,
+      "keep_research_rate": 0.0,
+      "median_lead_days": null,
+      "lead_n": 0,
+      "value_per_discovery": 0.038,
+      "lifecycle": "ESTABLISHED"
+    },
+    {
+      "source_id": "src-cobalt-meetups",
+      "source": "Cobalt founder meetups",
+      "discoveries": 5,
+      "unique": 2,
+      "pre_company": 0,
+      "pre_funding": 0,
+      "machine_keep_research": 0,
+      "mohamed_accepted": 0,
+      "conviction": 0,
+      "strong": 0,
+      "review_min": 0.0,
+      "at_announcement": 0,
+      "duplicate_rate": 0.6,
+      "pre_funding_share": 0.0,
+      "keep_research_rate": 0.0,
+      "median_lead_days": null,
+      "lead_n": 0,
+      "value_per_discovery": 0.0,
+      "lifecycle": "ESTABLISHED"
+    },
+    {
+      "source_id": "src-ember-podcasts",
+      "source": "Ember founder podcasts",
+      "discoveries": 2,
+      "unique": 0,
+      "pre_company": 0,
+      "pre_funding": 0,
+      "machine_keep_research": 0,
+      "mohamed_accepted": 0,
+      "conviction": 0,
+      "strong": 0,
+      "review_min": 0.0,
+      "at_announcement": 0,
+      "duplicate_rate": null,
+      "pre_funding_share": null,
+      "keep_research_rate": null,
+      "median_lead_days": null,
+      "lead_n": 0,
+      "value_per_discovery": 0.0,
+      "lifecycle": "PROBATION"
+    },
+    {
+      "source_id": "src-lowland-registry",
+      "source": "Lowland company registry",
+      "discoveries": 7,
+      "unique": 4,
+      "pre_company": 0,
+      "pre_funding": 0,
+      "machine_keep_research": 0,
+      "mohamed_accepted": 0,
+      "conviction": 0,
+      "strong": 0,
+      "review_min": 0.0,
+      "at_announcement": 0,
+      "duplicate_rate": 0.429,
+      "pre_funding_share": 0.0,
+      "keep_research_rate": 0.0,
+      "median_lead_days": null,
+      "lead_n": 0,
+      "value_per_discovery": 0.0,
+      "lifecycle": "ESTABLISHED"
+    },
+    {
+      "source_id": "src-meridian-papers",
+      "source": "Meridian preprint feed",
+      "discoveries": 6,
+      "unique": 3,
+      "pre_company": 0,
+      "pre_funding": 0,
+      "machine_keep_research": 0,
+      "mohamed_accepted": 0,
+      "conviction": 0,
+      "strong": 0,
+      "review_min": 0.0,
+      "at_announcement": 0,
+      "duplicate_rate": 0.5,
+      "pre_funding_share": 0.0,
+      "keep_research_rate": 0.0,
+      "median_lead_days": null,
+      "lead_n": 0,
+      "value_per_discovery": 0.0,
+      "lifecycle": "ESTABLISHED"
+    },
+    {
+      "source_id": "src-tundra-jobs",
+      "source": "Tundra job boards",
+      "discoveries": 3,
+      "unique": 0,
+      "pre_company": 0,
+      "pre_funding": 0,
+      "machine_keep_research": 0,
+      "mohamed_accepted": 0,
+      "conviction": 0,
+      "strong": 0,
+      "review_min": 0.0,
+      "at_announcement": 0,
+      "duplicate_rate": null,
+      "pre_funding_share": null,
+      "keep_research_rate": null,
+      "median_lead_days": null,
+      "lead_n": 0,
+      "value_per_discovery": 0.0,
+      "lifecycle": "ESTABLISHED"
+    },
+    {
+      "source_id": "src-quarry-press",
+      "source": "Quarry startup press",
+      "discoveries": 4,
+      "unique": 1,
+      "pre_company": 0,
+      "pre_funding": 0,
+      "machine_keep_research": 0,
+      "mohamed_accepted": 0,
+      "conviction": 0,
+      "strong": 0,
+      "review_min": 0.0,
+      "at_announcement": 2,
+      "duplicate_rate": null,
+      "pre_funding_share": null,
+      "keep_research_rate": null,
+      "median_lead_days": null,
+      "lead_n": 0,
+      "value_per_discovery": -0.111,
+      "lifecycle": "ESTABLISHED"
+    }
+  ],
+  "conversion": {
+    "tier": [
+      {
+        "group": "pre_company",
+        "discovered": 22,
+        "machine_keep_research": 5,
+        "mohamed_accepted": 2,
+        "conviction": 2,
+        "verified": 1,
+        "radar": 1,
+        "imq": 0,
+        "omar": 0
+      },
+      {
+        "group": "grant",
+        "discovered": 12,
+        "machine_keep_research": 2,
+        "mohamed_accepted": 1,
+        "conviction": 1,
+        "verified": 0,
+        "radar": 0,
+        "imq": 0,
+        "omar": 0
+      },
+      {
+        "group": "announcement",
+        "discovered": 8,
+        "machine_keep_research": 1,
+        "mohamed_accepted": 0,
+        "conviction": 0,
+        "verified": 0,
+        "radar": 0,
+        "imq": 0,
+        "omar": 0
+      }
+    ],
+    "pre_funding": [
+      {
+        "group": "PRE_FUNDING_EDGE",
+        "discovered": 26,
+        "machine_keep_research": 6,
+        "mohamed_accepted": 3,
+        "conviction": 3,
+        "verified": 1,
+        "radar": 1,
+        "imq": 0,
+        "omar": 0
+      },
+      {
+        "group": "UNKNOWN",
+        "discovered": 12,
+        "machine_keep_research": 1,
+        "mohamed_accepted": 0,
+        "conviction": 0,
+        "verified": 0,
+        "radar": 0,
+        "imq": 0,
+        "omar": 0
+      },
+      {
+        "group": "ALREADY_FUNDED",
+        "discovered": 4,
+        "machine_keep_research": 1,
+        "mohamed_accepted": 0,
+        "conviction": 0,
+        "verified": 0,
+        "radar": 0,
+        "imq": 0,
+        "omar": 0
+      }
+    ],
+    "capital_stage": [
+      {
+        "group": "PRE_FOUNDING",
+        "discovered": 14,
+        "machine_keep_research": 4,
+        "mohamed_accepted": 2,
+        "conviction": 2,
+        "verified": 1,
+        "radar": 1,
+        "imq": 0,
+        "omar": 0
+      },
+      {
+        "group": "PRE_SEED",
+        "discovered": 12,
+        "machine_keep_research": 2,
+        "mohamed_accepted": 1,
+        "conviction": 1,
+        "verified": 0,
+        "radar": 0,
+        "imq": 0,
+        "omar": 0
+      },
+      {
+        "group": "unknown",
+        "discovered": 16,
+        "machine_keep_research": 2,
+        "mohamed_accepted": 0,
+        "conviction": 0,
+        "verified": 0,
+        "radar": 0,
+        "imq": 0,
+        "omar": 0
+      }
+    ],
+    "theme": [
+      {
+        "group": "energy_storage",
+        "discovered": 9,
+        "machine_keep_research": 3,
+        "mohamed_accepted": 1,
+        "conviction": 1,
+        "verified": 0,
+        "radar": 0,
+        "imq": 0,
+        "omar": 0
+      },
+      {
+        "group": "industrial_ai",
+        "discovered": 11,
+        "machine_keep_research": 2,
+        "mohamed_accepted": 1,
+        "conviction": 1,
+        "verified": 1,
+        "radar": 1,
+        "imq": 0,
+        "omar": 0
+      },
+      {
+        "group": "none",
+        "discovered": 22,
+        "machine_keep_research": 3,
+        "mohamed_accepted": 0,
+        "conviction": 0,
+        "verified": 0,
+        "radar": 0,
+        "imq": 0,
+        "omar": 0
+      }
+    ],
+    "ecosystem": [
+      {
+        "group": "DE",
+        "discovered": 30,
+        "machine_keep_research": 6,
+        "mohamed_accepted": 2,
+        "conviction": 3,
+        "verified": 1,
+        "radar": 1,
+        "imq": 0,
+        "omar": 0
+      },
+      {
+        "group": "AT",
+        "discovered": 7,
+        "machine_keep_research": 1,
+        "mohamed_accepted": 1,
+        "conviction": 0,
+        "verified": 0,
+        "radar": 0,
+        "imq": 0,
+        "omar": 0
+      },
+      {
+        "group": "CH",
+        "discovered": 5,
+        "machine_keep_research": 1,
+        "mohamed_accepted": 0,
+        "conviction": 0,
+        "verified": 0,
+        "radar": 0,
+        "imq": 0,
+        "omar": 0
+      }
+    ],
+    "scout": []
+  },
+  "stage_labels": {
+    "discovered": "Discovered",
+    "machine_keep_research": "Machine KEEP / RESEARCH",
+    "mohamed_accepted": "Mohamed accepted",
+    "conviction": "Conviction",
+    "verified": "Fully verified",
+    "radar": "Radar",
+    "imq": "IMQ qualified",
+    "omar": "Sent to Omar"
+  },
+  "lead_times": [
+    {
+      "name": "Aurelith Systems",
+      "days": 112,
+      "event": "Institutional funding round announced",
+      "event_date": "2026-09-18",
+      "kind": "recorded"
+    },
+    {
+      "name": "Tidewell Energy",
+      "days": 74,
+      "event": "Funding news seen by a later scan (Quarry startup press)",
+      "event_date": "2026-10-01",
+      "kind": "observed"
+    }
+  ],
+  "strength": {
+    "UNKNOWN": 31,
+    "PROMISING_HUMAN": 3,
+    "EXTERNAL_SIGNAL": 4,
+    "NEGATIVE": 2,
+    "STRONG_VERIFIED": 1,
+    "STRONG_HUMAN": 1
+  },
+  "horizon": {
+    "immediate": 14,
+    "30-90 days": 18,
+    "3-6 months": 9,
+    "unknown": 1
+  },
+  "calibration": {
+    "decisions": 4,
+    "agreement": null,
+    "agreed": 2,
+    "machine_rejects_overturned": 1,
+    "machine_keeps_rejected": 1,
+    "matrix": {
+      "REJECT": {
+        "KEEP": 1,
+        "REJECT": 1
+      },
+      "KEEP": {
+        "REJECT": 1,
+        "KEEP": 1
+      }
+    },
+    "by_tier": {
+      "pre_company": {
+        "n": 3,
+        "agreement": null
+      },
+      "grant": {
+        "n": 1,
+        "agreement": null
+      }
+    },
+    "who_was_right": {
+      "pending": 1,
+      "mohamed": 1
+    },
+    "disagreements": [
+      {
+        "name": "Tidewell Energy",
+        "machine": "REJECT",
+        "mohamed": "KEEP",
+        "outcome": "PROMISING_HUMAN",
+        "right": "mohamed"
+      },
+      {
+        "name": "Graniteleaf Labs",
+        "machine": "KEEP",
+        "mohamed": "REJECT",
+        "outcome": "UNKNOWN",
+        "right": "pending"
+      }
+    ],
+    "review_minutes_est": 6.5,
+    "note": "Real operating decisions only — the development and holdout labels are excluded on purpose."
+  },
+  "patterns": [],
+  "misses": [
+    {
+      "company": "Orbelle Health",
+      "earliest_signal": "Grant award listed on the Riverside register",
+      "earliest_signal_date": "2026-06-03",
+      "entity_key": "orbelle health",
+      "id": "au-1a2b3c4d5e",
+      "improvement": "Read the grant register weekly, not monthly",
+      "miss_type": "never_found",
+      "note": "",
+      "preventable": "yes",
+      "pz_state_at_audit": null,
+      "recorded_at": "2026-10-20T10:14:02",
+      "should_have_found": "grants lane",
+      "signal_source": "Riverside Grants Register",
+      "supersedes": null,
+      "type": "miss",
+      "why_missed": "source_covered_but_failed"
+    },
+    {
+      "company": "Nordquill Sensors",
+      "earliest_signal": "Demo day pitch",
+      "earliest_signal_date": "",
+      "entity_key": "nordquill sensors",
+      "id": "au-6f7e8d9c0b",
+      "improvement": "",
+      "miss_type": "found_early_but_rejected",
+      "note": "",
+      "preventable": "unclear",
+      "pz_state_at_audit": {
+        "first_seen": "2026-05-11",
+        "first_tier": "pre_company",
+        "source_id": "src-forge-demo",
+        "machine_proposal": "REJECT",
+        "mohamed_verdict": null,
+        "inbox_decision": "rejected",
+        "stages": [
+          "discovered"
+        ]
+      },
+      "recorded_at": "2026-11-02T16:40:55",
+      "should_have_found": "",
+      "signal_source": "Founder Forge demo days",
+      "supersedes": null,
+      "type": "miss",
+      "why_missed": "machine_reject"
+    }
+  ],
+  "false_positive_audits": [
+    {
+      "causes": [
+        "weak_source",
+        "late_stage_mistaken_for_early"
+      ],
+      "company": "Graniteleaf Labs",
+      "entity_key": "graniteleaf labs",
+      "id": "au-0c9b8a7f6e",
+      "lesson": "A Series B press release is not an early signal",
+      "note": "",
+      "recorded_at": "2026-11-05T09:02:31",
+      "supersedes": null,
+      "type": "false_positive"
+    }
+  ],
+  "false_positive_watch": [
+    {
+      "name": "Graniteleaf Labs",
+      "stages": [
+        "discovered",
+        "machine_keep_research"
+      ],
+      "strength": "NEGATIVE"
+    }
+  ],
+  "outcomes": [
+    {
+      "benchmark_system": "",
+      "candidate_id": "cand-aurelith",
+      "company": "Aurelith Systems",
+      "entity_key": "aurelith systems",
+      "event_date": "2026-09-18",
+      "evidence_url": "https://news.example/aurelith-seed-round",
+      "id": "oc-3e4f5a6b7c",
+      "kind": "institutional_round",
+      "note": "",
+      "recorded_at": "2026-09-21T08:30:00",
+      "recorded_by": "mohamed",
+      "supersedes": null
+    },
+    {
+      "benchmark_system": "Dealroom",
+      "candidate_id": "",
+      "company": "Lumenfold AI",
+      "entity_key": "lumenfold ai",
+      "event_date": "2026-10-07",
+      "evidence_url": "",
+      "id": "oc-8d9e0f1a2b",
+      "kind": "external_db_listing",
+      "note": "seen while browsing",
+      "recorded_at": "2026-10-09T12:00:00",
+      "recorded_by": "mohamed",
+      "supersedes": null
+    }
+  ],
+  "scout": {
+    "cycles": [
+      "c-2026-10-02",
+      "c-2026-10-16"
+    ],
+    "items": 5,
+    "classification": {
+      "PENDING": 3,
+      "PROGRESSING": 1,
+      "DID NOT HOLD UP": 1
+    },
+    "last_packet": null
+  },
+  "snapshots": [
+    {
+      "agreement": null,
+      "at": "2026-11-08T07:05:12",
+      "conviction": 2,
+      "date": "2026-11-08",
+      "decisions": 2,
+      "exceptional_recall": null,
+      "false_negatives": 1,
+      "found_at_announcement": 4,
+      "found_this_month": 9,
+      "lead_n": 0,
+      "median_lead_days": null,
+      "never_seen": 1,
+      "pre_funding_share": 0.556,
+      "pre_funding_this_month": 8,
+      "strong_cases": 2,
+      "strong_found_and_kept": 1,
+      "strong_found_early": 1,
+      "strong_found_late": 1,
+      "strong_universe": 3,
+      "unique_source_this_month": 9
+    },
+    {
+      "agreement": null,
+      "at": "2026-11-09T07:05:12",
+      "conviction": 2,
+      "date": "2026-11-09",
+      "decisions": 3,
+      "exceptional_recall": null,
+      "false_negatives": 1,
+      "found_at_announcement": 4,
+      "found_this_month": 10,
+      "lead_n": 6,
+      "median_lead_days": 58,
+      "never_seen": 1,
+      "pre_funding_share": null,
+      "pre_funding_this_month": 8,
+      "strong_cases": 2,
+      "strong_found_and_kept": 1,
+      "strong_found_early": 1,
+      "strong_found_late": 1,
+      "strong_universe": 3,
+      "unique_source_this_month": 9
+    },
+    {
+      "agreement": null,
+      "at": "2026-11-10T07:05:12",
+      "conviction": 3,
+      "date": "2026-11-10",
+      "decisions": 3,
+      "exceptional_recall": null,
+      "false_negatives": 1,
+      "found_at_announcement": 4,
+      "found_this_month": 12,
+      "lead_n": 6,
+      "median_lead_days": 60,
+      "never_seen": 1,
+      "pre_funding_share": null,
+      "pre_funding_this_month": 8,
+      "strong_cases": 2,
+      "strong_found_and_kept": 1,
+      "strong_found_early": 1,
+      "strong_found_late": 1,
+      "strong_universe": 3,
+      "unique_source_this_month": 9
+    },
+    {
+      "agreement": null,
+      "at": "2026-11-11T07:05:12",
+      "conviction": 3,
+      "date": "2026-11-11",
+      "decisions": 4,
+      "exceptional_recall": null,
+      "false_negatives": 1,
+      "found_at_announcement": 4,
+      "found_this_month": 13,
+      "lead_n": 0,
+      "median_lead_days": null,
+      "never_seen": 1,
+      "pre_funding_share": null,
+      "pre_funding_this_month": 8,
+      "strong_cases": 2,
+      "strong_found_and_kept": 1,
+      "strong_found_early": 1,
+      "strong_found_late": 1,
+      "strong_universe": 3,
+      "unique_source_this_month": 9
+    },
+    {
+      "agreement": null,
+      "at": "2026-11-12T07:05:12",
+      "conviction": 3,
+      "date": "2026-11-12",
+      "decisions": 4,
+      "exceptional_recall": null,
+      "false_negatives": 1,
+      "found_at_announcement": 4,
+      "found_this_month": 14,
+      "lead_n": 6,
+      "median_lead_days": 61,
+      "never_seen": 1,
+      "pre_funding_share": 0.571,
+      "pre_funding_this_month": 8,
+      "strong_cases": 2,
+      "strong_found_and_kept": 1,
+      "strong_found_early": 1,
+      "strong_found_late": 1,
+      "strong_universe": 3,
+      "unique_source_this_month": 9
+    }
+  ],
+  "measurement": [
+    {
+      "metric": "Exceptional recall",
+      "meaning": "Of the companies that later proved strong, how many did we catch?",
+      "state": "COLLECTING",
+      "n": 3,
+      "needs": "real-world outcomes (rounds, customers) and miss audits — months, not days"
+    },
+    {
+      "metric": "Signal lead time",
+      "meaning": "How many days before a later public event did we first see the company?",
+      "state": "KNOWN",
+      "n": 6,
+      "needs": ""
+    },
+    {
+      "metric": "Quality conversion",
+      "meaning": "How many discoveries progress to your acceptance, Conviction, verification?",
+      "state": "COLLECTING",
+      "n": 14,
+      "needs": "about 20 of your decisions on discovered companies, so group rates mean something"
+    },
+    {
+      "metric": "Misses",
+      "meaning": "Strong companies we rejected, watched passively, or never saw.",
+      "state": "COLLECTING",
+      "n": 3,
+      "needs": "outcomes and miss audits"
+    },
+    {
+      "metric": "Source alpha",
+      "meaning": "Which sources produce early, unique, high-value companies (not the most companies)?",
+      "state": "PARTLY KNOWN",
+      "n": 14,
+      "needs": "volume, uniqueness and pre-funding share are known; downstream value needs your decisions and outcomes"
+    },
+    {
+      "metric": "Your leverage",
+      "meaning": "Serious opportunities per hour of your attention; you vs the machine.",
+      "state": "COLLECTING",
+      "n": 4,
+      "needs": "your triage decisions (time is estimated from decision timestamps)"
+    }
+  ],
+  "benchmarks": {
+    "systems": [
+      {
+        "system": "Dealroom",
+        "companies": 1,
+        "pz_earlier": 1,
+        "pz_later_or_same": 0,
+        "median_days": null,
+        "examples": [
+          "PZ first saw Lumenfold AI 39 days before the Dealroom event (2026-10-07)"
+        ]
+      },
+      {
+        "system": "Public funding news (seen by a scan)",
+        "companies": 5,
+        "pz_earlier": 4,
+        "pz_later_or_same": 1,
+        "median_days": 47,
+        "examples": [
+          "PZ first saw Aurelith Systems 112 days before the Public funding news (seen by a scan) event (2026-09-18)",
+          "PZ first saw Tidewell Energy 74 days before the Public funding news (seen by a scan) event (2026-10-01)",
+          "PZ first saw Quorra Biotics 47 days before the Public funding news (seen by a scan) event (2026-10-22)",
+          "PZ first saw Vessra Robotics 12 days before the Public funding news (seen by a scan) event (2026-11-03)",
+          "PZ first saw Brightmoor Robotics 0 days after the Public funding news (seen by a scan) event (2026-08-14)"
+        ]
+      }
+    ],
+    "note": "Only dates we actually hold: scan observations, outcomes you recorded, exports you imported. No private database access is assumed and no date is estimated."
+  },
+  "news": {
+    "available": false,
+    "reason": "News & Learning arrives with its port"
+  },
+  "verification_calibration": {
+    "founder_unverified": {
+      "accepted": 2,
+      "rejected": 1
+    }
+  },
+  "data_issues": [
+    "Vessra Robotics: first-seen date 2027-02-01 is in the future — ignored"
+  ],
+  "cost": {
+    "month": "2026-11",
+    "ai_usd_this_month": 3.4172,
+    "validation_usd": 0.0
+  },
+  "routing": {
+    "total_routed": 12,
+    "states": {},
+    "note": "Routing quality over time."
+  },
+  "native_bridge": {
+    "available": false,
+    "reason": "The native search bridge pilot is not part of the rewrite"
+  },
+  "vocab": {
+    "kinds": {
+      "institutional_round": "Institutional funding round announced",
+      "accelerator": "Accelerator / programme acceptance announced",
+      "mainstream_press": "First mainstream startup-news appearance",
+      "commercial_milestone": "Material commercial milestone (customer, launch, revenue)",
+      "acquisition": "Acquired (positive exit)",
+      "omar_interested": "Omar interested / requested follow-up",
+      "project_a_invested": "Project A invested",
+      "shutdown": "Company shut down / founders left",
+      "weak_outcome": "Proved weak on closer inspection (Mohamed)",
+      "omar_declined": "Omar not interested",
+      "external_db_listing": "Visible in an external database (Dealroom / Crunchbase / …)"
+    },
+    "miss_reasons": [
+      "source_not_covered",
+      "source_covered_but_failed",
+      "entity_extraction",
+      "filtered_as_noise",
+      "machine_reject",
+      "mohamed_reject",
+      "watch_not_followed",
+      "too_late_signal_only",
+      "other"
+    ],
+    "fp_causes": [
+      "weak_source",
+      "bad_entity_extraction",
+      "duplicated_pr_as_independent",
+      "late_stage_mistaken_for_early",
+      "founder_quality_overestimated",
+      "technical_novelty_not_venture",
+      "ai_wrapper",
+      "portfolio_conflict",
+      "poor_market",
+      "insufficient_evidence",
+      "model_error",
+      "mohamed_judgment_error",
+      "other"
+    ],
+    "evidence_class": {
+      "1": "verified real-world outcome",
+      "2": "human decision / response (Mohamed, Omar)",
+      "3": "deterministic Project Zero gate (verification, Radar, IMQ)",
+      "4": "independent external observation (e.g. later funding news seen by a scan)"
+    },
+    "min_n": 5
+  }
+}

@@ -47,7 +47,7 @@ export const NAV: NavSection[] = [
       { path: "/radar", label: "Radar", icon: "radar", legacyView: "radar", page: lazy(() => import("@/features/radar/RadarPage")) },
       { path: "/founder-calls", label: "Founder Calls", icon: "phone", legacyView: "calls", page: lazy(() => import("@/features/founder-calls/FounderCallsPage")) },
       { path: "/evaluator", label: "Active Evaluator", icon: "chat", legacyView: "evaluator", page: lazy(() => import("@/features/evaluator/EvaluatorPage")) },
-      { path: "/validation", label: "Validation", icon: "validate", legacyView: "validation" },
+      { path: "/validation", label: "Validation", icon: "validate", legacyView: "validation", page: lazy(() => import("@/features/validation/ValidationPage")) },
       { path: "/news", label: "News & Learning", icon: "news", legacyView: "news" },
     ],
   },

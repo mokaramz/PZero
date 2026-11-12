@@ -20,6 +20,7 @@ from projectzero.api.routers import (
     map,
     network,
     sources,
+    validation,
 )
 from projectzero.api.security import security_middleware
 from projectzero.core.config import Settings
@@ -42,6 +43,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.include_router(evaluator.router)
     app.include_router(map.router)
     app.include_router(founder_radar.router)
+    app.include_router(validation.router)
 
     @app.exception_handler(RequestValidationError)
     async def invalid_request(_: Request, exc: RequestValidationError) -> JSONResponse:
