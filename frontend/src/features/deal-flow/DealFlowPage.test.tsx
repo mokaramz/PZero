@@ -442,3 +442,105 @@ describe("Deal Flow — deep links", () => {
     expect(screen.queryByTestId("triage-bar")).toBeNull();
   });
 });
+
+describe("Deal Flow — Revisit (review 018)", () => {
+  const FLAG = {
+    kind: "funding_round",
+    since: "2026-11-03",
+    date_source: "since",
+    rejected_on: "2026-10-01",
+    evidence_url: "https://example.org/round",
+    evidence: [{ url: "https://example.org/round" }],
+    note: "Seed round announced",
+    submission_id: "sub-1",
+    flagged_at: "2026-11-10T23:15:00+00:00", // 00:15 on 11 Nov in Berlin: the day shown is the server's Berlin day
+    flagged_on: "2026-11-11",
+  };
+  /** x1 (rejected, Europe) and x2 (rejected, North America) flagged; x3 rejected without a flag. */
+  function flagged(): InboxPayload {
+    const ib = inbox();
+    ib.candidates.find((c) => c.id === "x1")!.revisit = { ...FLAG };
+    ib.candidates.push(
+      cand("x2", { decision: "rejected", location: "Austin, TX", revisit: { ...FLAG, kind: "founder_or_key_hire", note: null, flagged_at: "2026-11-11T09:00:00+00:00" } }),
+      cand("x3", { decision: "rejected", revisit: null }),
+    );
+    ib.revisit_count = 2;
+    return ib;
+  }
+  const revisitChip = () => screen.queryByRole("button", { name: /^Revisit/ });
+
+  it("no flags: no Revisit chip, and the Attention queue is as before", async () => {
+    serve();
+    renderPage();
+    await loaded();
+    expect(revisitChip()).toBeNull();
+    expect(rowIds()).toEqual(buildList(inbox().candidates, { ...TOP, skip: isNonStartup(triage().proposals) }).list.map((c) => c.id));
+  });
+
+  it("the chip shows the count and lists exactly the flagged (rejected) candidates; the default list is unchanged", async () => {
+    serve({ inbox: () => flagged() });
+    renderPage();
+    await loaded();
+    const plain = { ...inbox(), candidates: flagged().candidates.map((c) => ({ ...c, revisit: undefined })) };
+    expect(rowIds()).toEqual(buildList(plain.candidates, { ...TOP, skip: isNonStartup(triage().proposals) }).list.map((c) => c.id));
+    const chip = revisitChip()!;
+    expect(chip).toHaveTextContent("Revisit 2");
+    expect(chip.closest('[role="group"]')).toHaveAttribute("aria-label", "Attention");
+    fireEvent.click(chip);
+    expect(chip).toHaveAttribute("aria-pressed", "true");
+    expect(rowIds()).toEqual(["x2", "x1"]); // across workspaces, newest flag first; x3 (rejected, no flag) stays out
+    expect(screen.getByTestId("more-filters")).toHaveTextContent(/^More filters$/);
+    // the protected Rejected list still lists every rejected candidate of the workspace
+    openMore();
+    fireEvent.click(screen.getByRole("button", { name: "Rejected" }));
+    expect(rowIds()).toEqual(["x1", "x3"]);
+  });
+
+  it("the detail says why, links the evidence and points at the existing reopen; nothing for an unflagged candidate", async () => {
+    serve({ inbox: () => flagged() });
+    renderPage("/deal-flow?filter=revisit");
+    await waitFor(() => expect(rowIds()).toEqual(["x2", "x1"]));
+    fireEvent.click(screen.getAllByTestId("cand-row")[1]);
+    expect(detailName()).toBe("Company x1");
+    const box = screen.getByTestId("cand-revisit");
+    expect(box).toHaveTextContent("Revisit suggested: New funding round since 2026-11-03 — evidence ↗ · Seed round announced");
+    expect(box).toHaveTextContent("rejected on 2026-10-01 · flagged 2026-11-11 · Reopen with Undo under Your decision if it is worth another look.");
+    const link = within(box).getByRole("link", { name: "evidence ↗" });
+    expect(link).toHaveAttribute("href", "https://example.org/round");
+    expect(link).toHaveAttribute("target", "_blank");
+    expect(link).toHaveAttribute("rel", "noopener noreferrer");
+    expect(within(box).queryByRole("button")).toBeNull(); // no new action: the reopen stays the decision row
+    expect(within(screen.getByTestId("cand-detail")).getByRole("button", { name: "Undo" })).toBeInTheDocument();
+
+    fireEvent.click(screen.getAllByTestId("cand-row")[0]);
+    expect(detailName()).toBe("Company x2");
+    expect(screen.getByTestId("cand-revisit")).toHaveTextContent("Revisit suggested: New founder or key hire since 2026-11-03 — evidence ↗");
+    expect(screen.getByTestId("cand-revisit")).not.toHaveTextContent("·  ·");
+    expect(screen.getByTestId("cand-revisit")).not.toHaveTextContent("also reported at");
+
+    openMore();
+    fireEvent.click(screen.getByRole("button", { name: "Rejected" }));
+    fireEvent.click(screen.getAllByTestId("cand-row")[1]);
+    expect(detailName()).toBe("Company x3");
+    expect(screen.queryByTestId("cand-revisit")).toBeNull();
+  });
+
+  it("a corroboration links the earlier report's source too (Codex H-129)", async () => {
+    const ib = flagged();
+    ib.candidates.find((c) => c.id === "x1")!.revisit = {
+      ...FLAG,
+      kind: "independent_corroboration",
+      corroboration: [
+        { evidence_url: "https://www.registry.example.org/notice", submission_id: "sub-0" },
+        { evidence_url: "https://example.org/round", submission_id: "sub-1" },
+      ],
+    };
+    serve({ inbox: () => ib });
+    renderPage("/deal-flow?filter=revisit");
+    await waitFor(() => expect(rowIds()).toEqual(["x2", "x1"]));
+    fireEvent.click(screen.getAllByTestId("cand-row")[1]);
+    const box = screen.getByTestId("cand-revisit");
+    expect(box).toHaveTextContent("Revisit suggested: Independent corroboration since 2026-11-03 — evidence ↗ · Seed round announced · also reported at registry.example.org ↗");
+    expect(within(box).getByRole("link", { name: "registry.example.org ↗" })).toHaveAttribute("href", "https://www.registry.example.org/notice");
+  });
+});

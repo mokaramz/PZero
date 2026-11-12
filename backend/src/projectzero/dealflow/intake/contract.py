@@ -171,15 +171,42 @@ def cross_entity_issues(entities: Sequence[Any], already_refused: Collection[int
 COMPANY_KINDS = frozenset({"company", "opportunity"})
 
 
+MATERIAL_CHANGE_KIND = "material_change is only for company / opportunity entities (decision 0004)"
+MATERIAL_CHANGE_URL = "material_change.evidence_url must be one of this entity's evidence URLs"
+MATERIAL_CHANGE_SUPPORT = "material_change.supporting_urls must each be one of this entity's evidence URLs"
+
+
+def _material_change_issue(entity: Mapping[str, Any], prefix: str) -> Issue | None:
+    """Decision 0004 / review 018: the change's evidence (its ``evidence_url`` and any ``supporting_urls``) must be
+    part of what the entity cites."""
+    change = entity.get("material_change")
+    if not isinstance(change, Mapping) or not isinstance(change.get("evidence_url"), str):
+        return None  # absent, or malformed (the schema reports it)
+    evidence = entity.get("evidence")
+    urls = {e.get("url") for e in evidence if isinstance(e, Mapping)} if isinstance(evidence, list) else set()
+    if change["evidence_url"] not in urls:
+        return Issue(f"{prefix}/material_change/evidence_url", MATERIAL_CHANGE_URL)
+    support = change.get("supporting_urls")
+    if isinstance(support, list) and any(isinstance(u, str) and u not in urls for u in support):
+        return Issue(f"{prefix}/material_change/supporting_urls", MATERIAL_CHANGE_SUPPORT)
+    return None
+
+
 def content_issues(entity: Any, *, prefix: str = "$") -> list[Issue]:
-    """Rules on what an entity SAYS (review 007). A company / opportunity whose name and key fact read like page
-    plumbing (cookie banner, consent page, bot check, login wall) is refused with the reason. The old scan dropped
-    such records silently; the text tested is the old one: ``(name[:120] + " " + key_fact[:600])[:400]``."""
+    """Rules on what an entity SAYS (review 007 / 018). A company / opportunity whose name and key fact read like page
+    plumbing (cookie banner, consent page, bot check, login wall) is refused with the reason, and so is a
+    ``material_change`` on another kind of entity or one whose ``evidence_url`` the entity does not cite. The old
+    scan dropped such records silently; the text tested is the old one: ``(name[:120] + " " + key_fact[:600])[:400]``.
+    """
     if not isinstance(entity, Mapping):
         return []
     kind = entity.get("kind")
     if not isinstance(kind, str) or kind not in COMPANY_KINDS:  # a list / object kind is unhashable: schema reports it
+        if isinstance(kind, str) and "material_change" in entity:
+            return [Issue(f"{prefix}/material_change", MATERIAL_CHANGE_KIND)]
         return []
+    if issue := _material_change_issue(entity, prefix):
+        return [issue]
     name, key_fact = entity.get("name"), entity.get("key_fact")
     if not isinstance(name, str) or not isinstance(key_fact, (str, type(None))):
         return []  # the schema reports malformed values

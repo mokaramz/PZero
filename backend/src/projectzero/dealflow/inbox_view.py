@@ -17,11 +17,13 @@ candidate ORDER is the old file order: ties then break exactly as before.
 * ``ws_geos``: the old base geo list plus every source's geo tags, in the archived ``sources.json`` order.
 
 Not carried (the page never reads them): ``manual_sources``, ``pages``, ``feeds``. Added: ``pz_status`` per candidate
-(the stored status; ``archived`` and ``rejected`` both read as the old ``rejected``), sent back as ``expected_status``.
+(the stored status; ``archived`` and ``rejected`` both read as the old ``rejected``), sent back as ``expected_status``;
+``revisit`` per candidate (decision 0004: its current revisit flag, else ``null``) and ``revisit_count``.
 """
 
 from __future__ import annotations
 
+from datetime import UTC
 from typing import Any
 
 import psycopg
@@ -29,6 +31,7 @@ from psycopg import sql
 from psycopg.rows import dict_row
 
 from projectzero.core.db import schema_ident
+from projectzero.dealflow import revisit as revisit_rule
 from projectzero.dealflow import workspaces
 from projectzero.dealflow.ranking import attention, feedback, themes
 from projectzero.dealflow.ranking.service import RankingContext, ranking_input
@@ -67,6 +70,16 @@ _SOURCES = """
 """
 
 
+# decision 0004 / review 018: a rejected candidate's newest revisit flag, if it is newer than the latest decision (a
+# reopen or a new rejection makes every older flag stale)
+_REVISITS = """
+    select distinct on (e.candidate_id) e.candidate_id, e.detail, e.at
+    from {s}.candidate_events e join {s}.candidates c on c.id = e.candidate_id
+    where e.action = 'revisit_flagged' and c.status = 'rejected' and c.decided_at is not null and e.at > c.decided_at
+    order by e.candidate_id, e.at desc
+"""
+
+
 def _source_geo(row: dict[str, Any]) -> dict[str, Any]:
     raw = row.get("legacy")
     legacy: dict[str, Any] = raw if isinstance(raw, dict) else {}
@@ -90,6 +103,12 @@ def inbox_view(conn: psycopg.Connection[Any], schema: str) -> dict[str, Any]:
         rows = candidate_rows(conn, schema)
         cur.execute(sql.SQL(_SOURCES).format(s=s))
         sources = [_source_geo(r) for r in cur.fetchall()]
+        cur.execute(sql.SQL(_REVISITS).format(s=s))
+        revisits = {  # the flag time in UTC (sortable as text), and its Berlin day for display
+            r["candidate_id"]: {**r["detail"], "flagged_at": r["at"].astimezone(UTC).isoformat(),
+                                "flagged_on": r["at"].astimezone(revisit_rule.BERLIN).date().isoformat()}
+            for r in cur.fetchall()
+        }  # fmt: skip
 
     rest = docs.get("inbox.json#rest") or {}
     out: dict[str, Any] = {"report": [], **{k: v for k, v in rest.items() if k != "candidates"}}
@@ -99,6 +118,7 @@ def inbox_view(conn: psycopg.Connection[Any], schema: str) -> dict[str, Any]:
         c, _ = ranking_input(row)
         c["id"] = row["id"]
         c["pz_status"] = row["status"]  # the stored status, for the decision's stale check (old names can't tell)
+        c["revisit"] = revisits.get(row["id"])  # decision 0004: a current revisit flag, else None
         score, signals = themes.lens_signals(c)
         candidates.append({
             **c,
@@ -108,6 +128,7 @@ def inbox_view(conn: psycopg.Connection[Any], schema: str) -> dict[str, Any]:
             "feedback": feedback.for_candidate(c, ctx.table),
         })  # fmt: skip
     out["candidates"] = candidates
+    out["revisit_count"] = sum(1 for c in candidates if c["revisit"] is not None)
     out["themes"] = themes.THEMES
     out["feedback_label"] = feedback.LABEL
     out["feedback_min_reviewed"] = feedback.MIN_REVIEWED

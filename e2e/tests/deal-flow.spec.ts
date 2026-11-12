@@ -144,3 +144,52 @@ test.describe("Deal Flow — new app, preview database", () => {
     w.expectClean();
   });
 });
+
+test.describe("Deal Flow Revisit (decision 0004, review 018)", () => {
+  test("a re-report with a material change after the rejection is listed under Revisit, with its evidence", async ({ page }) => {
+    const w = watch(page);
+    const word = () => Math.random().toString(36).replace(/[^a-z]/g, "").slice(0, 8);
+    const tag = `${word()}${word()}`;
+    const name = `Revisit ${tag} Robotics`;
+    const evidence = `https://news.example.com/${tag}`;
+    const origin = new URL(process.env.PZ_BASE_URL ?? "http://localhost:5173").origin;
+    const headers = { Origin: origin };
+    const entity = { kind: "company", name, key_fact: `${name} raised a pre-seed round`, website: `https://${tag}.test`, evidence: [{ url: evidence }] }; // its own registrable domain
+    const deliver = async (e: object, ref: string) =>
+      (await page.request.post("/api/intake/submissions", {
+        data: { contract_version: "1.0", origin: "manual", external_ref: ref, submitted_at: "2026-11-12T09:00:00+01:00", entities: [e] },
+        headers,
+      })).json();
+    const first = await deliver(entity, `e2e-${tag}-1`);
+    expect(first.resolution, JSON.stringify(first)).toBeTruthy();
+    const cid = first.resolution[0].candidate_id as string;
+    const decided = await page.request.post(`/api/deal-flow/candidates/${cid}/decision`, { data: { status: "rejected", reason: "e2e" }, headers });
+    expect(decided.ok()).toBe(true);
+    const tomorrow = new Date(Date.now() + 2 * 86_400_000).toISOString().slice(0, 10); // a Berlin day after the rejection
+    const change = { kind: "funding_round", evidence_url: evidence, since: tomorrow, note: "E2E new lead investor" };
+    const second = await deliver({ ...entity, material_change: change }, `e2e-${tag}-2`);
+    expect(second.resolution[0].result).toBe("re_reported_closed");
+    await openDealFlow(page);
+    const chip = page.getByRole("button", { name: /^Revisit \d+/ });
+    await expect(chip).toBeVisible();
+    await chip.click();
+    const row = rows(page).filter({ hasText: name });
+    await expect(row).toBeVisible();
+    await row.click();
+    const detail = page.getByTestId("cand-detail");
+    await expect(detail).toContainText("Revisit suggested: New funding round");
+    await expect(detail).toContainText("E2E new lead investor");
+    await expect(detail.getByRole("link", { name: /evidence/ })).toHaveAttribute("href", evidence);
+    // the Revisit chip and the callout fit at 1366, 150 % and 1920
+    await page.setViewportSize({ width: 1366, height: 768 });
+    await page.waitForTimeout(300);
+    await expectNoHorizontalOverflow(page);
+    await zoom150(page);
+    await page.waitForTimeout(300);
+    await expectNoHorizontalOverflow(page);
+    await page.setViewportSize({ width: 1920, height: 1080 });
+    await page.waitForTimeout(300);
+    await expectNoHorizontalOverflow(page);
+    w.expectClean();
+  });
+});

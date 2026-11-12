@@ -3,7 +3,7 @@ import { Chip } from "@/components/ui";
 import { NOT_PORTED } from "../model/deferred";
 import type { NaFilter, Workspace } from "../model/geo";
 import { FILTERS, type Filter } from "../model/list";
-import { DEFERRED_FILTERS } from "../model/view";
+import { DEFERRED_FILTERS, type ViewFilter } from "../model/view";
 import { useDeferred } from "./Deferred";
 import styles from "../DealFlow.module.css";
 
@@ -24,8 +24,10 @@ type Props = {
   ws: Workspace;
   naf: NaFilter;
   setNaf: (v: NaFilter) => void;
-  filter: Filter;
-  setFilter: (f: Filter) => void;
+  filter: ViewFilter;
+  setFilter: (f: ViewFilter) => void;
+  /** rejected candidates flagged for a revisit (review 018): its chip shows only when there is one (or it is open) */
+  revisitCount: number;
   theme: string;
   setTheme: (t: string) => void;
   themes: Record<string, string>;
@@ -54,7 +56,7 @@ function DeferredFilterChip({ value, label }: { value: Filter; label: string }) 
   );
 }
 
-export function CandidateFilters({ ws, naf, setNaf, filter, setFilter, theme, setTheme, themes, im, setIm }: Props) {
+export function CandidateFilters({ ws, naf, setNaf, filter, setFilter, revisitCount, theme, setTheme, themes, im, setIm }: Props) {
   const chip = (f: { value: Filter; label: string }) =>
     DEFERRED_FILTERS.has(f.value) ? (
       <DeferredFilterChip key={f.value} value={f.value} label={f.label} />
@@ -62,7 +64,7 @@ export function CandidateFilters({ ws, naf, setNaf, filter, setFilter, theme, se
       <FilterChip key={f.value} value={f.value} label={f.label} on={filter === f.value} onPick={setFilter} />
     );
   const activeMore =
-    [!ATTENTION_FILTERS.includes(filter) ? FILTERS.find((f) => f.value === filter)?.label : "", theme ? (themes[theme] ?? theme) : "", im ? "IM lens" : ""]
+    [filter !== "revisit" && !ATTENTION_FILTERS.includes(filter) ? FILTERS.find((f) => f.value === filter)?.label : "", theme ? (themes[theme] ?? theme) : "", im ? "IM lens" : ""]
       .filter(Boolean)
       .join(" · ") || undefined;
   return (
@@ -79,7 +81,21 @@ export function CandidateFilters({ ws, naf, setNaf, filter, setFilter, theme, se
           </span>
         ) : undefined
       }
-      attention={FILTERS.filter((f) => ATTENTION_FILTERS.includes(f.value)).map(chip)}
+      attention={
+        <>
+          {FILTERS.filter((f) => ATTENTION_FILTERS.includes(f.value)).map(chip)}
+          {(revisitCount > 0 || filter === "revisit") && (
+            <Chip
+              on={filter === "revisit"}
+              onClick={() => setFilter("revisit")}
+              data-filter="revisit"
+              title="Rejected candidates re-reported with a material change since the rejection — yours to reopen or leave"
+            >
+              Revisit <span className={styles.chipN}>{revisitCount}</span>
+            </Chip>
+          )}
+        </>
+      }
       activeMore={activeMore}
       more={
         <>
