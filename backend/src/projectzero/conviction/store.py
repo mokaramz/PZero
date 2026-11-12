@@ -26,6 +26,7 @@ inbox record) — the source-yield / quality context reads candidate events late
 from __future__ import annotations
 
 import copy
+from collections.abc import Iterable
 from datetime import datetime
 from typing import Any
 
@@ -424,6 +425,34 @@ class ConvictionStore:
             self._event(row["id"], str(row["slug"]), "radar_milestone", old_b, new_a, detail, actor="system")
             counted_total += counted
         return counted_total
+
+    def lock(self) -> None:
+        """The one write lock (and the write boundary), for a caller that writes records through ``write_records``."""
+        self._lock()
+
+    def write_records(
+        self, rows: list[dict[str, Any]], changes: Iterable[Any], action: str, detail: dict[str, Any], now: datetime
+    ) -> int:
+        """Store records another feature changed (review 024: ending an evaluator session, the why-now trigger).
+        ``rows`` is ``entry_rows()`` as read under the lock; each change names its row by ``index`` and carries the
+        whole new ``record``. The IMQ snapshot is persisted on each record as on every Conviction write; a record
+        that ends up unchanged writes nothing. One ``conviction_events`` row per written record; returns their count."""
+        written = 0
+        for ch in changes:
+            row = rows[ch.index]
+            before = record_of(row)
+            record = copy.deepcopy(ch.record)
+            transition = self._persist_imq(record, now)
+            old_b, new_a = entries.changes(before, record)
+            if not new_a:
+                continue
+            self._write_row(row, record, str(row["slug"]))
+            d = dict(detail)
+            if transition:
+                d["imq"] = transition
+            self._event(row["id"], str(row["slug"]), action, old_b, new_a, d)
+            written += 1
+        return written
 
     def signal(self, slug: str, now: datetime) -> dict[str, Any] | None:
         """The old ``find_signal``: the pipeline signal with this slug."""

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from datetime import date, datetime
 from typing import Any
 
@@ -223,30 +224,24 @@ class RecordsMapper(BuilderState):
 
     def founder_calls(self) -> None:
         """``founder_calls.json`` (review 023): its records are mapped, in their ORIGINAL order, by
-        ``pz.backfill_founder_calls()`` from the byte-exact archive (the apply calls it). Checked here first so a
-        malformed file blocks the import before anything is written: an object whose ``companies`` / ``founders`` /
-        ``calls`` are objects keyed by a non-empty id, each record an object whose ``id`` (when present) is its key."""
-        if "founder_calls.json" not in self.src.paths():
+        ``pz.backfill_founder_calls()`` from the byte-exact archive (the apply calls it). Checked here first, by the
+        backfill's own rules (``keyed_collections``), so a malformed file blocks the import before anything is
+        written instead of failing the apply."""
+        self._keyed_archive("founder_calls.json", ("companies", "founders", "calls"))
+
+    def evaluations(self) -> None:
+        """``evaluations.json`` (review 024): its sessions are mapped, in their ORIGINAL order, by
+        ``pz.backfill_evaluations()`` from the byte-exact archive (the apply calls it). Checked here first, by the
+        backfill's own rules (``keyed_collections``)."""
+        self._keyed_archive("evaluations.json", ("sessions",))
+
+    def _keyed_archive(self, path: str, colls: tuple[str, ...]) -> None:
+        if path not in self.src.paths():
             return
-        data = self.src.json("founder_calls.json")
-        if not isinstance(data, dict):
-            self.identity_blockers.append("founder_calls.json: the top level must be an object")
-            return
-        for coll in ("companies", "founders", "calls"):
-            recs = data.get(coll)
-            if recs is None:
-                continue
-            if not isinstance(recs, dict):
-                self.identity_blockers.append(f'founder_calls.json: "{coll}" must be an object keyed by id')
-                continue
-            for key, rec in recs.items():
-                if key == "" or not isinstance(rec, dict) or ("id" in rec and rec["id"] != key):
-                    self.identity_blockers.append(
-                        f"founder_calls.json {coll} record {key!r} is not a record keyed by its own id: fix it first"
-                    )
-        self.report["reconciliation"]["founder_calls.json"] = {
-            k: len(data.get(k) or {}) for k in ("companies", "founders", "calls") if isinstance(data.get(k), dict)
-        }
+        problems, counts = keyed_collections(path, self.src.file(path).raw, colls)
+        self.identity_blockers.extend(problems)
+        if counts is not None:
+            self.report["reconciliation"][path] = counts
 
     def content_log(self) -> None:
         """``content.json`` (review 020): its items are mapped by ``pz.backfill_content_items()`` from the archived
@@ -537,6 +532,56 @@ class RecordsMapper(BuilderState):
             body = body | {"events": [plain(v) for v in reports]}
         self.report["reconciliation"].setdefault("scout_intake.json", {})["event_id_merge_suffixes_stripped"] = stripped
         return body
+
+
+class _Pairs(list[tuple[str, Any]]):
+    """A JSON object as its key/value pairs in file order, repeated keys included (``json`` keeps them all)."""
+
+
+def keyed_collections(path: str, raw: bytes, colls: tuple[str, ...]) -> tuple[list[str], dict[str, int] | None]:
+    """The rules of the archive backfills that map id-keyed objects in their raw order (0014 founder calls, 0015
+    evaluator sessions), applied to the SAME bytes, so the preview blocks exactly what the apply would reject:
+
+    * the top level must be an object;
+    * each collection, when the key is present, must be an object (an explicit ``null`` is NOT absent: the backfill
+      rejects it), with no key repeated;
+    * each record must be an object under a non-empty key, whose ``id``, when present, is that key as text.
+
+    Returns (the blockers, the record count per present collection; None when the top level is unusable)."""
+    try:
+        top = json.loads(raw.decode("utf-8-sig"), object_pairs_hook=_Pairs)
+    except (UnicodeDecodeError, ValueError):
+        return [f"{path}: not readable JSON"], None
+    if not isinstance(top, _Pairs):
+        return [f"{path}: the top level must be an object"], None
+    fields = dict(top)  # a repeated top-level key: the last one counts, as in the backfill's json operators
+    problems: list[str] = []
+    counts: dict[str, int] = {}
+    for coll in colls:
+        if coll not in fields:
+            continue
+        recs = fields[coll]
+        if not isinstance(recs, _Pairs):
+            problems.append(f'{path}: "{coll}" must be an object keyed by id (it is {_json_kind(recs)})')
+            continue
+        seen: set[str] = set()
+        for key, rec in recs:
+            if key in seen:
+                problems.append(f"{path} {coll} id {key!r} is repeated: fix it first")
+            seen.add(key)
+            rid = dict(rec).get("id", key) if isinstance(rec, _Pairs) else None
+            if key == "" or not isinstance(rec, _Pairs) or rid != key:
+                problems.append(f"{path} {coll} record {key!r} is not a record keyed by its own id: fix it first")
+        counts[coll] = len(seen)
+    return problems, counts
+
+
+def _json_kind(value: Any) -> str:
+    if value is None:
+        return "null"
+    if isinstance(value, list):
+        return "an array"
+    return {str: "a string", bool: "a boolean"}.get(type(value), "a number")
 
 
 def _redact(value: Any, where: str, found: list[str], path: str = "") -> Any:

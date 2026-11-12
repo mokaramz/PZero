@@ -1156,3 +1156,46 @@ def test_stated_never_raises(raw: Any, kind: str, why: str | None) -> None:
     s = stated(raw, today=date(2026, 11, 10))
     assert (s.kind, s.why) == (kind, why)
     assert (s.date is None) is (kind in ("absent", "unparseable"))
+
+
+# ── reviews 023 / 024: the id-keyed archives are checked by the backfill's own rules (Codex H-188) ──────────────
+KEYED = {"evaluations.json": "sessions", "founder_calls.json": "calls"}
+
+
+@pytest.mark.parametrize("path", sorted(KEYED))
+@pytest.mark.parametrize("text", ["{}", '{"version": 1}', '{"COLL": {}}'])
+def test_an_absent_or_empty_keyed_collection_imports(legacy: Path, path: str, text: str) -> None:
+    write(legacy, path, None, raw=text.replace("COLL", KEYED[path]).encode("utf-8"))
+    plan = plan_for(legacy)
+    assert not [b for b in plan.blockers if path in b]
+
+
+@pytest.mark.parametrize("path", sorted(KEYED))
+@pytest.mark.parametrize(
+    ("text", "problem"),
+    [
+        ('{"COLL": null}', "must be an object keyed by id (it is null)"),  # explicit null is not absent
+        ('{"COLL": []}', "must be an object keyed by id (it is an array)"),
+        ('{"COLL": {"r-1": {"id": "r-1"}, "r-1": {"id": "r-1"}}}', "'r-1' is repeated"),  # json.loads would hide it
+        ('{"COLL": {"r-1": {"id": 1}}}', "not a record keyed by its own id"),
+        ('{"COLL": {"r-1": {"id": null}}}', "not a record keyed by its own id"),
+        ('{"COLL": {"": {}}}', "not a record keyed by its own id"),
+        ('{"COLL": {"r-1": 5}}', "not a record keyed by its own id"),
+        ("[1]", "the top level must be an object"),
+    ],
+)
+def test_a_malformed_keyed_archive_blocks_the_plan(legacy: Path, path: str, text: str, problem: str) -> None:
+    write(legacy, path, None, raw=text.replace("COLL", KEYED[path]).encode("utf-8"))
+    plan = plan_for(legacy)
+    assert any(path in b and problem in b for b in plan.blockers), plan.blockers
+
+
+@pytest.mark.parametrize("path", sorted(KEYED))
+def test_a_bom_prefixed_keyed_archive_plans_like_one_without(legacy: Path, path: str) -> None:
+    """Codex H-192: the importer reads ``utf-8-sig``; the preview, the backfills and the readers all skip the BOM."""
+    coll = KEYED[path]
+    text = json.dumps({"version": 1, coll: {"r-long-zzzz": {"id": "r-long-zzzz"}, "r-1": {"id": "r-1"}}})
+    write(legacy, path, None, raw=b"\xef\xbb\xbf" + text.encode("utf-8"))
+    plan = plan_for(legacy)
+    assert not [b for b in plan.blockers if path in b]
+    assert plan.report["reconciliation"][path][coll] == 2

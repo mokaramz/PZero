@@ -725,7 +725,12 @@ describe("migration 0014 — founder calls in their ORIGINAL order, from the byt
   });
 
   test("a malformed archive raises and writes nothing; events are append-only", async () => {
-    for (const bad of [`[1]`, `{"calls": []}`, `{"calls": {"ca-1": 5}}`, `{"calls": {"ca-1": {"id": "ca-2"}}}`, `{"calls": {"ca-1": {}, "ca-1": {}}}`]) {
+    for (const empty of [`{}`, `{"version": 1}`, `{"calls": {}}`]) {  // absent or empty: nothing to map, no error
+      const db = await freshDb();
+      await archive(db, empty);
+      assert.equal((await db.query(`select pz.backfill_founder_calls() as n`)).rows[0].n, 0);
+    }
+    for (const bad of [`[1]`, `{"calls": null}`, `{"calls": []}`, `{"calls": {"ca-1": 5}}`, `{"calls": {"ca-1": {"id": "ca-2"}}}`, `{"calls": {"ca-1": {}, "ca-1": {}}}`]) {
       const db = await freshDb();
       await archive(db, bad);
       await rejects(db.query(`select pz.backfill_founder_calls()`), /founder_calls\.json/);
@@ -735,5 +740,102 @@ describe("migration 0014 — founder calls in their ORIGINAL order, from the byt
     await db.query(`insert into pz.fc_events (actor, action, before, after) values ('operator', 'save', '{}', '{}')`);
     await rejects(db.query(`update pz.fc_events set actor = 'x'`), /append-only/);
     await rejects(db.query(`insert into pz.fc_events (actor, action, before, after) values ('operator', 'delete', '{}', '{}')`), /fc_events_action_check/);
+  });
+});
+
+describe("migration 0015 — evaluator sessions in their ORIGINAL order, from the byte-exact archive", () => {
+  const archive = async (db, text) => {
+    const raw = Buffer.from(text, "utf8");
+    const sha = (await import("node:crypto")).createHash("sha256").update(raw).digest("hex");
+    await db.query(`insert into pz.legacy_documents (path, sha256, bytes, raw, parsed) values ('evaluations.json', $1, $2, $3, $4)`,
+      [sha, raw.length, raw, text]);
+  };
+  test("positions follow the raw insertion order of the sessions object; a retry keeps edits; malformed raises", async () => {
+    const db = await freshDb();
+    // a long id first, a short id last (JSONB would reverse them); both created at the same instant
+    await archive(db, JSON.stringify({ sessions: { "ev-20261101090000-aaaaaa": { id: "ev-20261101090000-aaaaaa", created: "2026-11-01 09:00", status: "ended", subject: { kind: "company", name: "Long" } },
+      "ev-1": { id: "ev-1", created: "2026-11-01 09:00", status: "open", subject: { kind: "external", name: "Short" } } } }));
+    assert.equal((await db.query(`select pz.backfill_evaluations() as n`)).rows[0].n, 2);
+    assert.deepEqual((await db.query(`select id from pz.eval_sessions order by pos`)).rows.map((r) => r.id), ["ev-20261101090000-aaaaaa", "ev-1"]);
+    assert.equal((await db.query(`select subject_kind from pz.eval_sessions where id = 'ev-1'`)).rows[0].subject_kind, "external");
+    assert.equal((await db.query(`select pz.backfill_evaluations() as n`)).rows[0].n, 0);
+    for (const empty of [`{}`, `{"version": 1}`, `{"sessions": {}}`]) {  // absent or empty: nothing to map, no error
+      const d2 = await freshDb();
+      await archive(d2, empty);
+      assert.equal((await d2.query(`select pz.backfill_evaluations() as n`)).rows[0].n, 0);
+    }
+    for (const bad of [`[1]`, `{"sessions": null}`, `{"sessions": []}`, `{"sessions": {"ev-1": 5}}`, `{"sessions": {"ev-1": {"id": "ev-2"}}}`,
+                       `{"sessions": {"ev-1": {"id": 1}}}`, `{"sessions": {"ev-1": {}, "ev-1": {}}}`]) {
+      const d2 = await freshDb();
+      await archive(d2, bad);
+      await rejects(d2.query(`select pz.backfill_evaluations()`), /evaluations\.json/);
+      assert.equal((await d2.query(`select count(*)::int as n from pz.eval_sessions`)).rows[0].n, 0);
+    }
+    await db.query(`insert into pz.eval_events (session_id, actor, action, after) values ('ev-1', 'operator', 'answer', '{}')`);
+    await rejects(db.query(`update pz.eval_events set actor = 'x'`), /append-only/);
+    await rejects(db.query(`insert into pz.eval_events (session_id, actor, action, after) values ('ev-1', 'operator', 'purge', '{}')`), /eval_events_action_check/);
+  });
+});
+
+describe("migrations 0014 / 0015 — an archive with the optional UTF-8 BOM maps like one without (Codex H-192 / H-195)", () => {
+  const withBom = async (db, path, doc) => {
+    const text = JSON.stringify(doc);
+    const raw = Buffer.concat([Buffer.from([0xef, 0xbb, 0xbf]), Buffer.from(text, "utf8")]);
+    const sha = (await import("node:crypto")).createHash("sha256").update(raw).digest("hex");
+    await db.query(`insert into pz.legacy_documents (path, sha256, bytes, raw, parsed) values ($1, $2, $3, $4, $5)`,
+      [path, sha, raw.length, raw, text]);
+    return raw;
+  };
+  test("the upgrade: a BOM archive already present before 0014 survives 0014 and 0015 in sequence", async () => {
+    const { PGlite } = await import("@electric-sql/pglite");
+    const { readdirSync } = await import("node:fs");
+    const db = new PGlite();
+    await db.exec("create role anon nologin; create role authenticated nologin;");
+    const files = readdirSync(MIGRATIONS).filter((f) => f.endsWith(".sql")).sort();
+    const m14 = files.find((f) => f.includes("founder_calls"));
+    for (const f of files.filter((f) => f < m14)) await db.exec(readFileSync(join(MIGRATIONS, f), "utf8"));
+    const raw = await withBom(db, "founder_calls.json", { version: 1, label: "Invented", companies: { "co-zzzz-long": { id: "co-zzzz-long", name: "Long Co" }, "co-a": { id: "co-a", name: "Short Co" } } });
+    for (const f of files.filter((f) => f >= m14)) await db.exec(readFileSync(join(MIGRATIONS, f), "utf8"));  // 0014 (its backfill), 0015, ...
+    assert.deepEqual((await db.query(`select id, name from pz.fc_companies order by pos`)).rows, [{ id: "co-zzzz-long", name: "Long Co" }, { id: "co-a", name: "Short Co" }]);
+    assert.deepEqual(Buffer.from((await db.query(`select raw from pz.legacy_documents where path = 'founder_calls.json'`)).rows[0].raw), raw);
+    assert.equal((await db.query(`select pz.backfill_founder_calls() as n`)).rows[0].n, 0);  // the importer's later call: idempotent
+  });
+
+  test("the upgrade from 0014 as first committed (3470852): 0015 alone installs the reader and refreshes the backfill", async () => {
+    const { PGlite } = await import("@electric-sql/pglite");
+    const { readdirSync } = await import("node:fs");
+    const db = new PGlite();
+    await db.exec("create role anon nologin; create role authenticated nologin;");
+    const files = readdirSync(MIGRATIONS).filter((f) => f.endsWith(".sql")).sort();
+    const m14 = files.find((f) => f.includes("founder_calls"));
+    for (const f of files.filter((f) => f < m14)) await db.exec(readFileSync(join(MIGRATIONS, f), "utf8"));
+    await db.exec(readFileSync(join(FIXTURES, "0014_founder_calls_as_committed_3470852.sql"), "utf8"));  // no BOM reader
+    for (const f of files.filter((f) => f > m14)) await db.exec(readFileSync(join(MIGRATIONS, f), "utf8"));  // 0015, ...
+    const fcRaw = await withBom(db, "founder_calls.json", { version: 1, label: "Invented", companies: { "co-zzzz-long": { id: "co-zzzz-long", name: "Long Co" }, "co-a": { id: "co-a", name: "Short Co" } } });
+    const evRaw = await withBom(db, "evaluations.json", { version: 1, sessions: { "ev-20261101090000-aaaaaa": { id: "ev-20261101090000-aaaaaa" }, "ev-1": { id: "ev-1" } } });
+    assert.equal((await db.query(`select pz.backfill_founder_calls() as n`)).rows[0].n, 2);
+    assert.equal((await db.query(`select pz.backfill_evaluations() as n`)).rows[0].n, 2);
+    assert.deepEqual((await db.query(`select id from pz.fc_companies order by pos`)).rows.map((r) => r.id), ["co-zzzz-long", "co-a"]);
+    assert.deepEqual((await db.query(`select id from pz.eval_sessions order by pos`)).rows.map((r) => r.id), ["ev-20261101090000-aaaaaa", "ev-1"]);
+    for (const [p, raw] of [["founder_calls.json", fcRaw], ["evaluations.json", evRaw]]) {
+      assert.deepEqual(Buffer.from((await db.query(`select raw from pz.legacy_documents where path = $1`, [p])).rows[0].raw), raw);
+    }
+  });
+
+  test("both backfills and the archive reader skip the BOM; the archived bytes are kept", async () => {
+    const db = await freshDb();
+    const fcRaw = await withBom(db, "founder_calls.json", { version: 1, label: "Invented", companies: { "co-zzzz-long": { id: "co-zzzz-long", name: "Long Co" }, "co-a": { id: "co-a", name: "Short Co" } } });
+    const evRaw = await withBom(db, "evaluations.json", { version: 1, sessions: { "ev-20261101090000-aaaaaa": { id: "ev-20261101090000-aaaaaa", status: "open" }, "ev-1": { id: "ev-1", status: "ended" } } });
+    assert.equal((await db.query(`select pz.backfill_founder_calls() as n`)).rows[0].n, 2);
+    assert.equal((await db.query(`select pz.backfill_evaluations() as n`)).rows[0].n, 2);
+    assert.deepEqual((await db.query(`select id from pz.fc_companies order by pos`)).rows.map((r) => r.id), ["co-zzzz-long", "co-a"]);
+    assert.deepEqual((await db.query(`select id from pz.eval_sessions order by pos`)).rows.map((r) => r.id), ["ev-20261101090000-aaaaaa", "ev-1"]);
+    const keys = async (p) => (await db.query(`select array_agg(k order by o) as k from json_object_keys(pz.archived_json($1)) with ordinality as t(k, o)`, [p])).rows[0].k;
+    assert.deepEqual(await keys("founder_calls.json"), ["version", "label", "companies"]);  // the top level, in order
+    assert.deepEqual(await keys("evaluations.json"), ["version", "sessions"]);
+    for (const [p, raw] of [["founder_calls.json", fcRaw], ["evaluations.json", evRaw]]) {
+      const kept = (await db.query(`select raw from pz.legacy_documents where path = $1`, [p])).rows[0].raw;
+      assert.deepEqual(Buffer.from(kept), raw);  // the BOM stays in the archive
+    }
   });
 });

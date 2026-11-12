@@ -1,0 +1,195 @@
+/* Active Evaluator (review 024) — sessions strip + three columns (ledger | question flow | judgment inputs). One column below ~980px container. */
+.page {
+  container-type: inline-size;
+}
+.bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+.sub {
+  font-size: 12px;
+  color: var(--mut);
+  overflow-wrap: anywhere;
+}
+.red {
+  color: var(--red);
+}
+.hd {
+  margin: 10px 0 4px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--mut);
+}
+.hdFirst {
+  margin-top: 0;
+}
+.lnk {
+  font: inherit;
+  color: var(--blue);
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+.lnk:hover {
+  text-decoration: underline;
+}
+.sessions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+.session {
+  font: inherit;
+  font-size: 12.5px;
+  text-align: left;
+  color: inherit;
+  background: var(--paper);
+  border: 1px solid var(--hair);
+  border-radius: var(--r-md);
+  padding: 6px 10px;
+  max-width: 320px;
+  min-width: 0;
+  cursor: pointer;
+  box-shadow: var(--sh-1);
+}
+.session:hover {
+  border-color: var(--hair-2);
+}
+.sessionSel {
+  border-color: var(--navy);
+  box-shadow: inset 0 0 0 1px var(--navy);
+}
+.sessionsEmpty {
+  font-size: 12.5px;
+  color: var(--mut);
+  padding: 12px 4px;
+}
+.ws {
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr) 240px;
+  align-items: start;
+  background: var(--paper);
+  border: 1px solid var(--hair);
+  border-radius: var(--r-lg);
+  box-shadow: var(--sh-2);
+}
+.ws > * {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.wsEmpty {
+  display: block;
+  padding: 60px 10px;
+  text-align: center;
+  color: var(--faint);
+}
+.left,
+.right {
+  position: sticky;
+  top: calc(var(--topbar-h) + 8px);
+  max-height: calc(100vh - var(--topbar-h) - 16px);
+  overflow: auto;
+  font-size: 12.5px;
+}
+.left {
+  border-right: 1px solid var(--hair);
+  padding: 0 12px 12px;
+}
+.right {
+  border-left: 1px solid var(--hair);
+  padding: 12px 14px;
+  font-size: 12px;
+}
+.center {
+  padding: 0 18px 18px;
+  font-size: 13px;
+}
+.sect {
+  padding: 10px 0;
+  border-bottom: 1px solid var(--hair);
+}
+.sectLast {
+  border-bottom: 0;
+}
+.sect textarea {
+  margin: 6px 0;
+}
+.claim {
+  padding: 6px 0;
+  border-bottom: 1px dashed var(--hair);
+}
+.q {
+  background: var(--tint-cream-2);
+  border: 1px solid var(--hair);
+  border-radius: var(--r-md);
+  padding: 10px 12px;
+  margin-bottom: 8px;
+}
+.qText {
+  font-size: 15px;
+  margin: 4px 0;
+}
+.qActs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
+}
+.qa {
+  padding: 6px 0;
+  border-bottom: 1px dashed var(--hair);
+}
+.endRow {
+  margin-top: 10px;
+}
+.g {
+  padding: 4px 0;
+  border-bottom: 1px dashed var(--hair);
+}
+.gStates {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  margin-top: 2px;
+  font-size: 12px;
+  color: var(--mut);
+}
+.imqAct {
+  margin-top: 6px;
+  font-size: 12px;
+}
+.modalForm {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.modalForm input,
+.modalForm select,
+.modalForm textarea {
+  width: 100%;
+}
+
+@container (max-width: 980px) {
+  .ws {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .left,
+  .right {
+    position: static;
+    max-height: none;
+    border: 0;
+  }
+  .left {
+    border-bottom: 1px solid var(--hair);
+  }
+  .right {
+    border-top: 1px solid var(--hair);
+  }
+}

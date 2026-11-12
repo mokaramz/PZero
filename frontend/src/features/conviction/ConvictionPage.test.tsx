@@ -198,14 +198,19 @@ describe("Conviction — the company workspace", () => {
 
     openSection("sec-funding", "Funding & timing");
     await waitFor(() => expect(screen.getByRole("button", { name: "Record a dated trigger (sourced)" })).toBeInTheDocument());
-    checkInert(server);
+    expect(checkInert(server)).not.toContain("Record a dated trigger (sourced)");
 
     openSection("sec-omar", "Manager / Team");
     await waitFor(() => expect(screen.getByTestId("imq")).toHaveTextContent("NOT YET IMQ"));
     expect((screen.getByTestId("sec-funding") as HTMLDetailsElement).open).toBe(false); // one open section at a time
-    expect(checkInert(server)).toEqual(
-      expect.arrayContaining(["Record dated why-now trigger (sourced)", "ask Scout 00 for a dated source ↗", "Start Active Evaluator"]),
-    );
+    const imqOff = checkInert(server);
+    expect(imqOff).toEqual(expect.arrayContaining(["ask Scout 00 for a dated source ↗"]));
+    // live since review 024: starting the Active Evaluator for this company
+    expect(imqOff).not.toContain("Start Active Evaluator");
+    expect(screen.getByRole("button", { name: "Start Active Evaluator" })).not.toHaveAttribute("aria-disabled");
+    // live since review 024: recording a dated why-now trigger
+    expect(imqOff).not.toContain("Record dated why-now trigger (sourced)");
+    expect(screen.getByRole("button", { name: "Record dated why-now trigger (sourced)" })).not.toHaveAttribute("aria-disabled");
     expect(screen.getByTestId("omar-card")).toHaveTextContent("The Manager handoff arrives with the Manager / IMQ port");
 
     openSection("sec-founders", "Founders & relationship");
@@ -505,5 +510,130 @@ describe("Conviction — memo, email, weekly update & Radar download (review 019
       expect(clicked).toEqual([]);
       expect(qc.getQueryState(["conviction/radar", {}])?.isInvalidated).toBe(false);
     });
+  });
+});
+
+describe("Conviction — the dated why-now trigger (review 024)", () => {
+  const KIND = "Trigger kind";
+  const DATE = "Date of the trigger (YYYY-MM-DD) — when it happened, not today";
+  const URL_ = "Public source URL that documents it (not LinkedIn, not a search result)";
+  const FACT = "The dated fact as the source states it";
+
+  async function openFromImq() {
+    openSection("sec-omar", "Manager / Team");
+    fireEvent.click(await screen.findByRole("button", { name: "Record dated why-now trigger (sourced)" }));
+    return screen.findByRole("dialog", { name: "Record dated why-now trigger" });
+  }
+
+  function fill(dlg: HTMLElement, v: { kind?: string; date: string; url: string; fact: string }) {
+    if (v.kind) fireEvent.change(within(dlg).getByLabelText(KIND), { target: { value: v.kind } });
+    fireEvent.change(within(dlg).getByLabelText(DATE), { target: { value: v.date } });
+    fireEvent.change(within(dlg).getByLabelText(URL_), { target: { value: v.url } });
+    fireEvent.change(within(dlg).getByLabelText(FACT), { target: { value: v.fact } });
+  }
+
+  it("the form offers the old kinds, needs a date and a source before Review, and Back returns to the inputs", async () => {
+    const server = fakeServer();
+    renderPage();
+    await loaded();
+    const dlg = await openFromImq();
+    const kinds = within(dlg).getByLabelText(KIND) as HTMLSelectElement;
+    expect(Array.from(kinds.options).map((o) => o.value)).toEqual(["founder_formation", "fundraising", "incorporation", "trigger", "window"]);
+    expect(kinds).toHaveValue("trigger");
+    expect(within(dlg).getByRole("button", { name: "Review" })).toBeDisabled();
+    fill(dlg, { date: "2026-10-20", url: "https://tech.eu/alpha-seed", fact: "Alpha raised a seed round" });
+    fireEvent.click(within(dlg).getByRole("button", { name: "Review" }));
+    expect(within(dlg).getByTestId("trigger-review").textContent).toBe("Record why-now trigger:trigger · 2026-10-20“Alpha raised a seed round”https://tech.eu/alpha-seed");
+    fireEvent.click(within(dlg).getByRole("button", { name: "Back" }));
+    expect(within(dlg).getByLabelText(DATE)).toHaveValue("2026-10-20");
+    fireEvent.click(within(dlg).getByRole("button", { name: "Cancel" }));
+    expect(screen.queryByRole("dialog")).toBeNull();
+    expect(server.posts()).toEqual([]);
+  });
+
+  it("a refused trigger shows the error and changes nothing", async () => {
+    const server = fakeServer();
+    renderPage();
+    await loaded();
+    const before = structuredClone(server.db);
+    const dlg = await openFromImq();
+    fill(dlg, { kind: "fundraising", date: "2027-01-05", url: "https://tech.eu/alpha-seed", fact: "Alpha will raise" });
+    fireEvent.click(within(dlg).getByRole("button", { name: "Review" }));
+    const reads = server.reads("/api/conviction/pipeline");
+    fireEvent.click(within(dlg).getByRole("button", { name: "Record trigger" }));
+    expect(await screen.findByText("✕ Recording the why-now trigger failed — trigger date must be YYYY-MM-DD and not in the future")).toBeInTheDocument();
+    expect(server.posts()).toEqual([
+      {
+        method: "POST",
+        path: "/api/conviction/imq_trigger",
+        body: { slug: "alpha", kind: "fundraising", date: "2027-01-05", url: "https://tech.eu/alpha-seed", fact: "Alpha will raise", confirm: true },
+      },
+    ]);
+    // the dialog stays on its review step, nothing is refetched and the record is unchanged
+    expect(within(screen.getByRole("dialog", { name: "Record dated why-now trigger" })).getByTestId("trigger-review")).toBeInTheDocument();
+    expect(server.reads("/api/conviction/pipeline")).toBe(reads);
+    expect(server.db).toEqual(before);
+    expect(screen.getByTestId("imq")).toHaveTextContent("Timing: not established");
+  });
+
+  it("a successful trigger posts the old body with confirm, closes and refetches the pipeline", async () => {
+    const server = fakeServer();
+    renderPage();
+    await loaded();
+    const dlg = await openFromImq();
+    fill(dlg, { kind: "fundraising", date: "2026-10-20", url: "https://tech.eu/alpha-seed", fact: "Alpha raised a seed round" });
+    fireEvent.click(within(dlg).getByRole("button", { name: "Review" }));
+    const reads = server.reads("/api/conviction/pipeline");
+    fireEvent.click(within(dlg).getByRole("button", { name: "Record trigger" }));
+    expect(await screen.findByText("Dated why-now trigger recorded — IMQ re-evaluated")).toBeInTheDocument();
+    expect(server.posts()).toEqual([
+      {
+        method: "POST",
+        path: "/api/conviction/imq_trigger",
+        body: { slug: "alpha", kind: "fundraising", date: "2026-10-20", url: "https://tech.eu/alpha-seed", fact: "Alpha raised a seed round", confirm: true },
+      },
+    ]);
+    await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
+    expect(server.reads("/api/conviction/pipeline")).toBe(reads + 1);
+    await waitFor(() => expect(screen.getByTestId("imq")).toHaveTextContent("Timing: Fundraising on 2026-10-20 (operator)"));
+  });
+
+  it("Funding & timing opens the same blank form", async () => {
+    const server = fakeServer();
+    renderPage();
+    await loaded();
+    openSection("sec-funding", "Funding & timing");
+    fireEvent.click(await screen.findByRole("button", { name: "Record a dated trigger (sourced)" }));
+    const dlg = await screen.findByRole("dialog", { name: "Record dated why-now trigger" });
+    expect(within(dlg).getByLabelText(KIND)).toHaveValue("trigger");
+    expect(within(dlg).getByLabelText(DATE)).toHaveValue("");
+    expect(server.posts()).toEqual([]);
+  });
+
+  it("a prepared case's why-now move and its decision open the form prefilled from the case", async () => {
+    const found = { kind: "fundraising", date: "2026-10-20", url: "https://tech.eu/alpha-seed", fact: "Alpha raised a seed round" };
+    const withWhyNow = () => {
+      const v = preparedCase();
+      v.card!.next_action = { code: "RECORD_WHY_NOW", label: "Record the dated why-now", why: "A dated public source was found.", link: "" };
+      v.card!.decisions = [{ kind: "why_now", text: "Record the dated why-now trigger", action: { type: "imq_trigger", ...found } }];
+      return v;
+    };
+    const server = fakeServer({ case: (slug) => (slug === "alpha" ? withWhyNow() : undefined) });
+    renderPage();
+    await loaded();
+    const primary = await screen.findByTestId("case-primary");
+    await waitFor(() => expect(primary).toHaveTextContent("Review & record why-now…"));
+    expect(primary).not.toHaveAttribute("aria-disabled");
+    fireEvent.click(primary);
+    let dlg = await screen.findByRole("dialog", { name: "Record dated why-now trigger" });
+    expect(within(dlg).getByLabelText(KIND)).toHaveValue("fundraising");
+    expect(within(dlg).getByLabelText(DATE)).toHaveValue("2026-10-20");
+    expect(within(dlg).getByLabelText(URL_)).toHaveValue("https://tech.eu/alpha-seed");
+    expect(within(dlg).getByLabelText(FACT)).toHaveValue("Alpha raised a seed round");
+    fireEvent.click(within(dlg).getByRole("button", { name: "Cancel" }));
+    fireEvent.click(screen.getByRole("button", { name: "Review & record…" }));
+    dlg = await screen.findByRole("dialog", { name: "Record dated why-now trigger" });
+    expect(within(dlg).getByLabelText(URL_)).toHaveValue("https://tech.eu/alpha-seed");
+    expect(server.posts()).toEqual([]);
   });
 });

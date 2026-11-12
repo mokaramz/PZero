@@ -8,6 +8,8 @@
                                      200 ``{ok, slug, keep?}`` · 400 / 404 ``{ok: false, error}`` ·
                                      409 ``{ok: false, error, slug, duplicate: true}``
 * ``POST /api/conviction/status``    ``{slug, status}`` -> 200 ``{ok: true}`` · 400 / 404 ``{ok: false, error}``
+* ``POST /api/conviction/imq_trigger`` the old ``/api/imq_trigger`` (review 024): ``{slug, kind, date, url, fact,
+                                     confirm}`` -> 200 ``{ok, trigger}`` · 200 ``{ok: false, error}`` (nothing written)
 
 Review 019 (the old ``/api/radar``, ``/memo``, ``/email``, ``/weekly`` and ``/run``):
 
@@ -34,10 +36,11 @@ from fastapi.encoders import jsonable_encoder
 from fastapi.responses import HTMLResponse, JSONResponse
 
 from projectzero.conviction import entries, radar, taste
-from projectzero.conviction.store import DUPLICATE, ConvictionError, ConvictionStore
+from projectzero.conviction.store import DUPLICATE, ConvictionError, ConvictionStore, record_of
 from projectzero.core.db import read_only_transaction, transaction
 from projectzero.dealflow.candidates import DecisionError
 from projectzero.dealflow.intake.postgres import IntakeClosedError
+from projectzero.evaluator import routes as evaluator_routes
 from projectzero.network.view import berlin_today
 
 router = APIRouter(prefix="/api/conviction", tags=["conviction"])
@@ -143,6 +146,29 @@ def save(request: Request, body: Body) -> JSONResponse:
 @router.post("/status")
 def status(request: Request, body: Body) -> JSONResponse:
     return _write(request, body, "status")
+
+
+@router.post("/imq_trigger")
+def imq_trigger(request: Request, body: Body) -> JSONResponse:
+    """The dated why-now trigger (review 024): the records whose radar slug is ``slug`` gain it, with their IMQ
+    snapshot and one ``imq_trigger`` event each, only when the answer is ``ok``."""
+    if isinstance(body, JSONResponse):
+        return body
+    settings = request.app.state.settings
+    now = _clock(request)
+    try:
+        with transaction(settings.db_url) as conn:
+            store = ConvictionStore(conn, settings.schema)
+            store.lock()
+            rows = store.entry_rows()
+            out = evaluator_routes.imq_trigger(body, conviction=[record_of(r) for r in rows], today=berlin_today(now),
+                                               now=now)  # fmt: skip
+            if out.conviction:
+                request_ids = {k: body.get(k) for k in ("slug", "kind", "date") if isinstance(body.get(k), str)}
+                store.write_records(rows, out.conviction, "imq_trigger", {"request": request_ids}, now)
+    except IntakeClosedError as exc:
+        return JSONResponse({"ok": False, "error": str(exc)}, status_code=409)
+    return JSONResponse(jsonable_encoder(out.body), status_code=out.status)
 
 
 # ── review 019: the Radar, memos, emails, the weekly update ────────────────────────────────────────────────────

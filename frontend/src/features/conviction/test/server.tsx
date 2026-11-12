@@ -23,7 +23,31 @@ export type Routes = {
   weekly?: (body: Record<string, unknown>) => Answer;
   /** `GET radar.html`; the default is the Radar HTML as a `weekly_memo.html` attachment */
   radarHtml?: () => Response;
+  /** `POST imq_trigger`; the default applies the old refusals and records the trigger as the dated IMQ timing */
+  imqTrigger?: (body: Record<string, unknown>, db: Pipeline) => Answer | undefined;
 };
+
+export const TRIGGER_LABELS: Record<string, string> = {
+  founder_formation: "Founder formation",
+  fundraising: "Fundraising",
+  incorporation: "Incorporation",
+  trigger: "Why-now trigger",
+  window: "Market window",
+};
+
+/** The old `imq.record_trigger` refusals (HTTP 200 `{ok: false, error}`), then the trigger as the IMQ timing. */
+function defaultTrigger(body: Record<string, unknown>, db: Pipeline): Answer {
+  const e = db.signals.find((x) => x.slug === body.slug);
+  if (!e) return { status: 200, body: { ok: false, error: "unknown company" } };
+  if (!body.confirm) return { status: 200, body: { ok: false, error: "explicit confirmation required" } };
+  const kind = String(body.kind ?? "");
+  if (!(kind in TRIGGER_LABELS)) return { status: 200, body: { ok: false, error: `trigger kind must be one of: ${Object.keys(TRIGGER_LABELS).join(", ")}` } };
+  const date = String(body.date ?? "");
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || date > "2026-11-12") return { status: 200, body: { ok: false, error: "trigger date must be YYYY-MM-DD and not in the future" } };
+  const trigger = { kind, label: TRIGGER_LABELS[kind], date, url: body.url, fact: body.fact, by: "operator", recorded: "2026-11-12 09:00" };
+  if (e.imq_eval) e.imq_eval = { ...e.imq_eval, timing: { established: true, label: trigger.label, date, origin: "operator" } };
+  return { status: 200, body: { ok: true, trigger } };
+}
 
 export const RADAR_HTML = "<!doctype html><title>Radar</title><h1>PROJECT A RADAR — TOP 10</h1>";
 
@@ -91,6 +115,10 @@ export function fakeServer(routes: Routes = {}) {
     }
     if (method === "POST" && url.pathname === "/api/conviction/save") {
       const a = routes.save?.(body as SaveBody, db) ?? defaultSave(body as SaveBody, db);
+      return json(a.status, a.body);
+    }
+    if (method === "POST" && url.pathname === "/api/conviction/imq_trigger") {
+      const a = routes.imqTrigger?.(body ?? {}, db) ?? defaultTrigger(body ?? {}, db);
       return json(a.status, a.body);
     }
     if (method === "POST" && url.pathname === "/api/conviction/status") {

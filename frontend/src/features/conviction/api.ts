@@ -9,6 +9,11 @@
  * `{text}` (404 for an unknown company), `POST weekly {insight, question}` → `{text}`. The old `POST /api/run` wrote
  * `weekly_memo.html` and the `output/` memos & emails into a data folder; the rewrite has none, so "Generate Radar"
  * downloads `GET radar.html` (the same `weekly_memo.html`) instead.
+ *
+ * The dated why-now trigger (review 024): `POST imq_trigger {slug, kind, date, url, fact, confirm: true}` → the old
+ * `{ok, trigger}`; a refusal is HTTP 200 `{ok: false, error}` (unknown company, no confirmation, a kind outside the
+ * list, a date in the future, a source the evidence rules reject), which `lib/api` turns into a failure toast. The
+ * Active Evaluator records it through the same endpoint.
  */
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
@@ -17,6 +22,7 @@ import { actions, friendlyError } from "@/lib/activity";
 import { ApiError, download, isMissingEndpoint } from "@/lib/api";
 import { useAction, useApi } from "@/lib/hooks";
 import type { CaseView } from "./model/case";
+import type { WhyNow } from "./model/case";
 import type { DocText, Meta, Pipeline, Radar } from "./model/types";
 
 export const PIPELINE = "conviction/pipeline";
@@ -29,6 +35,7 @@ export const RADAR_HTML = "conviction/radar.html";
 export const MEMO = "conviction/memo";
 export const EMAIL = "conviction/email";
 export const WEEKLY = "conviction/weekly";
+export const IMQ_TRIGGER = "conviction/imq_trigger";
 
 /** What a Conviction write makes stale: the records and everything derived from them — the memo, the outreach email
  *  and the Radar (the old `PIPE_KEYS`; Codex H-141) — and the Deal Flow inbox (a save can decide or link a candidate). */
@@ -69,6 +76,19 @@ export function useOutreachEmail(slug: string | null) {
 /** The Weekly Sourcing Update: it writes nothing, so nothing goes stale. */
 export function useWeekly() {
   return useAction<{ insight: string; question: string }, DocText>(WEEKLY, { invalidates: [], label: "Preparing the weekly update" });
+}
+
+export type TriggerBody = WhyNow & { slug: string; confirm: true };
+export type TriggerResult = { ok: boolean; trigger?: WhyNow & { label: string; by: string; recorded: string } };
+
+/** "Record dated why-now trigger": the old label and success toast. `invalidates` is what the caller's view reads (the
+ *  Conviction set by default; the evaluator adds its session). */
+export function useImqTrigger(invalidates: string[] = CONVICTION_KEYS) {
+  return useAction<TriggerBody, TriggerResult>(IMQ_TRIGGER, {
+    invalidates,
+    label: "Recording the why-now trigger",
+    success: "Dated why-now trigger recorded — IMQ re-evaluated",
+  });
 }
 
 const GENERATE_RADAR = "Generating the Radar";

@@ -1,10 +1,16 @@
-/** The "Investment Manager Qualified" block (v1 imqBlock), read-only: the computed `imq_eval` of the record. Its three
- *  actions (record a dated trigger, ask Scout 00, start the evaluator) keep their place, disabled until their ports. */
+/** The "Investment Manager Qualified" block (v1 imqBlock): the computed `imq_eval` of the record. Recording a dated
+ *  why-now trigger is live (review 024); asking Scout 00 and starting the evaluator keep their place, disabled until
+ *  their ports. */
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import { DeferredLink } from "@/components/Deferred";
 import { Badge, type Tone } from "@/components/ui";
+import { useStart } from "@/features/evaluator/api";
 import { cx } from "@/lib/format";
 import { NOT_PORTED } from "../model/deferred";
 import type { Signal } from "../model/types";
+import { TriggerModal } from "./TriggerModal";
 import styles from "../Conviction.module.css";
 
 const QUALIFIED = "IMQ — QUALIFIED NOW";
@@ -19,6 +25,9 @@ function BulbIcon() {
 
 export function ImqBlock({ e }: { e: Signal }) {
   const q = e.imq_eval;
+  const [trigOpen, setTrigOpen] = useState(false);
+  const evalStart = useStart();
+  const navigate = useNavigate();
   if (!q) return null;
   const kind = q.state === QUALIFIED ? "on" : q.state === "CONFLICT GATED" ? "gated" : q.state === "IMQ — STALE" ? "stale" : "";
   const tone: Tone = kind === "on" ? "green" : kind === "gated" ? "red" : kind === "stale" ? "amber" : "neutral";
@@ -37,8 +46,8 @@ export function ImqBlock({ e }: { e: Signal }) {
       {q.state === QUALIFIED && <div className={styles.sub}>{q.reason}</div>}
       {q.blockers.length > 0 && (
         <ul className={styles.blockers}>
-          {q.blockers.map((b) => (
-            <li key={b}>{b}</li>
+          {q.blockers.map((b, i) => (
+            <li key={i}>{b}</li>
           ))}
         </ul>
       )}
@@ -56,18 +65,29 @@ export function ImqBlock({ e }: { e: Signal }) {
           ` · qualified ${q.persisted.qualified_at} at Verified ${q.persisted.verified_score_at_qualification}${q.persisted.stale_since ? ` · stale since ${q.persisted.stale_since}` : ""}`}
       </div>
       <div className={styles.links}>
-        <DeferredLink className={styles.link} reason={NOT_PORTED.imqTrigger}>
+        <button type="button" className={styles.link} onClick={() => setTrigOpen(true)}>
           Record dated why-now trigger (sourced)
-        </DeferredLink>
+        </button>
         {!t.established && (
           <DeferredLink className={styles.link} reason={NOT_PORTED.bridge}>
             ask Scout 00 for a dated source ↗
           </DeferredLink>
         )}
-        <DeferredLink className={styles.link} reason={NOT_PORTED.evaluator}>
+        <button
+          type="button"
+          className={styles.link}
+          disabled={evalStart.isPending}
+          onClick={async () => {
+            const r = await evalStart
+              .mutateAsync({ subject: { kind: "company", slug: e.slug, name: e.company, founder: e.founders?.[0]?.name ?? "" } })
+              .catch(() => null);
+            if (r?.ok) navigate(`/evaluator?session=${encodeURIComponent(r.id)}`);
+          }}
+        >
           Start Active Evaluator
-        </DeferredLink>
+        </button>
       </div>
+      {trigOpen && <TriggerModal slug={e.slug} onClose={() => setTrigOpen(false)} />}
     </div>
   );
 }

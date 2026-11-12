@@ -108,3 +108,35 @@ for (const form of [{ key: "event-form", query: "edit=1", ready: '[aria-label="E
       const delta = keys.filter((k) => (sigs.old[k] ?? 0) !== (sigs.new[k] ?? 0)).map((k) => `${k}: ${sigs.old[k] ?? 0} -> ${sigs.new[k] ?? 0}`);
       console.log(`[events ${form.key} ${theme}] signature differences: ${delta.length ? delta.join(", ") : "none"}`);
     });
+
+/** The Active Evaluator (review 024): the same imported session opened by deep link in both apps. */
+for (const width of [1366, 1920])
+  for (const theme of ["light", "dark"] as const)
+    test(`capture evaluator ${width} ${theme}`, async ({ browser, request }) => {
+      mkdirSync(DIR!, { recursive: true });
+      const oldIds = new Set(((await (await request.get(`${OLD!}/api/evaluations`)).json()).sessions as Array<{ id: string }>).map((s) => s.id));
+      const pick = ((await (await request.get(`${NEW}/api/evaluator/sessions`)).json()).sessions as Array<{ id: string }>).find((s) => oldIds.has(s.id));
+      expect(pick, "a session both apps hold").toBeTruthy();
+      const sigs: Record<string, Record<string, number>> = {};
+      for (const [app, base] of [["old", OLD!], ["new", NEW]] as const) {
+        const ctx = await browser.newContext({ viewport: { width, height: 1000 }, colorScheme: theme, reducedMotion: "reduce" });
+        await ctx.addInitScript((t) => localStorage.setItem("pz.theme", t), theme);
+        const page = await ctx.newPage();
+        await page.goto(`${base}/evaluator?session=${encodeURIComponent(pick!.id)}`);
+        await expect(page.getByTestId("eval-workspace")).toBeVisible({ timeout: 90_000 });
+        await page.waitForTimeout(1500);
+        await expectNoHorizontalOverflow(page);
+        await page.screenshot({ path: join(DIR!, `evaluator-${app}-${width}-${theme}.png`) });
+        sigs[app] = await signature(page);
+        if (width === 1366 && theme === "light") {
+          await page.setViewportSize({ width: Math.round(1366 / 1.5), height: Math.round(768 / 1.5) });
+          await page.waitForTimeout(500);
+          await expectNoHorizontalOverflow(page);
+          await page.screenshot({ path: join(DIR!, `evaluator-${app}-zoom150.png`) });
+        }
+        await ctx.close();
+      }
+      const keys = [...new Set([...Object.keys(sigs.old), ...Object.keys(sigs.new)])].sort();
+      const delta = keys.filter((k) => (sigs.old[k] ?? 0) !== (sigs.new[k] ?? 0)).map((k) => `${k}: ${sigs.old[k] ?? 0} -> ${sigs.new[k] ?? 0}`);
+      console.log(`[evaluator ${width} ${theme}] signature differences: ${delta.length ? delta.join(", ") : "none"}`);
+    });

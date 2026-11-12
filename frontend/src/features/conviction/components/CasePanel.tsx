@@ -5,8 +5,9 @@
  *
  * Above the fold: WHY IT MATTERS · BIGGEST RISK · TOP UNKNOWN, PZ VIEW · YOUR MOVE, and "What I need from you" only when
  * a human decision is open. Below: seven grouped sections, collapsed unless the current workflow needs one open.
- * Moves that only open Edit & verify, a section or another page work; every move that would record, verify, convene or
- * contact keeps its place, disabled with the reason (see model/deferred).
+ * Moves that only open Edit & verify, a section or another page work, and so does recording a dated why-now trigger
+ * (review 024: the trigger form, prefilled from the case's own decision); every other move that would record, verify,
+ * convene or contact keeps its place, disabled with the reason (see model/deferred).
  */
 import { useState, type ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
@@ -18,12 +19,13 @@ import { Button } from "@/components/ui";
 import { cx } from "@/lib/format";
 import { asRole } from "@/lib/roles";
 import { useCase } from "../api";
-import type { Brief, Card, Decision, Ev } from "../model/case";
+import type { Brief, Card, Decision, Ev, WhyNow } from "../model/case";
 import { NOT_PORTED } from "../model/deferred";
-import { AUTO_OPEN, human, imqLabel, moveDetail, PRIMARY, pzView, type Section as SectionId, sentence, verifiedCount } from "../model/logic";
+import { AUTO_OPEN, BLANK_TRIGGER, human, imqLabel, moveDetail, PRIMARY, pzView, type Section as SectionId, sentence, verifiedCount } from "../model/logic";
 import type { Meta, Signal } from "../model/types";
 import type { DetailActions } from "./ActionsMenu";
 import { AuditExtras, Evidence, Founders, Funding, InvestmentCase, ManagerTeam, Risks } from "./sections";
+import { TriggerModal } from "./TriggerModal";
 import styles from "../Case.module.css";
 
 const SECTION_IDS: SectionId[] = ["case", "evidence", "founders", "funding", "risks", "omar", "audit"];
@@ -32,7 +34,6 @@ const SECTION_IDS: SectionId[] = ["case", "evidence", "founders", "funding", "ri
 const MOVE_DEFERRED: Partial<Record<string, string>> = {
   contact: NOT_PORTED.outreach,
   omar: NOT_PORTED.manager,
-  whynow: NOT_PORTED.imqTrigger,
 };
 
 function EvLinks({ ev }: { ev?: Ev[] }) {
@@ -118,6 +119,7 @@ export function CasePanel({ e, all, meta, actions }: { e: Signal; all: Signal[];
   const autoId = c ? AUTO_OPEN[code] : undefined;
   // a section is open when the operator opened it, or — until they touch it — when the current workflow needs it
   const [touched, setTouched] = useState<Partial<Record<SectionId, boolean>>>({});
+  const [trigger, setTrigger] = useState<WhyNow | null>(null);
   const open = { has: (id: SectionId) => touched[id] ?? id === autoId };
   // one open section at a time (focus architecture): opening one collapses the previously open one
   const toggle = (id: SectionId) => (on: boolean) =>
@@ -151,9 +153,9 @@ export function CasePanel({ e, all, meta, actions }: { e: Signal; all: Signal[];
       );
     if (a.type === "imq_trigger")
       return (
-        <DeferredButton size="sm" reason={NOT_PORTED.imqTrigger}>
+        <Button size="sm" onClick={() => setTrigger(a)}>
           Review &amp; record…
-        </DeferredButton>
+        </Button>
       );
     if (a.type === "reviewer" || a.type === "committee") {
       const role = a.type === "committee" ? a.role : "chair";
@@ -191,6 +193,10 @@ export function CasePanel({ e, all, meta, actions }: { e: Signal; all: Signal[];
         return { ...base, label: p.label, to: na.link };
       case "section":
         return { ...base, label: p.label, onClick: () => reveal(p.section ?? "evidence") };
+      case "whynow": {
+        const d = [...card.decisions, ...card.more_decisions].find((x) => x.action?.type === "imq_trigger");
+        return { ...base, label: p.label, onClick: () => setTrigger(d?.action?.type === "imq_trigger" ? d.action : BLANK_TRIGGER) };
+      }
       default:
         return { ...base, label: p.label, onClick: actions.onEdit };
     }
@@ -268,8 +274,8 @@ export function CasePanel({ e, all, meta, actions }: { e: Signal; all: Signal[];
               <>
                 <div className={styles.sect}>Why Project Zero cares</div>
                 <ul className={styles.list}>
-                  {c.why_pz_cares.map((x) => (
-                    <li key={x}>{x}</li>
+                  {c.why_pz_cares.map((x, i) => (
+                    <li key={i}>{x}</li>
                   ))}
                 </ul>
                 <p className="small">
@@ -328,7 +334,7 @@ export function CasePanel({ e, all, meta, actions }: { e: Signal; all: Signal[];
           auto={autoId === "funding"}
           onToggle={toggle("funding")}
         >
-          <Funding e={e} />
+          <Funding e={e} onTrigger={() => setTrigger(BLANK_TRIGGER)} />
         </Section>
 
         <Section
@@ -381,8 +387,8 @@ export function CasePanel({ e, all, meta, actions }: { e: Signal; all: Signal[];
               )}
               <div className={styles.sect}>What blocks progress</div>
               <ul className={styles.list}>
-                {c.blockers.map((x) => (
-                  <li key={x}>{x}</li>
+                {c.blockers.map((x, i) => (
+                  <li key={i}>{x}</li>
                 ))}
               </ul>
               <div className={styles.sect}>Score — you author it</div>
@@ -462,6 +468,7 @@ export function CasePanel({ e, all, meta, actions }: { e: Signal; all: Signal[];
           <AuditExtras e={e} all={all} meta={meta} />
         </Section>
       </div>
+      {trigger && <TriggerModal slug={e.slug} init={trigger} onClose={() => setTrigger(null)} />}
     </>
   );
 }
