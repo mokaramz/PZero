@@ -1,0 +1,373 @@
+.stage {
+  position: relative;
+  height: max(560px, calc(100vh - 190px - var(--dock-h, 0px))); /* map cards stay above the activity dock */
+  border-radius: var(--r-xl);
+  overflow: hidden;
+  border: 1px solid var(--hair);
+  box-shadow: var(--sh-2);
+  background: var(--map-canvas);
+}
+.canvasWrap {
+  position: absolute;
+  inset: 0;
+}
+/* MapLibre sets position: relative on its container, so size it explicitly. */
+.canvas {
+  width: 100%;
+  height: 100%;
+}
+.mapFail {
+  position: absolute;
+  inset: 0;
+  padding: 40px;
+  color: var(--mut);
+  background: var(--map-canvas);
+}
+.float {
+  position: absolute;
+  z-index: 2;
+  background: var(--paper);
+  border: 1px solid var(--hair);
+  border-radius: var(--r-lg);
+  box-shadow: var(--sh-3);
+}
+.controls {
+  top: 12px;
+  left: 12px;
+  width: 290px;
+  max-height: calc(100% - 100px);
+  overflow: auto;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.controls > input {
+  width: 100%;
+}
+.hd {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--mut);
+  margin-top: 6px;
+}
+.layer {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  color: var(--ink);
+}
+.dot {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex: none;
+}
+.sq {
+  border-radius: 2px;
+}
+.num {
+  font-size: 11.5px;
+  color: var(--mut);
+  font-variant-numeric: tabular-nums;
+}
+.fRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
+  padding-top: 6px;
+  border-top: 1px solid var(--hair);
+}
+.fRow select,
+.fRow input {
+  width: 100%;
+  min-width: 0;
+  font-size: 12px;
+  padding: 5px 8px;
+}
+.noGeo {
+  font-size: 10.5px;
+  color: var(--mut);
+}
+.results {
+  display: flex;
+  flex-direction: column;
+  max-height: 220px;
+  overflow: auto;
+}
+.res {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 2px;
+  font: 12px var(--font-ui);
+  text-align: left;
+  color: var(--ink);
+  background: none;
+  border: 0;
+  border-bottom: 1px solid var(--hair);
+  cursor: pointer;
+}
+.res:hover {
+  background: var(--well);
+}
+.res b {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 130px;
+}
+
+.panelWrap {
+  top: 12px;
+  right: 56px;
+  width: 320px;
+  max-height: calc(100% - 100px);
+  overflow: auto;
+}
+.panel {
+  display: flex;
+  flex-direction: column;
+}
+.panelHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--hair);
+}
+.panelBody {
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 13px;
+}
+.pName {
+  font: 400 20px/1.2 var(--font-serif);
+  margin-top: 4px;
+}
+.scoreLine {
+  margin: 4px 0;
+}
+.k,
+.k_red,
+.k_green {
+  font-size: 12.5px;
+}
+.k_red {
+  color: var(--red);
+}
+.k_green {
+  color: var(--green);
+}
+.acts {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+.primaryLink,
+.btnLink {
+  font-size: 12.5px;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--hair-2);
+}
+.primaryLink {
+  color: var(--navy-ink);
+  background: var(--navy);
+  border-color: var(--navy);
+}
+.btnLink {
+  font-weight: 500;
+  color: var(--ink);
+  background: var(--paper);
+}
+.primaryLink:hover,
+.btnLink:hover {
+  text-decoration: none;
+  filter: brightness(1.05);
+}
+.linkBtn {
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  color: var(--blue);
+  cursor: pointer;
+}
+.linkBtn:hover {
+  text-decoration: underline;
+}
+
+.strip {
+  position: absolute;
+  z-index: 2;
+  left: 12px;
+  right: 12px;
+  bottom: 12px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+.stripShift {
+  right: 390px;
+}
+.stripCard {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 12px;
+  background: var(--paper);
+  border: 1px solid var(--hair);
+  border-radius: var(--r-md);
+  box-shadow: var(--sh-2);
+  color: var(--ink);
+  font-size: 12.5px;
+  min-width: 0;
+}
+.stripCard:hover {
+  text-decoration: none;
+  border-color: rgba(47, 111, 211, 0.4);
+}
+.stripCard .hd {
+  margin-top: 0;
+}
+.ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.green {
+  color: var(--green);
+  font-weight: 600;
+}
+
+/* narrow / zoomed: controls and panel stack above and below the map */
+@media (max-width: 1100px) {
+  .stage {
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+    overflow: visible;
+  }
+  .canvasWrap {
+    position: relative;
+    height: 460px;
+    order: 1;
+    border-radius: var(--r-lg);
+    overflow: hidden;
+  }
+  .float,
+  .strip {
+    position: static;
+    width: auto;
+    max-height: none;
+  }
+  .controls {
+    order: 0;
+  }
+  .panelWrap {
+    order: 2;
+  }
+  .strip {
+    order: 3;
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ---- ground sourcing & ecosystem intelligence ---- */
+.geoCtl {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  font-size: 11.5px;
+  color: var(--mut);
+}
+.goRow {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  width: 100%;
+  text-align: left;
+  padding: 7px 8px;
+  border: 1px solid var(--hair);
+  border-radius: 8px;
+  background: var(--paper);
+  margin-top: 6px;
+  cursor: pointer;
+  font: inherit;
+}
+.goRow:hover {
+  border-color: var(--ink, #1b1f26);
+}
+.stateChip {
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  padding: 2px 7px;
+  border-radius: 999px;
+}
+.geoHd {
+  margin-top: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--mut);
+}
+.geoList {
+  margin: 2px 0;
+  padding-left: 18px;
+}
+.geoItem {
+  padding: 5px 0;
+  border-top: 1px solid var(--hair);
+}
+.nba {
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: var(--tint-blue, #eef4ff);
+}
+.covGrid {
+  display: grid;
+  gap: 3px;
+}
+.covRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 12.5px;
+}
+.plan {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* with a point inspected, the controls recede so the map and the inspector lead; hover / focus brings them back */
+.controls[data-receded] {
+  opacity: 0.72;
+  transition: opacity var(--dur) var(--ease-out);
+}
+.controls[data-receded]:hover,
+.controls[data-receded]:focus-within {
+  opacity: 1;
+}

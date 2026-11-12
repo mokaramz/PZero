@@ -140,3 +140,29 @@ for (const width of [1366, 1920])
       const delta = keys.filter((k) => (sigs.old[k] ?? 0) !== (sigs.new[k] ?? 0)).map((k) => `${k}: ${sigs.old[k] ?? 0} -> ${sigs.new[k] ?? 0}`);
       console.log(`[evaluator ${width} ${theme}] signature differences: ${delta.length ? delta.join(", ") : "none"}`);
     });
+
+/** The Map (review 025): Opportunity and Explore in both apps, the tiles blocked in both (the plain-canvas fallback). */
+for (const mode of ["opportunity", "explore"] as const)
+  for (const width of [1366, 1920])
+    for (const theme of ["light", "dark"] as const)
+      test(`capture map ${mode} ${width} ${theme}`, async ({ browser }) => {
+        mkdirSync(DIR!, { recursive: true });
+        const sigs: Record<string, Record<string, number>> = {};
+        for (const [app, base] of [["old", OLD!], ["new", NEW]] as const) {
+          const ctx = await browser.newContext({ viewport: { width, height: 1000 }, colorScheme: theme, reducedMotion: "reduce" });
+          await ctx.addInitScript((t) => localStorage.setItem("pz.theme", t), theme);
+          await ctx.route(/openfreemap\.org/, (route) => route.abort());
+          const page = await ctx.newPage();
+          await page.goto(`${base}/map?mode=${mode}`);
+          await expect(page.getByTestId("map-canvas")).toBeVisible({ timeout: 90_000 });
+          await expect(page.getByTestId(mode === "explore" ? "map-results" : "geo-controls")).toBeVisible({ timeout: 90_000 });
+          await page.waitForTimeout(10_500); // past the 9 s tile fallback, so both show the plain canvas
+          await expectNoHorizontalOverflow(page);
+          await page.screenshot({ path: join(DIR!, `map-${mode}-${app}-${width}-${theme}.png`) });
+          sigs[app] = await signature(page);
+          await ctx.close();
+        }
+        const keys = [...new Set([...Object.keys(sigs.old), ...Object.keys(sigs.new)])].sort();
+        const delta = keys.filter((k) => (sigs.old[k] ?? 0) !== (sigs.new[k] ?? 0)).map((k) => `${k}: ${sigs.old[k] ?? 0} -> ${sigs.new[k] ?? 0}`);
+        console.log(`[map ${mode} ${width} ${theme}] signature differences: ${delta.length ? delta.join(", ") : "none"}`);
+      });

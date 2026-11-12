@@ -28,6 +28,7 @@ from __future__ import annotations
 import re
 import unicodedata
 from datetime import date, datetime
+from functools import lru_cache
 from typing import Any
 
 from projectzero.conviction.records import records
@@ -49,9 +50,22 @@ Registry = list[dict[str, Any]]
 
 
 def _fold(s: Any) -> str:
+    return _fold_text(str(s or ""))
+
+
+@lru_cache(maxsize=65536)
+def _fold_text(t: str) -> str:
+    """The fold of one text, cached: it is pure, and the coverage report folds the same names hundreds of thousands of
+    times per request (review 025: the Map computes coverage on every intelligence request)."""
     return re.sub(
-        r"[^a-z0-9 ]", "", unicodedata.normalize("NFKD", str(s or "")).encode("ascii", "ignore").decode().lower()
+        r"[^a-z0-9 ]", "", unicodedata.normalize("NFKD", t).encode("ascii", "ignore").decode().lower()
     ).strip()
+
+
+@lru_cache(maxsize=4096)
+def _word(folded: str) -> re.Pattern[str]:
+    """The whole-word pattern of a folded name (the old per-call ``re.search`` pattern, unchanged), compiled once."""
+    return re.compile(r"\b" + re.escape(folded) + r"\b")
 
 
 def _days_ago(iso: Any, today: date) -> int | None:
@@ -199,7 +213,7 @@ def place_of(text: Any, registry: Registry) -> tuple[str, str]:
             cc = k.upper()
     for r in registry:
         names = [r["city"], *r["aliases"]]
-        if any(re.search(r"\b" + re.escape(_fold(n)) + r"\b", t) for n in names if _fold(n)):
+        if any(_word(_fold(n)).search(t) for n in names if _fold(n)):
             return r["city"], r["country"] or cc
     return "", cc
 

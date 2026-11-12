@@ -12,6 +12,7 @@
 
 from __future__ import annotations
 
+from dataclasses import dataclass
 from datetime import datetime
 from typing import Any
 
@@ -48,6 +49,14 @@ DOCS = {
 }
 
 
+@dataclass(frozen=True)
+class Snapshot:
+    inputs: CoverageInputs
+    listing: list[dict[str, Any]]  # the Events listing (the old ``events.listing()[0]``)
+    stored_sources: list[Any]  # the Deal Flow source records as stored
+    candidate_rows: list[dict[str, Any]]  # the candidate rows in the inbox order
+
+
 class EcosystemsStore:
     def __init__(self, conn: psycopg.Connection[Any], schema: str = "pz") -> None:
         self.conn = conn
@@ -72,22 +81,29 @@ class EcosystemsStore:
         data = events_store.load(self.conn, self._schema, berlin_today(now), people=False)
         return data.events, engine.listing(data.events, berlin_today(now), data.source_city(), data.pins)
 
-    def inputs(self, now: datetime) -> CoverageInputs:
+    def snapshot(self, now: datetime) -> Snapshot:
+        """Everything the coverage reads, loaded once, with what a caller reading more (the Map, review 025) needs
+        from the same loads: the Events listing, the stored registry as stored and the candidate rows."""
         stored = SourcesStore(self.conn, self._schema).stored()
-        records, _ = self._events(now)
+        records, listing = self._events(now)
+        rows = candidate_rows(self.conn, self._schema)
         adoptions = self._rows(
             "select candidate_id, source_id, families, countries, cities, note, by, adopted_at "
             "from {s}.coverage_adoptions order by adopted_at, candidate_id"
         )
-        return CoverageInputs(
+        inputs = CoverageInputs(
             sources=load_registry({"sources": stored})["sources"],
             **self._docs(),
-            inbox=[ranking_input(r)[0] for r in candidate_rows(self.conn, self._schema)],
+            inbox=[ranking_input(r)[0] for r in rows],
             signals=self._signals(),
             people=load_people(self.conn, self._schema),
             events=records,
             adoptions=[dict(r) for r in adoptions],
         )
+        return Snapshot(inputs=inputs, listing=listing, stored_sources=stored, candidate_rows=rows)
+
+    def inputs(self, now: datetime) -> CoverageInputs:
+        return self.snapshot(now).inputs
 
     # ── reads ───────────────────────────────────────────────────────────────────────────────────────────────────
     def coverage(self, now: datetime) -> dict[str, Any]:
