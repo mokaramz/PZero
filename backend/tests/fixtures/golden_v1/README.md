@@ -38,3 +38,9 @@ regions) at 2026-11-11 12:00 (`python -m projectzero.ops.parity_ecosystems golde
 a 39-step save / follow-up / link script with the workspace and the stored document's key order after each step)
 over synthetic documents of invented names whose insertion order differs from JSONB order, at 2026-11-12 10:00
 (`python -m projectzero.ops.parity_founder_calls goldens`).
+
+`oracle_evaluator.json` (review 024): the old Active Evaluator routes (`GET evaluations`, every session view and a
+write script of starts, deck, next, skip, answers, evidence, resolve, ends and `imq_trigger`, with the answer, the
+workspace, the stored sessions and their order, the stored founder calls and the Conviction records after each step)
+over a synthetic data folder of invented names whose session insertion order differs from JSONB order, and an empty
+one, at 2026-11-12 10:00 with a counter for `uuid4` (`python -m projectzero.ops.parity_evaluator goldens`).

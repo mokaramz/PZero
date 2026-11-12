@@ -279,3 +279,31 @@ def persist(entry: dict[str, Any], ev: dict[str, Any], *, now: datetime) -> bool
         prev.setdefault("history", []).append({"on": prev["stale_since"], "to": ev["state"], "why": ev["blockers"][:3]})
         changed = True
     return changed
+
+
+def record_trigger(
+    entry: dict[str, Any], kind: Any, when: Any, url: Any, fact: Any, confirm: bool, *, now: datetime, today: date
+) -> dict[str, Any]:
+    """Operator-recorded, sourced, dated why-now trigger (never inferred). Same evidence rules as public company facts.
+    (Review 024: the old ``record_trigger``; ``now`` is the Berlin wall clock, ``today`` the Berlin day.)"""
+    from projectzero.evaluator.evidence import add_evidence, valid_activity_date  # lazy: the evaluator imports imq
+
+    if not confirm:
+        return {"ok": False, "error": "explicit confirmation required"}
+    if kind not in TIMING_KINDS:
+        return {"ok": False, "error": "trigger kind must be one of: " + ", ".join(TIMING_KINDS)}
+    if not valid_activity_date(when, today):
+        return {"ok": False, "error": "trigger date must be YYYY-MM-DD and not in the future"}
+    ev = add_evidence("trajectory", url, "why-now trigger", fact, activity_date=when, now=now, today=today)
+    if not ev["ok"]:
+        return ev
+    entry["imq_trigger"] = {
+        "kind": kind,
+        "label": TIMING_KINDS[kind],
+        "date": str(when)[:10],
+        "url": url,
+        "fact": fact,
+        "by": "operator",
+        "recorded": _now(now),
+    }
+    return {"ok": True, "trigger": entry["imq_trigger"]}

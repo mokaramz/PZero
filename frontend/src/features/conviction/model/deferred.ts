@@ -8,10 +8,8 @@ export const NOT_PORTED = {
   committee: "The Investment Committee and Reviewer arrive with the case-preparation port",
   outreach: "Recording founder contact arrives with the case-preparation port",
   manager: "The Manager handoff arrives with the Manager / IMQ port",
-  imqTrigger: "Recording a dated why-now trigger arrives with the Manager / IMQ port",
   verification: "Verification proposals and the research loop arrive with the verification port",
   bridge: "External research jobs arrive with the bridge port",
-  evaluator: "The Active Evaluator arrives with the evaluator port",
   founders: "Founders and registries arrive with the identity port",
   traction: "The traction review reads the Claim Index — it arrives with the claims & identity port",
 } as const;

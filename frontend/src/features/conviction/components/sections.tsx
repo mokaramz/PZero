@@ -2,12 +2,12 @@
  * The deeper layers of a Conviction company, grouped by the question they answer. Rendered inside collapsed
  * <Section>s (CasePanel), so nothing renders until it is opened. What reads the record is live, the outreach email and
  * the Scout memo included (review 019); what needs a later port (verification proposals, traction review, founders /
- * registries, the Manager card, the why-now trigger, Scout 00 and the evaluator) keeps its place with the reason instead.
+ * registries, the Manager card, Scout 00 and the evaluator) keeps its place with the reason instead. The dated why-now
+ * trigger is live since review 024.
  */
 import { useMemo, type ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { DeferredLink } from "@/components/Deferred";
 import { useToast } from "@/components/Toast";
 import { Async, Badge, Button } from "@/components/ui";
 import { useAction, useCopy } from "@/lib/hooks";
@@ -200,7 +200,7 @@ function OutreachDraft({ slug }: { slug: string }) {
 }
 
 /* ---------------------------------------------------------------- 4 · funding & timing */
-export function Funding({ e }: { e: Signal }) {
+export function Funding({ e, onTrigger }: { e: Signal; onTrigger: () => void }) {
   const t = e.imq_eval?.timing ?? {};
   return (
     <>
@@ -225,9 +225,9 @@ export function Funding({ e }: { e: Signal }) {
         ) : (
           <>not established · </>
         )}{" "}
-        <DeferredLink className={styles.link} reason={NOT_PORTED.imqTrigger}>
+        <button type="button" className={styles.link} onClick={onTrigger}>
           Record a dated trigger (sourced)
-        </DeferredLink>
+        </button>
       </p>
     </>
   );

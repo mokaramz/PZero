@@ -124,8 +124,9 @@ def test_the_original_order_survives_both_import_paths_and_a_retry(settings: Set
     if path == "upgrade":  # every migration before 0014, the archive, then 0014 (which runs the backfill)
         schema = _make(settings, "\n".join(p.read_text(encoding="utf-8") for p in FILES if p < M14))
         _archive(settings, schema)
-        with connect(settings.db_url, autocommit=True) as admin:
-            admin.execute(re.sub(r"\bpz\b", schema, M14.read_text(encoding="utf-8")).encode())
+        with connect(settings.db_url, autocommit=True) as admin:  # 0014 (its backfill), then every later migration
+            for later in (p for p in FILES if p >= M14):
+                admin.execute(re.sub(r"\bpz\b", schema, later.read_text(encoding="utf-8")).encode())
     else:  # a schema with 0014, then the archive and the backfill the importer calls
         schema = _make(settings, _scratch_sql("pz"))
         _archive(settings, schema)

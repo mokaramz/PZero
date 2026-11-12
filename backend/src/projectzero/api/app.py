@@ -12,6 +12,7 @@ from projectzero.api.routers import (
     dealflow,
     dealflow_triage,
     ecosystems,
+    evaluator,
     events,
     founder_calls,
     intake,
@@ -36,6 +37,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.include_router(sources.router)
     app.include_router(ecosystems.router)
     app.include_router(founder_calls.router)
+    app.include_router(evaluator.router)
 
     @app.exception_handler(RequestValidationError)
     async def invalid_request(_: Request, exc: RequestValidationError) -> JSONResponse:

@@ -123,6 +123,10 @@ export const PRIMARY: Record<string, { label: string; kind: PrimaryKind; contact
   AUTHOR_SCORE: { label: "Author the score", kind: "edit" },
 };
 
+/** The why-now trigger form (review 024): its kinds in the old Conviction order, and the blank trigger a section opens. */
+export const TRIGGER_KINDS = ["founder_formation", "fundraising", "incorporation", "trigger", "window"];
+export const BLANK_TRIGGER = { kind: "trigger", date: "", url: "", fact: "" };
+
 /** The one deeper section the current workflow needs open (none when the next move is not Mohamed's). */
 export const AUTO_OPEN: Record<string, Section> = {
   ASK_OMAR: "omar",

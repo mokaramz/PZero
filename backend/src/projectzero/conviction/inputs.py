@@ -73,6 +73,12 @@ def load_documents(conn: psycopg.Connection[Any], schema: str) -> dict[str, Any]
     current = FounderCallsStore(conn, schema).load()
     if current is not None:
         out["founder_calls.json"] = current
+    # review 024: evaluator sessions too, through their ONE shared reader (archived order, the old load() defaulting)
+    from projectzero.evaluator.store import EvaluationsStore
+
+    sessions = EvaluationsStore(conn, schema).load()
+    if sessions is not None:
+        out["evaluations.json"] = sessions
     return out
 
 

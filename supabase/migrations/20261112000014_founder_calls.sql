@@ -48,6 +48,17 @@ alter table pz.fc_calls enable row level security;
 alter table pz.fc_events enable row level security;
 revoke all on pz.fc_companies, pz.fc_founders, pz.fc_calls, pz.fc_events from public, anon, authenticated;
 
+-- The byte-exact archive as json (key order kept), with the optional leading UTF-8 BOM the importer accepts
+-- (`utf-8-sig`) skipped, so the preview, the backfills and the readers agree (Codex H-192). The archived bytes are
+-- never changed. NULL when the path is not archived.
+create or replace function pz.archived_json(archive_path text) returns json
+language sql stable as $$
+  select convert_from(case when substring(d.raw from 1 for 3) = '\xefbbbf'::bytea then substring(d.raw from 4)
+                           else d.raw end, 'UTF8')::json
+  from pz.legacy_documents d where d.path = archive_path
+$$;
+revoke all on function pz.archived_json(text) from public, anon, authenticated;
+
 -- The one mapping, shared by this migration (schemas imported before 0014) and the importer (right after the archive
 -- is written). Validates EVERYTHING first and raises without writing when the archive is malformed; then inserts each
 -- record that has no row yet, at its original position (on conflict do nothing: a retry keeps later edits).
@@ -60,7 +71,7 @@ declare
   written integer := 0;
   n integer;
 begin
-  select convert_from(d.raw, 'UTF8')::json into doc from pz.legacy_documents d where d.path = 'founder_calls.json';
+  doc := pz.archived_json('founder_calls.json');
   if doc is null then
     return 0;
   end if;

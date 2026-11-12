@@ -60,7 +60,7 @@ class FounderCallsStore:
         if not rows:
             return None
         try:
-            return json.loads(bytes(rows[0]["raw"]).decode("utf-8"))  # keeps the archived key order
+            return json.loads(bytes(rows[0]["raw"]).decode("utf-8-sig"))  # archived key order; an optional BOM
         except (UnicodeDecodeError, ValueError):
             return None
 
