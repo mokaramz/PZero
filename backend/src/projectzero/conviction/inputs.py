@@ -79,6 +79,12 @@ def load_documents(conn: psycopg.Connection[Any], schema: str) -> dict[str, Any]
     sessions = EvaluationsStore(conn, schema).load()
     if sessions is not None:
         out["evaluations.json"] = sessions
+    # review 026a: Founder Radar companies too (IMQ gate E, the evaluator's research facts), through their ONE reader
+    from projectzero.founder_radar.store import FounderRadarStore
+
+    companies = FounderRadarStore(conn, schema).load_companies()
+    if companies is not None:
+        out["radar_companies.json"] = companies
     return out
 
 

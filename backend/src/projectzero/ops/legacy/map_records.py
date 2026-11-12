@@ -247,10 +247,17 @@ class RecordsMapper(BuilderState):
         self.identity_blockers.extend(f"{path}: {p}: fix it first" for p in problems)
         self.report["reconciliation"][path] = {"candidates_usable": len(usable)}
 
-    def _keyed_archive(self, path: str, colls: tuple[str, ...]) -> None:
+    def founder_radar(self) -> None:
+        """``radar_companies.json`` / ``radar_research.json`` (review 026a): mapped, in their ORIGINAL order and with
+        each record's own key order, by ``pz.backfill_founder_radar()`` from the byte-exact archives (the apply calls
+        it). Checked here first by the backfill's rules; the records are keyed by name / domain and carry no id."""
+        self._keyed_archive("radar_companies.json", ("companies",), own_id=False)
+        self._keyed_archive("radar_research.json", ("domains",), own_id=False)
+
+    def _keyed_archive(self, path: str, colls: tuple[str, ...], *, own_id: bool = True) -> None:
         if path not in self.src.paths():
             return
-        problems, counts = keyed_collections(path, self.src.file(path).raw, colls)
+        problems, counts = keyed_collections(path, self.src.file(path).raw, colls, own_id=own_id)
         self.identity_blockers.extend(problems)
         if counts is not None:
             self.report["reconciliation"][path] = counts
@@ -550,14 +557,17 @@ class _Pairs(list[tuple[str, Any]]):
     """A JSON object as its key/value pairs in file order, repeated keys included (``json`` keeps them all)."""
 
 
-def keyed_collections(path: str, raw: bytes, colls: tuple[str, ...]) -> tuple[list[str], dict[str, int] | None]:
+def keyed_collections(
+    path: str, raw: bytes, colls: tuple[str, ...], *, own_id: bool = True
+) -> tuple[list[str], dict[str, int] | None]:
     """The rules of the archive backfills that map id-keyed objects in their raw order (0014 founder calls, 0015
     evaluator sessions), applied to the SAME bytes, so the preview blocks exactly what the apply would reject:
 
     * the top level must be an object;
     * each collection, when the key is present, must be an object (an explicit ``null`` is NOT absent: the backfill
       rejects it), with no key repeated;
-    * each record must be an object under a non-empty key, whose ``id``, when present, is that key as text.
+    * each record must be an object under a non-empty key, whose ``id``, when present, is that key as text
+      (``own_id=False``: records keyed by a name or domain that carry no id of their own, 0016).
 
     Returns (the blockers, the record count per present collection; None when the top level is unusable)."""
     try:
@@ -581,7 +591,7 @@ def keyed_collections(path: str, raw: bytes, colls: tuple[str, ...]) -> tuple[li
             if key in seen:
                 problems.append(f"{path} {coll} id {key!r} is repeated: fix it first")
             seen.add(key)
-            rid = dict(rec).get("id", key) if isinstance(rec, _Pairs) else None
+            rid = (dict(rec).get("id", key) if own_id else key) if isinstance(rec, _Pairs) else None
             if key == "" or not isinstance(rec, _Pairs) or rid != key:
                 problems.append(f"{path} {coll} record {key!r} is not a record keyed by its own id: fix it first")
         counts[coll] = len(seen)

@@ -1,0 +1,107 @@
+{
+  "ok": true,
+  "proposals": [],
+  "groups": [
+    {
+      "key": "founded|2024",
+      "field": "founded",
+      "value": "2024",
+      "best": {
+        "id": "pr-b-founded",
+        "field": "founded",
+        "value": "2024",
+        "passage": "Borealis Robotics was founded in 2024 in Tampere.",
+        "url": "https://borealis.example/about",
+        "source_label": "Borealis Robotics about",
+        "source_type": "official domain",
+        "activity_date": "",
+        "retrieved": "2026-11-10 21:01",
+        "confidence": "medium",
+        "status": "confirmed",
+        "person": null,
+        "source_rank": 1,
+        "template_text": false,
+        "why": "",
+        "evidence_kind": "quoted_fact"
+      },
+      "alternatives": [],
+      "hidden": 0,
+      "disputed": false,
+      "status": "confirmed",
+      "all_ids": [
+        "pr-b-founded"
+      ]
+    },
+    {
+      "key": "founder|ilka moravec",
+      "field": "founder",
+      "value": "Ilka Moravec",
+      "best": {
+        "id": "pr-b-f-ilka",
+        "field": "founder",
+        "value": "Ilka Moravec",
+        "passage": "Ilka Moravec, Founder.",
+        "url": "https://borealis.example/about",
+        "source_label": "Borealis Robotics about",
+        "source_type": "official domain",
+        "activity_date": "",
+        "retrieved": "2026-11-10 21:01",
+        "confidence": "medium",
+        "status": "confirmed",
+        "person": {
+          "name": "Ilka Moravec",
+          "role": "Founder",
+          "company": "Borealis Robotics"
+        },
+        "source_rank": 1,
+        "template_text": false,
+        "why": "",
+        "evidence_kind": "quoted_fact",
+        "bound_person": "p-ilka-moravec-1003"
+      },
+      "alternatives": [],
+      "hidden": 0,
+      "disputed": false,
+      "status": "confirmed",
+      "all_ids": [
+        "pr-b-f-ilka"
+      ]
+    }
+  ],
+  "recommended": [],
+  "summary": {
+    "pages_retrieved": 3,
+    "pages_blocked": 0,
+    "facts_proposed": 1,
+    "founder_candidates": 1,
+    "hidden_duplicates": 0,
+    "recommended": 0,
+    "missing_gate": [
+      "funding"
+    ],
+    "confirmed": 2
+  },
+  "company": {
+    "name": "Borealis Robotics",
+    "domain": "borealis.example",
+    "next_missing": [
+      "funding"
+    ],
+    "priority_label": "High",
+    "priority_why": "verified founders; recent dated signal",
+    "next_action": "source the funding stage"
+  },
+  "pages": {},
+  "done": true,
+  "history": [
+    {
+      "on": "2026-11-09 10:00:00",
+      "proposal": "pr-b-f-ilka",
+      "from": "pending",
+      "to": "confirmed",
+      "person": "p-ilka-moravec-1003"
+    }
+  ],
+  "refreshed_at": "2026-11-09 09:55",
+  "pairings": {}
+}

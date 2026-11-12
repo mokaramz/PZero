@@ -839,3 +839,63 @@ describe("migrations 0014 / 0015 — an archive with the optional UTF-8 BOM maps
     }
   });
 });
+
+describe("migration 0016 — Founder Radar companies and research in their ORIGINAL order, the records' own key order kept", () => {
+  const archive = async (db, path, text, bom = false) => {
+    const body = Buffer.from(text, "utf8");
+    const raw = bom ? Buffer.concat([Buffer.from([0xef, 0xbb, 0xbf]), body]) : body;
+    await db.query(`insert into pz.legacy_documents (path, sha256, bytes, raw, parsed) values ($1, $2, $3, $4, $5)`,
+      [path, sha256(raw), raw.length, raw, text]);
+  };
+  // long keys first (JSONB would put the short ones first), and a research record whose proposals / pages maps are
+  // not in JSONB order either
+  const companies = { companies: { "name:invented-longer-robotics": { founder_refs: {}, facts: [] }, "dom:a.example": { notes: "x" } } };
+  const research = { domains: { "name:invented-longer-robotics": { domain: "", pages: { "https://zz.example/long": { chars: 1 }, "https://a.example/": { chars: 2 } },
+    proposals: { "pr-zzzzzzzzzzzz": { status: "pending" }, "pr-a": { status: "pending" } }, pairings: {}, history: [] } } };
+  test("positions follow the raw order; the stored json keeps the inner key order; a retry keeps edits; BOM", async () => {
+    const db = await freshDb();
+    await archive(db, "radar_companies.json", JSON.stringify(companies), true);
+    await archive(db, "radar_research.json", JSON.stringify(research));
+    assert.equal((await db.query(`select pz.backfill_founder_radar() as n`)).rows[0].n, 3);
+    assert.deepEqual((await db.query(`select key from pz.radar_companies order by pos`)).rows.map((r) => r.key), ["name:invented-longer-robotics", "dom:a.example"]);
+    const keys = async (expr) => (await db.query(`select array_agg(k order by o) as k from json_object_keys((${expr})) with ordinality as t(k, o)`)).rows[0].k;
+    assert.deepEqual(await keys(`select record -> 'proposals' from pz.radar_research`), ["pr-zzzzzzzzzzzz", "pr-a"]);
+    assert.deepEqual(await keys(`select record -> 'pages' from pz.radar_research`), ["https://zz.example/long", "https://a.example/"]);
+    assert.deepEqual(await keys(`select record from pz.radar_research`), ["domain", "pages", "proposals", "pairings", "history"]);
+    await db.query(`update pz.radar_companies set record = '{"notes": "edited"}'::json where key = 'dom:a.example'`);
+    assert.equal((await db.query(`select pz.backfill_founder_radar() as n`)).rows[0].n, 0);
+    assert.equal((await db.query(`select record->>'notes' as n from pz.radar_companies where key = 'dom:a.example'`)).rows[0].n, "edited");
+  });
+
+  test("a malformed archive raises and writes nothing; events are append-only", async () => {
+    for (const [path, bad] of [["radar_companies.json", `[1]`], ["radar_companies.json", `{"companies": null}`], ["radar_companies.json", `{"companies": []}`],
+                               ["radar_companies.json", `{"companies": {"k": 5}}`], ["radar_companies.json", `{"companies": {"": {}}}`],
+                               ["radar_research.json", `{"domains": {"k": {}, "k": {}}}`]]) {
+      const db = await freshDb();
+      await archive(db, path, bad);
+      await rejects(db.query(`select pz.backfill_founder_radar()`), /radar_(companies|research)\.json/);
+      assert.equal((await db.query(`select (select count(*) from pz.radar_companies) + (select count(*) from pz.radar_research) as n`)).rows[0].n, 0);
+    }
+    const db = await freshDb();
+    for (const empty of [`{}`, `{"companies": {}}`]) {
+      const d2 = await freshDb();
+      await archive(d2, "radar_companies.json", empty);
+      assert.equal((await d2.query(`select pz.backfill_founder_radar() as n`)).rows[0].n, 0);
+    }
+    await db.query(`insert into pz.radar_events (entity, key, actor, action, after) values ('company', 'k', 'operator', 'company', '{}')`);
+    await rejects(db.query(`update pz.radar_events set actor = 'x'`), /append-only/);
+    await rejects(db.query(`insert into pz.radar_events (entity, key, actor, action, after) values ('company', 'k', 'operator', 'scan', '{}')`), /radar_events_action_check/);
+  });
+
+  test("the merge tombstone and the new person-event actions", async () => {
+    const db = await freshDb();
+    await db.query(`insert into pz.people (id, name) values ('p-a', 'Ada Invented'), ('p-b', 'Bea Invented')`);
+    await db.query(`update pz.people set merged_into = 'p-a' where id = 'p-b'`);
+    await rejects(db.query(`update pz.people set merged_into = 'p-a' where id = 'p-a'`), /people_not_merged_into_itself/);
+    await rejects(db.query(`update pz.people set merged_into = 'p-nobody' where id = 'p-a'`), /foreign key/);
+    for (const action of ["radar", "merge", "merged"]) {
+      await db.query(`insert into pz.person_events (person_id, actor, action, after) values ('p-a', 'operator', $1, '{}')`, [action]);
+    }
+    await rejects(db.query(`insert into pz.person_events (person_id, actor, action, after) values ('p-a', 'operator', 'delete', '{}')`), /person_events_action_check/);
+  });
+});

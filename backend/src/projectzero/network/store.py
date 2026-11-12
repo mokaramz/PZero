@@ -40,6 +40,8 @@ from psycopg.types.json import Jsonb
 
 from projectzero.core.db import schema_ident
 from projectzero.dealflow.intake.postgres import ensure_intake_open
+from projectzero.founder_radar.clock import Clock
+from projectzero.founder_radar.operator import after_operator_save, radar_generated
 from projectzero.network import edits, view
 from projectzero.network.edits import NetworkError
 from projectzero.network.people import WEAK_KINDS, columns_of, distinct_identifiers, record_of, slug
@@ -53,6 +55,7 @@ _PEOPLE = """
     )
     select p.id, p.name, p.country, p.identity_status, p.founder_status, p.radar_state, p.attrs, p.legacy
     from {s}.people p left join arch a on a.id = p.id
+    where p.merged_into is null  -- a merged person is gone, as the old merge deleted it (review 026a)
     order by a.pos nulls last, p.created_at, p.id
 """
 
@@ -69,6 +72,39 @@ def changes(before: Mapping[str, Any], after: Mapping[str, Any]) -> tuple[dict[s
     keys = [k for k in after if k not in before or before[k] != after[k]]
     keys += [k for k in before if k not in after]
     return {k: before.get(k) for k in keys}, {k: after.get(k) for k in keys}
+
+
+SINGLE_IDS = ("orcid", "openalex_id", "github_id", "patent_inventor_id")  # the fields behind strong identifiers
+LISTED_IDS = ("profile_urls", "aliases")  # the lists behind profile and alias identifiers
+
+
+def carry_identifiers(survivor: dict[str, Any], gone: Mapping[str, Any]) -> tuple[dict[str, Any], list[str]]:
+    """The survivor's merged record, made to assert every identifier the merged person's record asserted (Codex
+    H-211): an id field the survivor lacks is copied, and the profile URLs and aliases it lacks are appended. The
+    identifier rows are the record's (``_sync_identifiers``), so this is what keeps their ownership through the merge
+    AND every later edit. A different value the survivor already holds is kept (``can_merge`` refuses conflicting
+    ids). Returns (the record, the fields carried)."""
+    out = copy.deepcopy(survivor)
+    carried: list[str] = []
+    for key in SINGLE_IDS:
+        value = gone.get(key)
+        if value not in (None, "") and str(out.get(key) or "").strip() == "":
+            out[key] = copy.deepcopy(value)
+            carried.append(key)
+    for key in LISTED_IDS:
+        theirs = gone.get(key)
+        if not isinstance(theirs, list) or not theirs:
+            continue
+        mine = out.get(key)
+        if mine is None:
+            mine = out[key] = []
+        if not isinstance(mine, list):
+            continue
+        added = [v for v in theirs if v not in mine]
+        if added:
+            mine.extend(copy.deepcopy(added))
+            carried.append(key)
+    return out, carried
 
 
 class PeopleStore:
@@ -101,9 +137,37 @@ class PeopleStore:
         self._rows("select pg_advisory_xact_lock(hashtext(%s))", (f"{self._schema}.people",))
 
     def _lock_rows(self, ids: list[str]) -> dict[str, dict[str, Any]]:
-        """Lock the existing rows among ``ids`` in id order (the one lock order) and return them by id."""
+        """Lock the existing rows among ``ids`` in id order (the one lock order) and return the LIVE ones by id. A
+        merged person (a tombstone, review 026a) is locked too, so a concurrent merge cannot slip in, but is left out:
+        every operator write treats a merged id as absent and gives that endpoint's unknown-person answer."""
         rows = self._rows("select * from {s}.people where id = any(%s) order by id for update", (sorted(set(ids)),))
-        return {str(r["id"]): r for r in rows}
+        return {str(r["id"]): r for r in rows if r.get("merged_into") is None}
+
+    def _refuse_reserved(self, ids: list[str], hint: str = "recommend") -> None:
+        """A derived id that a merged person still holds (its id stays reserved, review 026a revision 3): an atomic
+        409 naming the LIVE survivor, before anything is written. A chain (A merged into B, B into C) is followed to
+        the person the operator can actually open (Codex H-211)."""
+        rows = self._rows(
+            "select id, name, merged_into from {s}.people where id = any(%s) and merged_into is not null order by id",
+            (sorted(set(ids)),),
+        )
+        if not rows:
+            return
+        r = rows[0]
+        survivor_id, seen = str(r["merged_into"]), {str(r["id"])}
+        survivor: dict[str, Any] | None = None
+        while survivor_id not in seen:
+            seen.add(survivor_id)
+            found = self._rows("select id, name, merged_into from {s}.people where id = %s", (survivor_id,))
+            if not found:
+                break
+            survivor = found[0]
+            if survivor["merged_into"] is None:
+                break
+            survivor_id = str(survivor["merged_into"])
+        name = survivor["name"] if survivor is not None else survivor_id
+        raise NetworkError(409, f"{r['name']} was merged into {name} — {hint} that person instead",
+                           merged_into=survivor_id)  # fmt: skip
 
     # ── the mirrored write ──────────────────────────────────────────────────────────────────────────────────────
     def _refuse_strong_conflicts(
@@ -149,6 +213,47 @@ class PeopleStore:
                     "insert into {s}.person_identifiers (person_id, kind, value) values (%s, %s, %s)",
                     (pid, kind, value),
                 )
+
+    def _transfer_identifiers(self, from_id: str, to_id: str) -> list[dict[str, str]]:
+        """Move every identifier row of ``from_id`` to ``to_id`` (one the survivor already holds is dropped), so the
+        merged person owns none afterwards and the strong unique index keeps the survivor as the single owner."""
+        rows = self._rows(
+            "select id, kind, value from {s}.person_identifiers where person_id = %s order by kind, value", (from_id,)
+        )
+        held = {
+            (str(r["kind"]), str(r["value"]))
+            for r in self._rows("select kind, value from {s}.person_identifiers where person_id = %s", (to_id,))
+        }
+        moved: list[dict[str, str]] = []
+        for r in rows:
+            key = (str(r["kind"]), str(r["value"]))
+            if key in held:
+                self._rows("delete from {s}.person_identifiers where id = %s", (r["id"],))
+            else:
+                self._rows("update {s}.person_identifiers set person_id = %s where id = %s", (to_id, r["id"]))
+                moved.append({"kind": key[0], "value": key[1]})
+        return moved
+
+    def merge_into(
+        self, survivor_id: str, tombstone_id: str, survivor_record: dict[str, Any], detail: Mapping[str, Any]
+    ) -> bool:
+        """The merge (review 026a, plan revisions 2 / 3), inside the caller's transaction and the one write lock:
+        both rows locked in id order; the tombstone's identifiers moved to the survivor; the survivor's merged record
+        with its ``merge`` event; the tombstone's ``merged_into`` with its ``merged`` event (its earlier events
+        stay). Returns False (nothing written) when either person is not live (the caller's unknown-person answer)."""
+        rows = self._lock_rows([survivor_id, tombstone_id])
+        if survivor_id not in rows or tombstone_id not in rows or survivor_id == tombstone_id:
+            return False
+        before = record_of(rows[survivor_id])
+        gone = record_of(rows[tombstone_id])
+        moved = self._transfer_identifiers(tombstone_id, survivor_id)
+        survivor_record, carried = carry_identifiers(survivor_record, gone)
+        info = {**detail, "merged_from": tombstone_id, "identifiers_moved": moved, "fields_carried": carried}
+        if not self._write(survivor_id, before, survivor_record, "merge", info):
+            self._event(survivor_id, "merge", {}, {}, info)  # the survivor's record already held everything
+        self._rows("update {s}.people set merged_into = %s where id = %s", (survivor_id, tombstone_id))
+        self._event(tombstone_id, "merged", gone, {"merged_into": survivor_id}, {**detail, "merged_into": survivor_id})
+        return True
 
     def _event(self, pid: str, action: str, before: Any, after: Any, detail: Mapping[str, Any]) -> None:
         self._rows(
@@ -208,13 +313,14 @@ class PeopleStore:
             if row is None:  # (a) an edit never creates a person
                 raise NetworkError(404, edits.UNKNOWN, id=pid)
             before = record_of(row)
-            if edits.is_radar_rename(before, body, row.get("legacy")):  # the durable imported origin (H-091)
-                raise NetworkError(409, edits.RADAR_NAME, id=pid, radar_name=True)
             record = copy.deepcopy(before)
             edits.apply_save(record, body)
+            if radar_generated(row.get("legacy")):  # review 026a: the old operator_save radar path (durable origin)
+                record = after_operator_save(before, record, dict(body), Clock.at(now))
             self._write(pid, before, record, "save", {"fields": fields})
             return {"ok": True, "id": pid}
         pid = slug(str(body.get("name") or ""))
+        self._refuse_reserved([pid], "edit")  # a merged person's id stays reserved (review 026a)
         if self._lock_rows([pid]):  # (a) the generated id is taken: never overwrite that person
             raise NetworkError(409, edits.DUPLICATE, id=pid, duplicate=True)
         record = edits.new_record(pid, today)
@@ -231,9 +337,11 @@ class PeopleStore:
         host_id = str(host_id)
         today = view.berlin_today(now)
         self._lock()
-        rows = self._lock_rows(edits.ritual_ids(host_id, persons))
+        ids = edits.ritual_ids(host_id, persons)
+        rows = self._lock_rows(ids)
         if host_id not in rows:
             return {"ok": True, "created": []}
+        self._refuse_reserved([i for i in ids[1:] if i not in rows])  # a recommendation would reuse a merged id
         before = {pid: record_of(r) for pid, r in rows.items()}
         work = {pid: copy.deepcopy(rec) for pid, rec in before.items()}
         created, records, notes = edits.apply_talented(host_id, persons, work.get, today)

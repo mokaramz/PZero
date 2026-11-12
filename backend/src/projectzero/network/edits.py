@@ -17,13 +17,8 @@ Changed on purpose (review 013, approved by Codex):
 
 Not ported (waits for the Founder Radar review), refused or skipped explicitly:
 
-* the radar-name path of ``operator_save``: RENAMING a Founder Radar person (imported ``legacy.provenance`` other
-  than ``user_provided``; the durable origin, never the current record) is refused with 409 ``{radar_name: true}``:
-  it would set ``name_by_operator`` / ``name_attributed``, move the old name into ``aliases`` and add identity
-  evidence and a source;
-* the identity / signal recompute ``operator_save`` ran after ANY edit of a Founder Radar person
-  (``identity_status``, ``identity_evidence``, ``signal``, ``signal_categories``, ``evidence_confidence``): those
-  stored fields are kept as they are.
+* (review 026a) the radar part of ``operator_save``, renaming a Founder Radar person and the identity / signal
+  recompute after any edit of one, is ``founder_radar.operator.after_operator_save``, applied by the store.
 
 Input types the old code crashed on (500) or stored and later crashed on are refused as 400 here: a non-text
 ``id`` / ``name``, a ``recommended`` that is not a list of ids, a non-text ``introduced_by``, a ``persons`` that is
@@ -109,10 +104,6 @@ FIELDS = [
 NAME_REQUIRED = "name required"
 DUPLICATE = "a person with this name already exists — open the existing person to edit them; nothing was saved"
 UNKNOWN = "unknown person — nothing was saved"
-RADAR_NAME = (
-    "renaming a Founder Radar person waits for the Founder Radar port (it records the operator's name as identity "
-    "evidence) — nothing was saved"
-)
 IDENTIFIER_TAKEN = "{kind} {value} already belongs to another person ({owner}) — nothing was saved"
 NOT_TEXT_NOTES = "the stored notes are not text — nothing was changed"
 NOT_A_LIST = "{who}'s recommended list is not a list — nothing was changed"
@@ -166,20 +157,6 @@ def radar_fold(s: Any) -> str:
     return re.sub(
         r"[^a-z0-9 ]", "", unicodedata.normalize("NFKD", str(s or "")).encode("ascii", "ignore").decode().lower()
     ).strip()
-
-
-def is_radar_rename(before: Mapping[str, Any], body: Mapping[str, Any], legacy: Any) -> bool:
-    """The old radar-name path's trigger without its ``is_person_name`` test (a broader refusal, never a silent one):
-    an existing Founder Radar person whose name the save changes.
-
-    "Founder Radar person" is decided by the DURABLE imported origin (``legacy.provenance``, review 013, Codex H-091),
-    never by the current record: the talented ritual and ordinary edits may set ``provenance = user_provided`` on a
-    radar person, and that must not unlock a rename that would lose the old name without its alias and identity
-    evidence. A person created in this app has no ``legacy`` and stays renamable.
-    """
-    new_name = str(body.get("name") or "").strip()
-    generated = isinstance(legacy, Mapping) and legacy.get("provenance") != "user_provided"
-    return generated and bool(new_name) and radar_fold(new_name) != radar_fold(before.get("name", ""))
 
 
 # ── the "3 most talented" ritual ────────────────────────────────────────────────────────────────────────────────

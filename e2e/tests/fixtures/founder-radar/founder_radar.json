@@ -1,0 +1,2072 @@
+{
+  "people": [
+    {
+      "id": "p-mira-talvik-1001",
+      "name": "Mira Talvik",
+      "created": "2026-11-01",
+      "provenance": "radar_detected",
+      "aliases": [],
+      "identity_status": "needs identity resolution",
+      "identity_evidence": [
+        "official team page names the founder — no stable handle yet"
+      ],
+      "founder_status": "UNKNOWN",
+      "country": "DE",
+      "region": "DACH",
+      "institutions": [],
+      "profile_urls": [],
+      "companies": [],
+      "events": [],
+      "ecosystems": [],
+      "sources": [
+        {
+          "source": "Kelpwise GmbH official site",
+          "source_id": "kelpwise-team",
+          "url": "https://kelpwise.example/team"
+        }
+      ],
+      "evidence": [
+        {
+          "category": "entrepreneurial",
+          "claim": "named Co-Founder & CEO on the official team page",
+          "source": "Kelpwise GmbH team",
+          "source_url": "https://kelpwise.example/team",
+          "retrieved": "2026-11-10 21:01"
+        }
+      ],
+      "last_signal": "2026-11-04",
+      "state_history": [],
+      "intro_route": "",
+      "relationship_owner": "Mohamed",
+      "machine_research": "",
+      "human_judgment": "",
+      "boardy": {
+        "status": "",
+        "history": []
+      },
+      "opportunities": [],
+      "updated": "2026-11-10",
+      "why_surfaced": "named on the Kelpwise GmbH team page",
+      "radar_state": "needs identity resolution",
+      "location": "Kiel",
+      "role": "Co-Founder & CEO",
+      "last_observed": "2026-11-10",
+      "introduced_by_name": "",
+      "proposed_identity": null,
+      "promotion_block": "Resolve identity before promotion",
+      "company": "Kelpwise GmbH",
+      "signal": {
+        "bands": {
+          "builder": "NOT ENOUGH INFORMATION",
+          "technical_depth": "NOT ENOUGH INFORMATION",
+          "entrepreneurial": "MEDIUM",
+          "trajectory": "NOT ENOUGH INFORMATION",
+          "talent_magnet": "NOT ENOUGH INFORMATION",
+          "project_a": "MEDIUM",
+          "technical_theme_overlap": "NOT ENOUGH INFORMATION"
+        },
+        "factors": {
+          "project_a": [
+            "repo/bio themes: ocean, sensing"
+          ]
+        },
+        "ordering": null,
+        "ordering_factors": [],
+        "founder_scorable": false,
+        "access": {
+          "kind": "cold",
+          "label": "Contact route: public e-mail hello@kelpwise.example — cold"
+        },
+        "queue_label": "",
+        "recent_activity": {
+          "recent": false,
+          "date": "",
+          "source": "",
+          "reason": "no dated activity"
+        },
+        "recent_activity_used": "",
+        "founder_eligibility": {
+          "eligible": false,
+          "kind": "claim",
+          "claim_only": true,
+          "evidence": [
+            "official team page: Co-Founder & CEO"
+          ]
+        },
+        "founder_status_class": "founder claim (unverified)",
+        "bucket": "Founder claim — unverified",
+        "missing": [
+          "identity"
+        ]
+      }
+    },
+    {
+      "id": "p-jonas-brekke-1002",
+      "name": "Jonas Brekke",
+      "created": "2026-11-01",
+      "provenance": "radar_detected",
+      "aliases": [
+        "jbrekke"
+      ],
+      "identity_status": "needs identity resolution",
+      "identity_evidence": [],
+      "founder_status": "UNKNOWN",
+      "country": "DE",
+      "region": "DACH",
+      "institutions": [],
+      "profile_urls": [],
+      "companies": [],
+      "events": [],
+      "ecosystems": [],
+      "sources": [
+        {
+          "source": "Kelpwise GmbH official site",
+          "source_id": "kelpwise-team",
+          "url": "https://kelpwise.example/team"
+        }
+      ],
+      "evidence": [],
+      "last_signal": "",
+      "state_history": [],
+      "intro_route": "",
+      "relationship_owner": "Mohamed",
+      "machine_research": "",
+      "human_judgment": "",
+      "boardy": {
+        "status": "",
+        "history": []
+      },
+      "opportunities": [],
+      "updated": "2026-11-10",
+      "why_surfaced": "named on the Kelpwise GmbH team page",
+      "radar_state": "needs identity resolution",
+      "location": "Kiel",
+      "role": "Co-Founder & CTO",
+      "last_observed": "2026-11-10",
+      "introduced_by_name": "",
+      "proposed_identity": null,
+      "promotion_block": "Resolve identity before promotion",
+      "company": "Kelpwise GmbH",
+      "signal": {
+        "bands": {
+          "builder": "NOT ENOUGH INFORMATION",
+          "technical_depth": "NOT ENOUGH INFORMATION",
+          "entrepreneurial": "NOT ENOUGH INFORMATION",
+          "trajectory": "NOT ENOUGH INFORMATION",
+          "talent_magnet": "NOT ENOUGH INFORMATION",
+          "project_a": "NOT ENOUGH INFORMATION",
+          "technical_theme_overlap": "NOT ENOUGH INFORMATION"
+        },
+        "factors": {
+          "builder": [],
+          "technical_depth": [],
+          "entrepreneurial": [],
+          "trajectory": [],
+          "talent_magnet": [],
+          "project_a": [],
+          "technical_theme_overlap": []
+        },
+        "ordering": null,
+        "ordering_factors": [],
+        "founder_scorable": false,
+        "access": {
+          "kind": "none",
+          "label": "No access path recorded"
+        },
+        "queue_label": "",
+        "recent_activity": {
+          "recent": false,
+          "date": "",
+          "source": "",
+          "reason": "no dated activity"
+        },
+        "recent_activity_used": "",
+        "founder_eligibility": {
+          "eligible": false,
+          "kind": "claim",
+          "claim_only": true,
+          "evidence": [
+            "official team page: Co-Founder & CTO"
+          ]
+        },
+        "founder_status_class": "founder claim (unverified)",
+        "bucket": "Founder claim — unverified",
+        "missing": [
+          "identity"
+        ]
+      }
+    },
+    {
+      "id": "p-ilka-moravec-1003",
+      "name": "Ilka Moravec",
+      "created": "2026-11-01",
+      "provenance": "radar_detected",
+      "aliases": [],
+      "identity_status": "resolved",
+      "identity_evidence": [
+        "GitHub identity #4471",
+        "official team page"
+      ],
+      "founder_status": "UNKNOWN",
+      "country": "FI",
+      "region": "Nordics",
+      "institutions": [],
+      "profile_urls": [],
+      "companies": [],
+      "events": [],
+      "ecosystems": [],
+      "sources": [
+        {
+          "source": "GitHub — builders in Tampere",
+          "source_id": "gh-tampere",
+          "url": "https://github.com/ilkam"
+        }
+      ],
+      "evidence": [
+        {
+          "category": "entrepreneurial",
+          "claim": "Founder of Borealis Robotics (official site)",
+          "source": "Borealis Robotics about",
+          "source_url": "https://borealis.example/about",
+          "retrieved": "2026-11-10 21:01"
+        },
+        {
+          "category": "technical",
+          "claim": "maintains a motion-planning library",
+          "source": "GitHub",
+          "source_url": "https://github.com/ilkam",
+          "retrieved": "2026-11-10 21:01"
+        }
+      ],
+      "last_signal": "2026-11-02",
+      "state_history": [],
+      "intro_route": "",
+      "relationship_owner": "Mohamed",
+      "machine_research": "",
+      "human_judgment": "",
+      "boardy": {
+        "status": "",
+        "history": []
+      },
+      "opportunities": [],
+      "updated": "2026-11-10",
+      "why_surfaced": "founder line on the Borealis Robotics site",
+      "radar_state": "detected",
+      "location": "Tampere",
+      "role": "Founder",
+      "last_observed": "2026-11-10",
+      "introduced_by_name": "",
+      "proposed_identity": null,
+      "promotion_block": null,
+      "company": "Borealis Robotics",
+      "linkedin": "https://www.linkedin.com/in/ilka-moravec-borealis",
+      "relationship_strength": "warm",
+      "signal": {
+        "bands": {
+          "builder": "HIGH",
+          "technical_depth": "HIGH",
+          "entrepreneurial": "HIGH",
+          "trajectory": "NOT ENOUGH INFORMATION",
+          "talent_magnet": "NOT ENOUGH INFORMATION",
+          "project_a": "MEDIUM",
+          "technical_theme_overlap": "NOT ENOUGH INFORMATION"
+        },
+        "factors": {
+          "project_a": [
+            "repo/bio themes: robotics, autonomy"
+          ]
+        },
+        "ordering": 7,
+        "ordering_factors": [
+          {
+            "factor": "founder evidence",
+            "points": 4
+          },
+          {
+            "factor": "technical depth",
+            "points": 3
+          }
+        ],
+        "founder_scorable": true,
+        "access": {
+          "kind": "warm",
+          "label": "Warm path: introduced by Nils Farrow"
+        },
+        "queue_label": "Founder verified — company facts incomplete",
+        "recent_activity": {
+          "recent": true,
+          "date": "2026-11-02",
+          "source": "Borealis Robotics news",
+          "reason": ""
+        },
+        "recent_activity_used": "",
+        "founder_eligibility": {
+          "eligible": false,
+          "kind": "claim",
+          "claim_only": true,
+          "evidence": [
+            "official about page: Founder"
+          ]
+        },
+        "founder_status_class": "explicit founder",
+        "bucket": "Founder claim — unverified",
+        "missing": [
+          "founded",
+          "funding"
+        ]
+      }
+    },
+    {
+      "id": "p-teo-haarberg-1004",
+      "name": "Teo Haarberg",
+      "created": "2026-11-01",
+      "provenance": "radar_detected",
+      "aliases": [],
+      "identity_status": "resolved",
+      "identity_evidence": [],
+      "founder_status": "UNKNOWN",
+      "country": "FI",
+      "region": "Nordics",
+      "institutions": [],
+      "profile_urls": [],
+      "companies": [],
+      "events": [],
+      "ecosystems": [],
+      "sources": [
+        {
+          "source": "Borealis Robotics official site",
+          "source_id": "borealis-about",
+          "url": "https://borealis.example/about"
+        }
+      ],
+      "evidence": [
+        {
+          "category": "entrepreneurial",
+          "claim": "Co-Founder of Borealis Robotics (official site)",
+          "source": "Borealis Robotics about",
+          "source_url": "https://borealis.example/about",
+          "retrieved": "2026-11-10 21:01"
+        }
+      ],
+      "last_signal": "",
+      "state_history": [],
+      "intro_route": "",
+      "relationship_owner": "Mohamed",
+      "machine_research": "",
+      "human_judgment": "",
+      "boardy": {
+        "status": "",
+        "history": []
+      },
+      "opportunities": [],
+      "updated": "2026-11-10",
+      "why_surfaced": "co-founder line on the Borealis Robotics site",
+      "radar_state": "detected",
+      "location": "Tampere",
+      "role": "Co-Founder",
+      "last_observed": "2026-11-10",
+      "introduced_by_name": "",
+      "proposed_identity": null,
+      "promotion_block": null,
+      "company": "Borealis Robotics",
+      "signal": {
+        "bands": {
+          "builder": "NOT ENOUGH INFORMATION",
+          "technical_depth": "NOT ENOUGH INFORMATION",
+          "entrepreneurial": "NOT ENOUGH INFORMATION",
+          "trajectory": "NOT ENOUGH INFORMATION",
+          "talent_magnet": "NOT ENOUGH INFORMATION",
+          "project_a": "NOT ENOUGH INFORMATION",
+          "technical_theme_overlap": "NOT ENOUGH INFORMATION"
+        },
+        "factors": {
+          "builder": [],
+          "technical_depth": [],
+          "entrepreneurial": [],
+          "trajectory": [],
+          "talent_magnet": [],
+          "project_a": [],
+          "technical_theme_overlap": []
+        },
+        "ordering": null,
+        "ordering_factors": [],
+        "founder_scorable": false,
+        "access": {
+          "kind": "none",
+          "label": "No access path recorded"
+        },
+        "queue_label": "Founder verified — company facts incomplete",
+        "recent_activity": {
+          "recent": false,
+          "date": "",
+          "source": "",
+          "reason": "no dated activity"
+        },
+        "recent_activity_used": "",
+        "founder_eligibility": {
+          "eligible": false,
+          "kind": "claim",
+          "claim_only": true,
+          "evidence": [
+            "official about page: Co-Founder"
+          ]
+        },
+        "founder_status_class": "founder claim (unverified)",
+        "bucket": "Founder claim — unverified",
+        "missing": [
+          "founded"
+        ]
+      }
+    },
+    {
+      "id": "p-sana-okafor-1005",
+      "name": "Sana Okafor",
+      "created": "2026-11-01",
+      "provenance": "radar_detected",
+      "aliases": [],
+      "identity_status": "needs identity resolution",
+      "identity_evidence": [],
+      "founder_status": "UNKNOWN",
+      "country": "NL",
+      "region": "France & Benelux",
+      "institutions": [],
+      "profile_urls": [],
+      "companies": [],
+      "events": [],
+      "ecosystems": [],
+      "sources": [
+        {
+          "source": "Project Zero pipeline",
+          "source_id": "pipeline",
+          "url": "https://quillstone.example"
+        }
+      ],
+      "evidence": [],
+      "last_signal": "",
+      "state_history": [],
+      "intro_route": "",
+      "relationship_owner": "Mohamed",
+      "machine_research": "",
+      "human_judgment": "",
+      "boardy": {
+        "status": "",
+        "history": []
+      },
+      "opportunities": [],
+      "updated": "2026-11-10",
+      "why_surfaced": "Project Zero pipeline founder claim",
+      "radar_state": "needs identity resolution",
+      "location": "Rotterdam",
+      "role": "Founder",
+      "last_observed": "2026-11-10",
+      "introduced_by_name": "",
+      "proposed_identity": null,
+      "promotion_block": "Resolve identity before promotion",
+      "company": "Quillstone AI",
+      "scout_identity_review": {
+        "ready": true,
+        "intake_item_id": "si-quill-7"
+      },
+      "signal": {
+        "bands": {
+          "builder": "NOT ENOUGH INFORMATION",
+          "technical_depth": "NOT ENOUGH INFORMATION",
+          "entrepreneurial": "NOT ENOUGH INFORMATION",
+          "trajectory": "NOT ENOUGH INFORMATION",
+          "talent_magnet": "NOT ENOUGH INFORMATION",
+          "project_a": "NOT ENOUGH INFORMATION",
+          "technical_theme_overlap": "NOT ENOUGH INFORMATION"
+        },
+        "factors": {
+          "builder": [],
+          "technical_depth": [],
+          "entrepreneurial": [],
+          "trajectory": [],
+          "talent_magnet": [],
+          "project_a": [],
+          "technical_theme_overlap": []
+        },
+        "ordering": null,
+        "ordering_factors": [],
+        "founder_scorable": false,
+        "access": {
+          "kind": "none",
+          "label": "No access path recorded"
+        },
+        "queue_label": "",
+        "recent_activity": {
+          "recent": false,
+          "date": "",
+          "source": "",
+          "reason": "no dated activity"
+        },
+        "recent_activity_used": "",
+        "founder_eligibility": {
+          "eligible": false,
+          "kind": "claim",
+          "claim_only": true,
+          "evidence": [
+            "pipeline entry names the founder"
+          ]
+        },
+        "founder_status_class": "founder claim (unverified)",
+        "bucket": "Founder claim — unverified",
+        "missing": [
+          "identity"
+        ]
+      }
+    },
+    {
+      "id": "p-grainhacker-1006",
+      "name": "grainhacker",
+      "created": "2026-11-01",
+      "provenance": "radar_detected",
+      "aliases": [
+        "grainhacker"
+      ],
+      "identity_status": "needs identity resolution",
+      "identity_evidence": [],
+      "founder_status": "UNKNOWN",
+      "country": "FR",
+      "region": "France & Benelux",
+      "institutions": [],
+      "profile_urls": [],
+      "companies": [],
+      "events": [],
+      "ecosystems": [],
+      "sources": [
+        {
+          "source": "GitHub — builders in Lyon",
+          "source_id": "gh-lyon",
+          "url": "https://github.com/grainhacker"
+        }
+      ],
+      "evidence": [],
+      "last_signal": "",
+      "state_history": [],
+      "intro_route": "",
+      "relationship_owner": "Mohamed",
+      "machine_research": "",
+      "human_judgment": "",
+      "boardy": {
+        "status": "",
+        "history": []
+      },
+      "opportunities": [],
+      "updated": "2026-11-10",
+      "why_surfaced": "GitHub search",
+      "radar_state": "needs identity resolution",
+      "location": "Lyon",
+      "role": "",
+      "last_observed": "2026-11-10",
+      "introduced_by_name": "",
+      "proposed_identity": {
+        "name": "Gideon Rask",
+        "url": "https://grainline.example/about",
+        "source": "Grainline Labs about"
+      },
+      "promotion_block": "Resolve identity before promotion",
+      "company": "Grainline Labs",
+      "name_attributed": false,
+      "signal": {
+        "bands": {
+          "builder": "NOT ENOUGH INFORMATION",
+          "technical_depth": "NOT ENOUGH INFORMATION",
+          "entrepreneurial": "NOT ENOUGH INFORMATION",
+          "trajectory": "NOT ENOUGH INFORMATION",
+          "talent_magnet": "NOT ENOUGH INFORMATION",
+          "project_a": "NOT ENOUGH INFORMATION",
+          "technical_theme_overlap": "NOT ENOUGH INFORMATION"
+        },
+        "factors": {
+          "builder": [],
+          "technical_depth": [],
+          "entrepreneurial": [],
+          "trajectory": [],
+          "talent_magnet": [],
+          "project_a": [],
+          "technical_theme_overlap": []
+        },
+        "ordering": null,
+        "ordering_factors": [],
+        "founder_scorable": false,
+        "access": {
+          "kind": "none",
+          "label": "No access path recorded"
+        },
+        "queue_label": "",
+        "recent_activity": {
+          "recent": false,
+          "date": "",
+          "source": "",
+          "reason": "no dated activity"
+        },
+        "recent_activity_used": "",
+        "founder_eligibility": {
+          "eligible": false,
+          "kind": "claim",
+          "claim_only": true,
+          "evidence": [
+            "GitHub profile: founder of Grainline Labs"
+          ]
+        },
+        "founder_status_class": "founder claim (unverified)",
+        "bucket": "Founder claim — unverified",
+        "missing": [
+          "identity"
+        ]
+      }
+    },
+    {
+      "id": "p-oskar-lindqvist-1007",
+      "name": "Oskar Lindqvist",
+      "created": "2026-11-01",
+      "provenance": "radar_detected",
+      "aliases": [],
+      "identity_status": "resolved",
+      "identity_evidence": [
+        "GitHub identity #88",
+        "corroborated by location"
+      ],
+      "founder_status": "UNKNOWN",
+      "country": "CH",
+      "region": "DACH",
+      "institutions": [],
+      "profile_urls": [
+        "https://github.com/oskarl"
+      ],
+      "companies": [],
+      "events": [],
+      "ecosystems": [],
+      "sources": [
+        {
+          "source": "GitHub — builders in Zürich",
+          "source_id": "gh-zurich",
+          "url": "https://github.com/oskarl"
+        }
+      ],
+      "evidence": [
+        {
+          "category": "builder",
+          "claim": "24 public repositories",
+          "source": "GitHub",
+          "source_url": "https://github.com/oskarl",
+          "retrieved": "2026-11-10 21:01"
+        },
+        {
+          "category": "entrepreneurial",
+          "claim": "profile bio: data engineer, stream-processing committer",
+          "source": "GitHub",
+          "source_url": "https://github.com/oskarl",
+          "retrieved": "2026-11-10 21:01"
+        },
+        {
+          "category": "project_a",
+          "claim": "repo/bio themes: robotics",
+          "source": "GitHub",
+          "source_url": "https://github.com/oskarl",
+          "retrieved": "2026-11-10 21:01"
+        },
+        {
+          "category": "trajectory",
+          "claim": "2 repos pushed this month",
+          "source": "GitHub",
+          "source_url": "https://github.com/oskarl",
+          "retrieved": "2026-11-10 21:01",
+          "activity_date": "2026-11-09"
+        }
+      ],
+      "last_signal": "2026-11-09",
+      "state_history": [
+        {
+          "from": "researching",
+          "to": "detected",
+          "on": "2026-11-10 21:01",
+          "note": "detected by founder scan",
+          "by": "radar"
+        }
+      ],
+      "intro_route": "",
+      "relationship_owner": "Mohamed",
+      "machine_research": "",
+      "human_judgment": "",
+      "boardy": {
+        "status": "",
+        "history": []
+      },
+      "opportunities": [],
+      "updated": "2026-11-10",
+      "why_surfaced": "GitHub search",
+      "radar_state": "detected",
+      "location": "Zürich",
+      "role": "researcher",
+      "last_observed": "2026-11-10",
+      "introduced_by_name": "",
+      "proposed_identity": null,
+      "promotion_block": null,
+      "signal": {
+        "bands": {
+          "builder": "LOW",
+          "technical_depth": "NOT ENOUGH INFORMATION",
+          "entrepreneurial": "MEDIUM",
+          "trajectory": "MEDIUM",
+          "talent_magnet": "NOT ENOUGH INFORMATION",
+          "project_a": "MEDIUM",
+          "technical_theme_overlap": "NOT ENOUGH INFORMATION"
+        },
+        "factors": {
+          "builder": [
+            "24 public repositories"
+          ],
+          "project_a": [
+            "repo/bio themes: robotics"
+          ]
+        },
+        "ordering": null,
+        "ordering_factors": [],
+        "founder_scorable": false,
+        "access": {
+          "kind": "cold",
+          "label": "Contact route: public profile — cold"
+        },
+        "queue_label": "",
+        "recent_activity": {
+          "recent": true,
+          "date": "2026-11-09",
+          "source": "GitHub",
+          "reason": ""
+        },
+        "recent_activity_used": "",
+        "founder_eligibility": {
+          "eligible": false,
+          "kind": "none",
+          "claim_only": false,
+          "evidence": []
+        },
+        "founder_status_class": "unknown",
+        "bucket": "Insufficient evidence / out of scope",
+        "missing": [
+          "no attributed evidence"
+        ]
+      }
+    },
+    {
+      "id": "p-rhea-castell-1008",
+      "name": "Rhea Castell",
+      "created": "2026-11-01",
+      "provenance": "radar_detected",
+      "aliases": [],
+      "identity_status": "resolved",
+      "identity_evidence": [],
+      "founder_status": "UNKNOWN",
+      "country": "EE",
+      "region": "CEE",
+      "institutions": [
+        "Tartu Institute of Field Robotics"
+      ],
+      "profile_urls": [],
+      "companies": [],
+      "events": [],
+      "ecosystems": [],
+      "sources": [
+        {
+          "source": "OpenAlex — robotics authors",
+          "source_id": "openalex",
+          "url": "https://openalex.example/A1"
+        }
+      ],
+      "evidence": [
+        {
+          "category": "technical",
+          "claim": "first author of three field-robotics papers",
+          "source": "OpenAlex",
+          "source_url": "https://openalex.example/A1",
+          "retrieved": "2026-11-10 21:01"
+        }
+      ],
+      "last_signal": "2026-10-20",
+      "state_history": [],
+      "intro_route": "",
+      "relationship_owner": "Mohamed",
+      "machine_research": "",
+      "human_judgment": "",
+      "boardy": {
+        "status": "",
+        "history": []
+      },
+      "opportunities": [],
+      "updated": "2026-11-10",
+      "why_surfaced": "OpenAlex: recent robotics publications",
+      "radar_state": "detected",
+      "location": "Tartu",
+      "role": "postdoctoral researcher",
+      "last_observed": "2026-11-10",
+      "introduced_by_name": "",
+      "proposed_identity": null,
+      "promotion_block": null,
+      "signal": {
+        "bands": {
+          "builder": "NOT ENOUGH INFORMATION",
+          "technical_depth": "HIGH",
+          "entrepreneurial": "NOT ENOUGH INFORMATION",
+          "trajectory": "NOT ENOUGH INFORMATION",
+          "talent_magnet": "NOT ENOUGH INFORMATION",
+          "project_a": "NOT ENOUGH INFORMATION",
+          "technical_theme_overlap": "MEDIUM"
+        },
+        "factors": {
+          "project_a": [
+            "themes: robotics"
+          ]
+        },
+        "ordering": null,
+        "ordering_factors": [],
+        "founder_scorable": false,
+        "access": {
+          "kind": "none",
+          "label": "No access path recorded"
+        },
+        "queue_label": "",
+        "recent_activity": {
+          "recent": false,
+          "date": "",
+          "source": "",
+          "reason": "no dated activity"
+        },
+        "recent_activity_used": "",
+        "founder_eligibility": {
+          "eligible": false,
+          "kind": "none",
+          "claim_only": false,
+          "evidence": []
+        },
+        "founder_status_class": "researcher",
+        "bucket": "Research & spinout talent",
+        "missing": []
+      }
+    },
+    {
+      "id": "p-wren-adebayo-1009",
+      "name": "Wren Adebayo",
+      "created": "2026-11-01",
+      "provenance": "radar_detected",
+      "aliases": [],
+      "identity_status": "resolved",
+      "identity_evidence": [],
+      "founder_status": "UNKNOWN",
+      "country": "DE",
+      "region": "DACH",
+      "institutions": [],
+      "profile_urls": [],
+      "companies": [],
+      "events": [],
+      "ecosystems": [],
+      "sources": [
+        {
+          "source": "GitHub — builders in Berlin",
+          "source_id": "gh-berlin",
+          "url": "https://github.com/wrena"
+        }
+      ],
+      "evidence": [
+        {
+          "category": "builder",
+          "claim": "11 public repositories",
+          "source": "GitHub",
+          "source_url": "https://github.com/wrena",
+          "retrieved": "2026-11-10 21:01"
+        }
+      ],
+      "last_signal": "",
+      "state_history": [],
+      "intro_route": "",
+      "relationship_owner": "Mohamed",
+      "machine_research": "",
+      "human_judgment": "",
+      "boardy": {
+        "status": "",
+        "history": []
+      },
+      "opportunities": [],
+      "updated": "2026-11-10",
+      "why_surfaced": "",
+      "radar_state": "watchlisted",
+      "location": "Berlin",
+      "role": "engineer",
+      "last_observed": "2026-11-10",
+      "introduced_by_name": "",
+      "proposed_identity": null,
+      "promotion_block": null,
+      "signal": {
+        "bands": {
+          "builder": "NOT ENOUGH INFORMATION",
+          "technical_depth": "NOT ENOUGH INFORMATION",
+          "entrepreneurial": "NOT ENOUGH INFORMATION",
+          "trajectory": "NOT ENOUGH INFORMATION",
+          "talent_magnet": "NOT ENOUGH INFORMATION",
+          "project_a": "NOT ENOUGH INFORMATION",
+          "technical_theme_overlap": "NOT ENOUGH INFORMATION"
+        },
+        "factors": {
+          "builder": [],
+          "technical_depth": [],
+          "entrepreneurial": [],
+          "trajectory": [],
+          "talent_magnet": [],
+          "project_a": [],
+          "technical_theme_overlap": []
+        },
+        "ordering": null,
+        "ordering_factors": [],
+        "founder_scorable": false,
+        "access": {
+          "kind": "none",
+          "label": "No access path recorded"
+        },
+        "queue_label": "",
+        "recent_activity": {
+          "recent": false,
+          "date": "",
+          "source": "",
+          "reason": "no dated activity"
+        },
+        "recent_activity_used": "",
+        "founder_eligibility": {
+          "eligible": false,
+          "kind": "none",
+          "claim_only": false,
+          "evidence": []
+        },
+        "founder_status_class": "unknown",
+        "bucket": "Insufficient evidence / out of scope",
+        "missing": []
+      }
+    },
+    {
+      "id": "p-nils-farrow-1010",
+      "name": "Nils Farrow",
+      "created": "2026-11-01",
+      "provenance": "radar_detected",
+      "aliases": [],
+      "identity_status": "resolved",
+      "identity_evidence": [],
+      "founder_status": "UNKNOWN",
+      "country": "DE",
+      "region": "DACH",
+      "institutions": [],
+      "profile_urls": [],
+      "companies": [],
+      "events": [],
+      "ecosystems": [],
+      "sources": [
+        {
+          "source": "GitHub — builders in Hamburg",
+          "source_id": "gh-hamburg",
+          "url": "https://github.com/nilsf"
+        }
+      ],
+      "evidence": [
+        {
+          "category": "builder",
+          "claim": "8 public repositories",
+          "source": "GitHub",
+          "source_url": "https://github.com/nilsf",
+          "retrieved": "2026-11-10 21:01"
+        }
+      ],
+      "last_signal": "",
+      "state_history": [],
+      "intro_route": "",
+      "relationship_owner": "Mohamed",
+      "machine_research": "",
+      "human_judgment": "",
+      "boardy": {
+        "status": "",
+        "history": []
+      },
+      "opportunities": [],
+      "updated": "2026-11-10",
+      "why_surfaced": "",
+      "radar_state": "contacted",
+      "location": "Hamburg",
+      "role": "angel",
+      "last_observed": "2026-11-10",
+      "introduced_by_name": "",
+      "proposed_identity": null,
+      "promotion_block": null,
+      "signal": {
+        "bands": {
+          "builder": "NOT ENOUGH INFORMATION",
+          "technical_depth": "NOT ENOUGH INFORMATION",
+          "entrepreneurial": "NOT ENOUGH INFORMATION",
+          "trajectory": "NOT ENOUGH INFORMATION",
+          "talent_magnet": "NOT ENOUGH INFORMATION",
+          "project_a": "NOT ENOUGH INFORMATION",
+          "technical_theme_overlap": "NOT ENOUGH INFORMATION"
+        },
+        "factors": {
+          "builder": [],
+          "technical_depth": [],
+          "entrepreneurial": [],
+          "trajectory": [],
+          "talent_magnet": [],
+          "project_a": [],
+          "technical_theme_overlap": []
+        },
+        "ordering": null,
+        "ordering_factors": [],
+        "founder_scorable": false,
+        "access": {
+          "kind": "none",
+          "label": "No access path recorded"
+        },
+        "queue_label": "",
+        "recent_activity": {
+          "recent": false,
+          "date": "",
+          "source": "",
+          "reason": "no dated activity"
+        },
+        "recent_activity_used": "",
+        "founder_eligibility": {
+          "eligible": false,
+          "kind": "none",
+          "claim_only": false,
+          "evidence": []
+        },
+        "founder_status_class": "unknown",
+        "bucket": "Insufficient evidence / out of scope",
+        "missing": []
+      }
+    },
+    {
+      "id": "p-hana-sato-1011",
+      "name": "Hana Sato",
+      "created": "2026-11-01",
+      "provenance": "user_provided",
+      "aliases": [],
+      "identity_status": "resolved",
+      "identity_evidence": [],
+      "founder_status": "UNKNOWN",
+      "country": "DE",
+      "region": "DACH",
+      "institutions": [],
+      "profile_urls": [],
+      "companies": [],
+      "events": [],
+      "ecosystems": [],
+      "sources": [],
+      "evidence": [],
+      "last_signal": "",
+      "state_history": [],
+      "intro_route": "",
+      "relationship_owner": "Mohamed",
+      "machine_research": "",
+      "human_judgment": "",
+      "boardy": {
+        "status": "",
+        "history": []
+      },
+      "opportunities": [],
+      "updated": "2026-11-10",
+      "why_surfaced": "",
+      "radar_state": "active relationship",
+      "location": "Munich",
+      "role": "",
+      "last_observed": "2026-11-10",
+      "introduced_by_name": "",
+      "proposed_identity": null,
+      "promotion_block": null,
+      "signal": {
+        "bands": {
+          "builder": "NOT ENOUGH INFORMATION",
+          "technical_depth": "NOT ENOUGH INFORMATION",
+          "entrepreneurial": "NOT ENOUGH INFORMATION",
+          "trajectory": "NOT ENOUGH INFORMATION",
+          "talent_magnet": "NOT ENOUGH INFORMATION",
+          "project_a": "NOT ENOUGH INFORMATION",
+          "technical_theme_overlap": "NOT ENOUGH INFORMATION"
+        },
+        "factors": {
+          "builder": [],
+          "technical_depth": [],
+          "entrepreneurial": [],
+          "trajectory": [],
+          "talent_magnet": [],
+          "project_a": [],
+          "technical_theme_overlap": []
+        },
+        "ordering": null,
+        "ordering_factors": [],
+        "founder_scorable": false,
+        "access": {
+          "kind": "none",
+          "label": "No access path recorded"
+        },
+        "queue_label": "",
+        "recent_activity": {
+          "recent": false,
+          "date": "",
+          "source": "",
+          "reason": "no dated activity"
+        },
+        "recent_activity_used": "",
+        "founder_eligibility": {
+          "eligible": false,
+          "kind": "none",
+          "claim_only": false,
+          "evidence": []
+        },
+        "founder_status_class": "unknown",
+        "bucket": "Insufficient evidence / out of scope",
+        "missing": []
+      }
+    },
+    {
+      "id": "p-dana-vale-1012",
+      "name": "Dana Vale",
+      "created": "2026-11-01",
+      "provenance": "radar_detected",
+      "aliases": [],
+      "identity_status": "resolved",
+      "identity_evidence": [],
+      "founder_status": "UNKNOWN",
+      "country": "AT",
+      "region": "DACH",
+      "institutions": [],
+      "profile_urls": [],
+      "companies": [],
+      "events": [],
+      "ecosystems": [],
+      "sources": [
+        {
+          "source": "GitHub — builders in Vienna",
+          "source_id": "gh-vienna",
+          "url": "https://github.com/danav"
+        }
+      ],
+      "evidence": [],
+      "last_signal": "",
+      "state_history": [],
+      "intro_route": "",
+      "relationship_owner": "Mohamed",
+      "machine_research": "",
+      "human_judgment": "",
+      "boardy": {
+        "status": "",
+        "history": []
+      },
+      "opportunities": [],
+      "updated": "2026-11-10",
+      "why_surfaced": "",
+      "radar_state": "dismissed",
+      "location": "Vienna",
+      "role": "",
+      "last_observed": "2026-11-10",
+      "introduced_by_name": "",
+      "proposed_identity": null,
+      "promotion_block": null,
+      "signal": {
+        "bands": {
+          "builder": "NOT ENOUGH INFORMATION",
+          "technical_depth": "NOT ENOUGH INFORMATION",
+          "entrepreneurial": "NOT ENOUGH INFORMATION",
+          "trajectory": "NOT ENOUGH INFORMATION",
+          "talent_magnet": "NOT ENOUGH INFORMATION",
+          "project_a": "NOT ENOUGH INFORMATION",
+          "technical_theme_overlap": "NOT ENOUGH INFORMATION"
+        },
+        "factors": {
+          "builder": [],
+          "technical_depth": [],
+          "entrepreneurial": [],
+          "trajectory": [],
+          "talent_magnet": [],
+          "project_a": [],
+          "technical_theme_overlap": []
+        },
+        "ordering": null,
+        "ordering_factors": [],
+        "founder_scorable": false,
+        "access": {
+          "kind": "none",
+          "label": "No access path recorded"
+        },
+        "queue_label": "",
+        "recent_activity": {
+          "recent": false,
+          "date": "",
+          "source": "",
+          "reason": "no dated activity"
+        },
+        "recent_activity_used": "",
+        "founder_eligibility": {
+          "eligible": false,
+          "kind": "none",
+          "claim_only": false,
+          "evidence": []
+        },
+        "founder_status_class": "unknown",
+        "bucket": "Insufficient evidence / out of scope",
+        "missing": []
+      }
+    },
+    {
+      "id": "p-petra-lunde-1013",
+      "name": "Petra Lunde",
+      "created": "2026-11-01",
+      "provenance": "user_authorized_import",
+      "aliases": [],
+      "identity_status": "needs identity resolution",
+      "identity_evidence": [],
+      "founder_status": "UNKNOWN",
+      "country": "NO",
+      "region": "Nordics",
+      "institutions": [],
+      "profile_urls": [],
+      "companies": [],
+      "events": [],
+      "ecosystems": [],
+      "sources": [
+        {
+          "source": "authorized import",
+          "source_id": "import",
+          "url": ""
+        }
+      ],
+      "evidence": [],
+      "last_signal": "",
+      "state_history": [],
+      "intro_route": "",
+      "relationship_owner": "Mohamed",
+      "machine_research": "",
+      "human_judgment": "",
+      "boardy": {
+        "status": "",
+        "history": []
+      },
+      "opportunities": [],
+      "updated": "2026-11-10",
+      "why_surfaced": "",
+      "radar_state": "needs identity resolution",
+      "location": "Oslo",
+      "role": "Co-Founder & CTO",
+      "last_observed": "2026-11-10",
+      "introduced_by_name": "",
+      "proposed_identity": null,
+      "promotion_block": "Resolve identity before promotion",
+      "company": "Fernhollow",
+      "provenance_label": "LinkedIn Connections export 2026-10",
+      "connection_source": "linkedin_export",
+      "linkedin_connected_on": "17 Sep 2026",
+      "import_date": "2026-10-02 10:00:00",
+      "signal": {
+        "bands": {
+          "builder": "NOT ENOUGH INFORMATION",
+          "technical_depth": "NOT ENOUGH INFORMATION",
+          "entrepreneurial": "NOT ENOUGH INFORMATION",
+          "trajectory": "NOT ENOUGH INFORMATION",
+          "talent_magnet": "NOT ENOUGH INFORMATION",
+          "project_a": "NOT ENOUGH INFORMATION",
+          "technical_theme_overlap": "NOT ENOUGH INFORMATION"
+        },
+        "factors": {
+          "builder": [],
+          "technical_depth": [],
+          "entrepreneurial": [],
+          "trajectory": [],
+          "talent_magnet": [],
+          "project_a": [],
+          "technical_theme_overlap": []
+        },
+        "ordering": null,
+        "ordering_factors": [],
+        "founder_scorable": false,
+        "access": {
+          "kind": "none",
+          "label": "No access path recorded"
+        },
+        "queue_label": "",
+        "recent_activity": {
+          "recent": false,
+          "date": "",
+          "source": "",
+          "reason": "no dated activity"
+        },
+        "recent_activity_used": "",
+        "founder_eligibility": {
+          "eligible": false,
+          "kind": "none",
+          "claim_only": false,
+          "evidence": []
+        },
+        "founder_status_class": "unknown",
+        "bucket": "Insufficient evidence / out of scope",
+        "missing": []
+      }
+    }
+  ],
+  "companies": [
+    {
+      "key": "dom:kelpwise.example",
+      "name": "Kelpwise GmbH",
+      "domain": "kelpwise.example",
+      "domain_source": "pipeline website",
+      "founders": [
+        {
+          "id": "p-mira-talvik-1001",
+          "name": "Mira Talvik",
+          "role": "Co-Founder & CEO",
+          "identity_status": "needs identity resolution",
+          "bucket": "Founder claim — unverified",
+          "name_attributed": true,
+          "claimed_name": "Mira Talvik",
+          "claimed_aliases": [],
+          "handle_only": false
+        },
+        {
+          "id": "p-jonas-brekke-1002",
+          "name": "Jonas Brekke",
+          "role": "Co-Founder & CTO",
+          "identity_status": "needs identity resolution",
+          "bucket": "Founder claim — unverified",
+          "name_attributed": true,
+          "claimed_name": "Jonas Brekke",
+          "claimed_aliases": [],
+          "handle_only": false
+        }
+      ],
+      "description": "ocean sensing buoys",
+      "founded": "UNKNOWN",
+      "status": "UNKNOWN",
+      "stage": "UNKNOWN",
+      "funding": "UNKNOWN",
+      "verified_facts": {},
+      "claims": {
+        "stage": "UNVERIFIED PIPELINE CLAIM: pre_seed"
+      },
+      "project_a_fit": "NOT ENOUGH INFORMATION",
+      "early_stage_fit": "UNKNOWN",
+      "access": "recorded",
+      "access_routes": [
+        {
+          "value": "hello@kelpwise.example",
+          "url": "https://kelpwise.example/contact"
+        }
+      ],
+      "next_action": "resolve founder identities (2 of 2 unresolved)",
+      "next_missing": [
+        "founded",
+        "status",
+        "project_a_fit",
+        "recent_activity"
+      ],
+      "evidence": [
+        {
+          "category": "company",
+          "claim": "pipeline entry: ocean sensing buoys",
+          "source": "Project Zero pipeline (claim)",
+          "source_url": "https://kelpwise.example",
+          "field": "one_liner"
+        }
+      ],
+      "in_pipeline": true,
+      "verified_field_count": 0,
+      "research_priority": 7,
+      "priority_factors": [
+        {
+          "factor": "recent dated pipeline/public signal",
+          "points": 3
+        },
+        {
+          "factor": "early-stage claim",
+          "points": 2
+        },
+        {
+          "factor": "official domain available",
+          "points": 1
+        },
+        {
+          "factor": "access path available",
+          "points": 1
+        }
+      ],
+      "priority_label": "Medium",
+      "priority_why": "recent dated pipeline/public signal; early-stage claim",
+      "proposals_pending": 8,
+      "researched": true
+    },
+    {
+      "key": "dom:borealis.example",
+      "name": "Borealis Robotics",
+      "domain": "borealis.example",
+      "domain_source": "candidate domain (public search result)",
+      "founders": [
+        {
+          "id": "p-ilka-moravec-1003",
+          "name": "Ilka Moravec",
+          "role": "Founder",
+          "identity_status": "resolved",
+          "bucket": "Founder claim — unverified",
+          "name_attributed": true,
+          "claimed_name": "Ilka Moravec",
+          "claimed_aliases": [],
+          "handle_only": false
+        },
+        {
+          "id": "p-teo-haarberg-1004",
+          "name": "Teo Haarberg",
+          "role": "Co-Founder",
+          "identity_status": "resolved",
+          "bucket": "Founder claim — unverified",
+          "name_attributed": true,
+          "claimed_name": "Teo Haarberg",
+          "claimed_aliases": [],
+          "handle_only": false
+        }
+      ],
+      "description": "autonomous forestry robots",
+      "founded": "2024",
+      "status": "active",
+      "stage": "UNKNOWN",
+      "funding": "UNKNOWN",
+      "verified_facts": {
+        "founded": {
+          "value": "2024"
+        },
+        "recent_activity": {
+          "value": "dated item on the news page: field trial with a forestry co-op",
+          "activity_date": "2026-11-02"
+        }
+      },
+      "claims": {},
+      "project_a_fit": "HIGH",
+      "early_stage_fit": "YES",
+      "access": "warm",
+      "access_routes": [],
+      "next_action": "source the funding stage",
+      "next_missing": [
+        "funding"
+      ],
+      "evidence": [
+        {
+          "category": "company",
+          "claim": "Borealis Robotics was founded in 2024 in Tampere.",
+          "source": "Borealis Robotics about",
+          "source_url": "https://borealis.example/about",
+          "field": "founded"
+        },
+        {
+          "category": "company",
+          "claim": "Field trial with a forestry co-op announced.",
+          "source": "Borealis Robotics news",
+          "source_url": "https://borealis.example/news",
+          "field": "recent_activity"
+        }
+      ],
+      "in_pipeline": false,
+      "verified_field_count": 2,
+      "research_priority": 9,
+      "priority_factors": [
+        {
+          "factor": "recent dated pipeline/public signal",
+          "points": 3
+        },
+        {
+          "factor": "Project A theme overlap in description (robotics)",
+          "points": 2
+        },
+        {
+          "factor": "founder identity completeness 2/2",
+          "points": 4
+        }
+      ],
+      "priority_label": "High",
+      "priority_why": "verified founders; recent dated signal",
+      "proposals_pending": 0,
+      "researched": true
+    },
+    {
+      "key": "dom:quillstone.example",
+      "name": "Quillstone AI",
+      "domain": "quillstone.example",
+      "domain_source": "pipeline website",
+      "founders": [
+        {
+          "id": "p-sana-okafor-1005",
+          "name": "Sana Okafor",
+          "role": "Founder",
+          "identity_status": "needs identity resolution",
+          "bucket": "Founder claim — unverified",
+          "name_attributed": true,
+          "claimed_name": "Sana Okafor",
+          "claimed_aliases": [],
+          "handle_only": false
+        }
+      ],
+      "description": "",
+      "founded": "UNKNOWN",
+      "status": "UNKNOWN",
+      "stage": "UNKNOWN",
+      "funding": "UNKNOWN",
+      "verified_facts": {},
+      "claims": {},
+      "project_a_fit": "NOT ENOUGH INFORMATION",
+      "early_stage_fit": "UNKNOWN",
+      "access": "none",
+      "access_routes": [],
+      "next_action": "research the official domain",
+      "next_missing": [
+        "founded",
+        "status",
+        "project_a_fit",
+        "recent_activity"
+      ],
+      "evidence": [],
+      "in_pipeline": true,
+      "verified_field_count": 0,
+      "research_priority": 3,
+      "priority_factors": [
+        {
+          "factor": "official domain available",
+          "points": 1
+        },
+        {
+          "factor": "missing qualification evidence: 4",
+          "points": 0
+        }
+      ],
+      "priority_label": "Low",
+      "priority_why": "no dated signal yet",
+      "proposals_pending": 0,
+      "researched": false
+    },
+    {
+      "key": "name:grainline-labs",
+      "name": "Grainline Labs",
+      "domain": "UNKNOWN",
+      "domain_source": "no official domain found",
+      "founders": [
+        {
+          "id": "p-grainhacker-1006",
+          "name": "grainhacker",
+          "role": "",
+          "identity_status": "needs identity resolution",
+          "bucket": "Founder claim — unverified",
+          "name_attributed": false,
+          "claimed_name": "grainhacker",
+          "claimed_aliases": [
+            "Gideon Rask"
+          ],
+          "handle_only": true
+        }
+      ],
+      "description": "",
+      "founded": "UNKNOWN",
+      "status": "UNKNOWN",
+      "stage": "UNKNOWN",
+      "funding": "UNKNOWN",
+      "verified_facts": {},
+      "claims": {},
+      "project_a_fit": "NOT ENOUGH INFORMATION",
+      "early_stage_fit": "UNKNOWN",
+      "access": "none",
+      "access_routes": [],
+      "next_action": "find the official domain",
+      "next_missing": [
+        "founded",
+        "status",
+        "project_a_fit",
+        "recent_activity"
+      ],
+      "evidence": [],
+      "in_pipeline": false,
+      "verified_field_count": 0,
+      "research_priority": 1,
+      "priority_factors": [
+        {
+          "factor": "no official domain",
+          "points": -1
+        },
+        {
+          "factor": "founder identity completeness 0/1",
+          "points": 0
+        }
+      ],
+      "priority_label": "Low",
+      "priority_why": "no official domain",
+      "proposals_pending": 0,
+      "researched": false
+    }
+  ],
+  "leads": {
+    "top": [
+      {
+        "id": "p-mira-talvik-1001",
+        "name": "Mira Talvik",
+        "company": "Kelpwise GmbH",
+        "role": "Co-Founder & CEO",
+        "location": "Kiel",
+        "standout": "Mira Talvik is named Co-Founder & CEO of Kelpwise GmbH on the company's own site — official site: news on 2026-11-04.",
+        "proof": [
+          {
+            "fact": "Co-Founder & CEO of Kelpwise GmbH — stated on the company's official site",
+            "url": "https://kelpwise.example/team",
+            "source": "official page",
+            "status": "pending"
+          },
+          {
+            "fact": "Founded in 2025",
+            "url": "https://kelpwise.example/news",
+            "source": "Kelpwise GmbH news",
+            "status": "pending"
+          }
+        ],
+        "why_now": "Official site: news on 2026-11-04",
+        "project_a": "themes: ocean, sensing (machine inference)",
+        "linkedin": "",
+        "linkedin_search": "https://www.linkedin.com/search/results/people/?keywords=Mira%20Talvik%20Kelpwise%20GmbH",
+        "contacts": [
+          "hello@kelpwise.example"
+        ],
+        "access": "cold",
+        "access_label": "Contact route: public e-mail hello@kelpwise.example — cold",
+        "unknowns": [
+          "Identity still unresolved"
+        ],
+        "next_action": "Resolve identity — pair the official-site founder line with this record",
+        "machine_qualified": true,
+        "human_gold": false,
+        "identity_status": "needs identity resolution",
+        "company_key": "dom:kelpwise.example"
+      },
+      {
+        "id": "p-ilka-moravec-1003",
+        "name": "Ilka Moravec",
+        "company": "Borealis Robotics",
+        "role": "Founder",
+        "location": "Tampere",
+        "standout": "Ilka Moravec founded Borealis Robotics — field trial announced on 2026-11-02.",
+        "proof": [
+          {
+            "fact": "Founder of Borealis Robotics — stated on the company's official site",
+            "url": "https://borealis.example/about",
+            "source": "official page",
+            "status": "confirmed"
+          }
+        ],
+        "why_now": "Official site: field trial on 2026-11-02",
+        "project_a": "themes: robotics, autonomy (machine inference)",
+        "linkedin": "https://www.linkedin.com/in/ilka-moravec-borealis",
+        "linkedin_search": "https://www.linkedin.com/search/results/people/?keywords=Ilka%20Moravec%20Borealis%20Robotics",
+        "contacts": [],
+        "access": "warm",
+        "access_label": "Warm path: introduced by Nils Farrow",
+        "unknowns": [],
+        "next_action": "Reach out via the access path this week",
+        "machine_qualified": true,
+        "human_gold": true,
+        "identity_status": "resolved",
+        "company_key": "dom:borealis.example"
+      },
+      {
+        "id": "p-teo-haarberg-1004",
+        "name": "Teo Haarberg",
+        "company": "Borealis Robotics",
+        "role": "Co-Founder",
+        "location": "Tampere",
+        "standout": "Teo Haarberg is named Co-Founder of Borealis Robotics on the company's own site.",
+        "proof": [
+          {
+            "fact": "Co-Founder of Borealis Robotics — stated on the company's official site",
+            "url": "https://borealis.example/about",
+            "source": "official page",
+            "status": "pending"
+          }
+        ],
+        "why_now": "Official site: field trial on 2026-11-02",
+        "project_a": "themes: robotics (machine inference)",
+        "linkedin": "",
+        "linkedin_search": "https://www.linkedin.com/search/results/people/?keywords=Teo%20Haarberg%20Borealis%20Robotics",
+        "contacts": [],
+        "access": "none",
+        "access_label": "",
+        "unknowns": [
+          "founding date"
+        ],
+        "next_action": "Close the missing fact: founded",
+        "machine_qualified": true,
+        "human_gold": false,
+        "identity_status": "resolved",
+        "company_key": "dom:borealis.example"
+      }
+    ],
+    "near": [
+      {
+        "id": "p-jonas-brekke-1002",
+        "name": "Jonas Brekke",
+        "company": "Kelpwise GmbH",
+        "role": "Co-Founder & CTO",
+        "location": "Kiel",
+        "standout": "Jonas Brekke is named Co-Founder & CTO of Kelpwise GmbH on the team page.",
+        "proof": [],
+        "why_now": "—",
+        "project_a": "themes: ocean (machine inference)",
+        "linkedin": "",
+        "linkedin_search": "https://www.linkedin.com/search/results/people/?keywords=Jonas%20Brekke%20Kelpwise%20GmbH",
+        "contacts": [],
+        "access": "none",
+        "access_label": "",
+        "unknowns": [
+          "Identity still unresolved",
+          "founding date"
+        ],
+        "next_action": "Resolve identity",
+        "machine_qualified": false,
+        "human_gold": false,
+        "identity_status": "needs identity resolution",
+        "company_key": "dom:kelpwise.example"
+      }
+    ],
+    "total_candidates": 4
+  },
+  "queue_counts": {
+    "company_leads": 4,
+    "claimed_founder_refs": 6,
+    "claim_bucket_people": 6,
+    "claim_people_without_lead": 0,
+    "reconciled": true
+  },
+  "health": {
+    "scan_time": "2026-11-10 21:30",
+    "totals": {
+      "raw": 12,
+      "new": 5,
+      "merged": 1,
+      "attempted": 8,
+      "ok": 2,
+      "failed": 3,
+      "config_required": 3,
+      "identities_resolved": 4,
+      "identities_unresolved": 8,
+      "eligible_for_assessment": 3,
+      "watchlisted": 1,
+      "promoted_to_network": 1,
+      "seconds": 2.4
+    },
+    "sources": [
+      {
+        "id": "gh-kiel",
+        "name": "GitHub — builders in Kiel",
+        "kind": "github_users",
+        "region": "DACH",
+        "city": "Kiel",
+        "status": "ok",
+        "note": "",
+        "raw": 6,
+        "new": 3,
+        "merged": 1,
+        "last_ok": "2026-11-10 21:30"
+      },
+      {
+        "id": "gh-zurich",
+        "name": "GitHub — builders in Zürich",
+        "kind": "github_users",
+        "region": "DACH",
+        "city": "Zürich",
+        "status": "failed",
+        "note": "HTTP 403 — rate limited",
+        "raw": 0,
+        "new": 0,
+        "merged": 0,
+        "last_ok": ""
+      },
+      {
+        "id": "epo",
+        "name": "EPO Open Patent Services",
+        "kind": "patents",
+        "status": "config_required",
+        "note": "OPS OAuth consumer key/secret — not configured.",
+        "raw": 0,
+        "new": 0,
+        "merged": 0,
+        "last_ok": ""
+      }
+    ],
+    "regions": [
+      {
+        "region": "DACH",
+        "attempted": 2,
+        "ok": 1,
+        "failed": 1,
+        "ever_ok": 1,
+        "cities": [
+          {
+            "city": "Kiel",
+            "status": "ok",
+            "attempted": true,
+            "last_attempt": "2026-11-10 21:30",
+            "last_ok": "2026-11-10 21:30",
+            "next": ""
+          },
+          {
+            "city": "Zürich",
+            "status": "failed",
+            "attempted": true,
+            "last_attempt": "2026-11-10 21:30",
+            "last_ok": "",
+            "next": ""
+          },
+          {
+            "city": "Vienna",
+            "status": "not attempted this scan",
+            "attempted": false,
+            "last_attempt": "",
+            "last_ok": "",
+            "next": "next scan"
+          }
+        ]
+      },
+      {
+        "region": "Nordics",
+        "attempted": 0,
+        "ok": 0,
+        "failed": 0,
+        "ever_ok": 0,
+        "cities": [
+          {
+            "city": "Tampere",
+            "status": "not attempted this scan",
+            "attempted": false,
+            "last_attempt": "",
+            "last_ok": "",
+            "next": "next scan"
+          }
+        ]
+      }
+    ],
+    "batch": {
+      "size": 6,
+      "cities": [
+        "Kiel",
+        "Zürich"
+      ],
+      "cursor_next": 2,
+      "registry_size": 51
+    },
+    "note": ""
+  },
+  "coverage": {
+    "live discovery": [
+      {
+        "name": "Project Zero data — founders named in companies, events, institutions",
+        "role": "live discovery — Project Zero pipeline claims (unverified until resolved)",
+        "status": "ok",
+        "note": "",
+        "last_ok": "2026-11-10 21:30"
+      },
+      {
+        "name": "GitHub — builders in Kiel",
+        "role": "live discovery — builder evidence (not founder proof)",
+        "status": "ok",
+        "note": "",
+        "last_ok": "2026-11-10 21:30"
+      }
+    ],
+    "enrichment": [],
+    "manual / authorized": [
+      {
+        "name": "LinkedIn",
+        "role": "MANUAL / AUTHORIZED — never scanned automatically",
+        "status": "config_required",
+        "note": "No scraping, automation, cookies or credentials. Paste a profile URL on the person record instead.",
+        "last_ok": ""
+      },
+      {
+        "name": "Boardy",
+        "role": "manual introduction channel",
+        "status": "config_required",
+        "note": "No documented public API. Use 'Prepare Boardy request' (operator-controlled brief).",
+        "last_ok": ""
+      }
+    ],
+    "configuration required": [
+      {
+        "name": "EPO Open Patent Services",
+        "role": "researcher/inventor evidence — configuration required",
+        "status": "config_required",
+        "note": "OPS OAuth consumer key/secret — not configured.",
+        "last_ok": ""
+      }
+    ],
+    "failed": [
+      {
+        "name": "GitHub — builders in Zürich",
+        "role": "live discovery — builder evidence (not founder proof)",
+        "status": "failed",
+        "note": "HTTP 403 — rate limited",
+        "last_ok": ""
+      }
+    ],
+    "not attempted": [
+      {
+        "name": "GitHub — Vienna (DACH)",
+        "role": "live discovery — builder evidence (not founder proof)",
+        "status": "not attempted this scan",
+        "note": "next scan",
+        "last_ok": ""
+      }
+    ]
+  },
+  "geo": {
+    "regions": [
+      {
+        "region": "DACH",
+        "people": 6,
+        "cities": [
+          {
+            "city": "Kiel",
+            "country": "DE",
+            "people": 2,
+            "status": "ok",
+            "last_attempt": "2026-11-10 21:30",
+            "last_ok": "2026-11-10 21:30"
+          },
+          {
+            "city": "Zürich",
+            "country": "CH",
+            "people": 1,
+            "status": "failed",
+            "last_attempt": "2026-11-10 21:30",
+            "last_ok": ""
+          }
+        ]
+      },
+      {
+        "region": "Nordics",
+        "people": 3,
+        "cities": [
+          {
+            "city": "Tampere",
+            "country": "FI",
+            "people": 2,
+            "status": "not attempted this scan",
+            "last_attempt": "",
+            "last_ok": ""
+          }
+        ]
+      }
+    ],
+    "countries": [
+      {
+        "country": "DE",
+        "region": "DACH",
+        "people": 5,
+        "cities": 1,
+        "attempted": 1
+      },
+      {
+        "country": "CH",
+        "region": "DACH",
+        "people": 1,
+        "cities": 1,
+        "attempted": 1
+      },
+      {
+        "country": "FI",
+        "region": "Nordics",
+        "people": 2,
+        "cities": 1,
+        "attempted": 0
+      }
+    ],
+    "cities": [
+      {
+        "city": "Kiel",
+        "country": "DE",
+        "people": 2,
+        "status": "ok",
+        "last_attempt": "2026-11-10 21:30",
+        "last_ok": "2026-11-10 21:30"
+      },
+      {
+        "city": "Zürich",
+        "country": "CH",
+        "people": 1,
+        "status": "failed",
+        "last_attempt": "2026-11-10 21:30",
+        "last_ok": ""
+      },
+      {
+        "city": "Tampere",
+        "country": "FI",
+        "people": 2,
+        "status": "not attempted this scan",
+        "last_attempt": "",
+        "last_ok": ""
+      }
+    ]
+  },
+  "metrics": {
+    "date": "2026-11-10",
+    "gold_now": 0,
+    "strong_investigation": 0,
+    "founder_claims_unresolved": 6,
+    "research_talent": 1,
+    "insufficient_evidence": 2,
+    "unique_identities_resolved": 4,
+    "watchlisted": 1,
+    "intro_paths_identified": 0,
+    "introductions_requested": 0,
+    "contacted": 1,
+    "replies": 0,
+    "first_meetings": 0,
+    "active_relationships": 1,
+    "trusted_relationships": 0,
+    "pre_company_opportunities": 0,
+    "companies_discovered_founder_first": 1,
+    "watchlist_to_network_conversion": null
+  },
+  "states": [
+    "detected",
+    "needs identity resolution",
+    "watchlisted",
+    "researching",
+    "introduction path identified",
+    "introduction requested",
+    "contacted",
+    "replied",
+    "first meeting completed",
+    "active relationship",
+    "trusted relationship",
+    "opportunity introduced",
+    "dormant",
+    "dismissed"
+  ],
+  "network_states": [
+    "introduction path identified",
+    "introduction requested",
+    "contacted",
+    "replied",
+    "first meeting completed",
+    "active relationship",
+    "trusted relationship",
+    "opportunity introduced"
+  ],
+  "buckets": [
+    "Gold now",
+    "Strong investigation",
+    "Founder claim — unverified",
+    "Research & spinout talent",
+    "Insufficient evidence / out of scope"
+  ],
+  "regions": [
+    "DACH",
+    "UK & Ireland",
+    "France & Benelux",
+    "Nordics",
+    "Italy",
+    "Spain & Portugal",
+    "CEE"
+  ]
+}
