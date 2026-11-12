@@ -685,3 +685,17 @@ describe("migration 0011 — the content log: items, append-only events, one ide
     }
   });
 });
+
+describe("migration 0013 — a coverage adoption is one append-only row per candidate", () => {
+  test("adoptions reference a source, are unique per candidate and never change; adopt is a source event", async () => {
+    const db = await freshDb();
+    await db.query(`insert into pz.sources (id, name, kind) values ('cov-x1', 'Example watcher', 'watcher')`);
+    await db.query(`insert into pz.coverage_adoptions (candidate_id, source_id, families, by) values ('cand-x1', 'cov-x1', '{grants}', 'operator')`);
+    await rejects(db.query(`insert into pz.coverage_adoptions (candidate_id, source_id, by) values ('cand-x1', 'cov-x1', 'operator')`), /coverage_adoptions_pkey/);
+    await rejects(db.query(`insert into pz.coverage_adoptions (candidate_id, source_id, by) values ('cand-x2', 'no-such', 'operator')`), /foreign key/);
+    await rejects(db.query(`update pz.coverage_adoptions set note = 'x'`), /append-only/);
+    await db.query(`insert into pz.source_events (source_id, actor, action, before, after) values ('cov-x1', 'operator', 'adopt', '{}', '{}')`);
+    await rejects(db.query(`insert into pz.source_events (source_id, actor, action, before, after) values ('cov-x1', 'operator', 'scan', '{}', '{}')`), /source_events_action_check/);
+    assert.equal((await db.query(`select relrowsecurity from pg_class where relname = 'coverage_adoptions'`)).rows[0].relrowsecurity, true);
+  });
+});
