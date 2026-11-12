@@ -7,6 +7,7 @@ from datetime import date, datetime
 from typing import Any
 
 from projectzero.events.columns import LEAD_DECISIONS, SPAN_PROBLEMS, event_columns, lead_columns
+from projectzero.map.network import check_candidates
 from projectzero.network.people import WEAK_KINDS, columns_of, identifiers_of
 from projectzero.ops.legacy.convert import (
     BERLIN,
@@ -234,6 +235,17 @@ class RecordsMapper(BuilderState):
         ``pz.backfill_evaluations()`` from the byte-exact archive (the apply calls it). Checked here first, by the
         backfill's own rules (``keyed_collections``)."""
         self._keyed_archive("evaluations.json", ("sessions",))
+
+    def source_network(self) -> None:
+        """``sources/network.json`` (review 025, decision f): archived as is and read by the Map until the source
+        network is ported. Checked here by the Map's own rules (``map.network.check_candidates``: the fields the city
+        detail reads), so a new import never stores a candidate that would break it; each problem is a blocker."""
+        path = "sources/network.json"
+        if path not in self.src.paths():
+            return
+        usable, problems = check_candidates(self.src.json(path))
+        self.identity_blockers.extend(f"{path}: {p}: fix it first" for p in problems)
+        self.report["reconciliation"][path] = {"candidates_usable": len(usable)}
 
     def _keyed_archive(self, path: str, colls: tuple[str, ...]) -> None:
         if path not in self.src.paths():

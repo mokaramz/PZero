@@ -44,3 +44,12 @@ write script of starts, deck, next, skip, answers, evidence, resolve, ends and `
 workspace, the stored sessions and their order, the stored founder calls and the Conviction records after each step)
 over a synthetic data folder of invented names whose session insertion order differs from JSONB order, and an empty
 one, at 2026-11-12 10:00 with a counter for `uuid4` (`python -m projectzero.ops.parity_evaluator goldens`).
+
+`oracle_map.json` (review 025): the old Map routes (`geo_intel`, `geo_ecosystem` for every ecosystem plus unknown and
+folded names, `geo_search` over a fixed query list, `sourcing_day` with a plan per ecosystem, every refusal and extra
+days, then `map` with the old `new_signals` count) over seven synthetic data folders of invented names that rebuild the
+old `test_geo_intel` scenarios (Munich through its sub-localities, UNDER-COVERED vs LOW SIGNAL, noisy funded rows,
+page-watcher lines and rejected / skipped events, unknown geography), the order-sensitive points (gazetteer order, news
+key order, network order, search `results[0]`, `Counter` ties), coverage derived from the documents, broken layers and
+an empty folder, at 2026-11-12 10:00 with `time` frozen (`built_at` = the clock, `build_s` = 0.0); identical answers
+are stored once (`python -m projectzero.ops.parity_map goldens`).

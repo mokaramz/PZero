@@ -1199,3 +1199,38 @@ def test_a_bom_prefixed_keyed_archive_plans_like_one_without(legacy: Path, path:
     plan = plan_for(legacy)
     assert not [b for b in plan.blockers if path in b]
     assert plan.report["reconciliation"][path][coll] == 2
+
+
+# ── review 025 (decision f): a source-network candidate the Map's city detail would break on blocks the import ─────
+def _net(**cands: Any) -> dict[str, Any]:
+    return {"candidates": cands}
+
+
+GOOD_NET = {"id": "net-ok", "name": "Invented Lab Feed", "state": "DISCOVERED", "url": "https://feed.invented.example/x",
+            "family": "university_lab"}  # fmt: skip
+
+
+@pytest.mark.parametrize(
+    ("doc", "problem"),
+    [
+        (_net(a=dict(GOOD_NET, url="example.org")), "the url is not a text with a host"),
+        (_net(a={k: v for k, v in GOOD_NET.items() if k != "name"}), "no name"),
+        (_net(a=dict(GOOD_NET, family=["grant"])), "the family is list, not a text"),
+        (_net(a={k: v for k, v in GOOD_NET.items() if k != "state"}), "not an object with a state"),
+        ({"candidates": None}, "candidates are null, not an object"),
+        (["x"], "archive is list, not an object"),
+    ],
+)
+def test_a_source_network_candidate_the_map_cannot_read_blocks_the_plan(legacy: Path, doc: Any, problem: str) -> None:
+    write(legacy, "sources/network.json", doc)
+    plan = plan_for(legacy)
+    assert any("sources/network.json" in b and problem in b for b in plan.blockers), plan.blockers
+
+
+def test_a_rejected_candidate_with_a_bad_url_and_an_empty_archive_do_not_block(legacy: Path) -> None:
+    write(legacy, "sources/network.json", _net(a=GOOD_NET, b=dict(GOOD_NET, state="REJECTED", url="example.org")))
+    plan = plan_for(legacy)
+    assert not [b for b in plan.blockers if "sources/network.json" in b]
+    assert plan.report["reconciliation"]["sources/network.json"] == {"candidates_usable": 2}
+    write(legacy, "sources/network.json", {})
+    assert not [b for b in plan_for(legacy).blockers if "sources/network.json" in b]

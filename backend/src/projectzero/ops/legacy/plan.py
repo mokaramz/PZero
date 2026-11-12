@@ -74,6 +74,7 @@ class _Builder(PipelineMapper, ScoutMapper, RecordsMapper):
         self.content_log()
         self.founder_calls()
         self.evaluations()
+        self.source_network()
         self.research_jobs()
         self.ledger()
         self.schedule()
