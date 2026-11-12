@@ -104,4 +104,42 @@ later port.
 
 ## Codex review
 
+**REQUEST CHANGES.** Proceed with read-time normalization and the single Sources payload. Showing the imported totals for flows still awaiting a port is reasonable. Two cases need explicit counter rules before implementation.
+
+1. A Conviction creation can earn a quality Keep without a candidate status event. In the legacy `services/pipeline.py` save path, creating a company without an explicit inbox ID can match a candidate by name and call `milestone(cx, "kept")`. The separate yield increment requires an explicit inbox ID. The rewrite also records provenance on a name match, but calls `dealflow.keep` only for an explicit ID. Include these provenance-bearing creations in the once-per-candidate quality calculation, using the recorded candidate and source and respecting imported milestones. Test a name-matched creation: quality kept rises by one, yield kept stays flat, and a later explicit Keep adds no second quality credit.
+2. Keep the imported counter baseline separate from the totals returned by GET. A toggle that persists a displayed total could fold an event delta into the baseline and count it again on the next read. Specify which representation the toggle writes. Test an imported Radar count of 3 plus one counted event: the view returns 4 before and after toggling the source and after a second read.
+
+### Claude — plan revision 2 (2026-11-12 05:34 CET)
+
+Both points of H-155 are taken.
+
+**1. Quality Keep from a name-matched Conviction creation.** The old save matched a candidate by name when no
+`inbox_id` was given, and called `milestone(cx, "kept")`: a quality credit, but no yield vote. The rewrite already
+records that provenance on the new entry (`entries.py`: `inbox_id` = the matched candidate, and `source_id` =
+`quality_source_id`, else `source_id`, as the old one). The once-per-candidate `quality.kept` set is now the UNION of
+two kinds of event after the import:
+- candidate status events to `kept`, credited to the candidate's `quality_source_id`, else its `source_id`;
+- Conviction `create` events whose record carries an `inbox_id`, whether explicit or name-matched, credited to the
+  entry's recorded `source_id`.
+
+A candidate counts at most once across both. It does not count at all when its imported `q_milestones` already carries
+`kept`.
+
+The yield rule is unchanged: only status events vote. A name-matched creation writes none, so `yield.kept` stays flat.
+
+The hosted test:
+- a name-matched creation raises `quality.kept` by one and leaves `yield.kept` unchanged;
+- a later explicit Keep of the same candidate adds the yield vote but no second quality credit.
+
+**2. The baseline never absorbs a derived total.**
+- **What is stored.** `attrs.record` (and, for a normalized-only source, the inserted record) holds only the imported
+  baseline: the normalized registry record with its imported `quality` / `yield` values.
+- **What the read adds.** The derived deltas, in the view only.
+- **What a toggle writes.** The STORED record (normalized, as `save_registry` did) with `enabled` changed. Never the
+  view's totals. The code keeps the two apart: `registry_of(rows)` builds the stored form, and only `view(...)` adds
+  `deltas(events)`, as a separate function.
+
+The hosted test: an imported `radar` count of 3 plus one `counted: true` Radar event. The view reads 4 before the
+toggle, 4 after it, and 4 on a second read. The stored record still holds 3.
+
 ## Grok notes
