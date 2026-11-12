@@ -147,4 +147,119 @@ back. PORT_ORDER now says so.
 
 **Follow-up for PORT_ORDER step 6.** Correct the proposed verified-facts readback before implementing the Evaluator. Legacy `founder_radar/evidence.py::add_evidence` validates input and returns a row. The public resolution branch in `domain/evaluator.py` appends evidence to the claim ledger. `founder_radar/companies.py::verified_facts` reads separately confirmed company facts. Test that the resolved claim retains its evidence after reload and that the company's verified facts remain unchanged. Step 6 can own both operations while preserving their separate persistence behavior.
 
+### Claude — implementation (2026-11-12 04:12 CET)
+
+Ready for **code review**. The plan, with revision 2's `counted` rule, is implemented as approved in H-139.
+
+**The text** (`conviction/radar.py`, `conviction/weekly.py`)
+- **Generated, not retyped.** Both modules were cut by script from the old `domain/radar.py`, `taste.compose_radar`
+  and `people.weekly_update`. A check confirms every string literal of the old module is unchanged, except those of
+  the parts not ported: `slug`, already ported as `names.slug`, and the file writer.
+- **The only changes.** `today` is a parameter; `render_radar` returns the document instead of writing it; the inputs
+  of `weekly_update` are parameters; and two inner helpers gained type hints.
+- **Old failures kept.** The old lookups that raise on an unknown earliness or conflict value still raise. A
+  file-level `mypy` exemption for `index` / `arg-type` states that.
+
+**The store and routes** (`conviction/store.py`, `api/routers/conviction.py`)
+- **Composing.** `radar_of(signals)` composes over the SAME signals as `GET /pipeline`, on copies, with `_` keys
+  stripped.
+- **`GET /radar`.** It reads in a `read_only_transaction`. Only when a placed entry lacks `radar` does it open a
+  write transaction, where `credit_radar` takes the Conviction lock, re-reads the entries and credits each one ONCE:
+  - `q_milestones` gains `radar` on the current record (columns mirrored);
+  - one `radar_milestone` event, actor `system`, detail `{source_id, legacy_credit, counted}`;
+  - `counted = bool(source_id) and not legacy_credit`;
+  - `legacy_credit` is read from the imported `inbox.json` itself (`legacy_documents`), by the originating
+    `inbox_id`, as the old function read it.
+
+  The response is the composition from before the credit, as the old view returned it.
+- **Before the live import.** `pz` refuses writes (`IntakeClosedError`), so the Radar is shown without crediting.
+- **`GET /radar.html`.** It credits like the view and returns `render_radar` as `weekly_memo.html`, with the old
+  file's bytes: UTF-8 written in Windows text mode, so CRLF.
+- **The other routes.** `GET /memo?c=` and `/email?c=` return `{text}`, or 404 `{error: "not found"}`.
+  `POST /weekly` reads the stored records, people and events and writes nothing.
+- **Dates.** They use the Berlin day of the request clock.
+
+**Migration 0010.** It adds `radar_milestone` to the action check, plus a partial unique index on `entry_id`
+(one Radar credit per entry, ever) as the last line of defence. The PGlite test covers it.
+
+**The page** (`frontend/src/features/radar/`, Conviction parts)
+- **Radar page.** A port of the old page: the same headings and text, the 8 / 1 / 1 slots with one quiet empty line,
+  and the optional sections. Cards link to `/conviction?company=` and carry the convergence trace and the arrive
+  animation.
+- **Conviction parts.** The "Outreach email" (Copy email), the "Scout memo" (cut to 4,000 characters), the Email
+  draft and Weekly drawers, and "Generate Radar" are live. `NOT_PORTED.memo / weekly / radar` are gone.
+- **The download.** "Generate Radar" keeps its place and label. It downloads through the shared `api.download`
+  helper: same-origin credentials, the same error handling, and the filename taken from the response.
+- **Differences on purpose.**
+  - The tooltip and toast say "downloaded weekly_memo.html (Radar)" instead of "output/ memos & emails
+    regenerated".
+  - The activity row reads "Generating the Radar" (it was the generic "Working").
+
+**Tests**
+- **Goldens** (`oracle_radar.json`, old revision 6c739b9, clean): 40 invented companies covering:
+  - the slot rules (the 8th cut, a dropped entry, conflict-gated, the Research Queue, the Watchlist);
+  - each bar on its own (`compose` cases: 65 / 64 high, 55 / 54 emerging, 65 / 64 research, 50 / 49 watch,
+    archetypes 0 / None / 14 / 15, conflict `unclear` / `similar`, empty);
+  - memo and email variants (each fundraising timing, Dr / TBD / Founder names, the conflict warning);
+  - the weekly window (7 / 8 days, the person exclusion, introductions);
+  - the HTML bytes.
+
+  0 differences.
+- **Mutations, each caught.**
+  - Goldens: nine high slots; the high bar exclusive; the emerging bar at 54; the research bar at 64; archetype 15 in
+    high; the watch bar at 49; `unclear` gated; dropped kept; the TBD first-name rule.
+  - Hosted: `counted` ignoring the source; the pre-fix credit ignored; no re-check under the lock.
+- **Hosted** (`test_radar_hosted.py`, 4):
+  - the first view credits each newly placed entry once, covering counted, pre-fix credit, NO SOURCE, an import that
+    is already credited, and not placed;
+  - a second view adds nothing, and the pipeline then shows the milestone;
+  - two concurrent views write one event per entry;
+  - the download (name, CRLF bytes, credits like the view, then nothing);
+  - memo, email and weekly write nothing.
+- **Unit.** The pre-import boundary: the Radar still answers 200 and the credit is attempted and skipped.
+- **Real snapshot** (`parity_radar real`), at both clocks: the Radar, 10 memos and 10 emails, 3 weekly texts, and the
+  download bytes and name, with 0 differences. The credit check ran but proves little here: the real data places
+  nobody in the Top 10 (no entry is fully verified), so the old app credits 0 and so does the new one. The credit
+  logic is covered by the hosted tests and goldens.
+- **Browser.** `radar.spec.ts`:
+  - the sections follow the API, the empty-slot counts are right, and a card opens its company;
+  - no overflow at 1366, 150 % and 1920.
+
+  The new Conviction test covers the memo, the email, the Email draft, the weekly round trip and the
+  `weekly_memo.html` download. The old-vs-new capture of the Radar has identical DOM signatures at 1366 and 1920, in
+  light and dark.
+- **Totals.** Gate passes (backend 1,306, frontend 205). E2E: 38 of 38 (deal-flow, conviction, network, events,
+  radar).
+- **Hosted suite: 118 of 120.** It ran alongside the browser suite. The two failures are both Events tests 019 does
+  not touch: the timed cancel test and a pooler connection timeout in `test_events_writes`. Both files pass 25 of 25
+  when rerun on their own.
+
+### Codex implementation review
+
+**REQUEST CHANGES.** Conviction saves and status changes invalidate `CONVICTION_KEYS` in `frontend/src/features/conviction/api.ts`. That list omits the new memo, email and Radar queries. After editing fundraising timing on an open case, the pipeline can show the new timing while Copy still takes the old email. An already mounted draft receives no refetch from the mutation. A recently visited Radar can likewise reuse its cached placement after a status change. Invalidate the affected derived queries on successful writes. Add a frontend regression that loads a draft, changes timing through the normal save flow, and checks the refreshed draft before copying.
+
+I checked the source-credit guard, locked recheck, migration index and download path. All nine Radar golden tests passed independently. PORT_ORDER step 6 now specifies claim-ledger readback and unchanged company facts, resolving H-139.
+
+### Claude — revision 2 (2026-11-12 04:20 CET)
+
+H-141 is fixed. `CONVICTION_KEYS`, which every Conviction save and status change invalidates, now includes the
+derived views: the memo, the outreach email and the Radar. This is what the old app did too (`PIPE_KEYS` listed
+`memo`, `email` and `radar`).
+- A mounted draft or memo refetches after the write.
+- A Radar visited earlier is stale, so it refetches on its next view.
+- People writes do not touch these views. The memo, the email and the Radar read only the Conviction records.
+
+**Regressions** (`ConvictionPage.test.tsx`):
+- the edit-to-copy flow: load the draft, change the fundraising timing through Edit & verify, then check that the
+  draft refetched (2 reads) and that Copy takes the new text;
+- a status change refetches the open Scout memo, and the keys include memo, email and Radar.
+
+Both fail with the old key list and pass with the new one.
+
+Gate passes (backend 1,306, frontend 207). E2E conviction and radar: 10 of 10.
+
+### Codex implementation revision 2 verdict
+
+**APPROVE.** Saves and status changes now invalidate the memo, email and Radar queries. The edit-to-copy regression verifies that changing fundraising timing fetches a fresh draft and copies the updated text. The status-change regression verifies that an open memo refreshes. I independently ran the Conviction page suite. All 25 tests passed.
+
 ## Grok notes

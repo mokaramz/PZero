@@ -17,7 +17,15 @@ export type Routes = {
   /** the case of a slug; undefined → 404 (the endpoint or the case does not exist yet) */
   case?: (slug: string) => CaseView | undefined;
   save?: (body: SaveBody, db: Pipeline) => Answer | undefined;
+  /** the Scout memo / outreach email of a slug; the default is a short text for every listed slug, undefined → 404 */
+  memo?: (slug: string) => string | undefined;
+  email?: (slug: string) => string | undefined;
+  weekly?: (body: Record<string, unknown>) => Answer;
+  /** `GET radar.html`; the default is the Radar HTML as a `weekly_memo.html` attachment */
+  radarHtml?: () => Response;
 };
+
+export const RADAR_HTML = "<!doctype html><title>Radar</title><h1>PROJECT A RADAR — TOP 10</h1>";
 
 const slugOf = (name: string) =>
   name
@@ -58,6 +66,28 @@ export function fakeServer(routes: Routes = {}) {
     if (method === "GET" && url.pathname === "/api/conviction/case") {
       const c = routes.case?.(url.searchParams.get("slug") ?? "");
       return c ? json(200, c) : json(404, { ok: false, error: "not found" });
+    }
+    if (method === "GET" && (url.pathname === "/api/conviction/memo" || url.pathname === "/api/conviction/email")) {
+      const slug = url.searchParams.get("c") ?? "";
+      const e = db.signals.find((x) => x.slug === slug);
+      const kind = url.pathname.endsWith("memo") ? "memo" : "email";
+      const fallback = e && (kind === "memo" ? `Scout memo — ${e.company}` : `Outreach email to ${e.company}`);
+      const answer = routes[kind];
+      const text = answer ? answer(slug) : fallback;
+      return text === undefined ? json(404, { error: "not found" }) : json(200, { text });
+    }
+    if (method === "GET" && url.pathname === "/api/conviction/radar.html") {
+      return (
+        routes.radarHtml?.() ??
+        new Response(RADAR_HTML, {
+          status: 200,
+          headers: { "Content-Type": "text/html; charset=utf-8", "Content-Disposition": 'attachment; filename="weekly_memo.html"' },
+        })
+      );
+    }
+    if (method === "POST" && url.pathname === "/api/conviction/weekly") {
+      const a = routes.weekly?.(body ?? {}) ?? { status: 200, body: { text: `Weekly Sourcing Update\nInsight: ${String(body?.insight ?? "")}` } };
+      return json(a.status, a.body);
     }
     if (method === "POST" && url.pathname === "/api/conviction/save") {
       const a = routes.save?.(body as SaveBody, db) ?? defaultSave(body as SaveBody, db);

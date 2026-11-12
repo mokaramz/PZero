@@ -6,15 +6,15 @@
 import { useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
-import { DeferredButton } from "@/components/Deferred";
 import { StageTrace } from "@/components/StageTrace";
 import { Async, Button, EmptyState, PageHeader, Segmented, Toolbar } from "@/components/ui";
 import { cx } from "@/lib/format";
-import { useMeta, usePipeline } from "./api";
+import { useGenerateRadar, useMeta, usePipeline } from "./api";
 import { CompanyDetail } from "./components/CompanyDetail";
 import { CompanyList } from "./components/CompanyList";
 import { EditCompanyDrawer } from "./components/EditCompanyDrawer";
-import { NOT_PORTED } from "./model/deferred";
+import { EmailDrawer } from "./components/EmailDrawer";
+import { WeeklyDrawer } from "./components/WeeklyDrawer";
 import { pipeGroups, type Seg } from "./model/logic";
 import type { Signal } from "./model/types";
 import styles from "./Conviction.module.css";
@@ -29,6 +29,9 @@ export default function ConvictionPage() {
   const segParam = params.get("seg") as Seg | null;
   const seg: Seg = segParam && SEGS.includes(segParam) ? segParam : "all";
   const [edit, setEdit] = useState<{ entry: Signal | null } | null>(null);
+  const [weekly, setWeekly] = useState(false);
+  const [emailSlug, setEmailSlug] = useState<string | null>(null);
+  const run = useGenerateRadar();
 
   const signals = useMemo(() => pipe.data?.signals ?? [], [pipe.data]);
   const groups = useMemo(() => pipeGroups(signals, q), [signals, q]);
@@ -85,14 +88,14 @@ export default function ConvictionPage() {
           <Button variant="ghost" size="sm" onClick={() => setEdit({ entry: null })}>
             + Add company
           </Button>
-          <DeferredButton variant="ghost" size="sm" reason={NOT_PORTED.weekly}>
+          <Button variant="ghost" size="sm" onClick={() => setWeekly(true)}>
             Weekly update
-          </DeferredButton>
+          </Button>
         </div>
         <div className={cx(styles.tGroup, styles.tQuiet)} role="group" aria-label="System">
-          <DeferredButton variant="ghost" size="sm" reason={NOT_PORTED.radar}>
+          <Button variant="ghost" size="sm" busy={run.isPending} onClick={() => run.mutate()} title="Downloads weekly_memo.html (Radar)">
             Generate Radar
-          </DeferredButton>
+          </Button>
         </div>
       </Toolbar>
 
@@ -101,7 +104,13 @@ export default function ConvictionPage() {
           <div className={styles.split}>
             <CompanyList groups={groups} seg={seg} selected={selected?.slug ?? null} onSelect={(slug) => update({ company: slug })} />
             {selected ? (
-              <CompanyDetail key={selected.slug} e={selected} all={signals} meta={meta.data} actions={{ onEdit: () => setEdit({ entry: selected }) }} />
+              <CompanyDetail
+                key={selected.slug}
+                e={selected}
+                all={signals}
+                meta={meta.data}
+                actions={{ onEdit: () => setEdit({ entry: selected }), onEmail: () => setEmailSlug(selected.slug) }}
+              />
             ) : (
               <EmptyState>Select a company.</EmptyState>
             )}
@@ -110,6 +119,8 @@ export default function ConvictionPage() {
       </Async>
 
       <EditCompanyDrawer open={!!edit} entry={edit?.entry} onClose={() => setEdit(null)} onSaved={(slug) => update({ company: slug })} />
+      <WeeklyDrawer open={weekly} onClose={() => setWeekly(false)} />
+      <EmailDrawer slug={emailSlug} onClose={() => setEmailSlug(null)} />
     </div>
   );
 }

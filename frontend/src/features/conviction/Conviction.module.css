@@ -1,4 +1,5 @@
-/* Conviction (review 011): the old Conviction.module.css, minus the rules of drawers and cards that are not ported yet. */
+/* Conviction (review 011; memo, email & weekly in 019): the old Conviction.module.css, minus the rules of drawers and cards
+   that are not ported yet. */
 /* ---------------- toolbar: View · Operations · System (rare actions quiet) */
 .tGroup {
   display: flex;
@@ -449,6 +450,26 @@
 .vrow:last-of-type {
   border-bottom: 0;
 }
+.cardText {
+  white-space: pre-wrap;
+  font: 12px/1.55 var(--font-ui);
+  margin: 8px 0;
+  max-height: 220px;
+  overflow: auto;
+  background: var(--well);
+  border: 1px solid var(--hair);
+  padding: 8px 10px;
+  border-radius: var(--r-sm);
+}
+.memoText {
+  white-space: pre-wrap;
+  font: 11.5px/1.55 var(--font-ui);
+  margin: 0;
+  max-height: 420px;
+  overflow: auto;
+  background: transparent;
+  padding: 0;
+}
 
 /* ---------------- drawers / forms */
 .form {
@@ -526,6 +547,15 @@ fieldset.full,
   border: 0;
   padding: 0;
   min-width: 0;
+}
+.inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.weeklyOut {
+  margin: 12px 0 8px;
 }
 
 /* rail row body (beside the monogram) */

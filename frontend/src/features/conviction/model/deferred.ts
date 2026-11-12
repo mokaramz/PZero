@@ -14,7 +14,4 @@ export const NOT_PORTED = {
   evaluator: "The Active Evaluator arrives with the evaluator port",
   founders: "Founders and registries arrive with the identity port",
   traction: "The traction review arrives with the founder-calls port",
-  memo: "Memos and emails arrive with the memo & email port",
-  weekly: "The weekly update arrives with the memo & email port",
-  radar: "Generating the Radar arrives with the Radar port",
 } as const;

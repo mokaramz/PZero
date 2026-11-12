@@ -26,3 +26,7 @@ limit, link-type quirks, a dict-shaped collection) at two clocks (2026-11-11 12:
 `oracle_events_when.json` (review 014): the old `domain/events.py` `parse_when`, `extract_date` and `event_span` over a
 synthetic corpus of 100 date values and 30 start / end pairs at two fixed clocks (2026-03-15 and 2026-11-11), each result
 `{ok}` or `{raises}` (`python -m projectzero.ops.parity_events goldens`).
+`oracle_radar.json` (review 019): the old `radar_view` composition, `compose_radar` on each bar and boundary,
+`memo` / `email` per signal, `weekly_update` with and without insight / question, and the `render_radar` document's
+bytes, over a synthetic data folder of 40 invented companies, people and events at 2026-11-11 12:00
+(`python -m projectzero.ops.parity_radar goldens`).

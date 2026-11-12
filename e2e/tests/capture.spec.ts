@@ -35,6 +35,7 @@ const VIEWS = [
   { key: "conviction", path: "/conviction?company=kyrok", ready: (p: Page) => p.locator("[data-slug=kyrok]"), detail: "operator-view" },
   { key: "network", path: "/network", ready: (p: Page) => p.getByTestId("person-row").first(), detail: "person-profile" },
   { key: "watchlist", path: "/watchlist", ready: (p: Page) => p.locator("main table, main [class*=empty]").first(), detail: "" },
+  { key: "radar", path: "/radar", ready: (p: Page) => p.getByTestId("radar-empty").first(), detail: "" }, // the slots load after the method
   { key: "events", path: "/events", ready: (p: Page) => p.getByRole("button", { name: "source health" }), detail: "event-calendar" }, // health loads after the list
 ] as const;
 

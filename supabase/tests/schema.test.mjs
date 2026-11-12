@@ -625,3 +625,26 @@ describe("migration 0009 — watcher baselines are live state; the scan writes i
     assert.equal(rls.rows[0].relrowsecurity, true);
   });
 });
+
+describe("migration 0010 — one Radar milestone per Conviction entry", () => {
+  test("radar_milestone is a known action, written once per entry", async () => {
+    const db = await freshDb();
+    const co = (await db.query(`insert into pz.companies (name) values ('Radared Co') returning id`)).rows[0].id;
+    const entry = (
+      await db.query(`insert into pz.conviction_entries (company_id, slug, status) values ($1, 'radared', 'new') returning id`, [co])
+    ).rows[0].id;
+    const credit = () =>
+      db.query(
+        `insert into pz.conviction_events (entry_id, slug, actor, action, before, after, detail) values ($1, 'radared', 'system', 'radar_milestone', $2, $3, $4)`,
+        [entry, JSON.stringify({ q_milestones: null }), JSON.stringify({ q_milestones: ["radar"] }), JSON.stringify({ source_id: null, legacy_credit: false, counted: false })],
+      );
+    await credit();
+    await rejects(credit(), /conviction_events_one_radar_milestone/);
+    await db.query(`insert into pz.conviction_events (entry_id, slug, actor, action, after) values ($1, 'radared', 'operator', 'status', '{}')`, [entry]);
+    await db.query(`insert into pz.conviction_events (entry_id, slug, actor, action, after) values ($1, 'radared', 'operator', 'status', '{}')`, [entry]);
+    await rejects(
+      db.query(`insert into pz.conviction_events (entry_id, slug, actor, action, after) values ($1, 'radared', 'operator', 'radar_delete', '{}')`, [entry]),
+      /conviction_events_action_check/,
+    );
+  });
+});

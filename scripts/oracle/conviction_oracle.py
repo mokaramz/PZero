@@ -11,6 +11,11 @@ MODE
                                        -> per step: the HTTP code and body the old route returned, then the stored
                                           real_data.json signals, the inbox decisions of probe_ids and feedback.json
                                           decisions, after the UI's refetch (pipeline(), persist enabled)
+  radar     IN = {clock, weekly: [{insight, question}], compose: [[entry]]}
+                                       -> (review 019) the old radar_view in two steps (compose, then the milestone
+                                          credit, twice), compose_radar per edge case, memo / email for every slug,
+                                          weekly_update per input, the
+                                          render_radar document, the stored signals and pipeline() after the credit
 
 ``pipeline`` and ``writes`` need PZ_DATA = a scratch COPY of the old data folder (both write into it). ``rules`` needs
 an empty scratch PZ_DATA. Case preparation is switched off (PZ_CASE_PREP=0): ``case_prep.request`` returns at once.
@@ -131,6 +136,46 @@ def writes(inp: dict[str, Any]) -> dict[str, Any]:
     return {"steps": out, "view": final}
 
 
+def radar_mode(inp: dict[str, Any]) -> dict[str, Any]:
+    from projectzero import storage
+    from projectzero.domain import imq, people, radar, taste
+    from projectzero.services import pipeline
+
+    fd, _ = _clock(inp["clock"])
+    radar.date = fd  # type: ignore[attr-defined]
+    people.date = fd  # type: ignore[attr-defined]
+    imq.persist = lambda entry, ev: False  # reads never write (011 decision a): the snapshot as stored
+
+    signals = pipeline.pipeline()["signals"]
+    composed = taste.compose_radar(copy.deepcopy(signals))
+    view = {k: [{kk: vv for kk, vv in e.items() if not kk.startswith("_")} for e in v] for k, v in composed.items()}
+    with storage.state_lock:
+        credited = pipeline.credit_radar_milestones(composed)
+        again = pipeline.credit_radar_milestones(taste.compose_radar(copy.deepcopy(pipeline.pipeline()["signals"])))
+    memo = {e["slug"]: _try(lambda e=e: radar.memo(e)) for e in signals}
+    email = {e["slug"]: _try(lambda e=e: radar.email(e)) for e in signals}
+    raw = storage.load_json("real_data.json", {"signals": []}).get("signals", [])
+    weekly = [_try(lambda w=w: people.weekly_update(raw, w.get("insight", ""), w.get("question", "")))
+              for w in inp.get("weekly", [{}])]  # fmt: skip
+    radar.render_radar(signals, "oracle_radar.html")
+    html = Path(storage.path("oracle_radar.html")).read_bytes().decode("utf-8")  # raw: the file's own line endings
+    edges = [{k: [{kk: vv for kk, vv in e.items() if not kk.startswith("_")} for e in v]
+              for k, v in taste.compose_radar(copy.deepcopy(case)).items()} for case in inp.get("compose", [])]  # fmt: skip
+    return {
+        "signals": signals,
+        "radar": view,
+        "compose": edges,
+        "credited": credited,
+        "credited_again": again,
+        "stored_after": storage.load_json("real_data.json", {}).get("signals", []),
+        "memo": memo,
+        "email": email,
+        "weekly": weekly,
+        "html": html,
+        "pipeline_after": pipeline.pipeline(),
+    }
+
+
 def main() -> int:
     mode, src, dst = sys.argv[1], Path(sys.argv[2]), Path(sys.argv[3])
     data_dir = os.environ.get("PZ_DATA", "")
@@ -149,7 +194,7 @@ def main() -> int:
         ["git", "-C", str(old_root), "status", "--porcelain", "--", "backend/src/projectzero"],
         capture_output=True, text=True, check=False,
     ).stdout.strip()  # fmt: skip
-    result = {"rules": rules, "pipeline": pipeline_mode, "writes": writes}[mode](inp)
+    result = {"rules": rules, "pipeline": pipeline_mode, "writes": writes, "radar": radar_mode}[mode](inp)
     meta = {"old_revision": revision, "old_dirty": bool(dirty), "clock": inp["clock"], "mode": mode}
     dst.write_text(json.dumps({"meta": meta, **result}, ensure_ascii=False, default=str), encoding="utf-8")
     return 0
