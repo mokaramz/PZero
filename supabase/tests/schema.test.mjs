@@ -1170,3 +1170,69 @@ describe("migration 0020 — the News run's logs and documents, backfilled; the 
     await rejects(db.query(`insert into pz.news_event_history (event_id, action, after) values ('nw-a', 'purge', '{}')`), /news_event_history_action_check/);
   });
 });
+
+describe("migration 0021 — the gateway's ledger fields, reservations and cache; idempotent settlement", () => {
+  const MIGRATION = "20261112000021_inference_gateway.sql";
+  // the exact statements of core/inference/pg_store.py (Codex H-267: the conflict target matches the partial index)
+  const SETTLE = `insert into pz.model_ledger (at, purpose, provider, model, entity_ref, usd, tokens_in, tokens_out, cached, outcome, detail)
+                  values ($1, $2, 'fake', 'fake-model', $3, $4, null, null, false, $5, $6)
+                  on conflict (call_id, attempt) where call_id is not null do nothing`;
+  const RETIRE = `delete from pz.model_reservations where call_id = $1 and attempt = $2`;
+  const detail = (callId, attempt, extra = {}) => JSON.stringify({ role: "CHEAP", run_id: "news-1", call_id: callId, attempt, usd_source: "reported", ...extra });
+  const ledger = async (db) => (await db.query(`select call_id, attempt, outcome, usd::text as usd, role, run_id, error_kind from pz.model_ledger order by id`)).rows;
+
+  test("existing rows keep their values; the promoted fields are generated from detail", async () => {
+    const db = new PGlite();
+    await db.exec("create role anon nologin; create role authenticated nologin;");
+    for (const file of readdirSync(MIGRATIONS).filter((f) => f.endsWith(".sql") && f < MIGRATION).sort()) {
+      await db.exec(readFileSync(join(MIGRATIONS, file), "utf8"));
+    }
+    await db.query(`insert into pz.model_ledger (purpose, usd, outcome, detail) values
+      ('news_card', 0.000123, 'ok', '{"role": "CHEAP", "run_id": "news-0", "call_id": "ic-old"}'),
+      ('triage_veto', 0.0004, 'error', '{"error_kind": "timeout"}')`);
+    await db.exec(readFileSync(join(MIGRATIONS, MIGRATION), "utf8"));
+    assert.deepEqual(await ledger(db), [
+      { call_id: "ic-old", attempt: null, outcome: "ok", usd: "0.00012300", role: "CHEAP", run_id: "news-0", error_kind: null },
+      { call_id: null, attempt: null, outcome: "error", usd: "0.00040000", role: null, run_id: null, error_kind: "timeout" },
+    ]);
+    await rejects(db.query(`update pz.model_ledger set usd = 0`), /append-only/);
+  });
+
+  test("a settlement repeated records one debit; a NULL call_id row is accepted beside it", async () => {
+    const db = await freshDb();
+    await db.query(`insert into pz.model_reservations (call_id, attempt, role, purpose, usd_estimate, reserved_at, expires_at)
+                    values ('ic-a', 1, 'CHEAP', 'news_card', 0.002, now(), now() + interval '2 minutes')`);
+    for (let i = 0; i < 2; i++) {
+      await db.query(SETTLE, [new Date(), "news_card", "news:nw-a", 0.00012345, "ok", detail("ic-a", 1)]);
+      await db.query(RETIRE, ["ic-a", 1]);
+    }
+    await db.query(`insert into pz.model_ledger (purpose, usd, outcome, detail) values ('imported', 0, 'ok', '{}'), ('imported', 0, 'ok', '{}')`);
+    const rows = await ledger(db);
+    assert.equal(rows.filter((r) => r.call_id === "ic-a").length, 1);
+    assert.equal(rows.find((r) => r.call_id === "ic-a").usd, "0.00012345"); // 8 decimals kept
+    assert.equal(rows.filter((r) => r.call_id === null).length, 2);
+    assert.equal((await db.query(`select count(*)::int as n from pz.model_reservations`)).rows[0].n, 0);
+  });
+
+  test("a reconciliation, then a late settlement for the same attempt: one row, the abandoned one", async () => {
+    const db = await freshDb();
+    await db.query(`insert into pz.model_reservations (call_id, attempt, role, purpose, usd_estimate, reserved_at, expires_at)
+                    values ('ic-b', 2, 'CHEAP', 'news_card', 0.0021, now() - interval '10 minutes', now() - interval '5 minutes')`);
+    // the reconciler: the expired reservation becomes an abandoned row charged its estimate, in the same statement order
+    await db.query(SETTLE, [new Date(), "news_card", null, 0.0021, "abandoned", detail("ic-b", 2, { usd_source: "estimated" })]);
+    await db.query(RETIRE, ["ic-b", 2]);
+    await db.query(SETTLE, [new Date(), "news_card", null, 0.0001, "ok", detail("ic-b", 2)]); // the late settlement
+    const rows = (await ledger(db)).filter((r) => r.call_id === "ic-b");
+    assert.deepEqual(rows.map((r) => [r.outcome, r.usd]), [["abandoned", "0.00210000"]]);
+  });
+
+  test("the reservation and cache CHECKs", async () => {
+    const db = await freshDb();
+    await rejects(db.query(`insert into pz.model_reservations (call_id, attempt, role, purpose, usd_estimate, reserved_at, expires_at)
+                            values ('ic-c', 0, 'CHEAP', 'x', 0, now(), now() + interval '1 minute')`), /check/);
+    await rejects(db.query(`insert into pz.model_reservations (call_id, attempt, role, purpose, usd_estimate, reserved_at, expires_at)
+                            values ('ic-c', 1, 'CHEAP', 'x', 0, now(), now())`), /check/);
+    await rejects(db.query(`insert into pz.model_cache (key, provider, model, text) values ('not-a-sha', 'fake', 'm', 't')`), /check/);
+    await db.query(`insert into pz.model_cache (key, provider, model, text) values ($1, 'fake', 'm', '{}')`, ["a".repeat(64)]);
+  });
+});

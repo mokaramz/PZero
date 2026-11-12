@@ -155,3 +155,22 @@ fallback fetched it; the strict run fails it with its reason and nothing else ch
 nominations (one `nomination_deferred` line each) and watch bridge (no trigger), (e) no run-state start marker, and
 028a's (e) / (s) inside the metric cache. Written and read as bytes
 (`python -m projectzero.ops.parity_news refresh-goldens`).
+
+`oracle_inference.json` (review 029a): the old inference gateway (`gateway.complete` and `budget.check`) over 18
+cases of scripted steps: 77 calls through the old `FakeProvider` (`paid=True`, a free one too) and 39 direct budget
+decisions, each case in its own scratch data folder with a seeded ledger and a frozen clock (naive Berlin wall time;
+`time.monotonic` constant, call ids from a counter). Covered: every rule in order (the run cap with and without an
+override, a short override reason, the per-call and per-purpose caps, the day / ISO-week / month windows on their
+Berlin boundaries incl. a DST day and a week starting after the month, the role and entity caps), other callers'
+reservations and their release, every retryable kind with `Retry-After` (inside, above and below the backoff) and an
+overloaded / busy message, every non-retried kind, failures before and after dispatch, JSON extraction, text mode,
+validation failures, tool-call replies, cache hits and misses (and what is part of the key), a reply without usage,
+the refusals (disabled, unknown, unpriced, unconfigured, no key) and the paid switch unset / off. No step reaches a
+network or a real provider and no key is in either environment (`PZ_AI_PAID=on` on the old side unless a case says
+otherwise). The new gateway + `InMemoryBudgetStore` + the new `FakeProvider` replays the same cases; per step the
+Result, the estimate, the waits, the provider calls, the ledger rows (the old line in the importer's mapping) and the
+decisions match after the declared differences, applied by `parity_inference.expected_new`: (c) paid off by default
+(`c_unset` equals the old `c_off`; the switch text), (d) the cache after the switch (`d_cache_off` equals the old
+`d_ref`), (h) RESEARCH dropped, one row per attempt (`attempt` in `detail`), a failure after dispatch charged its
+estimate, and per-attempt admission (`retry_blocked`). Written and read as bytes
+(`python -m projectzero.ops.parity_inference goldens` / `check`).
