@@ -1,0 +1,987 @@
+{
+ "expected": [
+  {
+   "body": {
+    "id": "c-261111120000",
+    "ok": true
+   },
+   "code": 200,
+   "view": {
+    "items": [
+     {
+      "created": "2026-11-11",
+      "id": "c-261111120000",
+      "inbound": "",
+      "kind": "idea",
+      "notes": "",
+      "platform": "linkedin",
+      "title": "First idea",
+      "url": ""
+     },
+     {
+      "created": "2026-11-01",
+      "id": "c-261101090000",
+      "kind": "draft",
+      "platform": "blog",
+      "title": "Seeded draft"
+     },
+     {
+      "created": "2026-10-20",
+      "id": "c-261020080000",
+      "inbound": "One reply",
+      "title": "Seeded idea"
+     }
+    ],
+    "note": "an extra top-level key the old file carried"
+   }
+  },
+  {
+   "body": {
+    "id": "c-261111120001",
+    "ok": true
+   },
+   "code": 200,
+   "view": {
+    "items": [
+     {
+      "created": "2026-11-11",
+      "id": "c-261111120001",
+      "kind": "draft",
+      "title": "Second",
+      "url": "https://example.com/p"
+     },
+     {
+      "created": "2026-11-11",
+      "id": "c-261111120000",
+      "inbound": "",
+      "kind": "idea",
+      "notes": "",
+      "platform": "linkedin",
+      "title": "First idea",
+      "url": ""
+     },
+     {
+      "created": "2026-11-01",
+      "id": "c-261101090000",
+      "kind": "draft",
+      "platform": "blog",
+      "title": "Seeded draft"
+     },
+     {
+      "created": "2026-10-20",
+      "id": "c-261020080000",
+      "inbound": "One reply",
+      "title": "Seeded idea"
+     }
+    ],
+    "note": "an extra top-level key the old file carried"
+   }
+  },
+  {
+   "body": {
+    "id": "c-261111120000",
+    "ok": true
+   },
+   "code": 200,
+   "view": {
+    "items": [
+     {
+      "created": "2026-11-11",
+      "id": "c-261111120001",
+      "kind": "draft",
+      "title": "Second",
+      "url": "https://example.com/p"
+     },
+     {
+      "created": "2026-11-11",
+      "id": "c-261111120000",
+      "inbound": "Two DMs",
+      "kind": "idea",
+      "notes": "",
+      "platform": "linkedin",
+      "title": "First idea, edited",
+      "url": ""
+     },
+     {
+      "created": "2026-11-01",
+      "id": "c-261101090000",
+      "kind": "draft",
+      "platform": "blog",
+      "title": "Seeded draft"
+     },
+     {
+      "created": "2026-10-20",
+      "id": "c-261020080000",
+      "inbound": "One reply",
+      "title": "Seeded idea"
+     }
+    ],
+    "note": "an extra top-level key the old file carried"
+   }
+  },
+  {
+   "body": {
+    "id": "c-261111120000",
+    "ok": true
+   },
+   "code": 200,
+   "view": {
+    "items": [
+     {
+      "created": "2026-11-11",
+      "id": "c-261111120001",
+      "kind": "draft",
+      "title": "Second",
+      "url": "https://example.com/p"
+     },
+     {
+      "created": "2026-11-11",
+      "id": "c-261111120000",
+      "inbound": "Two DMs",
+      "kind": "published",
+      "notes": "",
+      "platform": "linkedin",
+      "title": "First idea, edited",
+      "url": ""
+     },
+     {
+      "created": "2026-11-01",
+      "id": "c-261101090000",
+      "kind": "draft",
+      "platform": "blog",
+      "title": "Seeded draft"
+     },
+     {
+      "created": "2026-10-20",
+      "id": "c-261020080000",
+      "inbound": "One reply",
+      "title": "Seeded idea"
+     }
+    ],
+    "note": "an extra top-level key the old file carried"
+   }
+  },
+  {
+   "body": {
+    "id": "c-261111120001",
+    "ok": true
+   },
+   "code": 200,
+   "view": {
+    "items": [
+     {
+      "created": "2026-11-11",
+      "id": "c-261111120001",
+      "inbound": 3,
+      "kind": "draft",
+      "notes": [
+       "a",
+       "b"
+      ],
+      "status": true,
+      "title": "Second",
+      "url": "https://example.com/p"
+     },
+     {
+      "created": "2026-11-11",
+      "id": "c-261111120000",
+      "inbound": "Two DMs",
+      "kind": "published",
+      "notes": "",
+      "platform": "linkedin",
+      "title": "First idea, edited",
+      "url": ""
+     },
+     {
+      "created": "2026-11-01",
+      "id": "c-261101090000",
+      "kind": "draft",
+      "platform": "blog",
+      "title": "Seeded draft"
+     },
+     {
+      "created": "2026-10-20",
+      "id": "c-261020080000",
+      "inbound": "One reply",
+      "title": "Seeded idea"
+     }
+    ],
+    "note": "an extra top-level key the old file carried"
+   }
+  },
+  {
+   "body": {
+    "id": "c-261111120001",
+    "ok": true
+   },
+   "code": 200,
+   "view": {
+    "items": [
+     {
+      "created": "2026-11-11",
+      "id": "c-261111120001",
+      "inbound": 3,
+      "kind": "draft",
+      "notes": [
+       "a",
+       "b"
+      ],
+      "status": true,
+      "title": "Second",
+      "url": "https://example.com/p"
+     },
+     {
+      "created": "2026-11-11",
+      "id": "c-261111120000",
+      "inbound": "Two DMs",
+      "kind": "published",
+      "notes": "",
+      "platform": "linkedin",
+      "title": "First idea, edited",
+      "url": ""
+     },
+     {
+      "created": "2026-11-01",
+      "id": "c-261101090000",
+      "kind": "draft",
+      "platform": "blog",
+      "title": "Seeded draft"
+     },
+     {
+      "created": "2026-10-20",
+      "id": "c-261020080000",
+      "inbound": "One reply",
+      "title": "Seeded idea"
+     }
+    ],
+    "note": "an extra top-level key the old file carried"
+   }
+  },
+  {
+   "body": {
+    "id": "my-own-id",
+    "ok": true
+   },
+   "code": 200,
+   "view": {
+    "items": [
+     {
+      "created": "2026-11-11",
+      "id": "my-own-id",
+      "title": "Own id"
+     },
+     {
+      "created": "2026-11-11",
+      "id": "c-261111120001",
+      "inbound": 3,
+      "kind": "draft",
+      "notes": [
+       "a",
+       "b"
+      ],
+      "status": true,
+      "title": "Second",
+      "url": "https://example.com/p"
+     },
+     {
+      "created": "2026-11-11",
+      "id": "c-261111120000",
+      "inbound": "Two DMs",
+      "kind": "published",
+      "notes": "",
+      "platform": "linkedin",
+      "title": "First idea, edited",
+      "url": ""
+     },
+     {
+      "created": "2026-11-01",
+      "id": "c-261101090000",
+      "kind": "draft",
+      "platform": "blog",
+      "title": "Seeded draft"
+     },
+     {
+      "created": "2026-10-20",
+      "id": "c-261020080000",
+      "inbound": "One reply",
+      "title": "Seeded idea"
+     }
+    ],
+    "note": "an extra top-level key the old file carried"
+   }
+  },
+  {
+   "body": {
+    "id": "c-261111120007",
+    "ok": true
+   },
+   "code": 200,
+   "view": {
+    "items": [
+     {
+      "created": "2026-11-11",
+      "id": "c-261111120007"
+     },
+     {
+      "created": "2026-11-11",
+      "id": "my-own-id",
+      "title": "Own id"
+     },
+     {
+      "created": "2026-11-11",
+      "id": "c-261111120001",
+      "inbound": 3,
+      "kind": "draft",
+      "notes": [
+       "a",
+       "b"
+      ],
+      "status": true,
+      "title": "Second",
+      "url": "https://example.com/p"
+     },
+     {
+      "created": "2026-11-11",
+      "id": "c-261111120000",
+      "inbound": "Two DMs",
+      "kind": "published",
+      "notes": "",
+      "platform": "linkedin",
+      "title": "First idea, edited",
+      "url": ""
+     },
+     {
+      "created": "2026-11-01",
+      "id": "c-261101090000",
+      "kind": "draft",
+      "platform": "blog",
+      "title": "Seeded draft"
+     },
+     {
+      "created": "2026-10-20",
+      "id": "c-261020080000",
+      "inbound": "One reply",
+      "title": "Seeded idea"
+     }
+    ],
+    "note": "an extra top-level key the old file carried"
+   }
+  },
+  {
+   "body": {
+    "id": "c-261111120008",
+    "ok": true
+   },
+   "code": 200,
+   "view": {
+    "items": [
+     {
+      "created": "2026-11-11",
+      "id": "c-261111120008",
+      "title": "Falsy id"
+     },
+     {
+      "created": "2026-11-11",
+      "id": "c-261111120007"
+     },
+     {
+      "created": "2026-11-11",
+      "id": "my-own-id",
+      "title": "Own id"
+     },
+     {
+      "created": "2026-11-11",
+      "id": "c-261111120001",
+      "inbound": 3,
+      "kind": "draft",
+      "notes": [
+       "a",
+       "b"
+      ],
+      "status": true,
+      "title": "Second",
+      "url": "https://example.com/p"
+     },
+     {
+      "created": "2026-11-11",
+      "id": "c-261111120000",
+      "inbound": "Two DMs",
+      "kind": "published",
+      "notes": "",
+      "platform": "linkedin",
+      "title": "First idea, edited",
+      "url": ""
+     },
+     {
+      "created": "2026-11-01",
+      "id": "c-261101090000",
+      "kind": "draft",
+      "platform": "blog",
+      "title": "Seeded draft"
+     },
+     {
+      "created": "2026-10-20",
+      "id": "c-261020080000",
+      "inbound": "One reply",
+      "title": "Seeded idea"
+     }
+    ],
+    "note": "an extra top-level key the old file carried"
+   }
+  },
+  {
+   "body": {
+    "id": "c-261101090000",
+    "ok": true
+   },
+   "code": 200,
+   "view": {
+    "items": [
+     {
+      "created": "2026-11-11",
+      "id": "c-261111120008",
+      "title": "Falsy id"
+     },
+     {
+      "created": "2026-11-11",
+      "id": "c-261111120007"
+     },
+     {
+      "created": "2026-11-11",
+      "id": "my-own-id",
+      "title": "Own id"
+     },
+     {
+      "created": "2026-11-11",
+      "id": "c-261111120001",
+      "inbound": 3,
+      "kind": "draft",
+      "notes": [
+       "a",
+       "b"
+      ],
+      "status": true,
+      "title": "Second",
+      "url": "https://example.com/p"
+     },
+     {
+      "created": "2026-11-11",
+      "id": "c-261111120000",
+      "inbound": "Two DMs",
+      "kind": "published",
+      "notes": "",
+      "platform": "linkedin",
+      "title": "First idea, edited",
+      "url": ""
+     },
+     {
+      "created": "2026-11-01",
+      "id": "c-261101090000",
+      "kind": "draft",
+      "platform": "blog",
+      "title": "Seeded draft, edited"
+     },
+     {
+      "created": "2026-10-20",
+      "id": "c-261020080000",
+      "inbound": "One reply",
+      "title": "Seeded idea"
+     }
+    ],
+    "note": "an extra top-level key the old file carried"
+   }
+  },
+  {
+   "body": {
+    "ok": true
+   },
+   "code": 200,
+   "view": {
+    "items": [
+     {
+      "created": "2026-11-11",
+      "id": "c-261111120008",
+      "title": "Falsy id"
+     },
+     {
+      "created": "2026-11-11",
+      "id": "c-261111120007"
+     },
+     {
+      "created": "2026-11-11",
+      "id": "my-own-id",
+      "title": "Own id"
+     },
+     {
+      "created": "2026-11-11",
+      "id": "c-261111120001",
+      "inbound": 3,
+      "kind": "draft",
+      "notes": [
+       "a",
+       "b"
+      ],
+      "status": true,
+      "title": "Second",
+      "url": "https://example.com/p"
+     },
+     {
+      "created": "2026-11-11",
+      "id": "c-261111120000",
+      "inbound": "Two DMs",
+      "kind": "published",
+      "notes": "",
+      "platform": "linkedin",
+      "title": "First idea, edited",
+      "url": ""
+     },
+     {
+      "created": "2026-11-01",
+      "id": "c-261101090000",
+      "kind": "draft",
+      "platform": "blog",
+      "title": "Seeded draft, edited"
+     },
+     {
+      "created": "2026-10-20",
+      "id": "c-261020080000",
+      "inbound": "One reply",
+      "title": "Seeded idea"
+     }
+    ],
+    "note": "an extra top-level key the old file carried"
+   }
+  },
+  {
+   "body": {
+    "ok": true
+   },
+   "code": 200,
+   "view": {
+    "items": [
+     {
+      "created": "2026-11-11",
+      "id": "c-261111120008",
+      "title": "Falsy id"
+     },
+     {
+      "created": "2026-11-11",
+      "id": "c-261111120007"
+     },
+     {
+      "created": "2026-11-11",
+      "id": "my-own-id",
+      "title": "Own id"
+     },
+     {
+      "created": "2026-11-11",
+      "id": "c-261111120000",
+      "inbound": "Two DMs",
+      "kind": "published",
+      "notes": "",
+      "platform": "linkedin",
+      "title": "First idea, edited",
+      "url": ""
+     },
+     {
+      "created": "2026-11-01",
+      "id": "c-261101090000",
+      "kind": "draft",
+      "platform": "blog",
+      "title": "Seeded draft, edited"
+     },
+     {
+      "created": "2026-10-20",
+      "id": "c-261020080000",
+      "inbound": "One reply",
+      "title": "Seeded idea"
+     }
+    ],
+    "note": "an extra top-level key the old file carried"
+   }
+  },
+  {
+   "body": {
+    "ok": true
+   },
+   "code": 200,
+   "view": {
+    "items": [
+     {
+      "created": "2026-11-11",
+      "id": "c-261111120008",
+      "title": "Falsy id"
+     },
+     {
+      "created": "2026-11-11",
+      "id": "c-261111120007"
+     },
+     {
+      "created": "2026-11-11",
+      "id": "my-own-id",
+      "title": "Own id"
+     },
+     {
+      "created": "2026-11-11",
+      "id": "c-261111120000",
+      "inbound": "Two DMs",
+      "kind": "published",
+      "notes": "",
+      "platform": "linkedin",
+      "title": "First idea, edited",
+      "url": ""
+     },
+     {
+      "created": "2026-11-01",
+      "id": "c-261101090000",
+      "kind": "draft",
+      "platform": "blog",
+      "title": "Seeded draft, edited"
+     },
+     {
+      "created": "2026-10-20",
+      "id": "c-261020080000",
+      "inbound": "One reply",
+      "title": "Seeded idea"
+     }
+    ],
+    "note": "an extra top-level key the old file carried"
+   }
+  },
+  {
+   "body": {
+    "ok": true
+   },
+   "code": 200,
+   "view": {
+    "items": [
+     {
+      "created": "2026-11-11",
+      "id": "c-261111120008",
+      "title": "Falsy id"
+     },
+     {
+      "created": "2026-11-11",
+      "id": "c-261111120007"
+     },
+     {
+      "created": "2026-11-11",
+      "id": "my-own-id",
+      "title": "Own id"
+     },
+     {
+      "created": "2026-11-11",
+      "id": "c-261111120000",
+      "inbound": "Two DMs",
+      "kind": "published",
+      "notes": "",
+      "platform": "linkedin",
+      "title": "First idea, edited",
+      "url": ""
+     },
+     {
+      "created": "2026-11-01",
+      "id": "c-261101090000",
+      "kind": "draft",
+      "platform": "blog",
+      "title": "Seeded draft, edited"
+     },
+     {
+      "created": "2026-10-20",
+      "id": "c-261020080000",
+      "inbound": "One reply",
+      "title": "Seeded idea"
+     }
+    ],
+    "note": "an extra top-level key the old file carried"
+   }
+  },
+  {
+   "body": {
+    "id": "c-261111120001",
+    "ok": true
+   },
+   "code": 200,
+   "view": {
+    "items": [
+     {
+      "created": "2026-11-11",
+      "id": "c-261111120001",
+      "title": "Back again"
+     },
+     {
+      "created": "2026-11-11",
+      "id": "c-261111120008",
+      "title": "Falsy id"
+     },
+     {
+      "created": "2026-11-11",
+      "id": "c-261111120007"
+     },
+     {
+      "created": "2026-11-11",
+      "id": "my-own-id",
+      "title": "Own id"
+     },
+     {
+      "created": "2026-11-11",
+      "id": "c-261111120000",
+      "inbound": "Two DMs",
+      "kind": "published",
+      "notes": "",
+      "platform": "linkedin",
+      "title": "First idea, edited",
+      "url": ""
+     },
+     {
+      "created": "2026-11-01",
+      "id": "c-261101090000",
+      "kind": "draft",
+      "platform": "blog",
+      "title": "Seeded draft, edited"
+     },
+     {
+      "created": "2026-10-20",
+      "id": "c-261020080000",
+      "inbound": "One reply",
+      "title": "Seeded idea"
+     }
+    ],
+    "note": "an extra top-level key the old file carried"
+   }
+  },
+  {
+   "body": {
+    "ok": true
+   },
+   "code": 200,
+   "view": {
+    "items": [
+     {
+      "created": "2026-11-11",
+      "id": "c-261111120001",
+      "title": "Back again"
+     },
+     {
+      "created": "2026-11-11",
+      "id": "c-261111120008",
+      "title": "Falsy id"
+     },
+     {
+      "created": "2026-11-11",
+      "id": "c-261111120007"
+     },
+     {
+      "created": "2026-11-11",
+      "id": "my-own-id",
+      "title": "Own id"
+     },
+     {
+      "created": "2026-11-11",
+      "id": "c-261111120000",
+      "inbound": "Two DMs",
+      "kind": "published",
+      "notes": "",
+      "platform": "linkedin",
+      "title": "First idea, edited",
+      "url": ""
+     },
+     {
+      "created": "2026-11-01",
+      "id": "c-261101090000",
+      "kind": "draft",
+      "platform": "blog",
+      "title": "Seeded draft, edited"
+     }
+    ],
+    "note": "an extra top-level key the old file carried"
+   }
+  }
+ ],
+ "numeric": {
+  "expected": [
+   {
+    "body": {
+     "id": 7,
+     "ok": true
+    },
+    "code": 200,
+    "view": {
+     "items": [
+      {
+       "created": "2026-11-11",
+       "id": 7,
+       "title": "A number id"
+      }
+     ]
+    }
+   }
+  ],
+  "script": [
+   {
+    "at": "2026-11-11T12:00:20",
+    "body": {
+     "id": 7,
+     "title": "A number id"
+    },
+    "op": "save"
+   }
+  ]
+ },
+ "provenance": {
+  "clock": "2026-11-11T12:00:00",
+  "mode": "content",
+  "old_dirty": false,
+  "old_revision": "6c739b9cb6ca2517b845e381d39a36c50eccc59e"
+ },
+ "script": [
+  {
+   "at": "2026-11-11T12:00:00",
+   "body": {
+    "inbound": "",
+    "kind": "idea",
+    "notes": "",
+    "platform": "linkedin",
+    "title": "First idea",
+    "url": ""
+   },
+   "op": "save"
+  },
+  {
+   "at": "2026-11-11T12:00:01",
+   "body": {
+    "kind": "draft",
+    "title": "Second",
+    "url": "https://example.com/p"
+   },
+   "op": "save"
+  },
+  {
+   "at": "2026-11-11T12:00:02",
+   "body": {
+    "id": "c-261111120000",
+    "inbound": "Two DMs",
+    "title": "First idea, edited"
+   },
+   "op": "save"
+  },
+  {
+   "at": "2026-11-11T12:00:03",
+   "body": {
+    "id": "c-261111120000",
+    "kind": "published"
+   },
+   "op": "save"
+  },
+  {
+   "at": "2026-11-11T12:00:04",
+   "body": {
+    "id": "c-261111120001",
+    "inbound": 3,
+    "notes": [
+     "a",
+     "b"
+    ],
+    "status": true
+   },
+   "op": "save"
+  },
+  {
+   "at": "2026-11-11T12:00:05",
+   "body": {
+    "id": "c-261111120001",
+    "inbound": 3
+   },
+   "op": "save"
+  },
+  {
+   "at": "2026-11-11T12:00:06",
+   "body": {
+    "id": "my-own-id",
+    "title": "Own id"
+   },
+   "op": "save"
+  },
+  {
+   "at": "2026-11-11T12:00:07",
+   "body": {},
+   "op": "save"
+  },
+  {
+   "at": "2026-11-11T12:00:08",
+   "body": {
+    "extra": "ignored",
+    "id": "",
+    "title": "Falsy id"
+   },
+   "op": "save"
+  },
+  {
+   "at": "2026-11-11T12:00:09",
+   "body": {
+    "id": "c-261101090000",
+    "title": "Seeded draft, edited"
+   },
+   "op": "save"
+  },
+  {
+   "at": "2026-11-11T12:00:10",
+   "body": {
+    "id": "no-such-item"
+   },
+   "op": "delete"
+  },
+  {
+   "at": "2026-11-11T12:00:11",
+   "body": {
+    "id": "c-261111120001"
+   },
+   "op": "delete"
+  },
+  {
+   "at": "2026-11-11T12:00:12",
+   "body": {
+    "id": "c-261111120001"
+   },
+   "op": "delete"
+  },
+  {
+   "at": "2026-11-11T12:00:13",
+   "body": {},
+   "op": "delete"
+  },
+  {
+   "at": "2026-11-11T12:00:14",
+   "body": {
+    "id": "c-261111120001",
+    "title": "Back again"
+   },
+   "op": "save"
+  },
+  {
+   "at": "2026-11-11T12:00:15",
+   "body": {
+    "id": "c-261020080000"
+   },
+   "op": "delete"
+  }
+ ],
+ "seed": {
+  "items": [
+   {
+    "created": "2026-11-01",
+    "id": "c-261101090000",
+    "kind": "draft",
+    "platform": "blog",
+    "title": "Seeded draft"
+   },
+   {
+    "created": "2026-10-20",
+    "id": "c-261020080000",
+    "inbound": "One reply",
+    "title": "Seeded idea"
+   }
+  ],
+  "note": "an extra top-level key the old file carried"
+ }
+}

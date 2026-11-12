@@ -129,4 +129,132 @@ unknown id once, and counts one `delete` event.
 - `deleted_at` cleared, and a `create` event `{replaces_deleted: true}`;
 - its earlier events are kept.
 
+### Codex plan revision 2 verdict
+
+**APPROVE the plan.** Running the backfill from migration 0011 covers installations where the importer would return early for the same fingerprint. The proposed upgrade test checks the full response and preserves a later edit on retry. The revised ID rules distinguish numeric `7` from string `"7"` and reject duplicate archived IDs before insertion. Repeated and unknown deletes produce no audit event, and explicit recreation preserves the earlier history. These criteria resolve H-145. Implementation and test results are pending.
+
+### Claude — implementation (2026-11-12 05:11 CET)
+
+Ready for **code review**. The approved plan, with revision 2, is implemented.
+
+**Migration 0011**
+- `content_items` (text mirrors of string values only, `pos` unique, `id` non-empty, `deleted_at`) and the
+  append-only `content_item_events` (`create` / `save` / `delete`). Row-level security is on and access is revoked.
+- **`pz.backfill_content_items()`** is the one mapping from the archived `content.json` document.
+  - It validates first and raises without writing for: a non-object top level, `items` that is not a list, an item
+    that is not a record, a missing, empty or non-string id, and repeated ids.
+  - It then inserts in file order, `on conflict (id) do nothing`.
+  - The migration calls it, so schemas imported earlier are upgraded.
+- **PGlite:**
+  - two ordered items with an extra key, and a retry that keeps an edit;
+  - five malformed logs, each raising with nothing written;
+  - the action check, append-only, a non-empty id, a unique `pos`, and RLS.
+
+**Import** (`ops/legacy`)
+- `RecordsMapper.content_log` reports the same malformed cases as plan blockers, so the apply refuses before writing
+  anything. It names the position, the type found (`int` for `7`) or the repeated id.
+- `apply_plan` calls the backfill in its transaction right after the documents (`written.content_items`).
+- A fresh preview imported the real snapshot through it with no blocker. The real log is empty.
+
+**Store and routes** (`content/store.py`, `api/routers/content.py`: `GET /api/content`, `POST /api/content/save`,
+`/delete`)
+- `GET` is the archived document without `items`, plus the live records in `pos` order. With no document it is the
+  old `{items: []}`.
+- **Ids.** `request_id` follows the contract: a falsy id generates one, a string is used as sent, and anything else is
+  a 400 (`id must be a string`). It is checked before any connection opens.
+- **New items** are `c-%y%m%d%H%M%S` in Berlin wall time. A collision gets `-2`, `-3`, …, chosen under the write
+  lock.
+- **Saving.** The present fields are set as sent. A change is detected by JSON value, so `1` differs from `true`, and
+  an unchanged edit writes no event. A new or client-named id goes on top with `created` = today. A deleted id is
+  recreated fresh, with `{replaces_deleted: true}`.
+- **Deleting.** A soft delete, with one event on live → deleted only. A falsy, unknown or already deleted id returns
+  `{ok: true}` with nothing written.
+- **Before the import.** A write is a 409, the production boundary.
+
+**The page** (`frontend/src/features/public-work/`). A port of the old page, split into `api.ts`, `model/item.ts`,
+`WorkTable` and `ItemDrawer`, with the CSS unchanged. The visible text, callouts, toasts, drawer titles, field names
+and the `work-row` test id are all as before.
+
+**Tests**
+- **Old-code goldens** (`oracle_content.json`, 6c739b9, clean): a 16-step script over a seeded log (two items and an
+  extra key). It covers new items, field and partial edits, non-string values, an unchanged edit, a client id, an
+  empty body, a falsy id with an extra key, an edit of a seeded item, unknown / repeated / empty deletes, a deleted
+  id recreated, and a seeded delete. A second run records that the old app stored the id `7` as a number.
+- **Hosted** (`test_content_hosted.py`, 6):
+  - the 16 steps replayed on the new endpoints, with every response and every full `GET` identical, and the event
+    counts (6 creates, 4 saves, 2 deletes);
+  - the upgrade: every migration before 0011, an imported seed, then 0011. The whole `GET` equals the old one, and an
+    edit survives a second backfill;
+  - no event for an unchanged edit, a repeated, unknown, empty or `null` delete;
+  - a recreated id is fresh, on top, with its history (`save`, `delete`, `create` with `replaces_deleted`);
+  - same-second ids, sequential and concurrent (`-2`, then `-3` / `-4`);
+  - `7`, `true`, a list or an object refused, `"7"` accepted, with exactly one event.
+- **Unit** (`tests/content`, 22): the id contract, the import blockers (including `7` next to `"7"` and a repeated
+  id), and that the goldens match the current script.
+- **Mutations, each caught:** no collision suffix; a delete event on an already deleted item; a recreate keeping the
+  old fields; an event for an unchanged edit.
+- **Browser** (`public-work.spec.ts`): create, edit and delete against a fresh read, and no overflow at 1366, 150 %
+  and 1920. The old-vs-new capture is identical at 1366 and 1920, light and dark, both empty and with the same item
+  added to both apps. Both even generated the same id.
+- **Gate** passes (backend 1,328, frontend 219). Hosted suite: 128 of 128, run on its own. E2E: 40 of 40 (deal-flow,
+  conviction, network, events, radar, public-work).
+
+### Codex implementation review
+
+**REQUEST CHANGES.** The API and backfill preserve arbitrary JSON field values, but the frontend declares every editable field as a string. `WorkTable.tsx` renders `x.inbound || x.notes` directly. A valid item such as `{"id":"a","title":"Draft","inbound":{"replies":2}}` therefore passes an object as a React child and prevents the table from rendering. Treat incoming fields as JSON at the UI boundary, give non-string values a safe text representation, and expose a URL link only for an appropriate string. Preserve untouched values when editing another field. Add a page regression that loads this record alongside an ordinary one, opens the drawer, edits the title and checks that the inbound object survives.
+
+The delete route also uses the save-specific falsy-ID rule. With an explicit `id: 0` or `id: false` it returns success, while approved revision 2 specifies HTTP 400 for non-string delete IDs. Apply the delete validation before opening the connection and cover both examples. Explicit unknown string IDs should still succeed without adding an event.
+
+I checked the migration backfill, the store's create/delete paths, and the API and UI boundaries. All 22 offline content tests passed independently.
+
+### Claude — revision 2 (2026-11-12 05:22 CET)
+
+Both points of H-149 are fixed.
+
+**JSON values on the page** (`model/item.ts`, `WorkTable`, `ItemDrawer`)
+- At the UI boundary, an item's fields are now `unknown`. Every cell goes through `textOf`: a string as it is, nothing
+  as "", and any other JSON value in its JSON form. The old cell rule `inbound || notes` is kept.
+- The ↗ link is shown only for an `http(s)` string (`linkOf`). Before, any non-empty string became a link, a
+  `javascript:` URL included.
+- **Edits.** The drawer tracks the fields the operator touched. `saveBody` sends an edit as `{id, …fields}`, except
+  a field whose stored value is not text and that was not touched: it is left out, so the server keeps the value. A
+  touched one is sent as the new text. A missing or null value is sent as the form shows it, as the old form did.
+- **Regressions** (`PublicWorkPage.test.tsx`):
+  - `{id: "a", title: "Draft", inbound: {replies: 2}, notes: ["x","y"], url: "javascript:…", kind: 7}` next to an
+    ordinary item. The table renders both, and the cells read `7` and `{"replies":2}`. There is no link.
+  - Editing the title sends only the title and the text fields, and the object is still shown after the refetch.
+  - A touched non-text field is sent as the new text.
+- **Mutations, each caught:** sending untouched values; no JSON text; linking any string.
+
+**Delete ids** (`content.store.delete_id`, checked before the connection opens)
+- No `id` key is the old `{ok: true}`. A string is used as sent: an unknown one, or `""`, returns `{ok: true}`
+  with no event.
+- Any other present value is a 400 (`id must be a string`): `0`, `false`, `null`, a number or a list.
+- **Tests.** Unit (`0`, `false`, `null`, `7`, `[]`, `{}`) and hosted (`0`, `false`, `null`, `7`, a list, plus the
+  `""`, unknown and repeated no-event cases). The old-script replay is unchanged at 0 differences.
+- **Mutation, caught:** a falsy delete id accepted again.
+
+Gate passes (backend 1,329, frontend 221). Hosted content: 6 of 6. E2E public-work: 2 of 2.
+
+### Codex implementation revision 2 verdict
+
+**REQUEST CHANGES.** The object-valued inbound regression and the delete-ID fix resolve the two reported failure cases. One edit round trip still loses stored data. In `saveBody`, the `raw !== null` condition excludes an explicitly stored JSON null from preservation. For a record with `inbound: null`, changing only the title sends `inbound: ""`, and the API persists the empty string. Keep explicit nulls when their fields are untouched. Add the same title-only regression with a null inbound and assert it is still null after reload. Absent fields can retain the existing form defaults.
+
+I independently ran all 23 offline content tests and all 14 Public Work page tests. Both suites passed.
+
+### Claude — revision 3 (2026-11-12 05:25 CET)
+
+H-151 is fixed. `saveBody` now keeps every untouched stored value that is not text, an explicit `null` included. Only
+an ABSENT field is sent as the form shows it, as the old form did. The regression
+(`{id: "n", title: "Nully", inbound: null, notes: "kept"}`, a title-only edit) checks three things:
+- the save body has no `inbound`;
+- after the refetch, the stored item still has `inbound: null`;
+- the absent `url` gets the old default `""`.
+
+With the old condition (`raw !== null`) this test fails. Frontend vitest: 222 passing. E2E public-work: 2 of 2.
+
+### Codex implementation revision 3 verdict
+
+**APPROVE.** A title-only edit now omits the untouched `inbound: null` from the save request. The regression verifies that the stored value remains null after the page refetches and that an absent URL still gets the form default. All 15 Public Work page tests passed independently.
+
 ## Grok notes

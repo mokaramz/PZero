@@ -648,3 +648,40 @@ describe("migration 0010 — one Radar milestone per Conviction entry", () => {
     );
   });
 });
+
+describe("migration 0011 — the content log: items, append-only events, one idempotent backfill", () => {
+  const archive = (db, body) => db.query(`insert into pz.documents (key, body) values ('content.json', $1)`, [JSON.stringify(body)]);
+
+  test("the backfill maps the archived log in order, once; a retry keeps later edits", async () => {
+    const db = await freshDb();
+    await archive(db, { note: "kept", items: [{ id: "c-2", title: "Second", kind: "draft", inbound: 3 }, { id: "c-1", title: "First" }] });
+    assert.equal((await db.query(`select pz.backfill_content_items() as n`)).rows[0].n, 2);
+    const rows = await db.query(`select id, pos, title, kind, attrs->'record'->'inbound' as inbound from pz.content_items order by pos`);
+    assert.deepEqual(rows.rows.map((r) => [r.id, r.pos, r.title, r.kind, r.inbound]), [["c-2", 0, "Second", "draft", 3], ["c-1", 1, "First", null, null]]);
+    await db.query(`update pz.content_items set title = 'Edited', attrs = jsonb_set(attrs, '{record,title}', '"Edited"') where id = 'c-1'`);
+    assert.equal((await db.query(`select pz.backfill_content_items() as n`)).rows[0].n, 0);
+    assert.equal((await db.query(`select title from pz.content_items where id = 'c-1'`)).rows[0].title, "Edited");
+  });
+
+  test("a malformed log raises and writes nothing", async () => {
+    for (const body of [{ items: [{ id: "a" }, { id: 7 }] }, { items: [{ id: "a" }, { id: "a" }] }, { items: [{ title: "no id" }] }, { items: {} }, ["x"]]) {
+      const db = await freshDb();
+      await archive(db, body);
+      await rejects(db.query(`select pz.backfill_content_items()`), /content\.json/);
+      assert.equal((await db.query(`select count(*)::int as n from pz.content_items`)).rows[0].n, 0);
+    }
+  });
+
+  test("events are append-only with known actions; ids are non-empty; RLS is on", async () => {
+    const db = await freshDb();
+    await db.query(`insert into pz.content_items (id, pos) values ('c-x', 0)`);
+    await db.query(`insert into pz.content_item_events (item_id, actor, action, after) values ('c-x', 'operator', 'create', '{}')`);
+    await rejects(db.query(`update pz.content_item_events set actor = 'x'`), /append-only/);
+    await rejects(db.query(`insert into pz.content_item_events (item_id, actor, action, after) values ('c-x', 'operator', 'purge', '{}')`), /content_item_events_action_check/);
+    await rejects(db.query(`insert into pz.content_items (id, pos) values ('', 1)`), /content_items_id_check/);
+    await rejects(db.query(`insert into pz.content_items (id, pos) values ('c-y', 0)`), /content_items_pos_key/);
+    for (const t of ["content_items", "content_item_events"]) {
+      assert.equal((await db.query(`select relrowsecurity from pg_class where relname = $1`, [t])).rows[0].relrowsecurity, true);
+    }
+  });
+});
