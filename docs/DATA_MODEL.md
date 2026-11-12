@@ -49,6 +49,12 @@ Status: **DRAFT v0.1 — awaiting review by Codex.** Schema: `supabase/migration
 | Native Scout: NEW_SIGNAL / INVESTIGATE / MONITORING | `new` / `reviewing` / `watch` | original |
 | Native Scout: DISMISSED / STALE / PROMOTED_TO_CANDIDATE | `rejected` / `archived` / `kept` | original |
 
+**Revisit flags** (decision [0004](decisions/0004-re-reported-rejected-companies.md), review 018). A re-report onto a
+`rejected` candidate with a dated `material_change` after the rejection adds a `revisit_flagged` row to
+`candidate_events`; the status never changes. A flag is current while the candidate is still `rejected` and the flag
+is newer than `decided_at`, so a reopen or a new rejection makes older flags stale. Imported rejections without a
+`decided_at` are never flagged.
+
 ## Identity resolution during import
 
 Companies today have no shared id across Deal Flow, Scout Intake, Native Scout, Conviction, Founder Calls, Radar and

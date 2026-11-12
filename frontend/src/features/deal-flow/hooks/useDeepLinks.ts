@@ -3,10 +3,9 @@ import { useEffect, type RefObject } from "react";
 import { useSearchParams } from "react-router-dom";
 
 import { get } from "@/lib/api";
-import type { Filter } from "../model/list";
 import type { RouteState } from "../model/triage";
 import type { Candidate, InboxPayload } from "../model/types";
-import { linkFilter, linkRoute } from "../model/view";
+import { linkFilter, linkRoute, type ViewFilter } from "../model/view";
 import { INBOX_KEY } from "./useDealFlowData";
 
 const KEYS = ["candidate", "review", "filter", "find", "route", "ns"] as const;
@@ -29,7 +28,7 @@ async function survivorOf(id: string, ns: string): Promise<string | null> {
 
 type Handlers = {
   show: (c: Candidate) => void;
-  setFilter: (f: Filter) => void;
+  setFilter: (f: ViewFilter) => void;
   setRoute: (r: RouteState) => void;
   /** the Find bar row: `?find=1` focuses its first button */
   findRef: RefObject<HTMLElement | null>;

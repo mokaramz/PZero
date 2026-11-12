@@ -21,6 +21,7 @@ import { useViewControls } from "./hooks/useViewControls";
 import { wsCounts } from "./model/geo";
 import type { BuiltList } from "./model/list";
 import { routeCounts, triageCounts } from "./model/triage";
+import { revisitCount } from "./model/revisit";
 import { candidateView } from "./model/view";
 import styles from "./DealFlow.module.css";
 
@@ -74,6 +75,7 @@ export default function DealFlowPage() {
                 setNaf={set.setNaf}
                 filter={filter}
                 setFilter={set.setFilter}
+                revisitCount={revisitCount(ib)}
                 theme={theme}
                 setTheme={set.setTheme}
                 themes={ib.themes}

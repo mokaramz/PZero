@@ -75,8 +75,28 @@ type AnalysisMarks = {
   deep_state?: string;
 };
 
-/** `pz_status` is the stored status (new in 009), sent back as `expected_status` so a stale click is refused. */
-export type Candidate = { id: string; name: string; decision: Decision; notes?: string; pz_status?: string } & Provenance &
+export type RevisitKind = "funding_round" | "registry_event" | "founder_or_key_hire" | "independent_corroboration";
+
+/** A material change since the rejection (review 018, decision 0004): set by the server only on a candidate whose
+ *  stored status is `rejected`, cleared by any later status decision. Read by `revisit.ts` only. */
+export type Revisit = {
+  kind: RevisitKind | string;
+  since: string;
+  date_source?: string;
+  rejected_on?: string | null;
+  evidence_url: string;
+  evidence?: Array<{ url: string; [k: string]: unknown }>;
+  note?: string | null;
+  submission_id?: string;
+  flagged_at: string; // UTC, for ordering
+  flagged_on?: string; // its Berlin day, for display
+  /** independent_corroboration only (Codex H-129 / H-131): every supporting reference, this report's evidence_url last. */
+  corroboration?: Array<{ evidence_url: string; submission_id?: string | null }>;
+};
+
+/** `pz_status` is the stored status (new in 009), sent back as `expected_status` so a stale click is refused.
+ *  `revisit` is new in 018. */
+export type Candidate = { id: string; name: string; decision: Decision; notes?: string; pz_status?: string; revisit?: Revisit | null } & Provenance &
   Location &
   Tags &
   Ranking &
@@ -140,6 +160,8 @@ export type InboxPayload = {
   feedback_cap?: number;
   pipeline_label?: string;
   ws_geos?: WsGeos;
+  /** the candidates with a current `revisit` flag (review 018) */
+  revisit_count?: number;
 };
 
 /** `POST /api/deal-flow/candidates/{id}/decision` → the old decide answer plus the new fields. */

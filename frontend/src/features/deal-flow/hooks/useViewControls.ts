@@ -2,10 +2,9 @@ import { useCallback, useState } from "react";
 
 import { usePref } from "@/lib/hooks";
 import type { NaFilter, Workspace } from "../model/geo";
-import type { Filter } from "../model/list";
 import type { RouteFilter, TriageKind, TriageScope } from "../model/triage";
 import type { Candidate } from "../model/types";
-import { placeOf, type ViewControls } from "../model/view";
+import { placeOf, type ViewControls, type ViewFilter } from "../model/view";
 
 /** Rows mounted at once (the inbox can hold ~1,000). */
 export const PAGE = 50;
@@ -17,7 +16,7 @@ export const PAGE = 50;
 export function useViewControls() {
   const [ws, setWs] = usePref<Workspace>("workspace", "eu");
   const [naf, setNaf] = useState<NaFilter>("both");
-  const [filter, setFilter] = useState<Filter>("top");
+  const [filter, setFilter] = useState<ViewFilter>("top");
   const [theme, setTheme] = useState("");
   const [im, setIm] = useState(false);
   const [sel, setSel] = useState<string | null>(null);

@@ -190,6 +190,26 @@
             }
           }
         },
+        "material_change": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "evidence_url"],
+          "description": "Company / opportunity only (decision 0004): a change SINCE the company was rejected that may justify a revisit. evidence_url must be one of this entity's evidence URLs; independent_corroboration needs two independent sources FOR THIS CHANGE: evidence_url plus a supporting_urls entry on another host, or an earlier report of the change (since the rejection, another delivery) whose evidence_url this entity cites, on another host. General company evidence never counts.",
+          "properties": {
+            "kind": { "enum": ["funding_round", "registry_event", "founder_or_key_hire", "independent_corroboration"] },
+            "evidence_url": { "$ref": "#/$defs/web_url" },
+            "supporting_urls": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 5,
+              "uniqueItems": true,
+              "items": { "$ref": "#/$defs/web_url" },
+              "description": "Further sources that report THIS change (each one of this entity's evidence URLs)."
+            },
+            "since": { "type": "string", "format": "date", "description": "The day the change happened (Europe/Berlin)." },
+            "note": { "$ref": "#/$defs/statement" }
+          }
+        },
         "event": {
           "type": "object",
           "additionalProperties": false,

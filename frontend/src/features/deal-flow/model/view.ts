@@ -4,15 +4,20 @@
  */
 import { region, type NaFilter, type Workspace } from "./geo";
 import { buildList, FILTERS, type BuiltList, type Filter } from "./list";
+import { revisitList } from "./revisit";
 import { isNonStartup, ROUTE_LABEL, triageList, type RouteFilter, type RouteState, type TriageKind, type TriageScope, type TriageSummary } from "./triage";
 import type { Candidate, InboxPayload } from "./types";
+
+/** The page's filter: one of the protected list's filters, or the Revisit list (review 018), which is NOT one of them —
+ *  `list.ts` and its `Filter` stay as ported. */
+export type ViewFilter = Filter | "revisit";
 
 export type ViewControls = {
   ws: Workspace;
   naf: NaFilter;
   theme: string;
   im: boolean;
-  filter: Filter;
+  filter: ViewFilter;
   tScope: TriageScope;
   tKind: TriageKind;
   tRoute: RouteFilter;
@@ -21,6 +26,11 @@ export type ViewControls = {
 /** `null` for the Agent Review Queue (its own list, not ported yet). */
 export function candidateView(ib: InboxPayload, tri: Record<string, TriageSummary> | undefined, v: ViewControls): BuiltList | null {
   if (v.filter === "review") return null;
+  // Revisit (018): its own short list across every workspace, answered before (and without touching) buildList; the
+  // title counts are the whole inbox's, as for Machine triage.
+  if (v.filter === "revisit") {
+    return { list: revisitList(ib.candidates), hidden: 0, counts: buildList(ib.candidates, { ws: "all", naf: v.naf, theme: "", im: v.im, filter: "new", lastRun: ib.last_run }).counts };
+  }
   if (v.filter === "triage") {
     const list = tri ? triageList(ib.candidates, tri, v.tScope, v.tKind, v.tRoute) : [];
     return { list, hidden: 0, counts: buildList(ib.candidates, { ws: "all", naf: v.naf, theme: "", im: v.im, filter: "new", lastRun: ib.last_run }).counts };
@@ -32,8 +42,9 @@ export function candidateView(ib: InboxPayload, tri: Record<string, TriageSummar
 /** Filters that are not available yet (their list arrives with a later port). */
 export const DEFERRED_FILTERS: ReadonlySet<Filter> = new Set<Filter>(["review"]);
 
-/** A `?filter=` value the page can open, else null. */
-export function linkFilter(v: string | null): Filter | null {
+/** A `?filter=` value the page can open (`revisit` too), else null. */
+export function linkFilter(v: string | null): ViewFilter | null {
+  if (v === "revisit") return v;
   const f = FILTERS.find((x) => x.value === v)?.value;
   return f && !DEFERRED_FILTERS.has(f) ? f : null;
 }

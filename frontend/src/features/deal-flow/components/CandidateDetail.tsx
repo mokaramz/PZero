@@ -1,15 +1,16 @@
 import { DisclosureGroup } from "@/components/attention";
 import { DecisionCard, Disclosure, fieldFor, FIELD_LABEL, HighlightStrip, Monogram, StatusChip } from "@/components/focus";
 import { Icon } from "@/components/Icon";
-import { Badge, Button } from "@/components/ui";
+import { Badge, Button, Callout } from "@/components/ui";
 import { ago } from "@/lib/format";
 import { asRole } from "@/lib/roles";
 import { crossScore, earliness, fbTxt, fitScore, recScore, srcDate, srcQuality, tierLbl } from "../model/attention";
 import type { SentDecision } from "../model/decision";
 import { NOT_PORTED } from "../model/deferred";
 import { operatorView } from "../model/operatorView";
+import { hostOf, isoDay, revisitLabel } from "../model/revisit";
 import type { TriageSummary } from "../model/triage";
-import type { Candidate, InboxPayload } from "../model/types";
+import type { Candidate, InboxPayload, Revisit } from "../model/types";
 import { AnalystChip } from "./AnalystChip";
 import { TriagePanel } from "./TriagePanel";
 import styles from "../DealFlow.module.css";
@@ -73,6 +74,48 @@ function Header({ c, edge, themes, sector }: { c: Candidate; edge?: string; them
         </div>
       </div>
     </header>
+  );
+}
+
+/** Review 018: a rejected candidate re-reported with a material change since the rejection. Information only — the
+ *  reopen is the existing decision row (Undo), Mohamed's call. */
+function RevisitCallout({ r }: { r: Revisit }) {
+  const earlier = (r.corroboration ?? []).filter((c) => c.evidence_url !== r.evidence_url);
+  const meta = [r.rejected_on ? `rejected on ${isoDay(r.rejected_on)}` : "", r.flagged_on ? `flagged ${r.flagged_on}` : ""].filter(Boolean).join(" · ");
+  return (
+    <Callout tone="blue" className={styles.revisit} data-testid="cand-revisit">
+      <div>
+        <b>Revisit suggested: {revisitLabel(r.kind)}</b>
+        {r.since ? ` since ${isoDay(r.since)}` : ""}
+        {r.evidence_url && (
+          <>
+            {" — "}
+            <a href={r.evidence_url} target="_blank" rel="noopener noreferrer">
+              evidence ↗
+            </a>
+          </>
+        )}
+        {r.note ? ` · ${r.note}` : ""}
+        {earlier.length > 0 && (
+          <>
+            {" · also reported at "}
+            {earlier.map((c, i) => (
+              <span key={c.evidence_url}>
+                {i > 0 ? ", " : ""}
+                <a href={c.evidence_url} target="_blank" rel="noopener noreferrer">
+                  {hostOf(c.evidence_url)} ↗
+                </a>
+              </span>
+            ))}
+          </>
+        )}
+      </div>
+      <div className={`small faint ${styles.revisitMeta}`}>
+        {meta}
+        {meta ? " · " : ""}
+        Reopen with Undo under Your decision if it is worth another look.
+      </div>
+    </Callout>
   );
 }
 
@@ -178,6 +221,8 @@ export function CandidateDetail({ c, ib, im, actions, tri, triPending }: Props) 
           { icon: "clock", label: "Freshness", value: sd ? `Source ${ago(sd)}` : fs ? `Found ${ago(fs)}` : undefined, hint: sd ? undefined : "source date unknown" },
         ]}
       />
+
+      {c.revisit && <RevisitCallout r={c.revisit} />}
 
       <DecisionCard
         why={ov.why.map(asRole)}

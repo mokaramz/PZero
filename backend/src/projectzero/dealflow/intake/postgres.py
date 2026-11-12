@@ -42,6 +42,7 @@ from psycopg import sql
 from psycopg.types.json import Jsonb
 
 from projectzero.core.db import schema_ident
+from projectzero.dealflow import revisit
 from projectzero.dealflow.identity import company_domain, is_placeholder_name, normalize_name
 from projectzero.dealflow.identity_rules import (
     Decision,
@@ -214,7 +215,15 @@ class PostgresIntake:
             "decision": decision.basis,
             "decision_detail": decision.detail,
         }
-        self._event(candidate_id, "intake", detail | {"result": action})
+        revisit_flag, change = None, None
+        if isinstance(entity.get("material_change"), Mapping):  # decision 0004 / review 018
+            revisit_flag, change = self._revisit(candidate_id, entity) if action == "re_reported_closed" else (
+                None, "new_candidate" if action == "created" else "not_rejected")  # fmt: skip
+        self._event(
+            candidate_id, "intake", detail | {"result": action} | ({"material_change": change} if change else {})
+        )
+        if revisit_flag is not None:
+            self._flag_revisit(candidate_id, revisit_flag)
         if decision.action == "conflict":
             self._event(candidate_id, "identity_conflict", detail)
         return {
@@ -426,6 +435,47 @@ class PostgresIntake:
             (candidate_id, self.submission_id, origin, evidence[0]["url"] if evidence else None,
              entity.get("name"), Jsonb(evidence), Jsonb(dict(entity))),
         )  # fmt: skip
+
+    def _revisit(self, candidate_id: str, entity: Mapping[str, Any]) -> tuple[dict[str, Any] | None, str]:
+        """Decision 0004: the candidate's CURRENT status and rejection date, read under its row lock (after the intake
+        lock, the one lock order), the material changes OTHER deliveries reported and its revisit flags since that
+        rejection, then ``revisit``."""
+        row = self._one("select status, decided_at from {s}.candidates where id = %s for update", (candidate_id,))
+        assert row is not None
+        status, decided_at = str(row[0]), row[1]
+        changes: list[dict[str, Any]] = []
+        flags: list[dict[str, Any]] = []
+        if decided_at is not None:
+            changes = [
+                {"evidence_url": url, "submission_id": str(sid)}
+                for sid, url in self._all(
+                    "select submission_id, payload->'material_change'->>'evidence_url' from {s}.observations "
+                    "where candidate_id = %s and observed_at > %s and submission_id is distinct from %s "
+                    "and jsonb_typeof(payload->'material_change') = 'object' order by id",
+                    (candidate_id, decided_at, self.submission_id),
+                )
+            ]
+            flags = [
+                r[0]
+                for r in self._all(
+                    "select detail from {s}.candidate_events where candidate_id = %s and action = %s and at > %s",
+                    (candidate_id, revisit.ACTION, decided_at),
+                )
+            ]
+        outcome = revisit.evaluate(entity, status=status, decided_at=decided_at, earlier_changes=changes,
+                                   earlier_flags=flags, submission_id=str(self.submission_id))  # fmt: skip
+        return outcome.flag, outcome.reason
+
+    def _flag_revisit(self, candidate_id: str, flag: Mapping[str, Any]) -> None:
+        """The flag, stamped with the moment it was decided (``clock_timestamp()``, not the transaction start: a
+        rejection that committed while this delivery waited for the intake lock is OLDER than the flag)."""
+        self.conn.execute(
+            self._q(
+                "insert into {s}.candidate_events (candidate_id, actor, action, detail, at) "
+                "values (%s, 'intake', %s, %s, clock_timestamp())"
+            ),
+            (candidate_id, revisit.ACTION, Jsonb(dict(flag))),
+        )
 
     def _event(self, candidate_id: str, action: str, detail: Mapping[str, Any]) -> None:
         self.conn.execute(

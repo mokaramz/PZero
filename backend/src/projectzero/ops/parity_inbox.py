@@ -32,7 +32,9 @@ from projectzero.ops.parity_ranking import OLD_REPO, diff, js
 ORACLE = REPO_ROOT / "scripts" / "oracle" / "inbox_oracle.py"
 TOP_LEVEL_NOT_CARRIED = frozenset({"manual_sources", "pages", "feeds"})
 EXCLUDED: dict[str, str] = {}  # field -> why it may differ (kept empty unless a difference is justified)
-NEW_ONLY = frozenset({"pz_status"})  # fields the new payload adds on purpose (review 009: the decision's stale check)
+# fields the new payload adds on purpose: the decision's stale check (review 009) and the revisit flag (review 018)
+NEW_ONLY = frozenset({"pz_status", "revisit"})
+TOP_LEVEL_NEW = frozenset({"revisit_count"})  # review 018
 
 
 def run_oracle(data_dir: Path) -> dict[str, Any]:
@@ -98,7 +100,9 @@ def compare(old: dict[str, Any], new: dict[str, Any], aliases: dict[str, tuple[s
                     fields.append(f"/{cid}/{key}: extra in new")
             else:
                 fields += [f"/{cid}/{key}{d}" for d in diff(o[key], n[key])]
-    top = [k for k in sorted(set(old) | set(new)) if k != "candidates" and k not in TOP_LEVEL_NOT_CARRIED]
+    top = [
+        k for k in sorted(set(old) | set(new)) if k != "candidates" and k not in TOP_LEVEL_NOT_CARRIED | TOP_LEVEL_NEW
+    ]
     top_diffs = [f"top/{k}{d}" for k in top for d in diff(js(old.get(k)), js(new.get(k)))]
     return {
         "old_records": len(old_cands),
