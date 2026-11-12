@@ -216,18 +216,23 @@ test.describe("Events — new app, preview database", () => {
     w.expectClean();
   });
 
-  test("only the source scan is deferred: it explains itself and sends nothing", async ({ page }) => {
+  test("Scan sources runs the scan, reports its counts and the per-source log (recorded responses, no network)", async ({ page }) => {
     const w = watch(page);
     const posted = recordPosts(page);
     await openEvents(page);
-    await page.getByRole("button", { name: /^More/ }).first().click();
-    const scan = page.locator("[data-deferred]").filter({ hasText: "Scan sources" }).first();
-    await expect(scan).toHaveAttribute("title", /event source scan port/);
-    await scan.click({ force: true });
-    for (const t of await page.locator("[data-deferred]").evaluateAll((els) => els.map((e) => e.getAttribute("title")))) {
-      expect(t).toMatch(/event source scan port/); // nothing else is deferred any more
-    }
-    expect(posted).toEqual([]);
+    expect(await page.locator("[data-deferred]").count()).toBe(0); // nothing on Events is deferred any more
+    const done = page.waitForResponse((r) => r.url().endsWith("/api/events/find"), { timeout: 240_000 });
+    await more(page, "Scan sources");
+    await expect(page.getByRole("button", { name: /^Scanning…/ }).first()).toBeVisible();
+    expect((await done).status()).toBe(200);
+    await expect(page.getByText(/\d+ leads added · \d+ past events dropped · \d+ duplicates skipped/)).toBeVisible();
+    expect(posted.filter((x) => x.path === "/api/events/find").map((x) => x.body)).toEqual([{}]);
+    await more(page, "Source health & scanner log");
+    const h = page.getByTestId("event-health");
+    await expect(h).toContainText("separate from startup-source health");
+    const health = await (await page.request.get("/api/events/health")).json();
+    expect(health.sources.length).toBeGreaterThan(0);
+    await expect(h).toContainText(health.sources[0].name);
     w.expectClean();
   });
 });

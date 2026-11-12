@@ -3,8 +3,10 @@
 ``load(conn, schema, today)`` reads everything the Events views need in the caller's (read-only) transaction:
 
 * **events / leads:** each row's current record (``record_of``: ``attrs.record`` once the app writes it, else the
-  imported ``legacy``), in the old ``events.json`` order: the archived file order, then rows created here by
-  ``created_at``, then ``id``. The old ``listing`` sort is stable, so ties keep this order;
+  imported ``legacy``), in the old ``events.json`` order. Events: the archived file order, then rows created here by
+  ``created_at``, then ``id`` (the old file appended). Leads: rows created here first, newest first (the old
+  ``add_leads`` inserted at the front), then the archived ones in file order. The old ``listing`` sort is stable, so
+  ties keep this order;
 * **pins:** for a start / end written as free text ("Sept 20"), the stored ``start_date`` / ``end_date``, a date or
   NULL (review 014 resolved the missing year once, at the import clock); ``engine`` uses that result instead of
   re-reading the words with today's year (review 015, Codex H-101 / H-103);
@@ -39,8 +41,13 @@ _ROWS = """
     )
     select t.id, t.attrs, t.legacy{dates}
     from {s}.{table} t left join arch a on a.id = t.id
-    order by a.pos nulls last, t.created_at, t.id
+    order by {order}
 """
+# events: the old file appended new events; leads: the old add_leads inserted new leads at the FRONT (newest first)
+_ORDER = {
+    "events": "a.pos nulls last, t.created_at, t.id",
+    "event_leads": "(a.pos is not null), case when a.pos is null then t.created_at end desc, a.pos, t.id",
+}
 
 
 def record_of(row: dict[str, Any]) -> dict[str, Any]:
@@ -98,6 +105,7 @@ def _rows(conn: psycopg.Connection[Any], schema: str, table: str, key: str, date
         table=sql.Identifier(table),
         key=sql.Literal(key),
         dates=sql.SQL(", t.start_date, t.end_date" if dates else ""),
+        order=sql.SQL(_ORDER[table]),
     )
     with conn.cursor(row_factory=dict_row) as cur:
         cur.execute(query)

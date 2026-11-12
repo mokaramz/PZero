@@ -1,32 +1,14 @@
 import { cleanup, fireEvent, screen, waitFor, within } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { NOT_PORTED } from "./model/deferred";
-import { TODAY } from "./test/fixtures";
-import { fakeServer, ok, renderEvents } from "./test/server";
+import { health, TODAY } from "./test/fixtures";
+import { fakeServer, ok, renderEvents, type Answer } from "./test/server";
 
 const search = (router: { state: { location: { search: string } } }) => new URLSearchParams(router.state.location.search);
 const cardIds = () => screen.queryAllByTestId("event-card").map((c) => c.getAttribute("data-event-id"));
 
 async function loaded() {
   await waitFor(() => expect(screen.getByTestId("event-counts")).toBeInTheDocument());
-}
-
-/** A disabled control must stay inert for a pointer AND a keyboard (a browser turns Enter / Space into a click). */
-function pressEveryWay(el: Element) {
-  fireEvent.click(el);
-  for (const key of ["Enter", " "]) {
-    fireEvent.keyDown(el, { key });
-    fireEvent.keyUp(el, { key });
-    fireEvent.click(el, { detail: 0 });
-  }
-}
-
-function expectDeferred(el: HTMLElement, reason: string) {
-  expect(el).toHaveAttribute("aria-disabled", "true");
-  expect(el).toHaveAttribute("title", reason);
-  expect(el).toHaveAccessibleDescription(reason);
-  pressEveryWay(el);
 }
 
 function openMenu() {
@@ -313,29 +295,75 @@ describe("Events — Scout 00 suggestions", () => {
   });
 });
 
-describe("Events — the source scan waits for review 017", () => {
-  it("the menu item, the health drawer and the empty state stay inert with the reason", async () => {
-    const srv = fakeServer();
+describe("Events — the source scan", () => {
+  const FOUND = {
+    added: 2,
+    accepted: 1,
+    dropped_past: 4,
+    dropped_dupe: 1,
+    health: { ...health(), scan_time: "2026-11-12 09:30" },
+    report: [
+      { source: "Example events API", status: "ok", kind: "api", note: "3 future events" },
+      { source: "Sample city feed", status: "failed", kind: "api", note: "HTTP 429" },
+    ],
+  };
+  /** The scan answer, held until the test releases it (the real scan runs for minutes). */
+  function held() {
+    let release: (a: Answer) => void = () => undefined;
+    const answer = new Promise<Answer>((r) => (release = r));
+    return { answer, release };
+  }
+
+  it("Scan sources (More menu) posts {}, says Scanning… while it runs, toasts the counts and fills the scanner log", async () => {
+    const scan = held();
+    const srv = fakeServer({ find: () => scan.answer });
     renderEvents();
     await loaded();
-    expectDeferred(within(openMenu()).getByRole("menuitem", { name: "Scan sources" }), NOT_PORTED.scan);
-    expect(screen.getByRole("menu")).toBeInTheDocument(); // an inert item leaves the menu open, as any non-action
-    fireEvent.keyDown(document, { key: "Escape" });
+    fireEvent.click(within(openMenu()).getByRole("menuitem", { name: "Scan sources" }));
+    expect(await screen.findByRole("button", { name: "Scanning…" })).toBeInTheDocument();
     expect(screen.queryByRole("menu")).toBeNull();
-
+    await waitFor(() => expect(srv.posts("find")).toEqual([{}]));
+    scan.release(ok(FOUND));
+    expect(await screen.findByText("2 leads added · 4 past events dropped · 1 duplicates skipped")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "More ▾" })).toBeInTheDocument();
+    // the scan's own health wins over the stored one
+    await waitFor(() => expect(screen.getByTestId("event-counts")).toHaveTextContent("last scan 12 Nov"));
     fireEvent.click(within(openMenu()).getByRole("menuitem", { name: "Source health & scanner log" }));
     const h = await screen.findByRole("dialog", { name: "Source health & scanner log" });
-    expectDeferred(within(h).getByRole("button", { name: "Scan sources" }), NOT_PORTED.scan);
-    fireEvent.click(within(h).getByRole("button", { name: "Close" }));
+    expect(within(h).getAllByRole("listitem").map((li) => li.textContent)).toEqual(["Example events API 3 future events", "Sample city feed HTTP 429"]);
+    expect(srv.writes().map((c) => c.path)).toEqual(["/api/events/find"]);
+  });
 
+  it("the source-health button runs the same scan and shows its busy label", async () => {
+    const scan = held();
+    const srv = fakeServer({ find: () => scan.answer });
+    renderEvents();
+    await loaded();
+    fireEvent.click(within(openMenu()).getByRole("menuitem", { name: "Source health & scanner log" }));
+    const h = await screen.findByRole("dialog", { name: "Source health & scanner log" });
+    expect(within(h).queryByRole("list")).toBeNull();
+    fireEvent.click(within(h).getByRole("button", { name: "Scan sources" }));
+    const busy = await within(h).findByRole("button", { name: "Scanning…" });
+    expect(busy).toBeDisabled();
+    scan.release(ok(FOUND));
+    await waitFor(() => expect(within(h).getAllByRole("listitem")).toHaveLength(2));
+    expect(within(h).getByRole("button", { name: "Scan sources" })).toBeEnabled();
+    expect(srv.posts("find")).toEqual([{}]);
+  });
+
+  it("a scan already running (409) shows its message; the empty state offers the scan too", async () => {
+    const srv = fakeServer({ find: () => ({ status: 409, body: { ok: false, error: "an event source scan is already running — wait for it to finish" } }) });
+    renderEvents();
+    await loaded();
     fireEvent.click(screen.getByRole("tab", { name: /Planned/ }));
     fireEvent.change(screen.getByLabelText("Date"), { target: { value: "7" } });
     const empty = await screen.findByTestId("events-empty");
-    expectDeferred(within(empty).getByRole("button", { name: "Scan sources" }), NOT_PORTED.scan);
+    fireEvent.click(within(empty).getByRole("button", { name: "Scan sources" }));
+    expect(await screen.findByText("✕ Searching for events failed — an event source scan is already running — wait for it to finish")).toBeInTheDocument();
+    expect(srv.posts("find")).toEqual([{}]);
+    expect(screen.getByRole("button", { name: "More ▾" })).toBeInTheDocument();
     fireEvent.click(within(empty).getByRole("button", { name: "+ Add an event you know" }));
     expect(await screen.findByRole("form", { name: "Event form" })).toBeInTheDocument();
-
-    expect(srv.writes()).toEqual([]);
   });
 });
 

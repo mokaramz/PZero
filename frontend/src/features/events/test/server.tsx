@@ -1,5 +1,6 @@
-/** A fake backend for the Events page tests: answers the reads (and the people slice) and the five writes, records
- *  every call. A write answers `{ok:true}` (save: `{ok:true, id}`) unless the test gives its own answer. */
+/** A fake backend for the Events page tests: answers the reads (and the people slice), the five writes and the source
+ *  scan, records every call. A write answers `{ok:true}` (save: `{ok:true, id}`) unless the test gives its own answer;
+ *  the scan has no default (a test that scans gives its answer, which may be a promise to hold the scan open). */
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render } from "@testing-library/react";
 import { createMemoryRouter, RouterProvider } from "react-router-dom";
@@ -20,6 +21,7 @@ export type Routes = {
   lead?: (body: Body) => Answer | undefined;
   debrief?: (body: Body) => Answer | undefined;
   scout?: (body: Body) => Answer | undefined;
+  find?: (body: Body) => Answer | Promise<Answer>;
 };
 
 export const ok = (body: unknown = { ok: true }): Answer => ({ status: 200, body });
@@ -34,6 +36,10 @@ export function fakeServer(routes: Routes = {}, payload: EventsPayload = eventsP
     calls.push({ method, path: url.pathname + url.search, body });
     if (method === "POST") {
       const name = url.pathname.replace("/api/events/", "") as keyof Routes;
+      if (name === "find") {
+        const a = await (routes.find?.(body ?? {}) ?? { status: 500, body: { ok: false, error: "no scan answer in this test" } });
+        return json(a.status, a.body);
+      }
       if (!["save", "verify", "lead", "debrief", "scout"].includes(name)) return json(404, { ok: false, error: "not found" });
       const a = routes[name]?.(body ?? {}) ?? (name === "save" ? ok({ ok: true, id: String(body?.id ?? "new-event-id") }) : ok());
       return json(a.status, a.body);

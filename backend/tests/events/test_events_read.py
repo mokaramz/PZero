@@ -272,5 +272,5 @@ def test_reads_are_gets_and_writes_are_posts() -> None:
         for m in getattr(r, "methods", set()):
             by_method.setdefault(m, set()).add(getattr(r, "path", ""))
     reads = {"/api/events", "/api/events/health", "/api/events/suggest", "/api/events/wsig", "/api/events/weekend"}
-    writes = {f"/api/events/{w}" for w in ("save", "verify", "lead", "debrief", "scout")}
+    writes = {f"/api/events/{w}" for w in ("save", "verify", "lead", "debrief", "scout", "find")}
     assert by_method == {"GET": reads, "POST": writes}
