@@ -42,6 +42,7 @@ const VIEWS = [
   { key: "radar", path: "/radar", ready: (p: Page) => p.getByTestId("radar-empty").first(), detail: "" }, // the slots load after the method
   { key: "founder-radar", path: "/founder-radar", ready: (p: Page) => p.getByTestId("fr-counts"), detail: "" },
   { key: "founder-radar-research", path: "/founder-radar?view=research", ready: (p: Page) => p.getByTestId("fr-research"), detail: "" },
+  { key: "validation", path: "/validation", ready: (p: Page) => p.getByTestId("val-questions"), detail: "" },
   { key: "events", path: "/events", ready: (p: Page) => p.getByRole("button", { name: "source health" }), detail: "event-calendar" }, // health loads after the list
 ] as const;
 

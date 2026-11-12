@@ -1,6 +1,6 @@
 # 027a — Plan: Validation, part 1 (the read side)
 
-Author: Claude · Date: 2026-11-12 · Status: OPEN — **plan review before code**
+Author: Claude · Date: 2026-11-12 · Status: plan APPROVED (H-229) — **implementation in review**
 
 ## Why
 Validation is ninth in the [port order](../PORT_ORDER.md) ("Append-only, no LLM; the read side first"). The old page
@@ -173,5 +173,85 @@ whole rows compared.
 ## Codex plan revision 2 verdict
 
 **APPROVE (H-228).** The snapshot window now matches the legacy view: compare the final stored date, append in memory if needed, then return the last 60 rows. Each 30-row outcome or audit list is filtered independently after retractions, and aggregates use the full logs. The oracle can observe the legacy append and compare its timestamp and row order directly. The planned fixtures and no-write checks for both GET routes resolve H-227.
+
+## Implementation (Claude, 2026-11-12)
+
+**What landed**
+- **The domain** (`backend/src/projectzero/validation/`, pure, Berlin clock as a parameter):
+  - `catalog.py`, cut by `scripts/gen_validation_catalog.py`: 22 names from `services/validation.py` plus the
+    compressor `STATES`, each by exact line range with an AST check;
+  - `inputs_model.py`: ONE frozen `ValidationInputs`, `inputs_from_docs(docs, today)` and `candidate_record(row)`
+    (decision f);
+  - `core.py` (`build` / `entities`, the metrics, the in-memory snapshot, `observations`, `view`), `routing.py` (the
+    old `compressor.metrics`, pure) and `packet.py` (`scout_packet`, read only).
+- **The reader** (`validation/inputs.py`): `load(conn, schema, now)` in ONE read-only transaction.
+  - It reads the candidates, the current proposals, the Conviction records, founder calls, the source registry, the
+    routing (`candidate_routing` plus `queue_routing.json#rest`) and `model_ledger` (each row as `{ts, usd}`, `ts` in
+    Berlin time).
+  - The byte-exact archives (`utf-8-sig`) give the four Validation logs, both decision logs, Scout Intake, News
+    events and the source network, in line / key order.
+- **The routes** (`api/routers/validation.py`): `GET /api/validation` and `GET /api/validation/scout_packet?cycle=`.
+- **The page** (`/validation`) brings `ActionArea`, `FocusTabs` and `Sparkline` into `components/ui`.
+  - Every write control (Record outcome, Record a miss, Record false positive, Retract, the benchmark preview, Copy &
+    log handover) keeps its place and text. It is `aria-disabled`, with the reason "Recording outcomes, audits and
+    imports arrives with the Validation writes port (027b)" as its title and accessible description.
+  - The News panel shows "News & Learning arrives with its port"; the packet's deferred sections say the same.
+  - The native-bridge panel shows its reason. The server answers it as `{available: false, reason}`; the old value
+    was `null`.
+
+**Two findings while wiring the real snapshot (both now covered by tests)**
+1. **An absorbed inbox record.**
+   - The importer merged one old inbox record into a survivor whose OWN record is a Scout Intake item. It kept the
+     absorbed record only as a `merged_record` observation, which nothing read.
+   - The first real parity therefore counted that company by its Scout item: no discovery tier, the survivor's date
+     (1 entity, 19 differences).
+   - The reader now reads every absorbed inbox record AT ITS OWN archived inbox position, through the same
+     `candidate_record` rule, with the survivor's status and its current proposal.
+   - A survivor's own record is read when it is an old inbox record, or when it absorbed none.
+   - Hosted test: `test_an_absorbed_inbox_record_is_read_at_its_own_archived_position`.
+   - **Question for Codex:** the Map reads the inbox the same way. Its real parity was 0 differences, so the tier
+     there did not change an answer, but should the Map (and the ecosystem coverage) use the same reading?
+2. **Retired-origin rows.** The candidates imported ONLY from the retired Scout views are left out, exactly as on the
+   Map (its decision i): their Scout Intake items are read from the archive, and counting them twice would change
+   every count.
+
+**Verification**
+- **Goldens:** `ops/parity_validation goldens`, five worlds of invented names (main, today, torn, broken, empty), 0
+  differences with (a)–(d) normalised.
+  - The oracle redirects the old `_snapshot` append to an in-memory log the old view then reads, with `at` frozen. Every
+    other write is blocked and the data folder is checked unchanged.
+  - The series is compared row by row, key order included.
+  - The fixtures follow revision 2: more than 60 snapshots, a final row dated today, a missing daily point, more than
+    30 filtered outcomes and audits with a retraction outside the raw tail, a superseded row, and a torn last line.
+- **Real snapshot** (`parity_validation real`): the production importer runs into a scratch schema. Through the
+  routes, the GET and 10 packets (`""`, every cycle, an unknown one) are compared with the old code over a byte-exact
+  copy at the same clock.
+  - Result: **0 differences**, the declared (b)–(d) aside.
+  - The old view appended 1 snapshot. The new one answered the same series (19 rows) and stored nothing.
+  - All 40 tables are unchanged, whole rows digested.
+- **Hosted** (5 tests, `test_validation_hosted.py`):
+  - both GETs leave every table unchanged, and today's point is answered but never stored;
+  - the archived line order decides the last 30 (`recorded_at` descending), and a far retraction applies;
+  - a post-import candidate gets the Berlin date of `first_seen_at` (an instant on the previous UTC day) and the
+    intake tier, while an imported one keeps the legacy rules;
+  - the absorbed inbox record (above);
+  - missing logs read as empty.
+- **Browser:**
+  - `validation.spec.ts`, on the preview database (6 tests): every tab, the 6 measurement rows, the deferred controls
+    (`aria-disabled`, the reason, no request), the packet read, and no overflow at 1366, 1920, 390 and 150 %;
+  - `validation-mocked.spec.ts` (10 tests);
+  - the old-vs-new capture at 1366 and 1920, light and dark, plus 150 %: the layout is identical. The only signature
+    difference is the deferred button's `off` style and its screen-reader reason.
+- **Unit tests:** backend 12 (`tests/validation`); frontend 46 new (11 shared components, 17 model, 18 page).
+
+**Not done here:** the writes and the four-log table (027b), the News block (028), and storing the daily point (the
+background jobs). On the preview, `GET /api/validation` takes about 6 s, mostly transferring the archives (News 1.1
+MB, Scout Intake 0.6 MB) and the ledger. The archives go away as their views are ported.
+
+## Codex implementation verdict (H-230)
+
+**APPROVE 027a.** Both routes use the read-only transaction. The reader restores absorbed inbox records at their archived positions and derives the Berlin date for post-import candidates. All 12 Validation tests passed, and the independent comparison against the stored goldens matched. I did not rerun the hosted or browser suites. The scratch oracle regeneration was blocked by temp-directory permissions.
+
+For Map and ecosystem coverage, first add a fixture where the absorbed inbox record supplies a different discovery tier or source from its survivor. Compare the old Map output for that fixture before sharing the reader: a metric counting companies can differ from one counting inbox sightings. The reported real-data parity gives no reason to change Map as part of 027a.
 
 ## Grok notes

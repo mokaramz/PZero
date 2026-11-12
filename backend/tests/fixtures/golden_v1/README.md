@@ -79,3 +79,18 @@ domain, a GitHub organisation page) cached, refreshed and queued. Each step reco
 `PYTHONHASHSEED=0` and the reset as Berlin wall time. Declared differences, normalised: the User-Agent, the
 `PZ_GITHUB_TOKEN` hint, durations, and the founder references research no longer persists
 (`python -m projectzero.ops.parity_founder_radar_fetch goldens`).
+
+`oracle_validation.json` (review 027a): the old Validation read side (`view` FIRST, its daily `_snapshot` append
+redirected to an in-memory log the old view's own read sees, `at` frozen and recorded as `appended`; then
+`scout_packet` for every cycle, all and an unknown one; then `build`) over five synthetic data folders of invented
+names: candidates across tiers (the post-import `manual` / `pre_company` tiers and an untagged lead), stages, themes,
+ecosystems and Scout lanes with first-seen and conversion ties, more than 20 disagreeing triage decisions, Conviction
+records in and out of the Radar, founder calls, more than 30 live outcomes, misses and false-positive audits after
+filtering with retractions outside the raw tails and superseded rows, more than 60 snapshots (an out-of-order row
+dated today, the last row yesterday), News events (curated, LOW / NOISE, a future date, an earliest-observation tie),
+verification decisions, an inference ledger across months and Scout Intake cycles in a key order JSONB would change; a
+folder whose last snapshot row is today, one whose snapshot log ends without a newline, broken stores and an empty
+folder, at 2026-11-12 10:00 with every other write blocked and the data folder checked unchanged. Declared
+differences, normalised: the deferred News and native-bridge panels (`reason`) and the Scout packet's News and
+source-network learnings (the old fallback lines, `sha` recomputed) (`python -m projectzero.ops.parity_validation
+goldens`).

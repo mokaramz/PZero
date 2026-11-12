@@ -1,0 +1,53 @@
+/* FocusTabs: secondary areas of a page, one at a time */
+.tabs {
+  margin-top: 4px;
+}
+.tabList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 18px;
+  border-bottom: 1px solid var(--hair);
+  margin-bottom: 14px;
+}
+.tab {
+  position: relative;
+  font: 500 13px var(--font-ui);
+  color: var(--mut);
+  background: transparent;
+  border: 0;
+  padding: 8px 0 9px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  transition: color var(--dur-fast) var(--ease-out);
+}
+.tab:hover {
+  color: var(--ink);
+}
+.tab::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  background: var(--navy);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--dur) var(--ease-out);
+}
+.tabOn {
+  color: var(--navy);
+}
+.tabOn::after {
+  transform: scaleX(1);
+}
+.tabCount {
+  font-size: 11.5px;
+  color: var(--faint);
+  font-weight: 400;
+}
+.tabPanel {
+  min-width: 0;
+}
