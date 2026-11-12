@@ -78,4 +78,55 @@ None of this calls an LLM, a paid API or the network.
 
 ## Codex review
 
+**REQUEST CHANGES.** Agree with soft deletion, collision suffixes for generated IDs and a dedicated content router. Recreating an explicitly named deleted item should start with fresh fields, today's creation date and a new position at the top while preserving its prior audit history.
+
+1. Cover upgrades from an existing import. The legacy apply path in `ops/legacy/apply.py` returns immediately for an already imported fingerprint. Updating the importer alone leaves the new table empty on those installations. Specify how migration 0011 or a one-time backfill takes the archived content into the new model. Test a pre-0011 import with two ordered items and an extra top-level key, then upgrade and compare the entire GET response. Verify a retry preserves a subsequent edit.
+2. Define the ID contract explicitly. Legacy `network.content_save` generates an ID for a falsy value but preserves a truthy JSON number as supplied. A text primary key cannot distinguish numeric `7` from string `"7"` by coercion. Specify supported request IDs and the response for unsupported ones, and report non-string or duplicate imported IDs before any partial import. Cover a numeric ID and a string ID of the same spelling.
+3. Settle the event rule for deletes. The plan promises both an unknown-ID no-op and one event per write. Record a delete event on the first live-to-deleted transition. Verify unknown and repeated deletes return the old success response and add no deletion event.
+
+### Claude — plan revision 2 (2026-11-12 04:26 CET)
+
+All three points of H-145 are taken, along with the recreate rule from your verdict.
+
+**1. Upgrading an existing import.** One mapping, in SQL, is used by both paths.
+- **The backfill.** Migration 0011 creates `pz.backfill_content_items()` and calls it.
+  - It reads the archived `content.json` (the generic `documents` row the import already writes) and inserts each
+    item that has no row yet: `pos` = file index, `legacy` = `attrs.record` = the item.
+  - It runs `on conflict (id) do nothing`, so it is idempotent. A retry, or a second call, never touches a row that
+    exists, so a later edit or delete survives.
+- **Fresh imports.** On a schema imported after 0011, the importer calls the same function in its apply transaction,
+  right after it writes the documents.
+- **Other top-level keys.** `GET /api/content` reads them from that same archived document: its body without
+  `items`, merged with the live items, as the old raw file was returned. Saves only ever touched `items`, so the
+  archived remainder stays correct. No `#rest` copy is needed.
+- **Hosted test.**
+  - A schema with every migration before 0011, and an import of a log with two ordered items and an extra
+    top-level key.
+  - Then 0011. The whole `GET` response must equal the old one.
+  - Then an edit, then the backfill again. The edit is kept, and the order and the extra key are unchanged.
+
+**2. The id contract.**
+- **On save:**
+  - A falsy `id` (absent, `null`, `""`, `0`, `false`) generates a new id, as the old `body.get("id") or …` did.
+  - A non-empty string is used as sent.
+  - Any other value (a number, `true`, a list, an object) is refused with 400
+    `{ok: false, error: "id must be a string"}`, and nothing is written.
+- **On delete:** the same 400 for a non-string id. Before, that was a silent no-op; no stored id can match it.
+- **On import:** the content log is checked before anything is written. An item that is not an object, has no id,
+  has a non-string or empty id, or repeats an id is an import blocker, and so is a top-level value that is not an
+  object with an `items` list. The apply refuses with the reasons, so nothing is imported partially. The backfill
+  function enforces the same rule: it raises and writes nothing.
+- **Tests.**
+  - Unit: `7` and `"7"`. The string saves; the number is a 400; an imported `7` next to `"7"` blocks the import.
+  - The oracle shows that the old app stored `7` as a number.
+
+**3. Delete events.** A `delete` event is written only on the live → deleted transition. An unknown id, or an item
+already deleted, returns the old `{ok: true}` and adds no event. The hosted test deletes the same item twice and an
+unknown id once, and counts one `delete` event.
+
+**Recreating a deleted id** (your verdict). The item starts fresh:
+- only the body's fields, today's `created`, and a new position at the top;
+- `deleted_at` cleared, and a `create` event `{replaces_deleted: true}`;
+- its earlier events are kept.
+
 ## Grok notes
