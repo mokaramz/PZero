@@ -4,6 +4,8 @@
 
     python -m projectzero.ops.parity_news goldens   # (re)generates golden_v1/oracle_news.json
     python -m projectzero.ops.parity_news check     # the stored golden against the new code (no oracle)
+    python -m projectzero.ops.parity_news writes-goldens  # (re)generates golden_v1/oracle_news_writes.json (028b)
+    python -m projectzero.ops.parity_news writes-check    # the stored writes golden against the new code
 
 The oracle (``scripts/oracle/news_oracle.py``) runs the old ``services/news.py`` / ``services/news_sources.py`` over
 a scratch data folder, route by route, each from the FRESH fixture: ``view`` (``GET /api/news``), ``weekly``
@@ -52,14 +54,33 @@ constant; the cited publications are the old recognition list's):
 * ``torn``: the events document is a list (every route raises where the old one did).
 * ``empty``: no documents and an empty case folder.
 
+The writes (review 028b, ``writes-goldens`` / ``writes-check``, ``golden_v1/oracle_news_writes.json``): the oracle
+(``scripts/oracle/news_writes_oracle.py``) runs the old ``decide_outcome`` / ``audit_miss`` / ``add_backcast_signal``
+over the ``main`` world plus eight write events (``writes_docs``), sequence by sequence, each from the FRESH folder:
+confirm; confirm then confirm / reject / not_enough (the prior confirmation, nothing appended); reject then confirm;
+not_enough twice; an archived confirm; every outcome refusal in the old order (and the old 500 of an event without a
+source), the source URL choice; miss audits with the defaults and explicit fields, a bad ``why_missed`` (refused after
+the frozen context), no company, an unknown event; backcasts with year / month / day dates, a time cut to its day, a
+trailing newline the old ``$`` accepted, kind / family fallbacks, a stripped URL, an event without ``backcast``, on a
+curated and a non-curated event; every backcast refusal in the old order (and the old 500s of an unhashable family and
+a ``null`` backcast); writes on the not-yet-seeded curated case (a backcast, a confirm, an audit and a refusal).
+Before every write the oracle runs the old view's seeding (the store's ``ensure_seeded``). Clock frozen, the old
+``_id`` timestamp answering the step's seam (the new ``new_hex``), every save and append in memory (the folder is
+checked unchanged). Compared per step: the seeding (vs ``news.writes.ensure_seeded``), the answer (value and text),
+the appended action and Validation bytes, the saved event record (key order) and the next old ``news.view()`` /
+``validation.view()`` against the pure views over the updated inputs (``news.writes.applied``), kept in the golden as
+sha-256 digests per section. No declared difference (the Validation view through 027b's normalisation (d)).
+
 Exit 1 on any difference.
 """
 
 from __future__ import annotations
 
 import copy
+import hashlib
 import json
 import os
+import re
 import subprocess
 import sys
 import tempfile
@@ -69,7 +90,16 @@ from typing import Any
 
 from projectzero.core.paths import REPO_ROOT
 from projectzero.dealflow.ranking.names import norm_company
-from projectzero.news import inputs_from_docs, refresh_status, seed_cases, sources_view, view, weekly_review
+from projectzero.news import (
+    inputs_from_docs,
+    refresh_status,
+    seed_cases,
+    sources_view,
+    view,
+    weekly_review,
+    with_entities,
+)
+from projectzero.news import writes as news_writes
 from projectzero.news.core import load
 from projectzero.news.inputs_model import CASES_KEY
 from projectzero.news.sources import HEALTH_REASON
@@ -630,6 +660,266 @@ def report(golden: dict[str, Any], label: str) -> int:
     return 1 if problems else 0
 
 
+# ------------------------------------------------------------------ review 028b: the writes
+WRITES_ORACLE = REPO_ROOT / "scripts" / "oracle" / "news_writes_oracle.py"
+WRITES_GOLDEN = GOLDEN_DIR / "oracle_news_writes.json"
+SEAM_SIZE = 2  # id-seam values per step (a write makes at most one id)
+LONG_HEADLINE = (
+    "Invented Société Générale de Robotique — “Café Œuvre” lève 12 millions d'euros pour ses bras robotisés " * 3
+)
+
+
+# fmt: off
+def writes_docs() -> dict[str, Any]:
+    """The 028a ``main`` world plus the events the writes need (appended at the end of the archive order): an
+    outcome kind without a company, a future date, a syndicated first source, only syndicated sources, no source, a
+    non-ASCII id with a long non-ASCII headline, no ``backcast`` key, a ``null`` backcast."""
+    docs = main_docs()
+    events = docs["news/events.json"]["events"]
+    extra = [
+        ev("nw-w-nocomp", "", "An invented carmaker acquires an unnamed robotics team", "acquisition", day(5), "HIGH"),
+        ev("nw-w-future", "Invented Future Robotics", "Invented Future Robotics raises €9M", "funding", day(-3), "MEDIUM", amount=9.0),
+        ev("nw-w-synd", "Invented Syndic Robotics", "Invented Syndic Robotics raises €5M", "funding", day(6), "MEDIUM", amount=5.0,
+           sources=[src("EU-Startups", "synd-e", day(6), "Invented Syndic Robotics raises €5M", ind="syndicated"),
+                    src("Sifted", "synd-s", day(6), "Invented Syndic Robotics raises €5M")]),
+        ev("nw-w-allsynd", "Invented Echo Logistics", "Invented Echo Logistics wins an invented retailer", "customer", day(8), "MEDIUM",
+           sources=[src("EU-Startups", "allsynd-e", day(8), "Invented Echo Logistics wins", ind="syndicated"),
+                    src("Tech.eu", "allsynd-t", day(8), "Invented Echo Logistics wins", ind="syndicated")]),
+        ev("nw-w-nosrc", "Invented Sourceless Labs", "Invented Sourceless Labs raises €3M", "funding", day(9), "MEDIUM", amount=3.0, sources=[]),
+        ev("nw-w-café", "Invented Société Générale de Robotique", LONG_HEADLINE, "funding", day(10), "HIGH", geo=["FR"], amount=12.0,
+           sources=[src("Maddyness", "cafe", day(10), "Invented Société Générale de Robotique lève 12 M€")]),
+        ev("nw-w-nobc", "Invented Bare Robotics", "Invented Bare Robotics raises €2M", "funding", day(11), "MEDIUM", amount=2.0),
+        ev("nw-w-nullbc", "Invented Null Robotics", "Invented Null Robotics raises €2M", "funding", day(12), "MEDIUM", amount=2.0),
+    ]
+    del extra[6]["backcast"]
+    extra[7]["backcast"] = None
+    for e in extra:
+        events[e["event_id"]] = e
+    return docs
+
+
+def _o(eid: Any, decision: Any) -> dict[str, Any]:
+    return {"op": "outcome", "body": {"event_id": eid, "decision": decision}}
+
+
+def _a(eid: Any, **kw: Any) -> dict[str, Any]:
+    return {"op": "audit", "body": {"event_id": eid, **kw}}
+
+
+def _b(eid: Any, when: Any, url: Any = "https://evidence.invented.example/signal", **kw: Any) -> dict[str, Any]:
+    return {"op": "backcast", "body": {"event_id": eid, "date": when, "url": url, **kw}}
+
+
+EXPLICIT = {"why_missed": "source_not_covered", "preventable": "yes", "earliest_signal": "Invented lab spinout page",
+            "earliest_signal_date": "2026-08-01", "signal_source": "https://lab.invented.example/spinouts",
+            "should_have_found": "s-lab", "improvement": "watch the invented lab page weekly"}
+
+WRITE_SEQUENCES: dict[str, list[dict[str, Any]]] = {
+    "confirm": [_o("nw-early", "confirm")],
+    "confirm-confirm": [_o("nw-early", "confirm"), _o("nw-early", "confirm")],
+    "confirm-reject": [_o("nw-early", "confirm"), _o("nw-early", "reject")],
+    "confirm-not_enough": [_o("nw-early", "confirm"), _o("nw-early", "not_enough")],
+    "reject-confirm": [_o("nw-tie-z", "reject"), _o("nw-tie-z", "confirm")],
+    "not_enough-twice": [_o("nw-pre", "not_enough"), _o("nw-pre", "not_enough")],
+    "archived-confirm": [_o("nw-acq", "reject"), _o("nw-acq", "confirm"), _o("nw-acq", "maybe")],
+    "outcome-refusals": [
+        _o("nw-nope", "maybe"), {"op": "outcome", "body": {"event_id": "nw-early"}}, _o("nw-early", ["confirm"]),
+        _o("nw-nope", "confirm"), {"op": "outcome", "body": {"decision": "confirm"}}, _o(5, "reject"),
+        _o("nw-launch", "confirm"), _o("nw-w-nocomp", "confirm"), _o("nw-w-future", "confirm"), _o("nw-w-nosrc", "confirm"),
+        _o("nw-launch", "reject"), _o("nw-w-nosrc", "not_enough"), _o("nw-w-synd", "confirm"), _o("nw-w-allsynd", "confirm"),
+        _o("nw-w-café", "confirm"), _o("nw-late", "confirm"), _o("nw-val", "confirm"), _o("nw-shut", "not_enough"),
+    ],
+    "audit-defaults": [_a("nw-miss"), _a("nw-miss"), _a("nw-unk"), _a("nw-case-a"), _a("nw-w-nobc", why_missed="", preventable="")],
+    "audit-explicit": [
+        _a("nw-miss", **EXPLICIT), _a("nw-miss", why_missed="forgot"), _a("nw-unk", why_missed="machine_reject", preventable="maybe"),
+        _a("nw-w-café", why_missed="entity_extraction", earliest_signal="Une thèse « invented » — 2025"),
+        _a("nw-unk2"), _a("nw-nope"), _a(""), _a("nw-w-nosrc"), _a("nw-w-nullbc", why_missed="other"),
+    ],
+    "backcast": [
+        _b("nw-unk", "2025"), _b("nw-unk", "2025-06", kind="in_retrospect", family="grant", text="Invented grant listing"),
+        _b("nw-case-a", "2025-06-15", family="accelerator", text="Invented demo day"),
+        _b("nw-miss", "2026-10-01T10:00:00", kind="nonsense", family="nonsense", text="t" * 400),
+        _b("nw-w-café", "2026-09-30", url="  https://presse.invented.example/société  ", text="Annonce « invented » — été 2026"),
+        _b("nw-w-nobc", "2026-09", text=5), _b("nw-pre", "2026\n", family="customer"),
+        _b("nw-unk", "2026-10-02", url="http://plain.invented.example/x", kind="known_early_signal", family="university_lab"),
+    ],
+    "backcast-refusals": [
+        _b("nw-unk", "June 2025"), _b("nw-unk", None), _b("nw-unk", "2025-6"), _b("nw-unk", "2025", url=None),
+        _b("nw-unk", "2025", url="ftp://files.invented.example/x"), _b("nw-unk", "2025", url="HTTPS://upper.invented.example/x"),
+        _b("nw-nope", "2025"), _b("nw-nope", "bad", url=""), _b("nw-nope", "2025", url="nope"), _b("", "2025"),
+        _b("nw-unk", "2025", family=["grant"]), _b("nw-w-nullbc", "2025"),
+    ],
+    "seed-then-backcast": [_b("nw-case-b", "2020-11", family="research_paper", text="Invented earlier preprint"),
+                           _o("nw-case-b", "reject")],
+    "seed-then-confirm": [_o("nw-case-b", "confirm"), _a("nw-case-b")],
+    "seed-then-refusal": [_b("nw-case-b", "2020-11", url="")],
+}
+# fmt: on
+
+
+def write_sequences() -> list[dict[str, Any]]:
+    """The sequences with the id seam of every step: the old ``str(datetime.now().timestamp())``, the new
+    ``new_hex()``."""
+    return [
+        {
+            "name": name,
+            "steps": [
+                {**st, "seam": [f"{s:02x}{i:02x}{k:08x}" for k in range(SEAM_SIZE)]} for i, st in enumerate(steps)
+            ],
+        }
+        for s, (name, steps) in enumerate(WRITE_SEQUENCES.items())
+    ]
+
+
+def _sha(v: Any) -> str:
+    return hashlib.sha256(_text(js(v)).encode("utf-8")).hexdigest()
+
+
+def digest(answer: dict[str, Any]) -> dict[str, Any]:
+    """A view answer as the golden keeps it: its whole serialized text's sha and each top-level section's (in order,
+    so a difference names the section); a refusal as it is."""
+    body = answer.get("body")
+    if not isinstance(body, dict):
+        return answer
+    return {"code": answer.get("code"), "sha": _sha(body), "sections": [[k, _sha(v)] for k, v in body.items()]}
+
+
+def _rest(doc: Any) -> dict[str, Any]:
+    return {k: v for k, v in load(doc).items() if k != "events"}
+
+
+def new_write_steps(
+    docs: dict[str, Any], clock: str, steps: list[dict[str, Any]]
+) -> tuple[list[dict[str, Any]], list[str]]:
+    """The pure side of one sequence: per step ``news.writes.ensure_seeded`` (installed in both inputs), the pure write
+    with ``new_hex`` = the step's seam, its lines and record applied (``news.writes.applied``), then the 028a News view
+    and the 027a Validation view over the updated inputs (the latter through 027b's normalisation (d))."""
+    from projectzero.ops.parity_validation import old_view
+    from projectzero.validation import entities as validation_entities
+    from projectzero.validation import inputs_from_docs as validation_inputs
+    from projectzero.validation import view as validation_view
+
+    now = datetime.fromisoformat(clock)
+    today = now.date()
+    v = validation_inputs(docs, today)
+    n = v.news_inputs
+    fns = {
+        "outcome": news_writes.decide_outcome,
+        "audit": news_writes.audit_miss,
+        "backcast": news_writes.add_backcast_signal,
+    }
+    problems: list[str] = []
+    out: list[dict[str, Any]] = []
+    for i, step in enumerate(steps):
+        events_before = copy.deepcopy(n.events)
+        doc, changes = news_writes.ensure_seeded(n.events, n.cases, now)
+        if n.events != events_before:
+            problems.append(f"[{i}]: ensure_seeded changed its input")
+        seed = {"changes": [[c.event_id, c.after] for c in changes], "rest": _rest(doc)} if changes else None
+        n, v = news_writes.with_events(n, v, doc)
+        hexes = list(step["seam"])
+        before = (copy.deepcopy(n), copy.deepcopy(v))
+        w: news_writes.NewsWritten | None = None
+        try:
+            w = fns[step["op"]](n, dict(step["body"]), today=today, now=now, new_hex=lambda: hexes.pop(0), validation=v)  # noqa: B023 - called now
+            answer: dict[str, Any] = {"code": 200, "body": js(w.answer)}
+        except ValueError as exc:  # NewsError / ValidationError: the route's 400
+            answer = {"code": 400, "error": str(exc)}
+        except Exception as exc:  # the route would answer 500
+            answer = {"raises": type(exc).__name__}
+        if (n, v) != before:
+            problems.append(f"[{i}]: the write changed its inputs")
+        appended: list[list[str]] = []
+        saved = None
+        if w is not None:
+            appended = [[log, line.replace("\n", " ") + "\n"] for log, line in w.validation_appends]
+            if w.action_line is not None:
+                appended.append(["actions", w.action_line.replace("\n", " ") + "\n"])
+            if w.event is not None:
+                saved = {"changes": [list(w.event)], "rest": _rest(n.events)}
+            n, v = news_writes.applied(n, v, w)
+        if n != v.news_inputs:
+            problems.append(f"[{i}]: the News and Validation inputs disagree after the write")
+        ents = validation_entities(v, today)
+        nv = _answer(lambda ents=ents, v=v: view(with_entities(v.news_inputs, ents, v), today, now))
+        vv = _answer(lambda v=v: validation_view(v, today, now))
+        if "body" in vv:
+            vv["body"] = old_view(vv["body"], problems, f"[{i}]/validation_view")
+        out.append({"seed": js(seed), "answer": answer, "appended": appended, "saved": js(saved),
+                    "news_view": nv, "validation_view": vv})  # fmt: skip
+    return out, problems
+
+
+def compare_writes(golden: dict[str, Any]) -> list[str]:
+    """Per step: the seeding (vs ``ensure_seeded``), the answer, the appended bytes, the saved event record (key
+    order) and the digests of the next News and Validation views. No declared difference."""
+    problems: list[str] = []
+    if golden["expected"]["changed"]:
+        problems.append(f"/changed: the OLD writes changed {golden['expected']['changed']}")
+    for seq in golden["sequences"]:
+        name = seq["name"]
+        got, invariants = new_write_steps(golden["docs"], golden["clock"], seq["steps"])
+        problems += [f"/{name}{p}" for p in invariants]
+        for i, (step, old, new) in enumerate(
+            zip(seq["steps"], golden["expected"]["sequences"][name], got, strict=True)
+        ):
+            at = f"/{name}[{i}]({step['op']})"
+            new = {**new, "news_view": digest(new["news_view"]), "validation_view": digest(new["validation_view"])}
+            for part in ("seed", "answer", "saved", "news_view", "validation_view"):
+                o, g = old[part], new[part]
+                if part == "seed" and isinstance(o, dict) and "added" in o:
+                    o = {"changes": o["changes"], "rest": o["rest"]} if o["changes"] else None
+                problems += [f"{at}/{part}{p}" for p in diff(js({"v": o}), js({"v": g}))]
+                if _text(o) != _text(g):
+                    problems.append(f"{at}/{part}: the serialized value differs (key order)")
+            if old["appended"] != new["appended"]:  # byte for byte
+                problems.append(f"{at}/appended: {old['appended']!r} != {new['appended']!r}")
+    return problems
+
+
+def writes_summary(golden: dict[str, Any]) -> dict[str, Any]:
+    out: dict[str, Any] = {}
+    for name, steps in golden["expected"]["sequences"].items():
+        out[name] = {
+            "answers": [s["answer"].get("code", s["answer"].get("raises")) for s in steps],
+            "appended": [[a[0] for a in s["appended"]] for s in steps],
+            "seeded": [len(s["seed"]["changes"]) if s["seed"] else 0 for s in steps],
+            "saved": [s["saved"]["changes"][0][0] if s["saved"] else None for s in steps],
+        }
+    return out
+
+
+def read_golden(path: Path) -> dict[str, Any]:
+    out: dict[str, Any] = json.loads(path.read_bytes().decode("utf-8"))
+    return out
+
+
+def writes_report(golden: dict[str, Any]) -> int:
+    problems = compare_writes(golden)
+    print(json.dumps({"golden": str(WRITES_GOLDEN), "bytes": WRITES_GOLDEN.stat().st_size, "old": golden["provenance"],
+                      "summary": writes_summary(golden)}, ensure_ascii=False))  # fmt: skip
+    for p in problems[:60]:
+        print("  DIFF", p)
+    print("NEWS WRITES GOLDENS MATCH" if not problems else f"NEWS WRITES GOLDENS DIFFER ({len(problems)})")
+    return 1 if problems else 0
+
+
+def write_writes_goldens() -> int:
+    docs = writes_docs()
+    sequences = write_sequences()
+    files, cases = split_cases(docs)
+    oracle = scratch_oracle(WRITES_ORACLE, {"clock": CLOCK, "sequences": sequences}, files, cases,
+                            prefix="pz-news-writes-oracle-")  # fmt: skip
+    meta = oracle.pop("meta")
+    for steps in oracle["sequences"].values():
+        for s in steps:  # the views as digests (each full view is ~0.3 MB)
+            s["news_view"], s["validation_view"] = digest(s["news_view"]), digest(s["validation_view"])
+    golden = {"provenance": meta, "clock": CLOCK, "docs": docs, "sequences": sequences, "expected": oracle}
+    # NOT sort_keys (the documents' insertion order is part of the input); bytes, so no newline translation
+    WRITES_GOLDEN.write_bytes((json.dumps(golden, ensure_ascii=False, indent=None) + "\n").encode("utf-8"))
+    return writes_report(read_golden(WRITES_GOLDEN))
+
+
 # ------------------------------------------------------------------ the real snapshot, through the API routes
 REAL_CLOCK = "2026-11-12T09:00:00"
 _REAL_PATHS = {"view": ("/api/news", None), "weekly": ("/api/news/weekly", None),
@@ -650,6 +940,7 @@ def real() -> int:  # pragma: no cover - needs the hosted database and the old r
     from projectzero.api.app import create_app
     from projectzero.core.config import Settings, load_dotenv
     from projectzero.core.db import connect, transaction
+    from projectzero.news import store as news_store
     from projectzero.ops.db_check import _scratch_sql
     from projectzero.ops.legacy.apply import apply_plan
     from projectzero.ops.legacy.plan import build_plan
@@ -677,6 +968,18 @@ def real() -> int:  # pragma: no cover - needs the hosted database and the old r
             conn.close()
         with transaction(settings.db_url) as c:
             before = _fingerprint(c, schema)
+            stored_events, stored_actions = news_store.events_doc(c, schema), news_store.actions_text(c, schema)
+        # review 028b: the importer's backfill holds the archived events (key order, each record's own key order) and
+        # every archived action line, byte for byte
+        if "news/events.json" in files:
+            archived = json.loads(files["news/events.json"].decode("utf-8-sig"))
+            if json.dumps(stored_events, ensure_ascii=False) != json.dumps(archived, ensure_ascii=False):
+                problems.append("/news/events.json: the backfilled events differ from the archive")
+        lines = re.split(r"\r\n|\r|\n", files.get("news/actions.jsonl", b"").decode("utf-8-sig"))
+        if lines and lines[-1] == "":
+            lines.pop()
+        if stored_actions != "".join(f"{line}\n" for line in lines):
+            problems.append("/news/actions.jsonl: the backfilled lines differ from the archive")
         app = create_app(Settings(db_url=settings.db_url, schema=schema))
         app.state.clock = lambda: utc_instant(REAL_CLOCK)
         got: dict[str, Any] = {}
@@ -721,6 +1024,10 @@ def main(argv: list[str]) -> int:
         return write_goldens()
     if mode == "check":
         return report(json.loads(GOLDEN.read_text(encoding="utf-8")), "NEWS CHECK")
+    if mode == "writes-goldens":
+        return write_writes_goldens()
+    if mode == "writes-check":  # the stored writes golden against the new code (no oracle)
+        return writes_report(read_golden(WRITES_GOLDEN))
     print(__doc__)
     return 2
 

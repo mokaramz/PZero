@@ -16,11 +16,13 @@ Where each old input comes from:
 * ``inference_ledger.jsonl``: ``model_ledger`` in insertion order, each row as ``{ts, usd}``, ``ts`` in Berlin time.
 * the four ``validation/*.jsonl`` logs: ``validation_log`` (review 027b) through ``validation.store.texts``, each
   log's lines in ``seq`` order.
+* ``news/events.json`` and ``news/actions.jsonl``: ``news_events`` / ``news_events_rest`` / ``news_actions``
+  (review 028b) through ``news.store``.
 * ``triage_decisions.jsonl``, ``verification_decisions.jsonl``, ``scout_intake.json``, ``sources/network.json`` and
-  every News file (``news/events.json``, ``news/{actions,runs,disagreements,source_log}.jsonl``,
-  ``news/{source_metrics,source_state,feeds_extra}.json``, ``scan_history.json``; review 028a, until their own
-  tables in 028b / 028c): the byte-exact archive (``utf-8-sig``) in line / key order, else (the JSON files) the
-  imported ``documents`` row; a missing file reads as its old default.
+  the other News files (``news/{runs,disagreements,source_log}.jsonl``, ``news/{source_metrics,source_state,
+  feeds_extra}.json``, ``scan_history.json``; review 028a, until their own tables in 028c): the byte-exact archive
+  (``utf-8-sig``) in line / key order, else (the JSON files) the imported ``documents`` row; a missing file reads as
+  its old default.
 """
 
 from __future__ import annotations
@@ -43,13 +45,13 @@ from projectzero.dealflow.triage.view import proposal_record, route_record
 from projectzero.founder_calls.store import FounderCallsStore
 from projectzero.map.inputs import RETIRED_ORIGINS
 from projectzero.network.view import berlin_now, berlin_today
+from projectzero.news import store as news_store
 from projectzero.validation import store
 from projectzero.validation.inputs_model import ValidationInputs, candidate_record, inputs_from_docs
 
 JSON_ARCHIVES = (
     "scout_intake.json",
     "sources/network.json",
-    "news/events.json",
     "news/source_metrics.json",
     "news/source_state.json",
     "news/feeds_extra.json",
@@ -58,7 +60,6 @@ JSON_ARCHIVES = (
 TEXT_ARCHIVES = (
     "triage_decisions.jsonl",
     "verification_decisions.jsonl",
-    "news/actions.jsonl",
     "news/runs.jsonl",
     "news/disagreements.jsonl",
     "news/source_log.jsonl",
@@ -141,4 +142,8 @@ def load_docs(conn: psycopg.Connection[Any], schema: str, now: datetime) -> dict
     for path in TEXT_ARCHIVES:
         docs[path] = archived_text(archived[path]) if path in archived else ""
     docs.update(store.texts(conn, schema))  # the four Validation logs (027b), in seq order
+    events = news_store.events_doc(conn, schema)  # the News tables (028b)
+    if events is not None:
+        docs["news/events.json"] = events
+    docs["news/actions.jsonl"] = news_store.actions_text(conn, schema)
     return docs

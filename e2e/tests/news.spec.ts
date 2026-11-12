@@ -1,15 +1,17 @@
 /**
- * News & Learning (review 028a, the read side) — the new app on a preview database (the real snapshot in a scratch
- * schema). Every section renders from the real reads, the sources view answers each window, the write and run controls
- * are visible, disabled and give their reason (never a write request), the Scout Bridge button is gone, and the layout
- * fits at the usual sizes. The stubbed page tests and news-mocked.spec.ts cover every panel in detail.
+ * News & Learning (reviews 028a, 028b) — the new app on a preview database (the real snapshot in a scratch schema).
+ * Every section renders from the real reads, the sources view answers each window, the decision controls (028b) are
+ * enabled and opening / cancelling the early-signal form writes nothing, the run controls (028c) are visible, disabled
+ * and give their reason, the Scout Bridge button is gone, and the layout fits at the usual sizes. This spec NEVER
+ * performs a write (no decision, audit or signal is clicked through): news-mocked.spec.ts asserts the exact POSTs, and the
+ * stubbed page tests cover every panel in detail.
  */
 import { expect, test, type Locator, type Page } from "@playwright/test";
 
 import { expectNoHorizontalOverflow, watch as watchErrors, zoom150 } from "./helpers";
 
 const TABS = ["Today", "All stories", "Caught early", "Misses", "Historical cases", "What's moving", "My companies", "Weekly review", "News sources"];
-const WRITES = "Recording News decisions arrives with the News writes port (028b)";
+const WRITES_028B = "Recording News decisions arrives with the News writes port (028b)"; // the 028a deferral, gone
 const REFRESH = "Refreshing News arrives with the News refresh port (028c)";
 
 /** No page / console error (the shell's not-yet-ported endpoints aside, as everywhere) and no write request at all. */
@@ -89,26 +91,56 @@ test.describe("News & Learning — new app, preview database", () => {
     w.expectClean();
   });
 
-  test("the write and run controls are visible, disabled and give their reason", async ({ page }) => {
+  test("the run controls are disabled with their reason; the decisions are enabled (never clicked through here)", async ({ page }) => {
     const w = watch(page);
     await openNews(page);
     await expectDeferred(page.getByTestId("news-refresh-button"), REFRESH);
     await section(page, "All stories");
+    const enabled = async (el: Locator) => {
+      await expect(el).toBeVisible();
+      await expect(el).toBeEnabled();
+      await expect(el).not.toHaveAttribute("aria-disabled", "true");
+    };
     const proposals = page.getByTestId("news-outcome-proposal");
-    if (await proposals.count()) for (const name of ["Confirm outcome", "Reject", "Not enough evidence"]) await expectDeferred(proposals.first().getByRole("button", { name, exact: true }), WRITES);
+    if (await proposals.count()) for (const name of ["Confirm outcome", "Reject", "Not enough evidence"]) await enabled(proposals.first().getByRole("button", { name, exact: true }));
     const audits = page.getByTestId("news-audit");
-    if (await audits.count()) await expectDeferred(audits.first(), WRITES);
-    const important = page.getByTestId("news-story").filter({ hasText: "🔥 IMPORTANT" });
-    if (await important.count()) {
-      await important.first().getByRole("button", { name: /^(Backcast & sources|Sources & learning)$/ }).click();
-      const add = important.first().getByRole("button", { name: "Add an early signal" });
-      if (await add.count()) await expectDeferred(add, WRITES);
-    }
+    if (await audits.count()) await enabled(audits.first());
+    await expect(page.getByText(WRITES_028B)).toHaveCount(0);
+    await expect(page.locator(`[title="${WRITES_028B}"]`)).toHaveCount(0);
     await expect(page.getByRole("dialog")).toHaveCount(0);
     await section(page, "News sources");
     await expectDeferred(page.getByTestId("news-sources").getByRole("button", { name: "Re-measure now" }), REFRESH);
     await page.waitForTimeout(300);
     w.expectClean();
+  });
+
+  test("'Add an early signal' opens the old form; cancelling (✕ or Escape) writes nothing", async ({ page }) => {
+    const w = watch(page);
+    await openNews(page);
+    await section(page, "All stories");
+    const important = page.getByTestId("news-story").filter({ hasText: "🔥 IMPORTANT" });
+    test.skip((await important.count()) === 0, "no important story on this snapshot");
+    const story = important.first();
+    await story.getByRole("button", { name: /^(Backcast & sources|Sources & learning)$/ }).click();
+    const add = story.getByRole("button", { name: "Add an early signal" });
+    test.skip((await add.count()) === 0, "the first important story names no company");
+    await expect(add).toBeEnabled();
+    await add.click();
+    const dialog = page.getByRole("dialog");
+    await expect(dialog.getByRole("heading", { name: "Add an early signal" })).toBeVisible();
+    const save = dialog.getByRole("button", { name: "Add", exact: true });
+    await expect(save).toBeDisabled();
+    await dialog.getByRole("textbox", { name: "Date (YYYY, YYYY-MM or YYYY-MM-DD)" }).fill("2020");
+    await dialog.getByRole("textbox", { name: "Source URL" }).fill("https://example.invalid/never-sent");
+    await expect(save).toBeEnabled(); // ready, but never clicked: this spec writes nothing
+    await dialog.getByRole("button", { name: "Close" }).click();
+    await expect(page.getByRole("dialog")).toHaveCount(0);
+    await add.click();
+    await expect(dialog.getByRole("textbox", { name: "Date (YYYY, YYYY-MM or YYYY-MM-DD)" })).toHaveValue("2020"); // kept, as before
+    await page.keyboard.press("Escape");
+    await expect(page.getByRole("dialog")).toHaveCount(0);
+    await page.waitForTimeout(300);
+    w.expectClean(); // no request other than GET reached /api
   });
 
   test("the sources view answers each window", async ({ page }) => {

@@ -1044,3 +1044,85 @@ describe("migration 0018 — the four Validation logs as one append-only table, 
     await rejects(bad.query(`insert into pz.validation_log (log, line, source) values ('outcomes', null, 'app')`), /validation_log_line_check/);
   });
 });
+
+describe("migration 0019 — News events and actions as tables, backfilled in key / line order", () => {
+  const MIGRATION = "20261112000019_news.sql";
+  const archive = async (db, path, raw) => {
+    const bytes = Buffer.isBuffer(raw) ? raw : Buffer.from(raw, "utf8");
+    const parsed = path.endsWith(".json") ? bytes.toString("utf8").replace(/^﻿/, "") : null;
+    await db.query(`insert into pz.legacy_documents (path, sha256, bytes, raw, parsed) values ($1, $2, $3, $4, $5)`,
+      [path, sha256(bytes), bytes.length, bytes, parsed]);
+  };
+  const before0019 = async (archives = {}, documents = {}) => {
+    const db = new PGlite();
+    await db.exec("create role anon nologin; create role authenticated nologin;");
+    for (const file of readdirSync(MIGRATIONS).filter((f) => f.endsWith(".sql") && f < MIGRATION).sort()) {
+      await db.exec(readFileSync(join(MIGRATIONS, file), "utf8"));
+    }
+    for (const [path, raw] of Object.entries(archives)) await archive(db, path, raw);
+    for (const [key, body] of Object.entries(documents)) await db.query(`insert into pz.documents (key, body) values ($1, $2)`, [key, body]);
+    await db.exec(readFileSync(join(MIGRATIONS, MIGRATION), "utf8"));
+    return db;
+  };
+  const keys = async (db, expr) => (await db.query(`select array_agg(k order by o) as k from json_object_keys((${expr})) with ordinality as t(k, o)`)).rows[0].k;
+  const ids = async (db) => (await db.query(`select event_id from pz.news_events order by pos`)).rows.map((r) => r.event_id);
+  const backfill = async (db) => (await db.query(`select pz.backfill_news() as n`)).rows[0].n;
+  // long keys first (JSONB would put the short ones first), and a record whose own keys are not in JSONB order
+  const DOC = `{"version": 2, "events": {"nw-zzzzzzzz-long": {"headline": "Invented Alder raises", "backcast": [], "a": 1}, "nw-a": {"headline": "Invented Birch"}}, "seeded": ["nw-case"]}`;
+  const ACTIONS = `{"kind": "outcome_decision", "event_id": "nw-a"}\n{"kind": "miss_audit", "event_id": "nw-a"}\n`;
+
+  test("the existing path: key order, the record key order, the rest with events at its place; a rerun adds nothing", async () => {
+    const db = await before0019({ "news/events.json": Buffer.concat([Buffer.from([0xef, 0xbb, 0xbf]), Buffer.from(DOC)]), "news/actions.jsonl": ACTIONS });
+    assert.deepEqual(await ids(db), ["nw-zzzzzzzz-long", "nw-a"]);
+    assert.deepEqual(await keys(db, `select record from pz.news_events where event_id = 'nw-zzzzzzzz-long'`), ["headline", "backcast", "a"]);
+    assert.deepEqual(await keys(db, `select body from pz.news_events_rest`), ["version", "events", "seeded"]);
+    assert.equal((await db.query(`select body->'events' is null or json_typeof(body->'events') = 'null' as p from pz.news_events_rest`)).rows[0].p, true);
+    assert.deepEqual((await db.query(`select line, archive_line from pz.news_actions order by seq`)).rows.map((r) => r.archive_line), [1, 2]);
+    assert.equal(await backfill(db), 0);
+  });
+
+  test("the fresh path, and a documents-only installation (JSONB order, as it reads today)", async () => {
+    const db = await freshDb();
+    assert.equal((await db.query(`select count(*)::int as n from pz.news_events`)).rows[0].n, 0);
+    await archive(db, "news/events.json", DOC);
+    assert.equal(await backfill(db), 2);
+    assert.deepEqual(await ids(db), ["nw-zzzzzzzz-long", "nw-a"]);
+    const docs = await before0019({}, { "news/events.json": DOC });
+    assert.deepEqual((await docs.query(`select count(*)::int as n from pz.news_events`)).rows[0].n, 2);
+    assert.deepEqual((await docs.query(`select body->'seeded' as s from pz.news_events_rest`)).rows[0].s, ["nw-case"]);
+  });
+
+  test("a rerun keeps an edited event, the persisted seeded list and the history", async () => {
+    const db = await before0019({ "news/events.json": DOC });
+    await db.query(`update pz.news_events set record = '{"headline": "edited", "backcast": [{"added_by": "mohamed"}]}'::json where event_id = 'nw-a'`);
+    await db.query(`update pz.news_events_rest set body = '{"version": 2, "events": null, "seeded": ["nw-case", "nw-new"]}'::json`);
+    await db.query(`insert into pz.news_event_history (event_id, action, after) values ('nw-a', 'backcast', '{}')`);
+    assert.equal(await backfill(db), 0);
+    assert.equal((await db.query(`select record->>'headline' as h from pz.news_events where event_id = 'nw-a'`)).rows[0].h, "edited");
+    assert.deepEqual((await db.query(`select body->'seeded' as s from pz.news_events_rest`)).rows[0].s, ["nw-case", "nw-new"]);
+    assert.equal((await db.query(`select count(*)::int as n from pz.news_event_history`)).rows[0].n, 1);
+  });
+
+  test("a malformed document raises and writes nothing; the action rules of 0018; append-only", async () => {
+    for (const bad of [`[1]`, `{"events": []}`, `{"events": {"k": 5}}`, `{"events": {"": {}}}`]) {
+      const db = await freshDb();
+      await archive(db, "news/events.json", bad);
+      await rejects(db.query(`select pz.backfill_news()`), /news\/events\.json/);
+      assert.equal((await db.query(`select count(*)::int as n from pz.news_events`)).rows[0].n, 0);
+    }
+    const db = await freshDb();
+    await db.query(`insert into pz.news_actions (line, source) values ('{}', 'app')`);
+    await archive(db, "news/actions.jsonl", ACTIONS);
+    await rejects(db.query(`select pz.backfill_news()`), /not imported and the log already has live rows/);
+    await rejects(db.query(`update pz.news_actions set line = 'x'`), /append-only/);
+    await rejects(db.query(`insert into pz.news_actions (line, source, archive_line) values ('{}', 'app', 1)`), /news_actions_archive_line_check/);
+    await rejects(db.query(`insert into pz.news_actions (line, source) values (null, 'app')`), /news_actions_line_check/);
+    await db.query(`insert into pz.news_event_history (event_id, action, after) values ('nw-a', 'seed', '{}')`);
+    await rejects(db.query(`delete from pz.news_event_history`), /append-only/);
+    await rejects(db.query(`insert into pz.news_event_history (event_id, action, after) values ('nw-a', 'delete', '{}')`), /news_event_history_action_check/);
+    const nul = await freshDb();
+    await archive(nul, "news/actions.jsonl", Buffer.concat([Buffer.from(`{"a": 1}\n{"b": `), Buffer.from([0]), Buffer.from(`}\n{"c": 3}\n`)]));
+    await nul.query(`select pz.backfill_news()`);
+    assert.deepEqual((await nul.query(`select line from pz.news_actions order by seq`)).rows.map((r) => r.line), [`{"a": 1}`, null, `{"c": 3}`]);
+  });
+});

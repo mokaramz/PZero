@@ -61,6 +61,7 @@ def make(settings: Settings) -> Iterator[Any]:
         with transaction(settings.db_url) as conn:
             for path, text in archives.items():
                 _archive(conn, name, path, text)
+            conn.execute(f"select {name}.backfill_news()".encode())  # the importer's call after the archives (028b)
         app = create_app(Settings(db_url=settings.db_url, schema=name))
         app.state.clock = lambda: NOW
         return TestClient(app, base_url="http://127.0.0.1:8177"), name

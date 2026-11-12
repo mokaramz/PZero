@@ -1,0 +1,67 @@
+{
+  "confirm": {
+    "ok": true,
+    "kind": "outcome_decision",
+    "event_id": "nw-3f9a1c0b7d2e",
+    "decision": "confirm",
+    "at": "2026-11-12T10:00:00",
+    "outcome_id": "oc-20261112-vantor-kinetics"
+  },
+  "already": {
+    "ok": true,
+    "already": true,
+    "at": "2026-11-12T09:30:00",
+    "decision": "confirm",
+    "event_id": "nw-3f9a1c0b7d2e",
+    "kind": "outcome_decision",
+    "outcome_id": "oc-20261112-vantor-kinetics"
+  },
+  "reject": {
+    "ok": true,
+    "kind": "outcome_decision",
+    "event_id": "nw-3f9a1c0b7d2e",
+    "decision": "reject",
+    "at": "2026-11-12T10:00:00"
+  },
+  "not_enough": {
+    "ok": true,
+    "kind": "outcome_decision",
+    "event_id": "nw-3f9a1c0b7d2e",
+    "decision": "not_enough",
+    "at": "2026-11-12T10:00:00"
+  },
+  "audit_miss": {
+    "ok": true,
+    "audit": {
+      "id": "au-20261112-brightwell-bio",
+      "type": "miss",
+      "recorded_at": "2026-11-12T10:00:00",
+      "company": "Brightwell Bio",
+      "entity_key": "brightwell bio",
+      "note": "from News: Brightwell Bio acquired by Corvane Diagnostics (https://isarpost.example/2026/11/brightwell-bio-acquired)",
+      "supersedes": null,
+      "miss_type": "never_found",
+      "pz_state_at_audit": null,
+      "earliest_signal": "Brightwell Bio named in a regional health-innovation grant list (EUR 1.2M).",
+      "earliest_signal_date": "2026-10-02",
+      "signal_source": "https://grants.example/2026/health-innovation",
+      "should_have_found": "grant sources (EXIST, Innosuisse, EIC, UKRI, NIH/NSF)",
+      "why_missed": "other",
+      "preventable": "unclear",
+      "improvement": ""
+    }
+  },
+  "backcast": {
+    "ok": true,
+    "signal": {
+      "date": "2026-06",
+      "precision": "month",
+      "text": "Vantor Kinetics demo at a Munich robotics meetup",
+      "family": "event",
+      "url": "https://meetups.example/munich-robotics-june",
+      "kind": "in_retrospect",
+      "added_by": "mohamed",
+      "added_at": "2026-11-12T10:00:00"
+    }
+  }
+}

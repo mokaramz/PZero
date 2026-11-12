@@ -4,10 +4,12 @@
  * is needed: only the frontend (`npm run dev` in frontend/, or PZ_BASE_URL). Every company, publication and URL in
  * fixtures/news/ is invented.
  *
- * 028a is the read side: the old refresh test (click → progress → outcome) becomes a check that "Refresh news" is
- * visible, disabled with its reason and sends nothing (the refresh arrives with 028c); the outcome, audit and early-signal
- * controls likewise (028b). The old "new sources" test belongs to System health and the activity-dock tests to the shell;
- * neither is part of this page.
+ * The old refresh test (click → progress → outcome) becomes a check that "Refresh news" is visible, disabled with its
+ * reason and sends nothing (the refresh arrives with 028c). The decisions write since 028b: the outcome proposal
+ * (Confirm outcome in two clicks, Reject, Not enough evidence, an `already` answer), "Audit this miss" and "Add an early
+ * signal" (its form), each with its exact POST path and body, the old toasts, the re-read and the 400 refusals; opening
+ * and cancelling the form writes nothing. The old "new sources" test belongs to System health and the activity-dock
+ * tests to the shell; neither is part of this page.
  *
  *   cd e2e && PZ_BASE_URL=http://localhost:5173 npx playwright test news-mocked
  */
@@ -15,14 +17,15 @@ import { expect, test, type Locator, type Page } from "@playwright/test";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 
-import { expectNoHorizontalOverflow, watch, zoom150 } from "./helpers";
+import { expectNoHorizontalOverflow, recordPosts, watch, zoom150 } from "./helpers";
 
 const FIX = resolve(import.meta.dirname, "fixtures", "news");
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type J = any;
 const load = (n: string): J => JSON.parse(readFileSync(resolve(FIX, n), "utf8"));
 
-const WRITES = "Recording News decisions arrives with the News writes port (028b)";
+/** the 028a deferral of the decisions, gone since 028b */
+const WRITES_028B = "Recording News decisions arrives with the News writes port (028b)";
 const REFRESH = "Refreshing News arrives with the News refresh port (028c)";
 const HEALTH = "System health arrives with its port";
 const TABS = ["Today", "All stories", "Caught early", "Misses", "Historical cases", "What's moving", "My companies", "Weekly review", "News sources"];
@@ -30,9 +33,24 @@ const WINDOWS = ["30 days", "90 days", "180 days", "All time"];
 /** the old write endpoints, their 028b / 028c paths and the dropped Scout Bridge calls */
 const WRITE_PATHS = /\/api\/(news_(outcome|audit_miss|backcast|backcast_job|refresh|sources_evaluate)\b|news\/(outcome|audit_miss|backcast|refresh|sources\/evaluate)\b|bridge_create\b)/;
 
-/** Mock the four News reads; anything else under /api answers 404 (the shell's not-ported reads are allowed by `watch`,
- *  any other 404 fails the test). Returns every API request (method + path + query), in order. */
-async function mockApi(page: Page, opts: { news?: J; weekly?: J; refresh?: "partial" | "failed" | "never" } = {}) {
+type Write = "outcome" | "audit_miss" | "backcast";
+type Answer = { status: number; body: J };
+const isAnswer = (x: J): x is Answer => !!x && typeof x === "object" && "status" in x && "body" in x;
+
+/** Mock the four News reads and the three writes (028b, the old success shapes of fixtures/news/news_writes.json). A
+ *  write's `answer` (when it returns something) replaces the default answer; otherwise `refuse` answers it with a 400
+ *  and that text. Anything else under /api answers 404 (the shell's not-ported reads are allowed by `watch`, any other
+ *  404 fails the test). Returns every API request (method + path + query), in order. */
+async function mockApi(
+  page: Page,
+  opts: {
+    news?: J;
+    weekly?: J;
+    refresh?: "partial" | "failed" | "never";
+    answer?: Partial<Record<Write, (body: J) => J | Answer | null>>;
+    refuse?: Partial<Record<Write, string>>;
+  } = {},
+) {
   const news = opts.news ?? load("news.json");
   const weekly = opts.weekly ?? load("news_weekly.json");
   const sources = load("news_sources.json");
@@ -51,6 +69,17 @@ async function mockApi(page: Page, opts: { news?: J; weekly?: J; refresh?: "part
     const w = new URL(route.request().url()).searchParams.get("window") ?? "90";
     return route.fulfill({ json: sources[w] ?? sources["90"] });
   });
+  const writes = load("news_writes.json");
+  await page.route(/\/api\/news\/(outcome|audit_miss|backcast)$/, (route) => {
+    const name = new URL(route.request().url()).pathname.split("/").pop() as Write;
+    const body = route.request().postDataJSON() as J;
+    const custom = opts.answer?.[name]?.(body);
+    if (custom) return isAnswer(custom) ? route.fulfill({ status: custom.status, json: custom.body }) : route.fulfill({ json: custom });
+    const error = opts.refuse?.[name];
+    if (error) return route.fulfill({ status: 400, json: { ok: false, error } });
+    if (name === "outcome") return route.fulfill({ json: { ...writes[body.decision], event_id: body.event_id } });
+    return route.fulfill({ json: writes[name] });
+  });
   return {
     requested,
     writes: () => requested.filter((r) => r.method !== "GET" || WRITE_PATHS.test(r.path)),
@@ -58,6 +87,7 @@ async function mockApi(page: Page, opts: { news?: J; weekly?: J; refresh?: "part
     reads: () => [...new Set(requested.filter((r) => r.path.startsWith("/api/news")).map((r) => `${r.method} ${r.path}`))],
   };
 }
+type Api = Awaited<ReturnType<typeof mockApi>>;
 
 const sections = (page: Page) => page.getByRole("tablist", { name: "News sections" });
 const section = (page: Page, name: string) => sections(page).getByRole("tab", { name, exact: true }).click();
@@ -232,8 +262,171 @@ test("before any refresh and with an empty data folder, every section says what 
   w.expectClean();
 });
 
-/* ------------------------------------------------------------------ the writes are deferred (028b, 028c) */
-test("news: every write and run control is visible and disabled with its reason; the Scout Bridge button is gone; nothing is written", async ({ page }) => {
+/* ------------------------------------------------------------------ the decisions (028b) */
+const VANTOR = "nw-3f9a1c0b7d2e";
+const BRIGHTWELL = "nw-1e8b5a6c4d90";
+const newsReads = (api: Api) => api.requested.filter((r) => r.method === "GET" && r.path === "/api/news").length;
+
+test("news: the outcome proposal — Confirm takes two clicks; Reject and Not enough evidence; exact POSTs, the old toast and a re-read", async ({ page }) => {
+  const w = watch(page);
+  const api = await mockApi(page);
+  const posted = recordPosts(page);
+  await open(page);
+  const proposal = page.getByTestId("news-story").filter({ hasText: "Vantor Kinetics" }).first().getByTestId("news-outcome-proposal");
+  await expect(proposal).toContainText("Only your confirmation records it in Validation.");
+  await expect(proposal.getByRole("button")).toHaveText(["Confirm outcome", "Reject", "Not enough evidence"]);
+  for (const b of await proposal.getByRole("button").all()) await expect(b).toBeEnabled();
+
+  const confirm = proposal.getByRole("button", { name: "Confirm outcome" });
+  await confirm.click();
+  await expect(proposal.getByRole("button", { name: "Click again to confirm — records a verified outcome in Validation" })).toBeVisible();
+  await page.waitForTimeout(200);
+  expect(posted).toEqual([]); // the first click only arms it
+  const before = newsReads(api);
+  await proposal.getByRole("button", { name: /^Click again to confirm/ }).click();
+  await expect(page.getByText("Recorded", { exact: true }).first()).toBeVisible();
+  await expect.poll(() => newsReads(api)).toBeGreaterThan(before);
+
+  await proposal.getByRole("button", { name: "Reject", exact: true }).click();
+  await expect.poll(() => posted.length).toBe(2);
+  await proposal.getByRole("button", { name: "Not enough evidence", exact: true }).click();
+  await expect.poll(() => posted.length).toBe(3);
+  expect(posted).toEqual([
+    { path: "/api/news/outcome", body: { event_id: VANTOR, decision: "confirm" } },
+    { path: "/api/news/outcome", body: { event_id: VANTOR, decision: "reject" } },
+    { path: "/api/news/outcome", body: { event_id: VANTOR, decision: "not_enough" } },
+  ]);
+  w.expectClean();
+});
+
+test("news: an `already` answer is the old success toast; a refused decision (400) is the failure toast", async ({ page }) => {
+  const w = watch(page, { expected: [400] });
+  const api = await mockApi(page, { answer: { outcome: (b) => (b.decision === "reject" ? load("news_writes.json").already : null) }, refuse: { outcome: "this news event cannot become an outcome" } });
+  const posted = recordPosts(page);
+  await open(page);
+  const proposal = page.getByTestId("news-story").filter({ hasText: "Vantor Kinetics" }).first().getByTestId("news-outcome-proposal");
+  const before = newsReads(api);
+  await proposal.getByRole("button", { name: "Reject", exact: true }).click();
+  await expect(page.getByText("Recorded", { exact: true }).first()).toBeVisible();
+  await expect.poll(() => newsReads(api)).toBeGreaterThan(before);
+  await proposal.getByRole("button", { name: "Not enough evidence", exact: true }).click();
+  await expect(page.getByText("✕ Recording the outcome failed — this news event cannot become an outcome")).toBeVisible();
+  expect(posted).toEqual([
+    { path: "/api/news/outcome", body: { event_id: VANTOR, decision: "reject" } },
+    { path: "/api/news/outcome", body: { event_id: VANTOR, decision: "not_enough" } },
+  ]);
+  w.expectClean();
+});
+
+test("news: Audit this miss — the event alone, the old toast and a re-read; a refusal (400) is shown", async ({ page }) => {
+  const w = watch(page, { expected: [400] });
+  let refuse = false;
+  const api = await mockApi(page, { answer: { audit_miss: () => (refuse ? { status: 400, body: { ok: false, error: "no such news event with a named company" } } : null) } });
+  const posted = recordPosts(page);
+  await open(page);
+  await section(page, "Misses");
+  const audit = page.getByTestId("news-story").filter({ hasText: "Brightwell Bio" }).getByTestId("news-audit");
+  await expect(audit).toHaveText("Audit this miss");
+  await expect(audit).toBeEnabled();
+  const before = newsReads(api);
+  await audit.click();
+  await expect(page.getByText("Miss audit created in Validation (prefilled)")).toBeVisible();
+  await expect.poll(() => newsReads(api)).toBeGreaterThan(before);
+  refuse = true;
+  await audit.click();
+  await expect(page.getByText("✕ Creating the miss audit failed — no such news event with a named company")).toBeVisible();
+  expect(posted).toEqual([
+    { path: "/api/news/audit_miss", body: { event_id: BRIGHTWELL } },
+    { path: "/api/news/audit_miss", body: { event_id: BRIGHTWELL } },
+  ]);
+  await expect(page.getByTestId("news-story").filter({ hasText: "Quillon Labs" })).toContainText("miss audit recorded");
+  w.expectClean();
+});
+
+test("news: Add an early signal — the old form; Add needs a date and an http URL; the exact POST, the toast, the form closes", async ({ page }) => {
+  const w = watch(page);
+  const api = await mockApi(page);
+  const posted = recordPosts(page);
+  await open(page);
+  const vantor = page.getByTestId("news-story").filter({ hasText: "Vantor Kinetics" }).first();
+  await vantor.getByRole("button", { name: "Sources & learning" }).click();
+  await vantor.getByRole("button", { name: "Add an early signal" }).click();
+  const dialog = page.getByRole("dialog");
+  await expect(dialog.getByRole("heading", { name: "Add an early signal" })).toBeVisible();
+  await expect(dialog).toContainText("A public signal that existed BEFORE the story, with its source.");
+  const date = dialog.getByRole("textbox", { name: "Date (YYYY, YYYY-MM or YYYY-MM-DD)" });
+  const url = dialog.getByRole("textbox", { name: "Source URL" });
+  const add = dialog.getByRole("button", { name: "Add", exact: true });
+  await expect(date).toHaveAttribute("placeholder", "2021-06");
+  await expect(dialog.getByRole("combobox", { name: "Signal family" })).toHaveValue("university_lab");
+  await expect(dialog.getByRole("combobox", { name: "Knowable at the time?" })).toHaveValue("known_early_signal");
+  await expect(add).toBeDisabled();
+  await date.fill("2026-06");
+  await url.fill("meetups.example/munich-robotics-june");
+  await expect(add).toBeDisabled(); // not an http URL
+  await url.fill("https://meetups.example/munich-robotics-june");
+  await dialog.getByRole("textbox", { name: "What was visible" }).fill("Vantor Kinetics demo at a Munich robotics meetup");
+  await dialog.getByRole("combobox", { name: "Signal family" }).selectOption("event");
+  await dialog.getByRole("combobox", { name: "Knowable at the time?" }).selectOption("in_retrospect");
+  expect(posted).toEqual([]);
+  const before = newsReads(api);
+  await add.click();
+  await expect(page.getByText("Signal added to the backcast")).toBeVisible();
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+  await expect.poll(() => newsReads(api)).toBeGreaterThan(before);
+  expect(posted).toEqual([
+    {
+      path: "/api/news/backcast",
+      body: {
+        date: "2026-06",
+        text: "Vantor Kinetics demo at a Munich robotics meetup",
+        url: "https://meetups.example/munich-robotics-june",
+        family: "event",
+        kind: "in_retrospect",
+        event_id: VANTOR,
+      },
+    },
+  ]);
+  w.expectClean();
+});
+
+test("news: a refused early signal (400) keeps the form open; opening and cancelling writes nothing", async ({ page }) => {
+  const w = watch(page, { expected: [400] });
+  await mockApi(page, { refuse: { backcast: "date as YYYY, YYYY-MM or YYYY-MM-DD" } });
+  const posted = recordPosts(page);
+  await open(page);
+  await section(page, "Historical cases");
+  const halvard = page.getByTestId("news-story").filter({ hasText: "Halvard Robotics" });
+  await halvard.getByRole("button", { name: "Backcast & sources" }).click();
+  await halvard.getByRole("button", { name: "Add an early signal" }).click();
+  const dialog = page.getByRole("dialog");
+  await dialog.getByRole("textbox", { name: "Date (YYYY, YYYY-MM or YYYY-MM-DD)" }).fill("2020");
+  await dialog.getByRole("button", { name: "Close" }).click();
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+  await halvard.getByRole("button", { name: "Add an early signal" }).click();
+  await expect(dialog.getByRole("textbox", { name: "Date (YYYY, YYYY-MM or YYYY-MM-DD)" })).toHaveValue("2020"); // kept, as before
+  await page.keyboard.press("Escape");
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+  await page.waitForTimeout(200);
+  expect(posted).toEqual([]);
+
+  await halvard.getByRole("button", { name: "Add an early signal" }).click();
+  await dialog.getByRole("textbox", { name: "Date (YYYY, YYYY-MM or YYYY-MM-DD)" }).fill("early 2020");
+  await dialog.getByRole("textbox", { name: "Source URL" }).fill("https://lab.example/halvard-spinout");
+  await dialog.getByRole("button", { name: "Add", exact: true }).click();
+  await expect(page.getByText("✕ Adding the early signal failed — date as YYYY, YYYY-MM or YYYY-MM-DD")).toBeVisible();
+  await expect(page.getByRole("dialog")).toBeVisible();
+  expect(posted).toEqual([
+    {
+      path: "/api/news/backcast",
+      body: { date: "early 2020", text: "", url: "https://lab.example/halvard-spinout", family: "university_lab", kind: "known_early_signal", event_id: "nw-case-halvard-unicorn-2026-10" },
+    },
+  ]);
+  w.expectClean();
+});
+
+/* ------------------------------------------------------------------ the refresh stays deferred (028c) */
+test("news: the refresh controls stay disabled with their reason; the Scout Bridge button is gone; nothing else is deferred", async ({ page }) => {
   const w = watch(page);
   const api = await mockApi(page);
   let dialogs = 0;
@@ -242,22 +435,15 @@ test("news: every write and run control is visible and disabled with its reason;
     void d.dismiss();
   });
   await open(page);
-
-  const vantor = page.getByTestId("news-story").filter({ hasText: "Vantor Kinetics" }).first();
-  const proposal = vantor.getByTestId("news-outcome-proposal");
-  await expect(proposal).toContainText("Only your confirmation records it in Validation.");
-  for (const name of ["Confirm outcome", "Reject", "Not enough evidence"]) await expectDeferred(page, proposal.getByRole("button", { name, exact: true }), WRITES);
-  await expect(proposal.getByRole("button", { name: /Click again to confirm/ })).toHaveCount(0);
-  await vantor.getByRole("button", { name: "Sources & learning" }).click();
-  await expectDeferred(page, vantor.getByRole("button", { name: "Add an early signal" }), WRITES);
-  await expect(page.getByRole("dialog")).toHaveCount(0);
+  await section(page, "All stories");
+  const closed = page.getByRole("button", { name: /^(Backcast & sources|Sources & learning)$/ });
+  while ((await closed.count()) > 0) await closed.first().click();
+  await expect(page.locator('[aria-disabled="true"]')).toHaveText(["Refresh news"]);
+  await expect(page.getByRole("button", { name: "Add an early signal" })).toHaveCount(4);
+  for (const b of await page.getByRole("button", { name: "Add an early signal" }).all()) await expect(b).toBeEnabled();
   await expect(page.getByRole("button", { name: /Prepare backcast research/ })).toHaveCount(0);
   await expect(page.getByText(/Scout Bridge/)).toHaveCount(0);
-
-  await section(page, "Misses");
-  const miss = page.getByTestId("news-story").filter({ hasText: "Brightwell Bio" });
-  await expectDeferred(page, miss.getByTestId("news-audit"), WRITES);
-  await expect(page.getByTestId("news-story").filter({ hasText: "Quillon Labs" })).toContainText("miss audit recorded");
+  await expect(page.getByText(WRITES_028B)).toHaveCount(0);
 
   await section(page, "News sources");
   await expectDeferred(page, page.getByTestId("news-sources").getByRole("button", { name: "Re-measure now" }), REFRESH);
@@ -266,7 +452,6 @@ test("news: every write and run control is visible and disabled with its reason;
   await page.waitForTimeout(300);
   expect(dialogs).toBe(0);
   expect(api.writes()).toEqual([]);
-  expect(api.requested.filter((r) => r.method !== "GET")).toEqual([]);
   w.expectClean();
 });
 
