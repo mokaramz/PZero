@@ -30,3 +30,7 @@ synthetic corpus of 100 date values and 30 start / end pairs at two fixed clocks
 `memo` / `email` per signal, `weekly_update` with and without insight / question, and the `render_radar` document's
 bytes, over a synthetic data folder of 40 invented companies, people and events at 2026-11-11 12:00
 (`python -m projectzero.ops.parity_radar goldens`).
+`oracle_ecosystems.json` (review 022): the old `city_registry`, `city_page` for every city (and an unknown one),
+`coverage.report` and a 12-step `adopt_candidate` script with the coverage view and Deal Flow registry after each
+step, over synthetic data folders of invented names (a main corpus, a defaults / malformed variant, and broken
+regions) at 2026-11-11 12:00 (`python -m projectzero.ops.parity_ecosystems goldens`).

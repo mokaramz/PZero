@@ -113,18 +113,25 @@ class SourcesStore:
         was = bool(target.get("enabled"))
         if was == enabled:
             return {"ok": True}  # nothing visible changes: no write, no event
-        # the old save_registry persisted the WHOLE normalized registry: every source that existed only through the
-        # normalization is stored now, in its normalized order (clock_timestamp), so the registry order never moves
-        have = {s.get("id") for s in stored}
         changed = {**target, "enabled": enabled}  # the normalized STORED record: its counters are the baseline
-        for s in normalized:
-            if isinstance(s, dict) and s.get("id") not in have:
-                self._write(changed if s is target else s)
-        if source_id in have:
-            self._write(changed)
+        self.save_registry(stored, [changed if s is target else s for s in normalized])
+        self.event(str(source_id), "toggle", {"enabled": was}, {"enabled": enabled})
+        return {"ok": True}
+
+    def save_registry(self, stored: list[dict[str, Any]], registry: list[Any]) -> None:
+        """The old ``save_registry`` (call under ``_lock``): it persisted the WHOLE normalized registry, so every
+        source that exists only through the normalization (or was just appended) is stored now, in the registry's
+        order (``clock_timestamp``), and a stored source whose record differs is rewritten. The order never moves."""
+        have = {s.get("id"): s for s in stored}
+        for rec in registry:
+            if not isinstance(rec, dict):
+                continue
+            if rec.get("id") not in have or rec != have[rec.get("id")]:
+                self._write(rec)
+
+    def event(self, source_id: str, action: str, before: Any, after: Any) -> None:
         self._rows(
             "insert into {s}.source_events (source_id, actor, action, before, after) "
-            "values (%s, 'operator', 'toggle', %s, %s)",
-            (str(source_id), Jsonb({"enabled": was}), Jsonb({"enabled": enabled})),
+            "values (%s, 'operator', %s, %s, %s)",
+            (source_id, action, Jsonb(before), Jsonb(after)),
         )
-        return {"ok": True}

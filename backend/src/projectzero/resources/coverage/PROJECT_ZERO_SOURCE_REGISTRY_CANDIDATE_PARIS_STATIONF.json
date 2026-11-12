@@ -1,0 +1,65 @@
+{
+  "registry_id": "PZ-TERRITORY-PARIS-STATIONF",
+  "version": "1.0",
+  "generated_at": "2026-10-05",
+  "purpose": "Make PARIS / STATION F a formal Project Zero sourcing territory with a Pre-Funding Edge bias: early cohorts, research-founder programmes and pre-company studios — not a general Paris startup-news feed. Candidates only: each becomes a configured watcher only after Mohamed's explicit Adopt click.",
+  "notes": "Context: before this pack the Paris ecosystem had zero findings ever (coverage: PARTIAL — ZERO FINDINGS); the only France-specific discovery source was the national i-Lab laureate list, and the STATION F event watcher was configured with a parser (JSON-LD) the page does not support. Deliberately NOT included: stationf.co/startups (alumni / Future 40 showcase = post-institutional), HEC Incubator (mature MVP-stage only, no public roster), Entrepreneur First Paris (no public roster), general Paris tech news. Every URL below was opened on 2026-10-05.",
+  "sources": [
+    {
+      "source_name": "STATION F — news (cohort & program announcements)",
+      "url": "https://stationf.co/news",
+      "country": "France",
+      "city": "Paris",
+      "signal_family": "programs",
+      "source_type": "accelerator",
+      "expected_stage_visibility": "pre-seed",
+      "why_it_matters": "Official STATION F feed with dated cards. Announces new Founders Program / F/ai / Fighters / Female Founders Fellowship batches (e.g. F/ai batch 2 kicked off 2026-09-23) — the earliest public roster of new campus teams, typically pre-seed.",
+      "access_mode": "html",
+      "expected_reliability": "high",
+      "likely_freshness": "weekly",
+      "access_limitations": "Mixes cohort announcements with partner / corporate program news (e.g. Samsung, TikTok programs) — leads need review; batch posts link to per-startup lists. Verified 2026-10-05: plain HTML, dated news cards."
+    },
+    {
+      "source_name": "STATION F — programs on campus",
+      "url": "https://stationf.co/programs",
+      "country": "France",
+      "city": "Paris",
+      "signal_family": "programs",
+      "source_type": "accelerator",
+      "expected_stage_visibility": "mixed",
+      "why_it_matters": "Directory of campus programs (Founders Program, Fighters Program, HEC Incubator, F/ai for AI, Lab Quantique for quantum). A newly listed program = a new early-team intake channel inside STATION F.",
+      "access_mode": "html",
+      "expected_reliability": "medium",
+      "likely_freshness": "monthly",
+      "access_limitations": "Program list only — no startup names; application links point to external forms. Verified 2026-10-05: plain HTML."
+    },
+    {
+      "source_name": "Deeptech Founders — cohorts / alumni (research founders)",
+      "url": "https://deeptechfounders.com/alumni",
+      "country": "France",
+      "city": "Paris",
+      "signal_family": "research_spinout",
+      "source_type": "accelerator",
+      "expected_stage_visibility": "pre-company",
+      "why_it_matters": "Four-month programme turning researchers' science into startups. Alumni listed by cohort include Alice & Bob, Pasqal, Aqemia and C12 — teams visible at the research-founder stage, well before their institutional rounds. Exactly the Pre-Funding Edge signal.",
+      "access_mode": "html",
+      "expected_reliability": "high",
+      "likely_freshness": "quarterly",
+      "access_limitations": "The page does not state the programme's base city (run by Collective Ventures); alumni span France and the EU — confirm Paris presence per team. Verified 2026-10-05: plain HTML, projects grouped by cohort."
+    },
+    {
+      "source_name": "Inria Startup Studio — portfolio (pre-company deeptech projects)",
+      "url": "https://www.inriastartupstudio.fr/en/the-portfolio/",
+      "country": "France",
+      "city": "national",
+      "signal_family": "research_spinout",
+      "source_type": "official_db",
+      "expected_stage_visibility": "pre-company",
+      "why_it_matters": "One-year support and funding programme for digital deeptech projects before incorporation (210+ projects selected since 2019, 75 incorporated). Projects are listed with year and Inria centre — Paris and Saclay are filters on the page.",
+      "access_mode": "html",
+      "expected_reliability": "high",
+      "likely_freshness": "quarterly",
+      "access_limitations": "National portfolio (all 9 Inria centres): Paris / Saclay projects must be picked out by their centre label; non-Paris projects also appear. The main inria.fr page refused automated access (the portfolio site did not). Verified 2026-10-05: plain HTML with year and centre filters."
+    }
+  ]
+}

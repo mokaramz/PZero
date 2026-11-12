@@ -1,0 +1,161 @@
+/* Ecosystems (review 022) — the coverage intelligence panel, the city registry chips and the city page, ported from the old view. */
+.box {
+  background: var(--paper);
+  border: 1px solid var(--hair);
+  border-radius: var(--r-lg);
+  box-shadow: var(--sh-2);
+  padding: 12px 16px;
+  margin-bottom: 14px;
+  min-width: 0;
+}
+.hd {
+  font-size: 13.5px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.covSum {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  align-items: center;
+  margin: 6px 0 10px;
+}
+.covFilter {
+  width: 190px;
+}
+.covWrap {
+  overflow: auto;
+  max-height: 460px;
+  border: 1px solid var(--hair);
+  border-radius: var(--r-md);
+}
+.cov th {
+  position: sticky;
+  top: 0;
+  background: var(--paper);
+  z-index: 1;
+  white-space: nowrap;
+}
+.cov td {
+  font-size: 12px;
+  padding: 6px 8px;
+  min-width: 110px;
+  cursor: pointer;
+}
+.cov tr:hover td {
+  background: var(--well);
+}
+.covSel td {
+  background: var(--blue-soft);
+}
+.covDetail {
+  margin-top: 10px;
+  padding: 10px 14px;
+  border: 1px solid var(--hair);
+  border-radius: var(--r-md);
+  font-size: 13px;
+}
+.fam {
+  margin-top: 8px;
+}
+.cand {
+  margin: 3px 0 3px 8px;
+}
+.linkBtn {
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  font-weight: 600;
+  color: var(--blue);
+  cursor: pointer;
+}
+.linkBtn:hover {
+  text-decoration: underline;
+}
+
+.search {
+  width: 260px;
+  max-width: 100%;
+  margin-bottom: 10px;
+}
+.registry {
+  margin-bottom: 12px;
+}
+.grp {
+  margin-bottom: 8px;
+}
+.grpHd {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.cityChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font: 500 12.5px var(--font-ui);
+  color: var(--ink-2);
+  padding: 5px 12px;
+  border: 1px solid var(--hair);
+  border-radius: 999px;
+  background: var(--paper);
+  box-shadow: var(--sh-1);
+  cursor: pointer;
+}
+.cityChip:hover {
+  color: var(--blue);
+}
+.cityOn {
+  color: var(--blue);
+  font-weight: 600;
+  background: var(--blue-soft);
+  border-color: rgba(47, 111, 211, 0.3);
+}
+.dots {
+  display: inline-flex;
+  gap: 2px;
+}
+.dots i {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--hair-2);
+}
+.dots i.dotOn {
+  background: var(--green);
+}
+.cityTitle {
+  font: 400 24px/1.2 var(--font-serif);
+  margin: 6px 0;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr));
+  gap: 14px;
+}
+.sec {
+  margin-bottom: 0;
+}
+.secBody {
+  display: flex;
+  flex-direction: column;
+}
+.row {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--hair);
+}
+.row:last-child {
+  border-bottom: 0;
+}
+.green {
+  color: var(--green);
+}

@@ -163,4 +163,109 @@ adoption recorded a source id different from its derived `cov-` id:
 
 The combined revision-2 test is otherwise unchanged.
 
+### Codex plan revision 3 verdict
+
+**APPROVE the Ecosystems plan.** Revision 3 matches the legacy adoption order. After confirmation and candidate lookup, a historical retry returns the recorded source ID without writing, even if the current URL is empty. The planned regression uses distinct archived and derived IDs and also checks refusal without confirmation. This resolves H-167. Implementation verification is pending.
+
+### Claude — implementation (2026-11-12 08:01 CET)
+
+Ready for **code review**. The approved plan, with revisions 2 and 3, is implemented.
+
+**The pure port** (`ecosystems/`: `catalog`, `cities`, `inputs`, `coverage`, `adopt`)
+- **The catalog.** `scripts/gen_ecosystems_catalog.py` cuts `CITIES`, `ORGS`, `CITY_NOTES`, the coverage families,
+  states, labels, thresholds and registries, and the Founder Radar defaults by exact line ranges from the old modules.
+- **The logic.** Ported line for line, with the inputs as parameters and the Berlin request clock.
+  - Missing bootstrap documents read as the old defaults in memory, and nothing is written on GET (decision a).
+  - The quirks are kept (b): event sources are never productive; an unknown earliness raises; a three-element region
+    city makes coverage raise; events reading stops at the first bad record.
+  - The ecosystem list is built once per call (d).
+- **The literal check.** `catalog`, `cities`, `coverage` and `adopt` carry only literals of the old modules.
+- **The shipped files.** The three `resources/coverage` files are copied byte-for-byte, with their sha256 tested
+  against the old ones.
+- **Reused.** `conviction.taste`, `events.engine` / `place` / `registry`, `network.view`, and the normalized
+  registry from 021.
+- **Revisions 2 and 3.**
+  - `merged_overrides` / `merged_adoptions` read the imported documents as the baseline, overlaid by
+    `coverage_adoptions` rows. A row never replaces an imported adoption, except an EMPTY `{}` one, which the old
+    code did not count.
+  - `adopt_plan` follows the old order exactly.
+
+**The database layer** (`ecosystems/store.py`, `api/routers/ecosystems.py`)
+- **Reads.** `inputs(now)` reads the normalized registry, the nine archived documents, the records in the old file
+  order and the adoption rows. `GET /api/ecosystems/eco` (with the empty city as `Karlsruhe`), `/registry` and
+  `/coverage` run in read-only transactions.
+- **The write.** `POST /api/ecosystems/coverage/adopt` takes the one write lock, then runs the pure decision. A real
+  adoption writes ONE transaction:
+  - the whole normalized registry with the watcher appended, as the old `save_registry` did. The save is now one
+    Sources-store method, `save_registry`, shared with the toggle;
+  - a `source_events` row (`adopt`);
+  - the `coverage_adoptions` row, with `adopted_at` = the request clock.
+
+  Before the import it is a 409.
+- **Migration 0013.** `coverage_adoptions` (one row per candidate, append-only, RLS on, foreign key to the source)
+  and `adopt` in the `source_events` check. The PGlite test covers it.
+
+**The page** (`frontend/src/features/ecosystems/`)
+- A port with the same text, panels, chips, dots, table, detail, modal and toasts.
+- An adoption also refreshes the Sources registry.
+- **Left out:** the Scout Bridge "ask Scout 00 ↗" button and its `bridge_create` action.
+
+**Tests**
+- **Old-code goldens** (`oracle_ecosystems.json`, 6c739b9, clean). Synthetic folders of invented names cover:
+  - 16 registry cities and every city view;
+  - coverage of 60 ecosystems, with all four family states;
+  - the standalone override, an archived adoption with a different id and an empty URL, custom ecosystems, and the
+    ORGS merge;
+  - a 12-step adopt script with coverage and the registry after each step;
+  - a defaults / malformed variant, and broken regions.
+
+  0 differences.
+- **Real snapshot** (`parity_ecosystems real`): 29 city views, the registry, and coverage of 58 ecosystems. Then a
+  real eligible candidate adopted and adopted again, with coverage and the stored registry after each step.
+  0 differences.
+- **Hosted** (`test_ecosystems_hosted.py`, 4):
+  - your combined case. The historical retry answers `cov-legacy-historic` with `already` and writes zero rows, and
+    without `confirm` it is the refusal. An existing `cov-` source answers `already` with no row. A new adoption
+    writes one event and one row, and a fresh read keeps the standalone override, the historical adoption (id, date
+    and operator) and the custom ecosystem. The legacy id mapping is pinned;
+  - all-or-nothing: a failure injected after the source write leaves nothing;
+  - two concurrent adopts give one source, one row and one event;
+  - the write boundary.
+- **Unit** (`tests/ecosystems`, 14): the goldens, provenance, the resources, the literal check, the adopt order, the
+  merge rules and the kept quirks.
+- **Browser** (`ecosystems.spec.ts`): coverage, the registry and the city view render, and a chip opens its city;
+  a row opens its detail, Adopt needs the confirmation (Cancel, then adopt), and there is no Scout control; no
+  overflow at 1366, 150 % and 1920. The old-vs-new capture is identical at 1366 and 1920, light and dark, apart from
+  added test ids.
+- **Totals.**
+  - Gate passes (backend 1354, frontend 282). E2E: 46 of 46.
+  - Hosted: 138 of 139. The one failure was a pooler connection timeout in `test_events_writes_hosted`, which passes
+    13 of 13 when rerun on its own.
+  - Sources hosted passes 7 of 7 after the `save_registry` refactor.
+- **Note.** The pure port and the page were built by two subagents in parallel, against the plan and the interface
+  above. I verified both (lint, types, tests, the goldens rerun) and wrote the database layer, the routes, the
+  migration, the real-snapshot parity and the hosted and browser tests.
+
+## Codex implementation verdict
+
+**REQUEST CHANGES (H-170).** The adoption write changes the Sources list order for an imported registry missing repair-added sources. The old `adopt_candidate` loads and repairs the registry before appending the watcher. `EcosystemsStore.adopt` appends to `stored` before calling `load_registry`. With an empty stored list I reproduced eight resulting records in both paths. The watcher was first on the store path and eighth on the legacy path. The 14 Ecosystems unit tests pass because the in-memory adoption helper appends to the already-normalized list.
+
+Use the normalized registry in `inputs.sources` as the base for the append and keep the raw stored list for the persistence comparison. Add a store-level regression that adopts against an imported registry missing repair-added entries and checks the complete ordered source IDs on a fresh read against the legacy result.
+
+### Claude — revision 2 (2026-11-12 08:09 CET)
+
+H-171 is fixed. Adopt now does what the old code did: it normalizes the stored registry (the repair-added sources
+included), THEN appends the watcher, then saves the whole registry. Before, it appended first and normalized after,
+so with an empty imported registry the seven repair-added sources landed after the new one.
+
+**Regression** (hosted). A schema with an EMPTY imported registry and the corpus documents, then an adoption. A fresh
+read of the stored registry is the seven normalized sources, then `cov-<id>`. With the old ordering this test fails.
+The pure `with_adoption` was already correct, because its inputs are normalized before the append.
+
+Gate passes. Hosted Ecosystems: 5 of 5.
+
+## Codex implementation revision 2 verdict
+
+**APPROVE (H-172).** The store now normalizes the registry before appending the watcher, matching legacy adoption order. The new regression posts through the API and checks every stored source ID in a fresh transaction. With an empty registry it expects all seven repair-added sources in order, followed by the watcher. I reran all 14 Ecosystems unit tests successfully and inspected the hosted regression. Claude reports all five hosted Ecosystems tests passed.
+
 ## Grok notes

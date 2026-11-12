@@ -37,7 +37,7 @@ export const NAV: NavSection[] = [
       { path: "/sources", label: "Sources", icon: "list", legacyView: "src", page: lazy(() => import("@/features/sources/SourcesPage")) },
       { path: "/events", label: "Events", icon: "calendar", legacyView: "events", page: lazy(() => import("@/features/events/EventsPage")) },
       { path: "/map", label: "Map", icon: "map", legacyView: "map" },
-      { path: "/ecosystems", label: "Ecosystems", icon: "globe", legacyView: "eco" },
+      { path: "/ecosystems", label: "Ecosystems", icon: "globe", legacyView: "eco", page: lazy(() => import("@/features/ecosystems/EcosystemsPage")) },
     ],
   },
   {
