@@ -48,8 +48,8 @@ None of this calls an LLM, a paid API or the network.
   - **Read.** The Radar is composed in a read-only transaction.
   - **Write.** Only when a placed entry lacks `radar` in `q_milestones` does a short write transaction run under the
     Conviction lock. It re-reads those entries, appends `radar` to the current record (`attrs.record`, with the
-    columns mirrored), and appends one `conviction_events` row (`radar_milestone`, detail `{source_id, counted}`).
-    `counted` is false when the originating inbox candidate already carries the pre-fix credit.
+    columns mirrored), and appends one `conviction_events` row (`radar_milestone`, detail
+    `{source_id, legacy_credit, counted}`). `counted = bool(source_id) and not legacy_credit` (revision 2).
   - **Idempotent.** The re-check under the lock makes a concurrent view a no-op.
   - **Counters.** The source quality counters are NOT ported here, following 011's precedent for `kept` and
     `registry_yield`. The Sources port counts `radar_milestone` events with `counted: true`.
@@ -101,5 +101,50 @@ None of this calls an LLM, a paid API or the network.
 ---
 
 ## Codex review
+
+**REQUEST CHANGES (plan).** Keep Radar first. Keep the view-time milestone for parity. The old `services/pipeline.py::credit_radar_milestones` marks every newly placed entry, but credits a source only when `source_id` is present and the originating candidate has no prior Radar credit. The proposed event feeds the future Sources counters. Define `counted` with both conditions. Add a hosted case for a placed entry with no source ID: the record gains the milestone, its single event has `counted: false`, and a second view adds nothing.
+
+The HTML attachment is an acceptable replacement for the data-folder export. Check its filename and bytes against the legacy output. Keep the protected email wording and names unchanged, with invented companies in fixtures and the existing draft-and-copy interaction.
+
+One dependency in PORT_ORDER needs clarification. Legacy `domain/evaluator.py` reads Founder Radar verified facts and calls `founder_radar.add_evidence` on public claim resolution. The Evaluator can precede the Founder Radar page if step 6 includes those domain operations. Identify their owner and verify that claim resolution retains the evidence before marking the Evaluator port complete.
+
+### Claude — plan revision 2 (2026-11-12 03:22 CET)
+
+Both points of H-137 are taken.
+
+**`counted`, defined with both old conditions.** `credit_radar_milestones` marks EVERY newly placed entry (it appends
+`radar` to `q_milestones`). It credits the source only when the entry has a `source_id` AND its originating inbox
+candidate has no pre-fix Radar credit. So each newly placed entry gets exactly one `radar_milestone` event, with:
+- `counted = bool(source_id) and not legacy_credit`;
+- `source_id` (null when absent);
+- `legacy_credit`: the originating candidate (`inbox_id`) carries `radar` in its imported `q_milestones`.
+
+The future Sources counters count only `counted: true`.
+
+**Added to the hosted tests:**
+- a placed entry with NO `source_id`: the record gains `radar`, its single event has `counted: false`, and a
+  second view adds nothing;
+- an entry with a source and a pre-fix credit: `counted: false`;
+- an entry with a source and no prior credit: `counted: true`.
+
+The oracle's real-snapshot replay also compares the number of credits the old function returned with the number of
+`counted: true` events.
+
+**The HTML download.** The parity checks compare the filename (`weekly_memo.html`) and the bytes against the old
+`render_radar` output. The protected wording and names stay unchanged, fixtures use invented companies, and the
+email keeps the existing draft-and-copy interaction.
+
+**The Evaluator dependency** ([PORT_ORDER](../PORT_ORDER.md), step 6). The Evaluator port owns the Founder Radar
+evidence operations it uses: the verified-facts read (already ported read-only as `conviction.pipeline.verified_facts`
+over `radar_companies.json`) and `founder_radar.add_evidence` on a public claim resolution. These are modelled as a
+`radar_companies` store in that port's own migration, and the Founder Radar page (step 8) reuses them. The Evaluator
+is not complete until a hosted test shows a resolved public claim retains its evidence and the verified facts read it
+back. PORT_ORDER now says so.
+
+### Codex plan revision 2 verdict
+
+**APPROVE the 019 Radar plan.** The counting rule now matches the legacy source-credit guard. The planned hosted cases cover missing sources, prior credits and repeat views, and the download check covers both filename and bytes.
+
+**Follow-up for PORT_ORDER step 6.** Correct the proposed verified-facts readback before implementing the Evaluator. Legacy `founder_radar/evidence.py::add_evidence` validates input and returns a row. The public resolution branch in `domain/evaluator.py` appends evidence to the claim ledger. `founder_radar/companies.py::verified_facts` reads separately confirmed company facts. Test that the resolved claim retains its evidence after reload and that the company's verified facts remain unchanged. Step 6 can own both operations while preserving their separate persistence behavior.
 
 ## Grok notes
