@@ -312,3 +312,90 @@ def test_a_server_trickling_its_headers_is_cut_off_at_the_deadline() -> None:
     finally:
         srv.shutdown()
         srv.server_close()
+
+
+# ── review 026b: the caller's rules on every hop, per-hop headers, error statuses with their headers ─────────────
+class RecordingTransport(FakeTransport):
+    """Also records the headers of every request it was asked to send."""
+
+    def __init__(self, answers: Mapping[str, Response]) -> None:
+        super().__init__(answers)
+        self.headers: list[tuple[str, dict[str, str]]] = []
+
+    def send(self, target: Target, method: str, headers: Mapping[str, str], body: bytes | None, timeout: float,
+             max_bytes: int, deadline: float | None = None) -> Response:  # fmt: skip
+        self.headers.append((f"{target.host}{target.path}", dict(headers)))
+        return super().send(target, method, headers, body, timeout, max_bytes, deadline)
+
+
+def _same_origin(origin: str, max_hops: int) -> Any:
+    def policy(url: str, hop: int) -> None:
+        if not url.startswith(origin + "/") or hop > max_hops:
+            raise UnsafeURLError(f"{url}: not allowed for this caller")
+
+    return policy
+
+
+def test_the_policy_runs_before_every_send_including_the_first() -> None:
+    names = {"a.example.com": [PUBLIC], "b.example.com": ["93.184.215.15"]}
+    fake = RecordingTransport({"a.example.com/start": Response("", 302, {"location": "https://b.example.com/x"})})
+    with pytest.raises(UnsafeURLError, match="not allowed"):
+        net.fetch("https://a.example.com/start", resolver=resolver(names), transport=fake,
+                  policy=_same_origin("https://a.example.com", 3))  # fmt: skip
+    assert [h for h, _ in fake.headers] == ["a.example.com/start"]  # the cross-origin hop was never sent
+    first = RecordingTransport({})
+    with pytest.raises(UnsafeURLError):
+        net.fetch("https://b.example.com/x", resolver=resolver(names), transport=first,
+                  policy=_same_origin("https://a.example.com", 3))  # fmt: skip
+    assert first.headers == []  # a forbidden initial URL is never sent
+
+
+def test_headers_for_is_per_hop_so_a_credential_never_follows_a_redirect() -> None:
+    names = {"api.example.com": [PUBLIC], "cdn.example.com": ["93.184.215.15"]}
+    fake = RecordingTransport({
+        "api.example.com/q": Response("", 302, {"location": "https://cdn.example.com/blob"}),
+        "cdn.example.com/blob": Response("", 200, {}, b"ok"),
+    })  # fmt: skip
+    r = net.fetch("https://api.example.com/q", resolver=resolver(names), transport=fake,
+                  headers_for=lambda url: {"Authorization": "Bearer t"} if url.startswith("https://api.example.com/")
+                  else {})  # fmt: skip
+    assert r.text() == "ok"
+    assert fake.headers[0][1]["Authorization"] == "Bearer t"
+    assert "Authorization" not in fake.headers[1][1]  # not carried to the next hop
+
+
+def test_an_error_status_can_be_returned_with_its_headers() -> None:
+    names = {"api.example.com": [PUBLIC]}
+    fake = FakeTransport({"api.example.com/q": Response("", 403, {"x-ratelimit-reset": "1794470400"}, b"")})
+    r = net.fetch("https://api.example.com/q", resolver=resolver(names), transport=fake, raise_for_status=False)
+    assert (r.status, r.headers["x-ratelimit-reset"]) == (403, "1794470400")
+    with pytest.raises(FetchError, match="HTTP Error 403"):  # the default is unchanged
+        net.fetch("https://api.example.com/q", resolver=resolver(names), transport=fake)
+
+
+def test_the_truncating_read_asks_only_for_the_bytes_still_wanted_and_stops_at_the_exact_limit() -> None:
+    """Codex H-223: a reader that records the requested sizes and fails if asked again once the prefix is complete."""
+
+    class Body:
+        def __init__(self, data: bytes, limit: int) -> None:
+            self.data, self.limit, self.asked, self.given = data, limit, [], 0
+
+        def read1(self, n: int) -> bytes:
+            assert self.given < self.limit, "read again after the exact prefix was delivered"
+            self.asked.append(n)
+            chunk, self.data = self.data[:n], self.data[n:]
+            self.given += len(chunk)
+            return chunk
+
+    limit = net.CHUNK + 5
+    body = Body(b"a" * (3 * net.CHUNK), limit)
+    out = net._read_bounded(body, limit, 5.0, None, truncate=True)  # type: ignore[arg-type]
+    assert out == b"a" * limit
+    assert body.asked == [net.CHUNK, 5]  # never more than the remaining count: nothing past the prefix consumed
+    exact = Body(b"b" * net.CHUNK, net.CHUNK)  # the body is EXACTLY the limit: returned without another read
+    assert net._read_bounded(exact, net.CHUNK, 5.0, None, truncate=True) == b"b" * net.CHUNK  # type: ignore[arg-type]
+    assert exact.asked == [net.CHUNK]
+    short = Body(b"c" * 10, 100)  # a body shorter than the limit ends at EOF, as before
+    assert net._read_bounded(short, 100, 5.0, None, truncate=True) == b"c" * 10  # type: ignore[arg-type]
+    with pytest.raises(ResponseTooLargeError):  # ordinary callers keep the oversized-response error
+        net._read_bounded(Body(b"a" * (3 * net.CHUNK), 10**9), net.CHUNK + 5, 5.0, None)  # type: ignore[arg-type]

@@ -5,16 +5,16 @@
  * `person_save` (see ./api).
  *
  * URL: `?view=top|near|research|diag` (default top; research opens the claim segment), `?seg=`, `?person=<id>` (the
- * evidence drawer) and `?review=<company key>` (the review drawer). The founder scan and the company research crawl
- * arrive with review 026b: their controls stay in place, disabled with the reason.
+ * evidence drawer) and `?review=<company key>` (the review drawer). "Scan founder signals" and the company research runs
+ * (review 026b) are synchronous; a scan answered with `{started: true}` is polled until the scan time changes.
  */
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
-import { DeferredButton } from "@/components/Deferred";
+import { useToast } from "@/components/Toast";
 import { Async, Button, PageHeader, Segmented } from "@/components/ui";
-import { useDebounced } from "@/lib/hooks";
-import { useFounderRadar } from "./api";
+import { useApi, useDebounced } from "@/lib/hooks";
+import { FOUNDER_RADAR, useFounderRadar, useScan } from "./api";
 import { Diagnostics } from "./components/Diagnostics";
 import { ImportModal } from "./components/ImportModal";
 import { LeadsView } from "./components/LeadsView";
@@ -23,10 +23,9 @@ import { PromoteModal } from "./components/PromoteModal";
 import { ResearchView } from "./components/ResearchView";
 import { ReviewDrawer } from "./components/ReviewDrawer";
 import { FounderRadarContext, type FrCtx } from "./context";
-import { NOT_PORTED } from "./model/deferred";
 import { NO_FILTERS, type Filters, type Seg, type View } from "./model/logic";
 import type { FounderRadar } from "./model/types";
-import { callLink, countsLine, initialSeg, viewOf, withView } from "./model/view";
+import { callLink, countsLine, initialSeg, scanFinished, scanToast, viewOf, withView } from "./model/view";
 import { useFrActions } from "./useFrActions";
 import styles from "./FounderRadar.module.css";
 
@@ -45,6 +44,7 @@ function Workbench({ data }: { data: FounderRadar }) {
   const [params, setParams] = useSearchParams();
   const navigate = useNavigate();
   const actions = useFrActions(data);
+  const scan = useScanRun(data);
 
   const view = viewOf(params);
   const [seg, setSeg] = useState<Seg>(() => initialSeg(params, view));
@@ -101,17 +101,14 @@ function Workbench({ data }: { data: FounderRadar }) {
               onChange={(e) => setSearch(e.target.value)}
             />
             <Button onClick={() => setImportOpen(true)}>Authorized import (CSV)</Button>
-            <DeferredButton reason={NOT_PORTED.scan} data-testid="fr-scan">
-              Scan founder signals
-            </DeferredButton>
+            <Button onClick={scan.run} busy={scan.scanning} data-testid="fr-scan">
+              {scan.scanning ? "Scanning…" : "Scan founder signals"}
+            </Button>
           </div>
         }
       >
         <p className={styles.counts} data-testid="fr-counts">
           {countsLine(data, seg, query)}
-        </p>
-        <p className={styles.deferredNote} data-testid="fr-scan-deferred">
-          {NOT_PORTED.scan}
         </p>
       </PageHeader>
 
@@ -140,4 +137,38 @@ function Workbench({ data }: { data: FounderRadar }) {
       {actions.dialog}
     </FounderRadarContext.Provider>
   );
+}
+
+/** Scan founder signals: the old page answered synchronously with the health report; a server that answers with a
+ *  started job instead is polled (the radar, every 2 s) until `health.scan_time` changes. The radar shown here IS the
+ *  polled query, so "finished" is derived from it; the toast fires once per finished scan time. */
+function useScanRun(data: FounderRadar) {
+  const toast = useToast();
+  const scan = useScan();
+  /** the scan time the started job must move past (null: no started job) */
+  const [pollSince, setPollSince] = useState<string | null>(null);
+  const h = data.health ?? {};
+  const doneAt = pollSince !== null && h.scan_time && h.scan_time !== pollSince ? h.scan_time : null;
+  const polling = pollSince !== null && !doneAt;
+  // the page's own radar query, re-read every 2 s while polling (never an extra read on mount)
+  useApi<FounderRadar>(FOUNDER_RADAR, undefined, { refetchInterval: polling ? 2000 : false, refetchOnMount: false });
+  const doneText = doneAt ? scanToast(h) : "";
+  const toasted = useRef<string | null>(null);
+  useEffect(() => {
+    if (!doneAt || toasted.current === doneAt) return;
+    toasted.current = doneAt;
+    toast.show(doneText, "ok");
+  }, [doneAt, doneText, toast]);
+
+  const run = async () => {
+    setPollSince(null);
+    try {
+      const r = await scan.mutateAsync({});
+      if (scanFinished(r)) toast.show(scanToast(r), "ok");
+      else setPollSince(data.health?.scan_time ?? "");
+    } catch {
+      toast.show("Scan failed", "error"); // after the failure toast with the server's reason (a 409, a 503)
+    }
+  };
+  return { run, scanning: scan.isPending || polling };
 }

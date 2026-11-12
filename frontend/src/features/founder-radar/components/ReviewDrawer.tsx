@@ -1,11 +1,9 @@
 import { useState } from "react";
 
-import { DeferredButton } from "@/components/Deferred";
 import { useToast } from "@/components/Toast";
 import { Button, Callout, Drawer, ErrorBox, Spinner } from "@/components/ui";
 import { usePair, useProposals, useReview } from "../api";
 import { useFr } from "../context";
-import { NOT_PORTED } from "../model/deferred";
 import { pairSpec } from "../model/dialogs";
 import type { Company, Proposals } from "../model/types";
 import { chosenBindings, recommendedPending, recommendedToast, reviewToast, storedBindings } from "../model/view";
@@ -139,11 +137,10 @@ function ReviewBody({ companyKey: key, c, r }: { companyKey: string; c: Partial<
         <Button onClick={() => submitReview("reject")} disabled={busy}>
           Reject selected
         </Button>
-        <DeferredButton reason={NOT_PORTED.scan}>Refresh research</DeferredButton>
+        <Button onClick={() => actions.refreshResearch(key)} disabled={actions.busy}>
+          Refresh research
+        </Button>
         {r.refreshed_at && <span className={styles.sub}>last refresh {r.refreshed_at} (observation time — never recency)</span>}
-      </div>
-      <div className={styles.deferredNote} data-testid="fr-review-deferred">
-        {NOT_PORTED.scan}
       </div>
       {G.length ? (
         G.map((g) => (

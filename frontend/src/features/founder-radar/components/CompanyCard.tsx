@@ -1,7 +1,5 @@
-import { DeferredLink } from "@/components/Deferred";
 import { Badge } from "@/components/ui";
 import { useFr } from "../context";
-import { NOT_PORTED } from "../model/deferred";
 import type { Company } from "../model/types";
 import { domainTag, linkedinCompanySearch, priorityFactorsLine, webSearchLink } from "../model/view";
 import { Ext, LinkBtn, Row, Unk } from "./bits";
@@ -13,6 +11,10 @@ export function CompanyCard({ c }: { c: Company }) {
   const { openFounder, openReview, actions } = useFr();
   const ra = c.verified_facts?.recent_activity;
   const tag = domainTag(c);
+  /** bounded official-domain research; the review opens when proposals are ready */
+  const research = async () => {
+    if (await actions.researchCompany(c.key)) openReview(c.key);
+  };
   return (
     <article className={styles.card} data-testid="fr-company-card">
       <header className={styles.cardHead}>
@@ -110,9 +112,7 @@ export function CompanyCard({ c }: { c: Company }) {
         {priorityFactorsLine(c)}
       </details>
       <footer className={styles.links}>
-        <DeferredLink className={styles.linkBtn} reason={NOT_PORTED.scan}>
-          Research company
-        </DeferredLink>
+        <LinkBtn onClick={research}>Research company</LinkBtn>
         <LinkBtn onClick={() => openReview(c.key)}>Review proposals{c.proposals_pending ? ` (${c.proposals_pending})` : ""}</LinkBtn>
         <LinkBtn onClick={() => actions.companyEvidence(c.key)}>Add public evidence</LinkBtn>
         <LinkBtn onClick={() => actions.companyFact(c.key)}>Add sourced company fact</LinkBtn>

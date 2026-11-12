@@ -11,14 +11,30 @@
  *   `boardy_brief {id}`, `pair {key, proposal, person}`, `review {key, confirm | reject, bindings}`;
  *   `POST founder-radar/proposals {key}` is a read through POST.
  * - The judgment is Network's `person_save {id, human_judgment}` (features/network/api).
- * - The scan and the research crawl arrive with review 026b: nothing here calls them (see model/deferred).
+ * - The fetching runs (review 026b), synchronous and one at a time: a second run is a 409 `{ok:false, error}`, a run the
+ *   deadline cut off before its write is a 503 `{ok:false, error}`; both are failure toasts.
+ *   - `POST founder-radar/scan {}` → the health report (`{started: true}` is tolerated: the page polls the radar);
+ *   - `POST founder-radar/research {key} | {keys} | {} (the next 5 un-researched), refresh` → `{ok, researched}`;
+ *   - `POST founder-radar/research_queue {batch: 3}` → one resumable batch (`postResearchQueue`, looped by the page).
  */
 import { useQuery } from "@tanstack/react-query";
 
 import { NETWORK_KEYS, PERSON_SAVE } from "@/features/network/api";
 import { post } from "@/lib/api";
 import { useAction, useApi } from "@/lib/hooks";
-import type { ActionResult, BoardyResult, FounderRadar, ImportResult, PromoteForm, PromoteResult, Proposals, ReviewResult } from "./model/types";
+import type {
+  ActionResult,
+  BoardyResult,
+  FounderRadar,
+  ImportResult,
+  PromoteForm,
+  PromoteResult,
+  Proposals,
+  QueueResult,
+  ResearchResult,
+  ReviewResult,
+  ScanResult,
+} from "./model/types";
 
 export const FOUNDER_RADAR = "founder-radar";
 export const ACTION = "founder-radar/action";
@@ -29,12 +45,17 @@ export const BOARDY_BRIEF = "founder-radar/boardy_brief";
 export const PROPOSALS = "founder-radar/proposals";
 export const PAIR = "founder-radar/pair";
 export const REVIEW = "founder-radar/review";
+export const SCAN = "founder-radar/scan";
+export const RESEARCH = "founder-radar/research";
+export const RESEARCH_QUEUE = "founder-radar/research_queue";
 
 /** What a person or company write makes stale (the old `founder_radar`, `people`, `watchlist`): the radar and every
  *  people view (a radar person IS a Network person). */
 export const FR_KEYS = [FOUNDER_RADAR, ...NETWORK_KEYS];
 /** A review also changes the research record. */
 export const REVIEW_KEYS = [...FR_KEYS, PROPOSALS];
+/** A scan or research run changes the people, the companies and the research records. */
+export const RUN_KEYS = [...FR_KEYS, PROPOSALS];
 
 /** The old action labels (Background activity and the "✓ … — done" / "✕ … failed" toasts). */
 export const LABEL = {
@@ -46,6 +67,8 @@ export const LABEL = {
   pair: "Pairing",
   review: "Saving the review",
   judgment: "Saving the person",
+  scan: "Scanning founders",
+  research: "Starting founder research",
 } as const;
 
 export function useFounderRadar() {
@@ -84,3 +107,13 @@ export const useImport = () => useAction<{ csv: string; label: string; include_e
 export const useReview = () => useAction<{ key: string; bindings: Record<string, string>; confirm?: string[]; reject?: string[] }, ReviewResult>(REVIEW, { invalidates: REVIEW_KEYS, label: LABEL.review });
 
 export const usePair = () => useAction<{ key: string; proposal: string; person: string }, { ok: boolean }>(PAIR, { invalidates: [PROPOSALS], label: LABEL.pair });
+
+export type ResearchBody = { key?: string; keys?: string[]; refresh?: true };
+
+export const useScan = () => useAction<Record<string, never>, ScanResult>(SCAN, { invalidates: RUN_KEYS, label: LABEL.scan });
+
+export const useResearch = () => useAction<ResearchBody, ResearchResult>(RESEARCH, { invalidates: RUN_KEYS, label: LABEL.research });
+
+/** One batch of the company research queue. As before, the queue is a plain POST: the page loops it, reports progress
+ *  after every batch and toasts once at the end (no Background activity row per batch). */
+export const postResearchQueue = () => post<QueueResult>(RESEARCH_QUEUE, { batch: 3 });

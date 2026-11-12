@@ -4,7 +4,8 @@
  * old page's (`features/founders/*`), unchanged.
  */
 import { companyMatch, frMatch, inSegment, radarPeople, segmentCounts, sortPeople, type Filters, type Seg, type View } from "./logic";
-import type { CallContext, Company, FounderRadar, ImportResult, Lead, Person, ProposalGroup, ReviewResult } from "./types";
+import { plainText } from "@/lib/activity";
+import type { CallContext, Company, FounderRadar, Health, ImportResult, Lead, Person, ProposalGroup, ResearchResult, ReviewResult, ScanResult } from "./types";
 
 /* ------------------------------------------------------------------ the URL */
 
@@ -132,3 +133,32 @@ export const importToast = (r: ImportResult) =>
 
 /** The file note after a pick. */
 export const fileNote = (name: string, size: number) => `${name} loaded (${Math.round(size / 1024)} KB) — review, then Import`;
+
+/* ------------------------------------------------------------------ the scan and company research (026b) */
+
+/** A synchronous scan answers the health report; anything else (`{started: true}`) is polled until the scan time changes. */
+export const scanFinished = (h: ScanResult): boolean => !!(h.totals && h.scan_time);
+
+export const scanToast = (h: Health) => {
+  const t = h.totals ?? {};
+  return `Scan done: ${t.ok ?? 0} ok · ${t.failed ?? 0} failed · ${t.new ?? 0} new · ${t.merged ?? 0} merged`;
+};
+
+/** The first (only) company of a `{key}` research run; a missing row is a failure without a reason. */
+const firstResearched = (r: ResearchResult) => r.researched?.[0] ?? { ok: false, error: "" };
+
+/** "Research company": the toast and whether proposals are ready to review. */
+export function researchCompanyToast(r: ResearchResult): { ok: boolean; text: string } {
+  const x = firstResearched(r);
+  return { ok: !!x.ok, text: x.ok ? `${x.pages} page(s) retrieved · ${x.proposals} proposal(s) — review before anything counts` : plainText(x.error) || "research failed" };
+}
+
+/** "Refresh research" (decisions kept). */
+export function refreshToast(r: ResearchResult): { ok: boolean; text: string } {
+  const x = firstResearched(r);
+  return { ok: !!x.ok, text: x.ok ? `${x.pages} page(s) · ${x.new || 0} new proposal(s)` : plainText(x.error) || "refresh failed" };
+}
+
+/** "Research next 5 leads": one part per company. */
+export const researchLeadsToast = (r: ResearchResult) =>
+  (r.researched ?? []).map((x) => `${x.name}: ${x.ok ? x.proposals + " proposals" : plainText(x.error)}`).join(" · ") || "nothing left to research";

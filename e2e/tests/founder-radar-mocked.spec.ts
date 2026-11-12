@@ -5,8 +5,8 @@
  * only the frontend (`npm run dev` in frontend/, or PZ_BASE_URL). Every person, company and domain in
  * fixtures/founder-radar/ is invented. The exact POST bodies are asserted.
  *
- * The scan and the company research crawl arrive with review 026b: their controls are checked to be disabled with the
- * reason and to send nothing.
+ * The founder scan and the company research runs (review 026b) are live: the old spec's synchronous scan and polled
+ * job, a 409 shown as the error, the research bodies and the resumable queue's batches.
  *
  *   cd e2e && PZ_BASE_URL=http://localhost:5173 npx playwright test founder-radar-mocked
  */
@@ -22,20 +22,26 @@ type J = any;
 const load = (n: string): J => JSON.parse(readFileSync(resolve(FIX, n), "utf8"));
 const CSV = resolve(FIX, "sample_Connections.csv");
 const KELP = "dom:kelpwise.example";
-const DEFERRED = "Founder scans and company research arrive with the founder scan port (026b)";
 const BRIDGE = "External research jobs arrive with the bridge port";
-/** endpoints nothing in 026a may call */
+const QUEUE = "Research company queue (all leads with an official domain, resumable)";
+const BUSY = "Another founder scan or research run is in progress — try again when it finishes.";
+/** the fetching endpoints (and the never-ported bridge): the identity checks below must call none of them */
 const NETWORK = /\/api\/(founder-radar\/(scan|research|research_queue)|radar_scan|radar_research|radar_research_queue|bridge_create)\b/;
 
 type Posted = { path: string; body: J };
 
 /** Mock every endpoint the page reads or writes; anything else under /api answers 404 (the shell's not-ported reads are
- *  allowed by `watch`, any other 404 fails the test). Returns every request and every POST body, in order. */
-async function mockApi(page: Page, opts: { radar?: J; proposals?: Record<string, J> } = {}) {
+ *  allowed by `watch`, any other 404 fails the test). Returns every request and every POST body, in order.
+ *  `scan` replaces the scan's answer (`{status, json}`); `radarAfter` is what the radar answers from the second read after
+ *  a scan on (the re-read right after the answer still has the old scan time, so a started job must be polled). */
+async function mockApi(page: Page, opts: { radar?: J; proposals?: Record<string, J>; scan?: { status?: number; json: J }; radarAfter?: J } = {}) {
   const radar = opts.radar ?? load("founder_radar.json");
   const proposals = opts.proposals ?? { [KELP]: load("proposals_kelpwise.json"), "dom:borealis.example": load("proposals_borealis.json") };
   const posted: Posted[] = [];
   const requested: string[] = [];
+  let radarReads = 0;
+  let readsAfterScan = -1;
+  let queueCalls = 0;
   const body = (r: Request) => {
     try {
       return r.postDataJSON();
@@ -45,16 +51,24 @@ async function mockApi(page: Page, opts: { radar?: J; proposals?: Record<string,
   };
   page.on("request", (r) => r.url().includes("/api/") && requested.push(new URL(r.url()).pathname));
   await page.route(/\/api\//, (route) => route.fulfill({ status: 404, json: { ok: false, error: "not found" } }));
-  await page.route(/\/api\/founder-radar(\?.*)?$/, (route) => route.fulfill({ json: radar }));
+  await page.route(/\/api\/founder-radar(\?.*)?$/, (route) => {
+    radarReads++;
+    const after = opts.radarAfter && readsAfterScan >= 0 && ++readsAfterScan >= 2;
+    return route.fulfill({ json: after ? opts.radarAfter : radar });
+  });
   await page.route(/\/api\/founder-radar\/proposals$/, (route) => {
     const b = body(route.request());
     posted.push({ path: "proposals", body: b });
     return route.fulfill({ json: proposals[b?.key] ?? { ok: true, groups: [], recommended: [], summary: {}, history: [] } });
   });
-  await page.route(/\/api\/(founder-radar\/(action|review|pair|company|import|promote|boardy_brief)|network\/person_save)$/, (route) => {
+  await page.route(/\/api\/(founder-radar\/(action|review|pair|company|import|promote|boardy_brief|scan|research|research_queue)|network\/person_save)$/, (route) => {
     const path = route.request().url().split("/api/")[1].replace(/^(founder-radar|network)\//, "");
     const b = body(route.request());
     posted.push({ path, body: b });
+    if (path === "scan") {
+      readsAfterScan = 0;
+      return route.fulfill({ status: opts.scan?.status ?? 200, json: opts.scan?.json ?? { ...radar.health, scan_time: "2026-11-12 09:30" } });
+    }
     const R: Record<string, J> = {
       action: b?.action === "merge" && !b?.confirm ? { ok: false, error: "merge refused: confirm it", needs_confirmation: true } : { ok: true, person: {} },
       review: { ok: true, facts: ["founded", "funding"], identity_bound: b?.bindings && Object.keys(b.bindings).length ? [{ name: "Mira Talvik" }] : [], still_pending: [], conflicts: [], refused: [] },
@@ -72,10 +86,15 @@ async function mockApi(page: Page, opts: { radar?: J; proposals?: Record<string,
       promote: { ok: true, person: {}, error: null },
       boardy_brief: { ok: true, brief: "Intro request for Oskar Lindqvist — public evidence only.", sent: false, note: "No Boardy API — paste this into Boardy yourself." },
       person_save: { ok: true, id: b?.id },
+      research: { ok: true, researched: [{ key: b?.key ?? "", name: "Quillstone AI", ok: true, pages: 5, proposals: 9, new: 0 }] },
+      research_queue:
+        path === "research_queue" && ++queueCalls === 1
+          ? { ok: true, processed: [], done: 1, remaining: 1, failed: {}, skipped_no_domain: ["Grainline Labs"], in_progress: true, resume: true }
+          : { ok: true, processed: [], done: 2, remaining: 0, failed: { "dom:quillstone.example": "HTTP 404" }, skipped_no_domain: ["Grainline Labs"], in_progress: false, resume: false },
     };
     return route.fulfill({ json: R[path] });
   });
-  return { posted, requested, writes: () => posted.filter((p) => p.path !== "proposals") };
+  return { posted, requested, radarReads: () => radarReads, writes: () => posted.filter((p) => p.path !== "proposals") };
 }
 
 const tab = (page: Page, name: string) => page.getByRole("tab", { name: new RegExp("^" + name.replace(/[+()]/g, "\\$&")) });
@@ -307,8 +326,7 @@ test("review binding: per-row founder selectors, explicit pairing, per-proposal 
   await expect(selects).toHaveCount(2);
   const refresh = drawer.getByRole("button", { name: "Refresh research" });
   await expect(refresh).toBeVisible();
-  await expect(refresh).toHaveAttribute("aria-disabled", "true");
-  await expect(refresh).toHaveAttribute("title", DEFERRED);
+  await expect(refresh).toBeEnabled();
   await expect(drawer.getByText("Decision history (1, append-only)")).toBeVisible();
 
   const mira = drawer.locator("[data-testid=fr-review-row][data-field=founder][data-value='Mira Talvik']");
@@ -334,7 +352,7 @@ test("review binding: per-row founder selectors, explicit pairing, per-proposal 
   w.expectClean();
 });
 
-/* ------------------------------------------------------------------ import, the deferred scan, actions, diagnostics */
+/* ------------------------------------------------------------------ import, the scan, research, actions, diagnostics */
 test("authorized import: CSV file is read client-side and posted to founder-radar/import", async ({ page }) => {
   const w = watch(page);
   const { posted } = await mockApi(page);
@@ -359,27 +377,73 @@ test("authorized import: CSV file is read client-side and posted to founder-rada
   w.expectClean();
 });
 
-test("scan founder signals and company research: disabled with the reason, nothing is requested (026b)", async ({ page }) => {
+test("scan founder signals: the synchronous health report", async ({ page }) => {
   const w = watch(page);
-  const api = await mockApi(page);
-  await open(page, "?view=research");
+  const { posted } = await mockApi(page);
+  await open(page);
   const scan = page.getByRole("button", { name: "Scan founder signals" });
-  await expect(scan).toHaveAttribute("aria-disabled", "true");
-  await expect(scan).toHaveAttribute("title", DEFERRED);
-  await expect(page.getByTestId("fr-scan-deferred")).toHaveText(DEFERRED);
-  await scan.click({ force: true }); // aria-disabled: Playwright would wait for it to be enabled
-  for (const name of ["Research next 5 leads", "Research company queue (all leads with an official domain, resumable)"]) {
-    const b = page.getByRole("button", { name });
-    await expect(b).toHaveAttribute("aria-disabled", "true");
-    await b.click({ force: true });
-  }
+  await expect(scan).toBeEnabled();
+  await scan.click();
+  await expect(page.getByText(/Scan done: \d+ ok · \d+ failed · \d+ new · \d+ merged/)).toBeVisible();
+  expect(posted.filter((p) => p.path === "scan").map((p) => p.body)).toEqual([{}]);
+  await expect(page.getByRole("button", { name: "Scan founder signals" })).toBeEnabled();
+  w.expectClean();
+});
+
+test("scan founder signals: a started job is polled until the scan time changes", async ({ page }) => {
+  const w = watch(page);
+  const after = load("founder_radar.json");
+  after.health.scan_time = "2026-11-12 10:00";
+  after.health.totals.ok = 5;
+  const api = await mockApi(page, { radarAfter: after, scan: { json: { started: true } } });
+  await open(page);
+  await page.getByRole("button", { name: "Scan founder signals" }).click();
+  await expect(page.getByRole("button", { name: "Scanning…" })).toBeDisabled();
+  await expect(page.getByText(/Scan done: 5 ok/)).toBeVisible({ timeout: 15_000 });
+  expect(api.radarReads()).toBeGreaterThan(2); // the first read, the re-read after the answer, at least one poll
+  expect(api.posted.filter((p) => p.path === "scan").map((p) => p.body)).toEqual([{}]);
+  await expect(page.getByRole("button", { name: "Scan founder signals" })).toBeEnabled();
+  w.expectClean();
+});
+
+test("scan founder signals: a 409 (another run in progress) is shown as the error", async ({ page }) => {
+  const w = watch(page, { expected: [409] });
+  await mockApi(page, { scan: { status: 409, json: { ok: false, error: BUSY } } });
+  await open(page);
+  await page.getByRole("button", { name: "Scan founder signals" }).click();
+  await expect(page.getByText(`✕ Scanning founders failed — ${BUSY}`)).toBeVisible();
+  await expect(page.getByText("Scan failed", { exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Scan founder signals" })).toBeEnabled();
+  w.expectClean();
+});
+
+test("company research: Research company, Research next 5 leads and Refresh research post the old bodies", async ({ page }) => {
+  const w = watch(page);
+  const { posted } = await mockApi(page);
+  await open(page, "?view=research");
   const research = page.getByRole("button", { name: "Research company", exact: true });
   await expect(research).toHaveCount(4);
-  await research.first().click({ force: true });
-  await expect(page.getByRole("dialog")).toHaveCount(0); // a disabled "Research company" never opens the review
-  await page.waitForTimeout(300);
-  expect(api.requested.filter((p) => NETWORK.test(p))).toEqual([]);
-  expect(api.posted).toEqual([]);
+  for (const name of ["Research next 5 leads", QUEUE]) await expect(page.getByRole("button", { name })).toBeEnabled();
+
+  await page.getByTestId("fr-company-card").filter({ hasText: "Quillstone AI" }).getByRole("button", { name: "Research company", exact: true }).click();
+  await expect(page.getByText("5 page(s) retrieved · 9 proposal(s) — review before anything counts")).toBeVisible();
+  const drawer = page.getByRole("dialog", { name: "Review — Quillstone AI" });
+  await expect(drawer).toBeVisible(); // proposals are ready: the review opens
+  expect(posted.filter((p) => p.path === "research").map((p) => p.body)).toEqual([{ key: "dom:quillstone.example" }]);
+
+  await drawer.getByRole("button", { name: "Refresh research" }).click();
+  await expect(page.getByText("5 page(s) · 0 new proposal(s)")).toBeVisible();
+  await expect.poll(() => posted.filter((p) => p.path === "research").map((p) => p.body)).toEqual([{ key: "dom:quillstone.example" }, { key: "dom:quillstone.example", refresh: true }]);
+  await page.keyboard.press("Escape");
+  await expect(drawer).toHaveCount(0);
+
+  await page.getByRole("button", { name: "Research next 5 leads" }).click();
+  await expect(page.getByText("Quillstone AI: 9 proposals", { exact: true })).toBeVisible();
+  await expect.poll(() => posted.filter((p) => p.path === "research").map((p) => p.body)).toEqual([
+    { key: "dom:quillstone.example" },
+    { key: "dom:quillstone.example", refresh: true },
+    {},
+  ]);
   w.expectClean();
 });
 
@@ -443,6 +507,13 @@ test("per-person and company actions post the old bodies", async ({ page }) => {
       activity_date: "2026-11-04",
     },
   });
+
+  // the resumable company research queue: batches of 3 until nothing remains
+  await page.getByRole("button", { name: QUEUE }).click();
+  await expect(page.getByTestId("fr-rq-state")).toContainText("2 done · 0 remaining · 1 failed · skipped (no official domain): Grainline Labs · complete");
+  await expect(page.getByTestId("fr-rq-state")).toContainText("failures: dom:quillstone.example: HTTP 404");
+  await expect(page.getByText("Company research queue: 2 done", { exact: true })).toBeVisible();
+  expect(posted.filter((p) => p.path === "research_queue").map((p) => p.body)).toEqual([{ batch: 3 }, { batch: 3 }]);
   w.expectClean();
 });
 

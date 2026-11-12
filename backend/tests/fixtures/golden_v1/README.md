@@ -64,3 +64,18 @@ order differs from JSONB order, the same folder read at a second clock, missing 
 folder), at 2026-11-12 10:00 with the old `hash` pinned to `int(sha1(str(key)))`, the theme terms sorted and
 `PYTHONHASHSEED=0`; the reads' writes are restored (decision a) and identical values are stored once
 (`python -m projectzero.ops.parity_founder_radar goldens`).
+
+`oracle_founder_radar_fetch.json` (review 026b): the old founder scan and company research (`radar_scan`,
+`radar_research`, `radar_research_queue`, with a `radar_review` between a research run and its refresh) over fixture
+sites and NO network: the collectors' `_get_json` answers from the fixtures and the REAL old `_fetch_public` runs with
+a fixture connector and resolver (DNS, connect and `urlopen` raise). Three sets of invented names: a scan with the
+GitHub token whose third city search answers 403 with `X-RateLimit-Reset` (the later cities never contacted), OpenAlex
+works / an empty answer / a 500, the pipeline founders and the optional sources; two scans without a token, the first
+stopped by a 429 with `Retry-After` on a user lookup, the second resuming at the cursor; company research (team, about
+and news pages, a robots.txt disallow and a `text/plain` robots.txt, a login wall, cross-origin, http, `www.` and
+looping redirects, a non-HTML page, an oversize body, a transport error, a private address, a candidate domain, no
+domain, a GitHub organisation page) cached, refreshed and queued. Each step records the answer, the stored documents
+(key order included) and every request sent; at 2026-11-12 10:00 with the old `hash` pinned, the theme terms sorted,
+`PYTHONHASHSEED=0` and the reset as Berlin wall time. Declared differences, normalised: the User-Agent, the
+`PZ_GITHUB_TOKEN` hint, durations, and the founder references research no longer persists
+(`python -m projectzero.ops.parity_founder_radar_fetch goldens`).
