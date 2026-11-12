@@ -6,6 +6,8 @@
     python -m projectzero.ops.parity_news check     # the stored golden against the new code (no oracle)
     python -m projectzero.ops.parity_news writes-goldens  # (re)generates golden_v1/oracle_news_writes.json (028b)
     python -m projectzero.ops.parity_news writes-check    # the stored writes golden against the new code
+    python -m projectzero.ops.parity_news refresh-goldens # (re)generates golden_v1/oracle_news_refresh.json (028c)
+    python -m projectzero.ops.parity_news refresh-check   # the stored refresh golden against the new code
 
 The oracle (``scripts/oracle/news_oracle.py``) runs the old ``services/news.py`` / ``services/news_sources.py`` over
 a scratch data folder, route by route, each from the FRESH fixture: ``view`` (``GET /api/news``), ``weekly``
@@ -71,25 +73,51 @@ the appended action and Validation bytes, the saved event record (key order) and
 ``validation.view()`` against the pure views over the updated inputs (``news.writes.applied``), kept in the golden as
 sha-256 digests per section. No declared difference (the Validation view through 027b's normalisation (d)).
 
+The refresh run (review 028c, ``refresh-goldens`` / ``refresh-check``, ``golden_v1/oracle_news_refresh.json``): the
+oracle (``scripts/oracle/news_refresh_oracle.py``) drives the old ``start_refresh`` SYNCHRONOUSLY twice (10:00, then
+10:25) over the ``refresh_docs`` world (028a's ``main`` without its two unreadable stories, plus stored events to
+re-derive, collide with and syndicate, Swiss ticker candidates, known names, a cooldown, a third extra feed), its
+``connectors._get`` answering the recorded ``refresh_feeds`` bytes (new items, merges by entity / type / date, a
+syndicated copy, the same URL, an id collision, a future date, a 23:30 -07:00 time, junk after ``</rss>``,
+undeclared entities, a bad item and an item without a link, 45 items, a stale feed, a 429, a feed in its cooldown,
+a 500, a TLS failure, Atom with ``published`` / ``updated``, relative links and a permalink GUID, an unparseable
+extra feed), the clock frozen, the model refused (deterministic cards), every write in memory. The new side is
+``news.writes.ensure_seeded`` then per run ``refresh.plan`` -> ``fetch_all`` (``FixtureTransport``, a resolver
+answering ``FIXTURE_IP``) -> ``apply`` over the documents re-read, its writes applied to the documents. Compared per
+run: the answer, the events document (key order), every appended line byte for byte, the last saved body of every
+document, the fetched URLs (each sent with the News User-Agent to the checked address) and the next News and sources
+views (sha-256 digests per section). Declared differences, normalised in ``compare_refresh`` only
+(``REFRESH_DECLARED``): (a) the TLS feed (the parity run serves it as the old fallback did; the strict run, the
+production policy, fails it with its reason and changes nothing else, checked by ``check_strict``); (d) the
+nominations (a ``nomination_deferred`` line per old ``nominate`` call) and the watch bridge (no trigger,
+``watch_triggers`` 0); (e) no run-state start marker; 028a's (e) / (s) inside the metric cache.
+
 Exit 1 on any difference.
 """
 
 from __future__ import annotations
 
 import copy
+import email.utils
 import hashlib
 import json
 import os
 import re
+import ssl
 import subprocess
 import sys
 import tempfile
+from collections import Counter
+from collections.abc import Mapping
 from datetime import date, datetime, timedelta
 from pathlib import Path
 from typing import Any
 
+from projectzero.core import net
 from projectzero.core.paths import REPO_ROOT
 from projectzero.dealflow.ranking.names import norm_company
+from projectzero.news import catalog as news_catalog
+from projectzero.news import core as news_core
 from projectzero.news import (
     inputs_from_docs,
     refresh_status,
@@ -99,13 +127,18 @@ from projectzero.news import (
     weekly_review,
     with_entities,
 )
+from projectzero.news import refresh as news_refresh
 from projectzero.news import writes as news_writes
 from projectzero.news.core import load
+from projectzero.news.evaluate import NOMINATION_REASON
+from projectzero.news.fetching import USER_AGENT as FEED_USER_AGENT
+from projectzero.news.fetching import FeedFetch
 from projectzero.news.inputs_model import CASES_KEY
 from projectzero.news.sources import HEALTH_REASON
 from projectzero.ops.parity_ranking import GOLDEN_DIR, OLD_REPO, diff, js
 
 ORACLE = REPO_ROOT / "scripts" / "oracle" / "news_oracle.py"
+EVENTS_PATH = "news/events.json"
 GOLDEN = GOLDEN_DIR / "oracle_news.json"
 CLOCK = "2026-11-12T10:00:00"
 WINDOWS = ("30", "90", "180", "all", "7")  # "7": anything else is 90 (decision d)
@@ -920,6 +953,505 @@ def write_writes_goldens() -> int:
     return writes_report(read_golden(WRITES_GOLDEN))
 
 
+# ------------------------------------------------------------------ review 028c: the refresh run
+REFRESH_ORACLE = REPO_ROOT / "scripts" / "oracle" / "news_refresh_oracle.py"
+REFRESH_GOLDEN = GOLDEN_DIR / "oracle_news_refresh.json"
+REFRESH_CLOCKS = ("2026-11-12T10:00:00", "2026-11-12T10:25:00")  # run 2: the 10:20 cooldown is over, the 429's is not
+FIXTURE_IP = "93.184.216.34"  # every fixture host resolves here (a public address; nothing is ever sent to it)
+WATCH_LOG = "watch/triggers.jsonl"  # the old watch bridge's log (decision d: deferred)
+TLS_FEED = "Maddyness"  # decision (a): the old insecure fallback fetched it; the new fetch fails it
+TLS_ERROR = "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1032)"
+LOG_PATHS = {"runs": "news/runs.jsonl", "disagreements": "news/disagreements.jsonl",
+             "source_log": "news/source_log.jsonl", "source_history": "news/source_history.jsonl"}  # fmt: skip
+FEED_URLS = {f["name"]: f["url"] for f in news_catalog.FEEDS}
+GAZETTE = "https://gazette.invented.example/rss"
+LEDGER = "https://ledger.invented.example/feed"
+
+
+# fmt: off
+def rss(items: list[str], tail: str = "") -> str:
+    return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<rss version=\"2.0\"><channel><title>Invented</title>" + "".join(items) + "</channel></rss>" + tail
+
+
+def item(title: str, link: str | None, pub: str, desc: str = "", guid: str | None = None) -> str:
+    return ("<item><title>" + title + "</title>" + (f"<link>{link}</link>" if link is not None else "") + (f"<guid>{guid}</guid>" if guid else "")
+            + (f"<pubDate>{pub}</pubDate>" if pub else "") + (f"<description>{desc}</description>" if desc else "") + "</item>")
+
+
+def atom(entries: list[str]) -> str:
+    return "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<feed xmlns=\"http://www.w3.org/2005/Atom\"><title>Invented</title>" + "".join(entries) + "</feed>"
+
+
+def entry(title: str, href: str, published: str, updated: str = "", summary: str = "") -> str:
+    return (f"<entry><title>{title}</title><link rel=\"alternate\" href=\"{href}\"/><link rel=\"self\" href=\"{href}.xml\"/>"
+            + (f"<published>{published}</published>" if published else "") + (f"<updated>{updated}</updated>" if updated else "")
+            + (f"<summary>{summary}</summary>" if summary else "") + "</entry>")
+
+
+def rfc(n: int, hm: str = "08:00", zone: str = "+0100") -> str:
+    """An RFC 2822 time ``n`` days before the clock's day."""
+    return email.utils.format_datetime(datetime.fromisoformat(f"{day(n)}T{hm}:00")).replace("-0000", zone)
+
+
+COLLIDE = "Invented Hazel Robotics raises €3M to automate greenhouses"
+SYND = "Europe's robot makers meet at an invented fair in Lyon"
+
+
+def collision_id() -> str:
+    """The id the old ingest gives ``COLLIDE`` (published on the clock's day): a stored event takes it first."""
+    company, _how = news_refresh._company(COLLIDE, "", [])
+    cls = news_core.classify(COLLIDE, "")
+    return "nw-" + news_refresh._sha(key(company) or COLLIDE, cls["event_type"], TODAY.isoformat()[:7])
+
+
+def refresh_feeds() -> dict[str, Any]:
+    sifted = rss([
+        item("Invented Alder Robotics raises €5M seed round", "https://sifted.eu/articles/alder", rfc(1), "<p>The Berlin team builds robot grippers &amp; arms.</p>"),
+        item("Invented Kestrel Robotics closes its €4M seed round", "https://sifted.eu/articles/kestrel-close", rfc(1, "07:00"), "Second report of the Munich round."),
+        item("Invented Kestrel Robotics raises €4M seed round", "https://news.invented.example/early-s", rfc(2)),  # the very same URL: skipped
+        item("Invented Birch Analytics raises €2M for AI audits", "https://sifted.eu/articles/birch", "Fri, 20 Nov 2026 09:00:00 +0100"),  # future: today
+        item("Orphan headline without a link", None, rfc(1)),
+        item("Invented Broken Link Co raises €1M", "http://[bad/x", rfc(1)),  # urljoin raises: the item is skipped
+        item("Invented Cobalt Sensors secures €3M for industrial AI", "/articles/cobalt", "Tue, 10 Nov 2026 23:30:00 -0700"),  # Berlin: 11 Nov
+        item("Invented Lumen Grid opens a second robotics plant", "https://sifted.eu/articles/lumen", rfc(3)),
+        item("Invented Spruce Quantum unveils its first deeptech chip", "https://sifted.eu/articles/spruce", rfc(2)),
+        item(COLLIDE, "https://sifted.eu/articles/hazel", rfc(0, "09:15")),
+        item("Top 10 robotics startups to watch this winter", "https://sifted.eu/articles/top10", rfc(1)),
+    ])
+    techeu = rss([
+        item("Invented Dune&nbsp;Robotics raises €8M Series A for caf&eacute; robots", "https://tech.eu/2026/11/dune", rfc(1), "Les fondateurs &laquo;Dune&raquo; &bogus; build robots."),
+        item(SYND, "https://tech.eu/2026/11/lyon", rfc(1)),
+        item("Invented Ember Defence raises €40M Series B", "https://tech.eu/2026/11/ember", rfc(2), "A dual-use defence drone maker in Germany."),
+    ], tail="<script>track('ad')</script><div>junk after the feed</div>")
+    bulk = rss([item(f"Invented Bulk Co {i} raises €{1 + i % 5}M" + (" for robotics" if i % 3 == 0 else ""), f"https://www.eu-startups.com/2026/11/bulk-{i}", rfc(i % 9)) for i in range(45)])
+    stale = rss([item("Invented Old Harbor raises €2M", "https://www.siliconcanals.com/old-harbor", rfc(20)),
+                 item("Invented Older Pier raises €1M", "https://www.siliconcanals.com/older-pier", rfc(25))])
+    deutsche = rss([item("Invented Rhein Robotics erhält 3 Millionen Euro", "https://www.deutsche-startups.de/rhein", rfc(0, "06:00"))])
+    madd = atom([entry("Invented Lavande Robotique lève 6 millions d'euros", "https://www.maddyness.com/2026/11/lavande", f"{day(1)}T08:00:00+01:00", summary="Une start-up lyonnaise de robotique.")])
+    uktn = rss([
+        item("Invented Thames Logistics raises £4M", "/2026/11/thames", rfc(2), "A London AI logistics team."),
+        item("Invented Mersey Robotics lands £2M", None, rfc(1), guid="https://www.uktech.news/p/mersey"),
+        item("Invented Tyne Labs signs a defence customer", None, rfc(1), guid="not-a-permalink"),
+    ])
+    arctic = atom([
+        entry("Invented Fjell Robotics raises €7M Series A", "https://arcticstartup.com/fjell", f"{day(1)}T22:30:00Z", f"{day(0)}T09:00:00Z", "Nordic robotics."),
+        entry("Invented Sami AI gets €2M", "https://arcticstartup.com/sami", "", f"{day(2)}T10:00:00+02:00"),
+    ])
+    ledger = rss([item("Invented Ledger Pick: Invented Moss Robotics raises €2M", "https://ledger.invented.example/moss", rfc(1))])
+    return {
+        FEED_URLS["Sifted"]: {"body": sifted},
+        FEED_URLS["Tech.eu"]: {"body": techeu},
+        FEED_URLS["EU-Startups"]: {"body": bulk},
+        FEED_URLS["Silicon Canals"]: {"body": stale},
+        FEED_URLS["Startbase"]: {"status": 429, "body": ""},
+        FEED_URLS["deutsche-startups.de"]: {"body": deutsche},
+        FEED_URLS["Munich Startup"]: {"status": 500, "body": ""},
+        FEED_URLS["Maddyness"]: {"body": madd, "tls": True},
+        FEED_URLS["UKTN"]: {"body": uktn},
+        FEED_URLS["ArcticStartup"]: {"body": arctic},
+        LEDGER: {"body": ledger},
+        GAZETTE: {"body": "not xml at all & <"},
+    }
+
+
+def refresh_docs() -> dict[str, Any]:
+    """The 028a ``main`` world (its two unreadable stories removed: the old run would crash on them) plus the stored
+    events the run must re-derive, collide with and syndicate, the Swiss ticker candidates, the known names, a
+    cooldown and one more extra feed."""
+    docs = main_docs()
+    events = docs["news/events.json"]["events"]
+    for eid in ("nw-bad", "nw-nokey"):
+        del events[eid]
+    synd_src = src("Invented Wire", "lyon", day(2), SYND, host="wire.invented.example")
+    synd_src["text_sha"] = news_refresh._sha(news_refresh._norm_text(SYND))
+    extra = [
+        ev("nw-r-other", "Invented Birchwood Labs", "Invented Birchwood Labs raises €2M seed round for robotics", "other", day(6), "LOW", amount=None),
+        ev("nw-r-nocomp", "", "Invented Juniper Sensors launches a robotics pilot line", "launch", day(5), "LOW"),
+        ev("nw-r-broken", "12.10.2026 17:08", "Invented sensor maker raises money", "funding", day(8), "MEDIUM", amount=2.0),
+        ev("nw-r-noise", "Invented Poplar AI", "Top 10 robotics startups to watch this winter in Berlin", "other", day(9), "LOW"),
+        ev("nw-r-mat", "Invented Aspen Robotics", "Invented Aspen Robotics raises €25M", "funding", day(7), "LOW", amount=25.0),
+        ev("nw-r-synd", "", SYND, "other", day(2), "LOW", sources=[synd_src]),
+        ev("nw-r-rules", "Invented Willow Robotics", "Invented Willow Robotics raises €9M seed", "funding", day(4), "MEDIUM", amount=9.0, rnd="seed",
+           card={"what_happened": "an older rules card", "why_it_matters": "", "the_company": "", "vc_lesson": "", "watch_next": [], "generated_by": "rules"}),
+        ev(collision_id(), "Invented Hazel Holdings", "Invented Hazel Holdings buys a greenhouse", "acquisition", TODAY.replace(day=1).isoformat(), "HIGH"),
+    ]
+    for e in extra:
+        events[e["event_id"]] = e
+    docs["inbox.json"]["candidates"] += [
+        cand("t1", "Invented Alpine Robotics", "startupticker.ch", "announcement", day(2),
+             raw_title="Invented Alpine Robotics sichert sich 4 Millionen Franken", source_url="https://www.startupticker.ch/en/news/alpine"),
+        cand("t2", "Invented Glacier AI", "startupticker.ch", "announcement", day(3),
+             raw_title="12.11.2026 Invented Glacier AI", description="Invented Glacier AI raises CHF 2M for robotics", source_url="https://www.startupticker.ch/en/news/glacier"),
+        cand("t3", "01.11.2026 10:00", "startupticker.ch", "announcement", day(4), raw_title="01.11.2026 10:00"),
+    ]
+    docs["real_data.json"] = {"signals": [{"company": "Invented Larch Photonics", "stage": "Watch"}]}
+    docs["scout_intake.json"] = {"items": [{"entity_name": "Invented Spruce Quantum"}, {"entity_name": "AI"}]}
+    docs["news/feed_cooldown.json"] = {"Gone Feed": "2026-11-01T00:00:00", "deutsche-startups.de": "2026-11-12T10:20:00"}
+    docs["news/feeds_extra.json"]["feeds"].append(
+        {"name": "Invented Gazette", "feed_url": GAZETTE, "geo": "FR", "state": "TRUSTED", "enabled": True})
+    return docs
+
+
+def refresh_runs() -> list[dict[str, Any]]:
+    return [{"clock": c, "seam": [f"{i:x}{'abc'[i]}d{i}" + "0" * 28]} for i, c in enumerate(REFRESH_CLOCKS)]
+# fmt: on
+
+
+class FixtureTransport:
+    """Answers from the recorded feed bytes and records every request it was asked to send (URL, headers, address).
+    ``strict``: a ``tls`` feed fails its certificate check (the production behaviour, decision a); otherwise it is
+    served as the old insecure fallback served it (the parity run)."""
+
+    def __init__(self, feeds: Mapping[str, Any], *, strict: bool = True) -> None:
+        self.feeds = feeds
+        self.strict = strict
+        self.requests: list[dict[str, Any]] = []
+
+    def send(self, target: net.Target, method: str, headers: Mapping[str, str], body: bytes | None, timeout: float,
+             max_bytes: int, deadline: float | None = None, *, truncate: bool = False) -> net.Response:  # fmt: skip
+        default = 443 if target.scheme == "https" else 80
+        url = f"{target.scheme}://{target.host}{'' if target.port == default else f':{target.port}'}{target.path}"
+        self.requests.append({"url": url, "headers": dict(headers), "ip": target.ip, "timeout": timeout,
+                              "max_bytes": max_bytes, "deadline": deadline})  # fmt: skip
+        spec = self.feeds.get(url) or {"status": 404, "body": ""}
+        if spec.get("tls") and self.strict:
+            raise ssl.SSLCertVerificationError(1, TLS_ERROR)
+        if spec.get("error"):
+            raise OSError(spec["error"])
+        raw = spec.get("raw")
+        data: bytes = raw if isinstance(raw, bytes) else str(spec.get("body", "")).encode("utf-8")
+        if len(data) > max_bytes:
+            raise net.ResponseTooLargeError(f"response exceeds the {max_bytes}-byte cap")
+        return net.Response(
+            url, int(spec.get("status", 200)), {k.lower(): v for k, v in (spec.get("headers") or {}).items()}, data
+        )
+
+
+def fixture_resolver(host: str) -> list[str]:
+    return [FIXTURE_IP]
+
+
+def applied_docs(docs: dict[str, Any], out: news_refresh.RunOutcome) -> dict[str, Any]:
+    """The old-format documents after ``out`` was stored, as the old files would read back."""
+    d = dict(docs)
+    d[EVENTS_PATH] = out.events_doc
+    for log, line in out.appends:
+        path = LOG_PATHS[log]
+        d[path] = text_of(d.get(path)) + line + "\n"
+    for path, body in out.documents.items():
+        d[path] = body
+    return d
+
+
+def text_of(raw: Any) -> str:
+    if raw is None:
+        return ""
+    return raw.decode("utf-8") if isinstance(raw, bytes) else str(raw)
+
+
+def _views(docs: dict[str, Any], today: date, now: datetime) -> dict[str, Any]:
+    from projectzero.validation import entities as validation_entities
+    from projectzero.validation import inputs_from_docs as validation_inputs
+
+    v = validation_inputs(docs, today)
+    ents = validation_entities(v, today)
+    inputs = with_entities(v.news_inputs, ents, v)
+    return {
+        "news": _answer(lambda: view(inputs, today, now)),
+        "sources:90": _answer(lambda: sources_view(inputs, "90", today)),
+        "sources:all": _answer(lambda: sources_view(inputs, "all", today)),
+    }
+
+
+def new_refresh(golden_in: dict[str, Any], *, strict: bool) -> tuple[dict[str, Any], list[str]]:
+    """The pure side: ``ensure_seeded`` (the store, before the first write transaction), then per run ``plan`` ->
+    ``fetch_all`` (the fixture transport, a resolver that answers every host with ``FIXTURE_IP``, the clock at 0) ->
+    ``apply`` over the documents re-read, its writes applied to the documents, and the next views."""
+    from projectzero.validation import inputs_from_docs as validation_inputs
+
+    docs = copy.deepcopy(golden_in["docs"])
+    problems: list[str] = []
+    first = datetime.fromisoformat(golden_in["runs"][0]["clock"])
+    v = validation_inputs(docs, first.date())
+    doc, changes = news_writes.ensure_seeded(v.news_inputs.events, v.news_inputs.cases, first)
+    seed = {"added": len(changes), "events": js(doc)} if changes else None
+    docs[EVENTS_PATH] = doc
+    runs: list[dict[str, Any]] = []
+    transport = FixtureTransport(golden_in["feeds"], strict=strict)
+    for r in golden_in["runs"]:
+        now = datetime.fromisoformat(r["clock"])
+        today = now.date()
+        seam = list(r["seam"])
+        run_id = news_refresh.new_run_id(now, lambda: seam.pop(0))  # noqa: B023 - called now
+        v = validation_inputs(docs, today)
+        before = copy.deepcopy(v)
+        p = news_refresh.plan(v.news_inputs, today, now, run_id=run_id, clock=lambda: 0.0)
+        transport.requests.clear()
+        results = news_refresh.fetch_all(
+            p, FeedFetch(transport=transport, resolver=fixture_resolver, clock=lambda: 0.0)
+        )
+        current = validation_inputs(docs, today)  # phase 3 re-reads the CURRENT inputs
+        out = news_refresh.apply(news_refresh.RunInputs(current.news_inputs, current), results, today=today, now=now,
+                                 run_id=run_id, clock=lambda: 0.0)  # fmt: skip
+        if v != before or current != before:
+            problems.append(f"/run {run_id}: the run changed its inputs")
+        stored = load(current.news_inputs.events)["events"]
+        for c in out.new_events:
+            if c.event_id in stored or ("ingest" not in c.passes and "seed" not in c.passes):
+                problems.append(f"/run {run_id}/new_events/{c.event_id}: not a new event of the ingest")
+        for c in out.changed_events:
+            if c.event_id not in stored or _text(stored[c.event_id]) == _text(c.record) or not c.passes:
+                problems.append(f"/run {run_id}/changed_events/{c.event_id}: not a changed stored event")
+        docs = applied_docs(docs, out)
+        runs.append(
+            {
+                "answer": {"code": 200, "body": js(out.answer)},
+                "events": js(out.events_doc),
+                "appended": [[LOG_PATHS[log], line + "\n"] for log, line in out.appends],
+                "documents": js(out.documents),
+                "deferred_nominations": js(list(out.evaluation.deferred_nominations)) if out.evaluation else [],
+                "requests": [dict(q) for q in transport.requests],
+                "outcome": out,
+                "views": _views(docs, today, now),
+            }
+        )
+    return {"seed": seed, "runs": runs}, problems
+
+
+def _norm_metrics(doc: Any, problems: list[str], side: str, at: str) -> Any:
+    """Declared (e) and (s) of 028a inside the metric cache: the Swiss technical row's ``reason`` (new side, checked
+    then dropped) and the hash-ordered ``unique.by_scope`` keys (sorted on both sides)."""
+    out = copy.deepcopy(doc)
+    for w, m in ((out or {}).get("windows") or {}).items():
+        for row in (m.get("sources") or {}).values():
+            tech = row.get("technical") or {}
+            if side == "new" and row.get("kind") == "deal_flow_reuse":
+                if tech.get("reason") != HEALTH_REASON:
+                    problems.append(f"{at}/windows/{w}: the Swiss technical row has no deferral reason")
+                tech.pop("reason", None)
+            unique = row.get("unique") or {}
+            if isinstance(unique.get("by_scope"), dict):
+                unique["by_scope"] = dict(sorted(unique["by_scope"].items()))
+    return out
+
+
+def _denominate(rec: Any) -> Any:
+    """Declared (d) in a run record: the old ``source_eval.nominated`` held the source-network candidate ids, and the
+    old ``watch_triggers`` counted the watch triggers it fired (the bridge is deferred: 0)."""
+    if isinstance(rec, dict):
+        rec = copy.deepcopy(rec)
+        if isinstance(rec.get("source_eval"), dict):
+            rec["source_eval"]["nominated"] = []
+        if "watch_triggers" in rec:
+            rec["watch_triggers"] = 0
+    return rec
+
+
+def _old_appended(
+    lines: list[list[str]], nominated: list[dict[str, Any]], problems: list[str], at: str
+) -> list[list[str]]:
+    """Declared (d) on the old side: the ``nominated`` source-log line dropped (after checking it lists one candidate
+    per ``nominate`` call), the ``evaluated`` line's ``nominated`` count and the run line's ``source_eval.nominated``
+    read as the deferral leaves them (0, ``[]``)."""
+    out: list[list[str]] = []
+    watched = 0
+    for path, text in lines:
+        row = json.loads(text) if text.strip().startswith("{") else None
+        if path == WATCH_LOG:  # declared (d): the deferred watch bridge fires nothing
+            watched += 1
+            continue
+        if path == LOG_PATHS["runs"] and isinstance(row, dict) and row.get("watch_triggers") != watched:
+            problems.append(
+                f"{at}: the old run counted {row.get('watch_triggers')} watch triggers, {watched} were written"
+            )
+        if path == LOG_PATHS["source_log"] and isinstance(row, dict) and row.get("event") == "nominated":
+            if row.get("candidates") != [f"cand-{i + 1}" for i in range(len(nominated))]:
+                problems.append(f"{at}: the old nominated line does not match its nominate calls")
+            continue
+        if path == LOG_PATHS["source_log"] and isinstance(row, dict) and row.get("event") == "evaluated":
+            row["nominated"] = 0
+            text = json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n"
+        if path == LOG_PATHS["runs"] and isinstance(row, dict):
+            text = json.dumps(_denominate(row), ensure_ascii=False, sort_keys=True) + "\n"
+        out.append([path, text])
+    return out
+
+
+def _new_appended(lines: list[list[str]], deferred: list[dict[str, Any]], nominated: list[dict[str, Any]],
+                  problems: list[str], at: str) -> list[list[str]]:  # fmt: skip
+    """Declared (d) on the new side: one ``nomination_deferred`` line per old ``nominate`` call, in the same order
+    (name, URL, family, the old ``why``), dropped after the check."""
+    out: list[list[str]] = []
+    rows = []
+    for path, text in lines:
+        row = json.loads(text)
+        if path == LOG_PATHS["source_log"] and row.get("event") == "nomination_deferred":
+            rows.append(row)
+            continue
+        out.append([path, text])
+    want = [
+        {"source": n["name"], "url": n["url"], "family": n["family"], "why": n["why"], "reason": NOMINATION_REASON}
+        for n in nominated
+    ]
+    got = [{k: r.get(k) for k in ("source", "url", "family", "why", "reason")} for r in rows]
+    if got != want or len(deferred) != len(nominated):
+        problems.append(f"{at}: the deferred nominations {got} are not the old nominate calls {want}")
+    return out
+
+
+def _old_answer(ans: dict[str, Any]) -> dict[str, Any]:
+    body = copy.deepcopy(ans.get("body"))
+    if isinstance(body, dict):
+        body["last"], body["last_ok"] = _denominate(body.get("last")), _denominate(body.get("last_ok"))
+    return {**ans, "body": body}
+
+
+def _compare(at: str, old: Any, new: Any, problems: list[str]) -> None:
+    problems += [f"{at}{p}" for p in diff(js({"v": old}), js({"v": new}))]
+    if _text(old) != _text(new):
+        problems.append(f"{at}: the serialized value differs (key order)")
+
+
+def compare_refresh(golden: dict[str, Any]) -> list[str]:
+    """Per run: the answer, the events after the run (key order), every appended line byte for byte, the last saved
+    body of every document and the next views (sha-256 digests per section), against the parity run (the TLS feed
+    served as the old fallback served it); then the strict run (the production policy) checked for the declared TLS
+    difference only. Declared differences, normalised here and nowhere else: see ``REFRESH_DECLARED``."""
+    exp = golden["expected"]
+    problems: list[str] = []
+    if exp["changed"]:
+        problems.append(f"/changed: the OLD run changed {exp['changed']}")
+    got, invariants = new_refresh(golden, strict=False)
+    problems += invariants
+    _compare("/seed", exp["seed"], got["seed"], problems)
+    for i, (old, new) in enumerate(zip(exp["runs"], got["runs"], strict=True)):
+        at = f"/run[{i}]"
+        _compare(f"{at}/answer", _old_answer(old["answer"]), new["answer"], problems)
+        _compare(f"{at}/events", old["events"], new["events"], problems)
+        oa = _old_appended(old["appended"], old["nominated"], problems, at)
+        na = _new_appended(new["appended"], new["deferred_nominations"], old["nominated"], problems, at)
+        if oa != na:
+            problems.append(f"{at}/appended: {len(oa)} old lines != {len(na)} new lines")
+            problems += [
+                f"{at}/appended[{k}]: {a!r} != {b!r}" for k, (a, b) in enumerate(zip(oa, na, strict=False)) if a != b
+            ][:6]
+        saved = {path: body for path, body in old["saved"]}
+        start = old["saved"][0] if old["saved"] else None  # declared (e): the old run-state START marker
+        if not (start and start[0] == "news/run_state.json" and start[1].get("running") is True):
+            problems.append(f"{at}/saved: the old run did not start with its run-state marker")
+        if list(saved) != [*dict.fromkeys(p for p, _b in old["saved"])] or set(saved) != set(new["documents"]):
+            problems.append(f"{at}/documents: {sorted(saved)} != {sorted(new['documents'])}")
+        for path in saved:
+            o, n = saved[path], new["documents"].get(path)
+            if path == "news/source_metrics.json":
+                o, n = _norm_metrics(o, problems, "old", at), _norm_metrics(n, problems, "new", at)
+            _compare(f"{at}/documents/{path}", o, n, problems)
+        if [q["url"] for q in new["requests"]] != old["fetched"]:
+            problems.append(f"{at}/requests: {[q['url'] for q in new['requests']]} != {old['fetched']}")
+        for q in new["requests"]:
+            if q["headers"].get("User-Agent") != FEED_USER_AGENT or q["ip"] != FIXTURE_IP:
+                problems.append(
+                    f"{at}/requests: {q['url']} was not sent with the News User-Agent to the checked address"
+                )
+        nv = view_digests(normalise(new["views"], problems, "new"))
+        ov = copy.deepcopy(old["views"])
+        ov["last_run"] = _denominate(ov["last_run"])
+        _compare(f"{at}/views", ov, nv, problems)
+    problems += check_strict(golden, got)
+    return problems
+
+
+def check_strict(golden: dict[str, Any], parity: dict[str, Any]) -> list[str]:
+    """Declared (a): with the production policy the TLS feed fails with its certificate reason and ONLY that changes:
+    every other feed outcome is the parity run's, and the new events are the parity run's minus the TLS feed's."""
+    problems: list[str] = []
+    strict, invariants = new_refresh({**golden, "runs": golden["runs"][:1]}, strict=True)
+    problems += [f"/strict{p}" for p in invariants]
+    s, o = strict["runs"][0]["outcome"], parity["runs"][0]["outcome"]
+    pf = s.record["per_feed"].get(TLS_FEED) or {}
+    if not (pf.get("ok") is False and str(pf.get("error", "")).startswith("SSLCertVerificationError: ") and pf.get("http") is None
+            and pf.get("rate_limited") is False):  # fmt: skip
+        problems.append(f"/strict/per_feed/{TLS_FEED}: {pf}")
+    if f"{TLS_FEED}: {pf.get('error')}" not in s.record["sources_failed"] or s.record["status"] != "partial":
+        problems.append("/strict: the TLS failure is not recorded as a failed source of a partial run")
+    others = {k: v for k, v in s.record["per_feed"].items() if k != TLS_FEED}
+    if others != {k: v for k, v in o.record["per_feed"].items() if k != TLS_FEED}:
+        problems.append("/strict: another feed's outcome changed")
+    keep = [c.event_id for c in o.new_events if any(src_["publisher"] != TLS_FEED for src_ in c.record["sources"])]
+    if [c.event_id for c in s.new_events] != keep or not len(keep) < len(o.new_events):
+        problems.append("/strict: the new events are not the parity run's minus the TLS feed's")
+    return problems
+
+
+REFRESH_DECLARED = (
+    "(a) the TLS feed: the old insecure fallback fetched it; the parity run serves it the same way and the strict run "
+    "(the production policy) fails it with its certificate reason, nothing else changing",
+    "(d) the nominations: one nomination_deferred source-log line per old nominate call instead of the old nominated "
+    "line; nominated is [] / 0 in the run record, the evaluated line and the answer",
+    "(d) the watch bridge: the old run fired one watch trigger per watched company's story (watch/triggers.jsonl); the "
+    "new run fires none (watch_triggers 0, RunOutcome.deferred names the reason)",
+    "(e) the run completes inside the request: no run-state START marker is written (only the final {running: false})",
+    "028a (e) / (s) inside the metric cache: the Swiss technical row's reason, the unique.by_scope key order",
+)
+
+
+def view_digests(views: dict[str, Any]) -> dict[str, Any]:
+    """The next views as the golden keeps them: per view the sha-256 digest per section; the News view's
+    ``last_run`` (the run record, where declared (d) applies) kept whole and left out of its digest."""
+    out: dict[str, Any] = {}
+    for k, a in views.items():
+        body = a.get("body")
+        if k == "news" and isinstance(body, dict):
+            out["last_run"] = body.get("last_run")
+            a = {**a, "body": {s: v for s, v in body.items() if s != "last_run"}}
+        out[k] = digest(a)
+    return out
+
+
+def refresh_summary(golden: dict[str, Any]) -> dict[str, Any]:
+    out: dict[str, Any] = {"seeded": (golden["expected"]["seed"] or {}).get("added"), "runs": []}
+    for r in golden["expected"]["runs"]:
+        last = (r["answer"].get("body") or {}).get("last") or {}
+        out["runs"].append({
+            **{k: last.get(k) for k in ("status", "new", "merged", "duplicates_skipped", "reclassified", "cards", "seeded",
+                                       "items", "sources_ok", "cooldown", "stale_feeds", "source_eval")},
+            "sources_failed": [x.split(":")[0] for x in last.get("sources_failed") or []],
+            "appended": dict(Counter(p.rsplit("/", 1)[-1] for p, _t in r["appended"])),
+            "saved": [p for p, _b in r["saved"]],
+            "nominated": len(r["nominated"]),
+            "events": len((r["events"] or {}).get("events") or {}),
+        })  # fmt: skip
+    return out
+
+
+def refresh_report(golden: dict[str, Any]) -> int:
+    problems = compare_refresh(golden)
+    print(json.dumps({"golden": str(REFRESH_GOLDEN), "bytes": REFRESH_GOLDEN.stat().st_size, "old": golden["provenance"],
+                      "summary": refresh_summary(golden), "declared": REFRESH_DECLARED}, ensure_ascii=False, indent=1))  # fmt: skip
+    for p in problems[:80]:
+        print("  DIFF", p)
+    print("NEWS REFRESH GOLDENS MATCH" if not problems else f"NEWS REFRESH GOLDENS DIFFER ({len(problems)})")
+    return 1 if problems else 0
+
+
+def refresh_input() -> dict[str, Any]:
+    return {"docs": refresh_docs(), "feeds": refresh_feeds(), "runs": refresh_runs()}
+
+
+def write_refresh_goldens() -> int:
+    inp = refresh_input()
+    files, cases = split_cases(inp["docs"])
+    oracle = scratch_oracle(REFRESH_ORACLE, {"feeds": inp["feeds"], "runs": inp["runs"]}, files, cases,
+                            prefix="pz-news-refresh-oracle-")  # fmt: skip
+    meta = oracle.pop("meta")
+    sink: list[str] = []
+    for r in oracle["runs"]:  # the views as digests of the normalised old answers (each full view is ~0.3 MB)
+        r["views"] = view_digests(normalise(r["views"], sink, "old"))
+    golden = {"provenance": meta, **inp, "expected": oracle}
+    REFRESH_GOLDEN.write_bytes((json.dumps(golden, ensure_ascii=False, indent=None) + "\n").encode("utf-8"))
+    return refresh_report(read_golden(REFRESH_GOLDEN))
+
+
 # ------------------------------------------------------------------ the real snapshot, through the API routes
 REAL_CLOCK = "2026-11-12T09:00:00"
 _REAL_PATHS = {"view": ("/api/news", None), "weekly": ("/api/news/weekly", None),
@@ -969,17 +1501,30 @@ def real() -> int:  # pragma: no cover - needs the hosted database and the old r
         with transaction(settings.db_url) as c:
             before = _fingerprint(c, schema)
             stored_events, stored_actions = news_store.events_doc(c, schema), news_store.actions_text(c, schema)
-        # review 028b: the importer's backfill holds the archived events (key order, each record's own key order) and
-        # every archived action line, byte for byte
+            stored_logs, stored_docs = news_store.log_texts(c, schema), news_store.documents(c, schema)
+
+        def archived_lines(path: str) -> str:
+            lines = re.split(r"\r\n|\r|\n", files.get(path, b"").decode("utf-8-sig"))
+            if lines and lines[-1] == "":
+                lines.pop()
+            return "".join(f"{line}\n" for line in lines)
+
+        # reviews 028b / 028c: the importer's backfills hold the archived events (key order, each record's own key
+        # order), every archived action and run-log line byte for byte, and every run document in its key order
         if "news/events.json" in files:
             archived = json.loads(files["news/events.json"].decode("utf-8-sig"))
             if json.dumps(stored_events, ensure_ascii=False) != json.dumps(archived, ensure_ascii=False):
                 problems.append("/news/events.json: the backfilled events differ from the archive")
-        lines = re.split(r"\r\n|\r|\n", files.get("news/actions.jsonl", b"").decode("utf-8-sig"))
-        if lines and lines[-1] == "":
-            lines.pop()
-        if stored_actions != "".join(f"{line}\n" for line in lines):
+        if stored_actions != archived_lines("news/actions.jsonl"):
             problems.append("/news/actions.jsonl: the backfilled lines differ from the archive")
+        for path in news_store.LOGS.values():
+            if stored_logs.get(path, "") != archived_lines(path):
+                problems.append(f"/{path}: the backfilled lines differ from the archive")
+        for path in news_store.DOCUMENTS:
+            if path in files:
+                want = json.dumps(json.loads(files[path].decode("utf-8-sig")), ensure_ascii=False)
+                if json.dumps(stored_docs.get(path), ensure_ascii=False) != want:
+                    problems.append(f"/{path}: the backfilled document differs from the archive")
         app = create_app(Settings(db_url=settings.db_url, schema=schema))
         app.state.clock = lambda: utc_instant(REAL_CLOCK)
         got: dict[str, Any] = {}
@@ -1028,6 +1573,10 @@ def main(argv: list[str]) -> int:
         return write_writes_goldens()
     if mode == "writes-check":  # the stored writes golden against the new code (no oracle)
         return writes_report(read_golden(WRITES_GOLDEN))
+    if mode == "refresh-goldens":
+        return write_refresh_goldens()
+    if mode == "refresh-check":  # the stored refresh golden against the new code (no oracle)
+        return refresh_report(read_golden(REFRESH_GOLDEN))
     print(__doc__)
     return 2
 

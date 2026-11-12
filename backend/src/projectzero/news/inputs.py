@@ -12,13 +12,11 @@ from datetime import datetime
 from typing import Any
 
 import psycopg
-from psycopg import sql
 
-from projectzero.core.db import schema_ident
 from projectzero.network.view import berlin_today
 from projectzero.news import store as news_store
 from projectzero.news.inputs_model import NewsInputs, base_from_docs, inputs_from_docs
-from projectzero.validation.inputs import archived_text, load_docs
+from projectzero.validation.inputs import load_docs
 
 RUNS = "news/runs.jsonl"
 
@@ -28,9 +26,7 @@ def load(conn: psycopg.Connection[Any], schema: str, now: datetime) -> NewsInput
 
 
 def load_status(conn: psycopg.Connection[Any], schema: str) -> tuple[NewsInputs, int]:
-    """Only what ``refresh_status`` reads (Codex H-251): the archived runs log, and the STORED event count (a
-    persisted seed included) instead of the whole events document."""
-    q = sql.SQL("select raw from {}.legacy_documents where path = %s").format(schema_ident(schema))
-    row = conn.execute(q, (RUNS,)).fetchone()
-    inputs = base_from_docs({RUNS: archived_text(row[0]) if row is not None else ""})
+    """Only what ``refresh_status`` reads (Codex H-251): the stored runs log (``news_logs``, review 028c) and the STORED
+    event count (a persisted seed included) instead of the whole events document."""
+    inputs = base_from_docs(news_store.log_texts(conn, schema, ("runs",)))
     return inputs, news_store.event_count(conn, schema)

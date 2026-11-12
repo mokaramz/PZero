@@ -16,13 +16,13 @@ Where each old input comes from:
 * ``inference_ledger.jsonl``: ``model_ledger`` in insertion order, each row as ``{ts, usd}``, ``ts`` in Berlin time.
 * the four ``validation/*.jsonl`` logs: ``validation_log`` (review 027b) through ``validation.store.texts``, each
   log's lines in ``seq`` order.
-* ``news/events.json`` and ``news/actions.jsonl``: ``news_events`` / ``news_events_rest`` / ``news_actions``
-  (review 028b) through ``news.store``.
+* every News file through ``news.store``: ``news/events.json`` and ``news/actions.jsonl`` from ``news_events`` /
+  ``news_events_rest`` / ``news_actions`` (review 028b); the run's logs (``news/{runs,disagreements,source_log,
+  source_history,weekly}.jsonl``) from ``news_logs`` and its documents (``news/{source_metrics,source_state,
+  feeds_extra,run_state,feed_cooldown}.json``) from ``news_documents`` (review 028c). No News archive is read.
 * ``triage_decisions.jsonl``, ``verification_decisions.jsonl``, ``scout_intake.json``, ``sources/network.json`` and
-  the other News files (``news/{runs,disagreements,source_log}.jsonl``, ``news/{source_metrics,source_state,
-  feeds_extra}.json``, ``scan_history.json``; review 028a, until their own tables in 028c): the byte-exact archive
-  (``utf-8-sig``) in line / key order, else (the JSON files) the imported ``documents`` row; a missing file reads as
-  its old default.
+  ``scan_history.json``: the byte-exact archive (``utf-8-sig``) in line / key order, else (the JSON files) the
+  imported ``documents`` row; a missing file reads as its old default.
 """
 
 from __future__ import annotations
@@ -52,17 +52,11 @@ from projectzero.validation.inputs_model import ValidationInputs, candidate_reco
 JSON_ARCHIVES = (
     "scout_intake.json",
     "sources/network.json",
-    "news/source_metrics.json",
-    "news/source_state.json",
-    "news/feeds_extra.json",
     "scan_history.json",
 )
 TEXT_ARCHIVES = (
     "triage_decisions.jsonl",
     "verification_decisions.jsonl",
-    "news/runs.jsonl",
-    "news/disagreements.jsonl",
-    "news/source_log.jsonl",
 )
 LEDGER_TS = "%Y-%m-%dT%H:%M:%S"  # the old ``ledger.now_ts()``
 _PROPOSALS = (
@@ -146,4 +140,6 @@ def load_docs(conn: psycopg.Connection[Any], schema: str, now: datetime) -> dict
     if events is not None:
         docs["news/events.json"] = events
     docs["news/actions.jsonl"] = news_store.actions_text(conn, schema)
+    docs.update(news_store.log_texts(conn, schema))  # the run's logs (028c)
+    docs.update(news_store.documents(conn, schema))  # the run's documents (028c)
     return docs

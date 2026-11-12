@@ -14,15 +14,19 @@
  * - `news_refresh_status.json`: the refresh status after a partial run, after a failed one, and before any run (the job
  *   is idle in each);
  * - `news_writes.json`: the old answers of the three writes (028b) — a confirm, a repeated decision after a confirm
- *   (`already`), a reject, a not-enough, the prefilled miss audit and an added signal.
+ *   (`already`), a reject, a not-enough, the prefilled miss audit and an added signal;
+ * - `news_runs.json`: the runs' answers (028c) — a finished clean refresh (`{started, run_id, **refresh_status}`, its job
+ *   idle), a finished evaluation, the 409 of a run already active and the 503 of a run cut by its deadline.
  */
 import emptyJson from "./news_empty.json";
 import fullJson from "./news.json";
 import refreshJson from "./news_refresh_status.json";
+import runsJson from "./news_runs.json";
 import sourcesJson from "./news_sources.json";
 import weeklyEmptyJson from "./news_weekly_empty.json";
 import weeklyJson from "./news_weekly.json";
 import writesJson from "./news_writes.json";
+import type { EvaluateAnswer, RefreshAnswer } from "../model/refresh";
 import type { NewsPayload, RefreshStatus, SourcesPayload, Weekly, Window } from "../model/types";
 
 export const news = (): NewsPayload => structuredClone(fullJson) as unknown as NewsPayload;
@@ -32,6 +36,17 @@ export const emptyWeekly = (): Weekly => structuredClone(weeklyEmptyJson) as Wee
 export const sources = (window: Window = "90"): SourcesPayload => structuredClone(sourcesJson[window]) as unknown as SourcesPayload;
 export type RefreshCase = keyof typeof refreshJson;
 export const refreshStatus = (c: RefreshCase = "partial"): RefreshStatus => structuredClone(refreshJson[c]) as unknown as RefreshStatus;
+
+/** The finished clean refresh's answer, and the status a read finds after it (the answer without `started`, `run_id`). */
+export const refreshAnswer = (): RefreshAnswer => structuredClone(runsJson.refresh) as unknown as RefreshAnswer;
+export const statusAfterRefresh = (): RefreshStatus => {
+  const status: Partial<RefreshAnswer> = refreshAnswer();
+  delete status.started;
+  delete status.run_id;
+  return status as RefreshStatus;
+};
+export const evaluateAnswer = (): EvaluateAnswer => structuredClone(runsJson.evaluate) as EvaluateAnswer;
+export const runRefusal = (c: "busy" | "deadline") => structuredClone(runsJson[c]);
 
 export type WriteCase = keyof typeof writesJson;
 export const writeAnswer = (c: WriteCase): Record<string, unknown> => structuredClone(writesJson[c]);

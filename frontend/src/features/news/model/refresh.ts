@@ -1,6 +1,7 @@
 /**
- * The refresh line's pure logic, ported line for line from the old `features/news/NewsRefresh.tsx`. In 028a no refresh
- * runs (it arrives with 028c): the status is read once and its job is idle, so the line shows the last run's outcome.
+ * The refresh line's pure logic, ported line for line from the old `features/news/NewsRefresh.tsx`, and the two runs'
+ * answers, labels and texts (028c). The run executes inside its request (decision e), so the status is read once and
+ * again when the run returns; the old 1.5 s polling is gone.
  */
 import { plainSourceProblem } from "@/lib/activity";
 import type { NewsRun, RefreshStatus } from "./types";
@@ -57,3 +58,28 @@ export function progressText(job: RefreshStatus["job"]): string {
 /** After a failed or interrupted attempt the line also says when the last good refresh was. */
 export const showsLastOk = (last: NewsRun | null | undefined) => !!last?.status && ["failed", "interrupted"].includes(last.status);
 export const lastOkText = (s: RefreshStatus) => `Last successful refresh: ${s.last_ok ? fmtTs(s.last_ok.completed_at || s.last_ok.at) : "none yet"}.`;
+
+/* ------------------------------------------------------------------ the runs (028c) */
+
+/** `POST news/refresh` answers when the run has finished: the old `{started, run_id, **refresh_status}`, its job idle. */
+export type RefreshAnswer = RefreshStatus & { started: true; run_id: string };
+/** `POST news/sources/evaluate` answers when the evaluation has finished. */
+export type EvaluateAnswer = { ok: true; evaluated_at: string };
+/** A 409 (another run holds the News run lock, or the data is not imported yet): nothing ran, the server says why. */
+export type NotStarted = { started: false; reason: string };
+export const isNotStarted = (r: unknown): r is NotStarted => !!r && typeof r === "object" && (r as { started?: unknown }).started === false;
+
+/** The old activity labels (Background activity and the "✕ … failed" toast). */
+export const RUN_LABEL = {
+  refresh: "Refreshing news",
+  evaluate: "Re-measuring news sources",
+} as const;
+
+/** The old line next to the button when a run is already active. */
+export const ALREADY_RUNNING = "A news refresh is already running.";
+
+/** What Background activity says once the refresh has returned: the outcome line's title for the run it finished. */
+export const refreshDone = (r: RefreshAnswer) => (r.last ? refreshSummary(r.last).title : "News refresh — done");
+
+/** The evaluation's success toast. The old text said it ran "in the background"; here it has finished when it answers. */
+export const EVALUATED = "News sources re-measured";

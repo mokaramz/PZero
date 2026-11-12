@@ -1,9 +1,7 @@
 import { useState } from "react";
 
-import { DeferredButton } from "@/components/Deferred";
 import { Async, Badge, Button, Segmented } from "@/components/ui";
-import { useNewsSources } from "../api";
-import { NOT_PORTED } from "../model/deferred";
+import { useEvaluateSources, useNewsSources } from "../api";
 import {
   authorityLine,
   biasLine,
@@ -28,18 +26,20 @@ import styles from "../News.module.css";
 
 /**
  * Which news sources are best FOR WHICH PURPOSE — measured, never one universal score. The window is local state and
- * becomes `GET news/sources?window=`. "Re-measure now" runs the source evaluation, which arrives with 028c.
+ * becomes `GET news/sources?window=`. "Re-measure now" runs the source evaluation (028c) inside its request; when it
+ * returns, every window is read again.
  */
 export function NewsSources() {
   const [win, setWin] = useState<Window>(DEFAULT_WINDOW);
   const q = useNewsSources(win);
+  const evaluate = useEvaluateSources();
   return (
     <div className={styles.list} data-testid="news-sources">
       <div className={styles.row} style={{ marginTop: 0 }}>
         <Segmented value={win} onChange={setWin} options={WINDOWS} label="Time window" />
-        <DeferredButton size="sm" variant="ghost" reason={NOT_PORTED.refresh}>
+        <Button size="sm" variant="ghost" busy={evaluate.isPending} onClick={() => evaluate.mutate()}>
           Re-measure now
-        </DeferredButton>
+        </Button>
       </div>
       <Async q={q} label="Measuring sources…">
         {(d) => (

@@ -1,10 +1,10 @@
 /**
- * News & Learning (reviews 028a, 028b) — the new app on a preview database (the real snapshot in a scratch schema).
- * Every section renders from the real reads, the sources view answers each window, the decision controls (028b) are
- * enabled and opening / cancelling the early-signal form writes nothing, the run controls (028c) are visible, disabled
- * and give their reason, the Scout Bridge button is gone, and the layout fits at the usual sizes. This spec NEVER
- * performs a write (no decision, audit or signal is clicked through): news-mocked.spec.ts asserts the exact POSTs, and the
- * stubbed page tests cover every panel in detail.
+ * News & Learning (reviews 028a-028c) — the new app on a preview database (the real snapshot in a scratch schema).
+ * Every section renders from the real reads, the sources view answers each window, the decision controls (028b) and the
+ * run controls (028c: "Refresh news", "Re-measure now") are enabled, opening / cancelling the early-signal form writes
+ * nothing, the Scout Bridge button is gone, and the layout fits at the usual sizes. This spec NEVER performs a write (no
+ * decision, audit or signal is clicked through, and the run controls are never clicked: a real run would fetch the feeds
+ * from the network): news-mocked.spec.ts asserts the exact POSTs, and the stubbed page tests cover every panel in detail.
  */
 import { expect, test, type Locator, type Page } from "@playwright/test";
 
@@ -12,7 +12,7 @@ import { expectNoHorizontalOverflow, watch as watchErrors, zoom150 } from "./hel
 
 const TABS = ["Today", "All stories", "Caught early", "Misses", "Historical cases", "What's moving", "My companies", "Weekly review", "News sources"];
 const WRITES_028B = "Recording News decisions arrives with the News writes port (028b)"; // the 028a deferral, gone
-const REFRESH = "Refreshing News arrives with the News refresh port (028c)";
+const REFRESH_028C = "Refreshing News arrives with the News refresh port (028c)"; // the 028a deferral of the runs, gone
 
 /** No page / console error (the shell's not-yet-ported endpoints aside, as everywhere) and no write request at all. */
 function watch(page: Page) {
@@ -46,11 +46,12 @@ async function rendered(page: Page, name: string) {
   return expect(page.getByTestId("news-story").or(page.locator("[class*='empty']")).first()).toBeVisible();
 }
 
-async function expectDeferred(el: Locator, reason: string) {
+/** Visible and enabled, with no deferral — and NEVER clicked here. */
+async function expectEnabled(el: Locator) {
   await expect(el).toBeVisible();
-  await expect(el).toHaveAttribute("aria-disabled", "true");
-  await expect(el).toHaveAttribute("title", reason);
-  await el.click({ force: true }); // does nothing: no request below
+  await expect(el).toBeEnabled();
+  await expect(el).not.toHaveAttribute("aria-disabled", "true");
+  await expect(el).not.toHaveAttribute("title", REFRESH_028C);
 }
 
 test.describe("News & Learning — new app, preview database", () => {
@@ -61,7 +62,7 @@ test.describe("News & Learning — new app, preview database", () => {
     await expect(page.getByTestId("news-concept")).toContainText("VC concept of the day");
     await expect(page.getByText("Project Zero vs the news")).toBeVisible();
     await expect(page.getByTestId("news-refresh")).toContainText(/Refresh (complete|partly done)|News refresh failed|Last refresh was interrupted|Not refreshed yet\./);
-    await expect(page.getByTestId("news-refresh-progress")).toHaveCount(0); // no run is ever active in 028a
+    await expect(page.getByTestId("news-refresh-progress")).toHaveCount(0); // a run lives inside its request: none is active here
     await expect(sections(page).getByRole("tab")).toHaveText(TABS);
     for (const name of TABS) {
       await section(page, name);
@@ -91,16 +92,13 @@ test.describe("News & Learning — new app, preview database", () => {
     w.expectClean();
   });
 
-  test("the run controls are disabled with their reason; the decisions are enabled (never clicked through here)", async ({ page }) => {
+  test("the run controls and the decisions are enabled (never clicked here)", async ({ page }) => {
     const w = watch(page);
     await openNews(page);
-    await expectDeferred(page.getByTestId("news-refresh-button"), REFRESH);
+    await expect(page.getByTestId("news-refresh-button")).toHaveText("Refresh news");
+    await expectEnabled(page.getByTestId("news-refresh-button"));
     await section(page, "All stories");
-    const enabled = async (el: Locator) => {
-      await expect(el).toBeVisible();
-      await expect(el).toBeEnabled();
-      await expect(el).not.toHaveAttribute("aria-disabled", "true");
-    };
+    const enabled = expectEnabled;
     const proposals = page.getByTestId("news-outcome-proposal");
     if (await proposals.count()) for (const name of ["Confirm outcome", "Reject", "Not enough evidence"]) await enabled(proposals.first().getByRole("button", { name, exact: true }));
     const audits = page.getByTestId("news-audit");
@@ -109,7 +107,10 @@ test.describe("News & Learning — new app, preview database", () => {
     await expect(page.locator(`[title="${WRITES_028B}"]`)).toHaveCount(0);
     await expect(page.getByRole("dialog")).toHaveCount(0);
     await section(page, "News sources");
-    await expectDeferred(page.getByTestId("news-sources").getByRole("button", { name: "Re-measure now" }), REFRESH);
+    await expect(page.getByTestId("news-sources-best")).toBeVisible({ timeout: 60_000 });
+    await expectEnabled(page.getByTestId("news-sources").getByRole("button", { name: "Re-measure now" }));
+    await expect(page.locator('[aria-disabled="true"]')).toHaveCount(0);
+    await expect(page.getByText(REFRESH_028C)).toHaveCount(0);
     await page.waitForTimeout(300);
     w.expectClean();
   });

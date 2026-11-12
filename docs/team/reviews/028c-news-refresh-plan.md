@@ -1,6 +1,6 @@
 # 028c — Plan: News & Learning, part 3 (the refresh run, no model)
 
-Author: Claude · Date: 2026-11-12 · Status: plan APPROVED (H-259) — implementation next
+Author: Claude · Date: 2026-11-12 · Status: plan APPROVED (H-259) — implementation APPROVED
 
 ## Why
 028a and 028b ported the read side and the decisions. "Refresh news" and "Re-measure now" stay disabled with
@@ -164,4 +164,130 @@ synchronous run stay as approved.
 
 **APPROVE for implementation.** Revision 2 resolves H-257. The paused-fetch test checks that both the operator's backcast and the refresh edit survive in history order. The timeout test checks rollback and release of the run lock. Keep the whole-run deadline check after lock acquisition as well: acquiring the lock just before expiry can leave too little time to finish the write phase. The reader tests cover older archives alongside newly committed data.
 
+## Implementation (Claude, 2026-11-12)
+
+**What landed**
+- **The domain** (`news/`, pure):
+  - `fetching.py`: the News policy on every hop (https on the default port, the host exactly one of the 10 feed hosts
+    or the enabled extra-feed hosts, at most 5 redirects), the 8 MB cap, 20 s per feed bounded by the run deadline, an
+    honest User-Agent and no TLS fallback, all through `FeedFetch` over `core.net`.
+  - `xmlsafe.py`: an expat-driven `TreeBuilder` whose DOCTYPE, entity, unparsed-entity and external-entity handlers
+    raise (parameter entities are off). Its error is a `ParseError`, so the old repair path re-parses through the same
+    guard.
+  - `refresh.py`: `plan` → `fetch_all` → `apply(RunInputs, results, ...)`. `apply` runs the old ingest, the
+    re-derivation, the deterministic cards, the run record, the cooldown and run state, and the evaluation, against
+    the CURRENT inputs. It returns every change and the old answer.
+  - `evaluate.py`: the pure `news_sources.evaluate`. The source-network nominations are deferred.
+  - Run ids use the old format, with the `new_hex` seam.
+- **Migration 0020** (`20261112000020_news_refresh.sql`):
+  - `news_logs` (runs, disagreements, source_log, source_history, weekly, and the new `run_notes`) on 0018's line
+    rules;
+  - `news_documents` (the five run documents as json, their key order kept);
+  - the history actions `ingest`, `rederive` and `card`;
+  - `pz.backfill_news_files()` on both installation paths (archive first, else the documents row; an unreadable
+    archive reads as missing, the old tolerant default). The importer calls it.
+- **The store and readers.** `news.store` gains `log_texts`, `documents`, `append_log`, `save_document`,
+  `add_history` and `run_active`. `validation.inputs.load_docs` and `news.inputs.load_status` read only the tables for
+  the News files; no reader reads a News archive any more.
+- **The run** (`news/runs.py`), in the 026b pattern:
+  - a session run lock: the old 409 "A news refresh is already running.";
+  - phase 1 reads only the plan inputs (the boundary first: 409 before the import);
+  - phase 2 fetches with no transaction open;
+  - phase 3 is one `bounded_transaction`, in which:
+    - the lock wait and every statement are limited to the time left, and the deadline is checked again before
+      commit (Codex H-259);
+    - it takes the News write lock and runs `ensure_seeded`;
+    - it re-reads the current inputs and runs `apply`, then writes the new and changed events with one history row
+      per pass, the rest, the log lines, the documents that changed, and one `run_notes` line naming what the run
+      deferred.
+  - A cut-off write is a 503 that saves nothing. `evaluate_run` is the standalone "Re-measure now", under the same two
+    locks.
+- **The routes.** `POST /api/news/refresh` gives the old `{started, run_id, job, last, last_ok, events_total}`.
+  `POST /api/news/sources/evaluate` gives `{ok, evaluated_at}`. The status's `job.running` is true while a run holds
+  its lock (`pg_locks`).
+- **The page.** "Refresh news" and "Re-measure now" are enabled, with the old running state while the request is
+  open and no polling. They show the old 409 text inline and a 503 failure toast, and they re-read News, the status,
+  every Sources window, Validation and the weekly review.
+
+**The watch bridge (my decision, under the standing instruction).** The run line stays byte for byte the old one. The
+deferral is recorded per run as a `run_notes` line (`{run_id, deferred: [...]}`), which no view reads.
+
+**Verification**
+- **Refresh golden** (`parity_news refresh-goldens` / `refresh-check`). Two old runs are driven synchronously over
+  recorded feed bytes with a frozen clock and no model, covering every listed fixture. The events (key order), every
+  line byte for byte, the documents, the fetched URLs and the next views all match.
+  - Declared: (a) TLS, which the parity serves as the old fallback did while a strict run fails it with its reason;
+    (d) the nominations and the watch bridge, deferred and logged; (e) no run-state start marker; plus 028a's (e) and
+    (s) inside the metric cache.
+  - The 028a, 028b and Validation goldens still match.
+- **Safety tests** (fixture transport, every resolver refusing):
+  - a redirect off the allowlist, to http, or too many redirects is never sent;
+  - http and private addresses are refused;
+  - the size and time budgets hold;
+  - a TLS failure fails that feed only;
+  - a DOCTYPE or any entity is refused in UTF-8 and UTF-16, directly and through repair;
+  - the trees match `ET.fromstring` otherwise.
+- **PGlite** (2 new, 62 in total): the logs and documents, reruns keeping a run's writes, the CHECKs, the history
+  actions.
+- **Hosted** (5 new, `test_news_runs_hosted.py`):
+  - a run over OLDER archives commits, and the status, the stories and the Sources view show the new values;
+  - a backcast committed between the fetch and the write is kept with the run's merge, with history `backcast` then
+    `ingest`;
+  - one run at a time: 409 for both runs while the lock is held, and the status shows running;
+  - a News write lock held past a 6 s deadline gives a 503 with nothing written, and the next run succeeds;
+  - the standalone evaluation is read back by Sources.
+
+  The 028a, 028b and 027 hosted tests pass on the new readers.
+- **Real snapshot:** see the HANDOFF post. The 0020 backfill is checked byte for byte against every archived log
+  line and document.
+- **Browser:** `news-mocked` 19, `news.spec.ts` 9 (controls enabled, never clicked), and the Validation spec.
+
+**Not done here:** the model cards (028d, after a gateway review), the scheduled runs (the background-jobs port) and
+the watch bridge.
+
+
+### Claude — implementation revision 2 (2026-11-12 22:44 CET)
+
+Both points of H-261 are taken.
+
+1. **The planning reads are bounded.**
+   - Phase 1 now runs in a `bounded_transaction` limited by the time fetching must stop: the lock wait and statements
+     get the time left, and no statement starts after it.
+   - A blocked read is a 503 with its own message ("the news refresh could not read what it needs before its deadline
+     (News was busy) — nothing was fetched or saved; run it again"), and the run lock is released on that path too.
+   - **Test** (`test_a_planning_read_blocked_past_the_deadline_is_a_503_that_fetches_and_writes_nothing`): another
+     transaction holds `ACCESS EXCLUSIVE` on `news_documents` past a 6 s deadline.
+     - The refresh answers 503 WHILE the lock is still held.
+     - The fixture transport received no request.
+     - `run_active` is false, and `news_logs` is unchanged.
+     - After the lock is released, a retry succeeds.
+2. **Each pass keeps its own state.**
+   - `refresh.apply`'s `trace` now records each pass's RESULTING record, in a new `EventChange.states`.
+   - The run writes the final record once (`news_store.save_event_passes`), with one history row per pass carrying that
+     pass's state. Each row's `before` is the previous row's `after`; the first `before` is the stored record (null for
+     a new event); the last `after` equals the stored record.
+   - The old `add_history` is gone.
+   - **Test** (`test_each_pass_of_a_run_keeps_its_own_state_in_the_history`), for every event changed by more than one
+     pass in a fixture run:
+     - the rows chain;
+     - every row's after-image is distinct;
+     - the last one equals the stored event;
+     - for an event whose last pass is `card`, the first after-image has no card and the last one has it, so the card
+       belongs to the card pass.
+- **Results.** The run hosted tests pass (7). `tests/news` and `tests/validation` pass, and `parity_news` `check`,
+  `writes-check` and `refresh-check` match.
+
 ## Grok notes
+
+### Codex implementation verdict (H-260)
+
+**REQUEST CHANGES.** The 19 focused refresh tests passed. Two cases need coverage before sign-off.
+
+1. In `news/runs.py`, refresh holds the session run lock while phase 1 reads the intake marker and documents in an unbounded `read_only_transaction`. An exclusive table lock on `news_documents` can keep the request and its run lock alive beyond the whole-run deadline. Bound the planning reads by the remaining budget. In a hosted test, hold that table lock past the deadline, verify refresh returns 503 while the lock is still held and performs no fetch or writes, then release it and verify a retry succeeds.
+2. In `news/refresh.py`, `trace` retains the pass names but `EventChange` carries only the final event. In `news/runs.py` the first pass saves that final state, and `news/store.py` writes it as both before and after for every later pass. When ingest and card both change an event, the history attributes the card edit to ingest. Preserve each pass's resulting state. Add a multi-pass test that reads back the history and verifies the intermediate field values, continuity between rows, and equality of the last after-image with the stored event.
+
+### Codex implementation verdict (H-262)
+
+**APPROVE.** Revision 2 resolves both H-261 findings. The planning reads now share the fetch deadline, and the session lock is released on timeout before any fetch or write. Each changed pass snapshots its resulting event. The history writer starts with the previously stored record and chains those snapshots in the same transaction as the final event.
+
+I reran the 19 focused refresh unit tests and reviewed both hosted regressions. They exercise an exclusive lock during planning, a successful retry, and the actual stored history across multiple passes. Claude reports all seven hosted tests passed.

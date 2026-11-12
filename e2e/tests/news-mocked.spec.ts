@@ -4,8 +4,10 @@
  * is needed: only the frontend (`npm run dev` in frontend/, or PZ_BASE_URL). Every company, publication and URL in
  * fixtures/news/ is invented.
  *
- * The old refresh test (click → progress → outcome) becomes a check that "Refresh news" is visible, disabled with its
- * reason and sends nothing (the refresh arrives with 028c). The decisions write since 028b: the outcome proposal
+ * The old refresh test (click → progress → outcome) is back with 028c: the run executes inside its request, so the
+ * running state lasts while the POST is in flight, nothing polls, and the status, stories and sources are read again when
+ * it returns; a run already active (409) is the old line and a run cut by its deadline (503) the failure toast. "Re-measure
+ * now" posts the evaluation and re-reads the sources. The decisions write since 028b: the outcome proposal
  * (Confirm outcome in two clicks, Reject, Not enough evidence, an `already` answer), "Audit this miss" and "Add an early
  * signal" (its form), each with its exact POST path and body, the old toasts, the re-read and the 400 refusals; opening
  * and cancelling the form writes nothing. The old "new sources" test belongs to System health and the activity-dock
@@ -26,7 +28,8 @@ const load = (n: string): J => JSON.parse(readFileSync(resolve(FIX, n), "utf8"))
 
 /** the 028a deferral of the decisions, gone since 028b */
 const WRITES_028B = "Recording News decisions arrives with the News writes port (028b)";
-const REFRESH = "Refreshing News arrives with the News refresh port (028c)";
+/** the 028a deferral of the runs, gone since 028c */
+const REFRESH_028C = "Refreshing News arrives with the News refresh port (028c)";
 const HEALTH = "System health arrives with its port";
 const TABS = ["Today", "All stories", "Caught early", "Misses", "Historical cases", "What's moving", "My companies", "Weekly review", "News sources"];
 const WINDOWS = ["30 days", "90 days", "180 days", "All time"];
@@ -34,13 +37,16 @@ const WINDOWS = ["30 days", "90 days", "180 days", "All time"];
 const WRITE_PATHS = /\/api\/(news_(outcome|audit_miss|backcast|backcast_job|refresh|sources_evaluate)\b|news\/(outcome|audit_miss|backcast|refresh|sources\/evaluate)\b|bridge_create\b)/;
 
 type Write = "outcome" | "audit_miss" | "backcast";
+type Run = "refresh" | "evaluate";
 type Answer = { status: number; body: J };
 const isAnswer = (x: J): x is Answer => !!x && typeof x === "object" && "status" in x && "body" in x;
 
-/** Mock the four News reads and the three writes (028b, the old success shapes of fixtures/news/news_writes.json). A
- *  write's `answer` (when it returns something) replaces the default answer; otherwise `refuse` answers it with a 400
- *  and that text. Anything else under /api answers 404 (the shell's not-ported reads are allowed by `watch`, any other
- *  404 fails the test). Returns every API request (method + path + query), in order. */
+/** Mock the four News reads, the three writes (028b, the old success shapes of fixtures/news/news_writes.json) and the
+ *  two runs (028c, fixtures/news/news_runs.json). A write's `answer` (when it returns something) replaces the default
+ *  answer; otherwise `refuse` answers it with a 400 and that text. A run's `run` handler may wait (the request stays in
+ *  flight) and may answer; by default the run finishes with the fixture's answer, and the next status (refresh) or
+ *  sources (evaluate) read shows it. Anything else under /api answers 404 (the shell's not-ported reads are allowed by
+ *  `watch`, any other 404 fails the test). Returns every API request (method + path + query), in order. */
 async function mockApi(
   page: Page,
   opts: {
@@ -49,12 +55,14 @@ async function mockApi(
     refresh?: "partial" | "failed" | "never";
     answer?: Partial<Record<Write, (body: J) => J | Answer | null>>;
     refuse?: Partial<Record<Write, string>>;
+    run?: Partial<Record<Run, (body: J) => J | Answer | null | Promise<J | Answer | null>>>;
   } = {},
 ) {
   const news = opts.news ?? load("news.json");
   const weekly = opts.weekly ?? load("news_weekly.json");
   const sources = load("news_sources.json");
-  const refresh = load("news_refresh_status.json")[opts.refresh ?? "partial"];
+  let refresh = load("news_refresh_status.json")[opts.refresh ?? "partial"];
+  let measured: string | null = null; // the evaluation's time, once "Re-measure now" has finished
   const requested: Array<{ method: string; path: string }> = [];
   page.on("request", (r) => {
     if (!r.url().includes("/api/")) return;
@@ -67,7 +75,8 @@ async function mockApi(
   await page.route(/\/api\/news\/refresh_status(\?.*)?$/, (route) => route.fulfill({ json: refresh }));
   await page.route(/\/api\/news\/sources(\?.*)?$/, (route) => {
     const w = new URL(route.request().url()).searchParams.get("window") ?? "90";
-    return route.fulfill({ json: sources[w] ?? sources["90"] });
+    const body = sources[w] ?? sources["90"];
+    return route.fulfill({ json: measured ? { ...body, evaluated_at: measured } : body });
   });
   const writes = load("news_writes.json");
   await page.route(/\/api\/news\/(outcome|audit_miss|backcast)$/, (route) => {
@@ -79,6 +88,19 @@ async function mockApi(
     if (error) return route.fulfill({ status: 400, json: { ok: false, error } });
     if (name === "outcome") return route.fulfill({ json: { ...writes[body.decision], event_id: body.event_id } });
     return route.fulfill({ json: writes[name] });
+  });
+  const runs = load("news_runs.json");
+  await page.route(/\/api\/news\/(refresh|sources\/evaluate)$/, async (route) => {
+    const name: Run = new URL(route.request().url()).pathname.endsWith("/refresh") ? "refresh" : "evaluate";
+    const custom = await opts.run?.[name]?.(route.request().postDataJSON() as J);
+    if (custom && isAnswer(custom)) return route.fulfill({ status: custom.status, json: custom.body });
+    const answer = custom ?? runs[name];
+    if (name === "refresh") {
+      refresh = { ...answer };
+      delete refresh.started;
+      delete refresh.run_id;
+    } else measured = answer.evaluated_at;
+    return route.fulfill({ json: answer });
   });
   return {
     requested,
@@ -98,16 +120,17 @@ async function open(page: Page) {
   await expect(page.getByTestId("news-concept")).toBeVisible();
 }
 
-/** Visible, focusable, disabled with its reason; a click, Enter or Space does nothing. */
-async function expectDeferred(page: Page, el: Locator, reason: string) {
-  await expect(el).toBeVisible();
-  await expect(el).toHaveAttribute("aria-disabled", "true");
-  await expect(el).toHaveAttribute("title", reason);
-  await expect(el).toHaveAccessibleDescription(reason);
-  await el.click({ force: true }); // aria-disabled: Playwright would wait for it to become enabled
-  await el.focus();
-  await page.keyboard.press("Enter");
-  await page.keyboard.press("Space");
+/** A run's handler that holds the request in flight until `release()`. */
+function held() {
+  let release!: () => void;
+  const gate = new Promise<void>((r) => (release = r));
+  return {
+    handler: async () => {
+      await gate;
+      return null;
+    },
+    release: () => release(),
+  };
 }
 
 test.beforeEach(async ({ page }) => {
@@ -212,7 +235,7 @@ test("news sources: best-by-purpose answers, honest sample sizes, expandable det
 });
 
 /* ------------------------------------------------------------------ news.spec.ts: the refresh line */
-test("news refresh: the last run's outcome is explicit; 'Refresh news' is disabled with its reason and never polls", async ({ page }) => {
+test("news refresh: the last run's outcome is explicit; 'Refresh news' is enabled and nothing polls", async ({ page }) => {
   const w = watch(page);
   const api = await mockApi(page);
   await open(page);
@@ -222,18 +245,115 @@ test("news refresh: the last run's outcome is explicit; 'Refresh news' is disabl
   await expect(page.getByTestId("news-refresh-result")).toContainText("6 sources checked (1 failed)");
   await expect(page.getByTestId("news-refresh-result")).toContainText("179 already known");
   await expect(page.getByTestId("news-refresh-button")).toHaveText("Refresh news");
-  await expectDeferred(page, page.getByTestId("news-refresh-button"), REFRESH);
+  await expect(page.getByTestId("news-refresh-button")).toBeEnabled();
+  await expect(page.getByTestId("news-refresh-button")).not.toHaveAttribute("aria-disabled", "true");
   await expect(page.getByTestId("news-refresh-progress")).toHaveCount(0);
   await page.getByText("Which sources failed?").click();
   await expect(box).toContainText("Channel Tech Review");
-  // the old page polled every 1.5 s while a run was active; nothing runs here, so after the first read (the dev build's
-  // StrictMode mount may issue it twice) no further read comes
+  // the old page polled every 1.5 s while a background run was active; a run now lives inside its request, so after the
+  // first read (the dev build's StrictMode mount may issue it twice) no further read comes
   const statusReads = () => api.requested.filter((r) => r.path === "/api/news/refresh_status").length;
   const first = statusReads();
   expect(first).toBeGreaterThanOrEqual(1);
   await page.waitForTimeout(3500);
   expect(statusReads()).toBe(first);
   expect(api.writes()).toEqual([]);
+  w.expectClean();
+});
+
+test("news refresh: one POST of {}; the old running state while it is in flight and no polling; the new outcome and re-reads when it returns", async ({ page }) => {
+  const w = watch(page);
+  const run = held();
+  const api = await mockApi(page, { run: { refresh: run.handler } });
+  const posted = recordPosts(page);
+  await open(page);
+  await section(page, "News sources"); // the Sources window on screen is read again too
+  await expect(page.getByTestId("news-sources-best")).toBeVisible();
+  await expect(page.getByTestId("news-refresh-result")).toContainText("Refresh partly done");
+  const count = (path: string) => api.requested.filter((r) => r.method === "GET" && r.path === path).length;
+  const before = { status: count("/api/news/refresh_status"), news: count("/api/news"), sources: count("/api/news/sources?window=90") };
+  const button = page.getByTestId("news-refresh-button");
+  await button.click();
+  await expect(button).toHaveText("Refreshing…");
+  await expect(button).toBeDisabled();
+  await expect(page.getByTestId("news-refresh-progress")).toContainText("Refreshing news…");
+  await expect(page.getByTestId("news-refresh-result")).toHaveCount(0);
+  await page.waitForTimeout(2000); // longer than the old 1.5 s poll
+  expect(count("/api/news/refresh_status")).toBe(before.status);
+  expect(posted).toEqual([{ path: "/api/news/refresh", body: {} }]);
+
+  run.release();
+  await expect(page.getByTestId("news-refresh-result")).toHaveAttribute("data-tone", "ok");
+  await expect(page.getByTestId("news-refresh-result")).toContainText("Refresh complete");
+  await expect(page.getByTestId("news-refresh-result")).toContainText("2 new stories (1 material)");
+  await expect(page.getByText("Which sources failed?")).toHaveCount(0);
+  await expect(button).toHaveText("Refresh news");
+  await expect(button).toBeEnabled();
+  await expect(page.getByTestId("news-refresh-progress")).toHaveCount(0);
+  expect(count("/api/news/refresh_status")).toBeGreaterThan(before.status);
+  await expect.poll(() => count("/api/news")).toBeGreaterThan(before.news);
+  await expect.poll(() => count("/api/news/sources?window=90")).toBeGreaterThan(before.sources);
+  await expect(page.getByText(/^✕/)).toHaveCount(0);
+  expect(posted).toHaveLength(1);
+  w.expectClean();
+});
+
+test("news refresh: a run already active (409) is the old line; a run cut by its deadline (503) is the failure toast; nothing is read again", async ({ page }) => {
+  const w = watch(page, { expected: [409, 503] });
+  const runs = load("news_runs.json");
+  let answer: Answer = { status: 409, body: runs.busy };
+  const api = await mockApi(page, { run: { refresh: () => answer } });
+  const posted = recordPosts(page);
+  await open(page);
+  await expect(page.getByTestId("news-refresh-result")).toContainText("Refresh partly done");
+  const before = newsReads(api);
+  const button = page.getByTestId("news-refresh-button");
+  await button.click();
+  await expect(page.getByTestId("news-refresh-message")).toContainText("A news refresh is already running.");
+  await expect(page.getByText(/^✕/)).toHaveCount(0);
+  await expect(page.getByTestId("news-refresh-result")).toContainText("Refresh partly done");
+  await expect(button).toBeEnabled();
+  answer = { status: 503, body: runs.deadline };
+  await button.click();
+  await expect(page.getByText("✕ Refreshing news failed — The news refresh did not finish within its time limit; nothing was saved.")).toBeVisible();
+  await expect(page.getByTestId("news-refresh-message")).toHaveCount(0);
+  await expect(page.getByTestId("news-refresh-result")).toContainText("Refresh partly done");
+  expect(posted).toEqual([
+    { path: "/api/news/refresh", body: {} },
+    { path: "/api/news/refresh", body: {} },
+  ]);
+  expect(newsReads(api)).toBe(before);
+  w.expectClean();
+});
+
+test("news sources: 'Re-measure now' — one POST of {}, busy while it runs, the toast, and every window read again", async ({ page }) => {
+  const w = watch(page);
+  const run = held();
+  const api = await mockApi(page, { run: { evaluate: run.handler } });
+  const posted = recordPosts(page);
+  await open(page);
+  await section(page, "News sources");
+  const box = page.getByTestId("news-sources");
+  await expect(box).toContainText("Last measured: 2026-11-12 07:00");
+  await box.getByRole("tab", { name: "30 days" }).click();
+  await expect(box.getByTestId("news-sources-bias")).toContainText("4 of 10 material events");
+  const count = (w: string) => api.requested.filter((r) => r.path === `/api/news/sources?window=${w}`).length;
+  const before = { w30: count("30"), w90: count("90") };
+  const remeasure = box.getByRole("button", { name: "Re-measure now" });
+  await expect(remeasure).toBeEnabled();
+  await expect(remeasure).not.toHaveAttribute("aria-disabled", "true");
+  await remeasure.click();
+  await expect(remeasure).toBeDisabled();
+  expect(posted).toEqual([{ path: "/api/news/sources/evaluate", body: {} }]);
+  run.release();
+  await expect(page.getByText("News sources re-measured")).toBeVisible();
+  await expect(box).toContainText("Last measured: 2026-11-12 10:16");
+  await expect(remeasure).toBeEnabled();
+  expect(count("30")).toBeGreaterThan(before.w30);
+  await box.getByRole("tab", { name: "90 days" }).click(); // the window off screen was made stale: it is read again
+  await expect.poll(() => count("90")).toBeGreaterThan(before.w90);
+  await expect(box).toContainText("Last measured: 2026-11-12 10:16");
+  expect(posted).toHaveLength(1);
   w.expectClean();
 });
 
@@ -425,8 +545,8 @@ test("news: a refused early signal (400) keeps the form open; opening and cancel
   w.expectClean();
 });
 
-/* ------------------------------------------------------------------ the refresh stays deferred (028c) */
-test("news: the refresh controls stay disabled with their reason; the Scout Bridge button is gone; nothing else is deferred", async ({ page }) => {
+/* ------------------------------------------------------------------ nothing is deferred any more (028c) */
+test("news: every control is enabled (the 028c reason is gone); the Scout Bridge button is gone; nothing is sent without a click", async ({ page }) => {
   const w = watch(page);
   const api = await mockApi(page);
   let dialogs = 0;
@@ -438,16 +558,20 @@ test("news: the refresh controls stay disabled with their reason; the Scout Brid
   await section(page, "All stories");
   const closed = page.getByRole("button", { name: /^(Backcast & sources|Sources & learning)$/ });
   while ((await closed.count()) > 0) await closed.first().click();
-  await expect(page.locator('[aria-disabled="true"]')).toHaveText(["Refresh news"]);
+  await expect(page.locator('[aria-disabled="true"]')).toHaveCount(0);
+  await expect(page.getByTestId("news-refresh-button")).toBeEnabled();
   await expect(page.getByRole("button", { name: "Add an early signal" })).toHaveCount(4);
   for (const b of await page.getByRole("button", { name: "Add an early signal" }).all()) await expect(b).toBeEnabled();
   await expect(page.getByRole("button", { name: /Prepare backcast research/ })).toHaveCount(0);
   await expect(page.getByText(/Scout Bridge/)).toHaveCount(0);
   await expect(page.getByText(WRITES_028B)).toHaveCount(0);
+  await expect(page.getByText(REFRESH_028C)).toHaveCount(0);
 
   await section(page, "News sources");
-  await expectDeferred(page, page.getByTestId("news-sources").getByRole("button", { name: "Re-measure now" }), REFRESH);
-  await expectDeferred(page, page.getByTestId("news-refresh-button"), REFRESH);
+  await expect(page.getByTestId("news-sources-best")).toBeVisible();
+  await expect(page.locator('[aria-disabled="true"]')).toHaveCount(0);
+  await expect(page.getByTestId("news-sources").getByRole("button", { name: "Re-measure now" })).toBeEnabled();
+  await expect(page.locator(`[title="${REFRESH_028C}"]`)).toHaveCount(0);
 
   await page.waitForTimeout(300);
   expect(dialogs).toBe(0);

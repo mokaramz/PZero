@@ -2,12 +2,12 @@ import { fireEvent, screen, waitFor, within } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { ALL_ITEMS } from "@/app/nav";
-import { REFRESH_STATUS, VALIDATION } from "./api";
+import { REFRESH_STATUS, SOURCES, VALIDATION, WEEKLY } from "./api";
 import { NOT_PORTED } from "./model/deferred";
 import type { NewsPayload, Story, Window } from "./model/types";
 import { EMPTY, THEMES_EMPTY } from "./model/view";
 import { SIGNAL_FORM } from "./model/writes";
-import { emptyNews, emptyWeekly, news, refreshStatus, sources, writeAnswer } from "./test/fixtures";
+import { emptyNews, emptyWeekly, news, refreshStatus, runRefusal, sources, statusAfterRefresh, writeAnswer } from "./test/fixtures";
 import { fakeServer, renderPage } from "./test/server";
 
 const sections = () => screen.getByRole("tablist", { name: "News sections" });
@@ -22,20 +22,6 @@ async function opened() {
   const r = renderPage();
   await screen.findByTestId("news-concept");
   return r;
-}
-
-/** A deferred control: visible, focusable, named, says why — and a click, Enter or Space does nothing. */
-function expectDeferred(el: HTMLElement, reason: string) {
-  expect(el).toBeVisible();
-  expect(el).toHaveAttribute("aria-disabled", "true");
-  expect(el).toHaveAttribute("title", reason);
-  expect(document.getElementById(el.getAttribute("aria-describedby")!)?.textContent).toBe(reason);
-  fireEvent.click(el);
-  for (const key of ["Enter", " "]) {
-    fireEvent.keyDown(el, { key });
-    fireEvent.keyUp(el, { key });
-    fireEvent.click(el, { detail: 0 });
-  }
 }
 
 afterEach(() => {
@@ -306,7 +292,7 @@ describe("News & Learning — the page", () => {
 });
 
 describe("News & Learning — the refresh line", () => {
-  it("after a partial run: the outcome, the failed source in plain words, and 'Refresh news' disabled with the 028c reason", async () => {
+  it("after a partial run: the outcome, the failed source in plain words, and 'Refresh news' enabled (nothing sent without a click)", async () => {
     const server = fakeServer();
     const { qc } = await opened();
     const box = screen.getByTestId("news-refresh");
@@ -319,10 +305,12 @@ describe("News & Learning — the refresh line", () => {
     expect(box).not.toHaveTextContent("HTTPError");
     const button = within(box).getByTestId("news-refresh-button");
     expect(button).toHaveTextContent("Refresh news");
-    expectDeferred(button, NOT_PORTED.refresh);
+    expect(button).toBeEnabled();
+    expect(button).not.toHaveAttribute("aria-disabled");
+    expect(button).not.toHaveAttribute("title");
     await settle();
     expect(server.writes()).toEqual([]);
-    // read once, never polled (the job is idle; nothing runs in 028a)
+    // read once, never polled (a run executes inside its request, 028c decision e)
     expect(server.gets().filter((p) => p === "/api/news/refresh_status")).toHaveLength(1);
     expect(qc.getQueryCache().find({ queryKey: [REFRESH_STATUS, {}] })!.options).not.toHaveProperty("refetchInterval");
   });
@@ -343,6 +331,112 @@ describe("News & Learning — the refresh line", () => {
     await waitFor(() => expect(screen.getByTestId("news-refresh")).toHaveTextContent("Not refreshed yet."));
     expect(screen.queryByTestId("news-refresh-result")).toBeNull();
     expect(screen.queryByText("Which sources failed?")).toBeNull();
+  });
+});
+
+/** A run's answer held back until the test releases it (the request stays in flight). */
+function held(answer: () => unknown) {
+  let release!: () => void;
+  const gate = new Promise<void>((r) => (release = r));
+  return {
+    route: async () => {
+      await gate;
+      return answer();
+    },
+    release: () => release(),
+  };
+}
+
+/** The page with the Validation read, the weekly review and two Sources windows in the cache, to see what a run makes stale. */
+async function openedWithCache() {
+  const r = await opened();
+  r.qc.setQueryData([VALIDATION, {}], { cached: true });
+  r.qc.setQueryData([WEEKLY, {}], { cached: true });
+  for (const window of ["30", "180"] as Window[]) r.qc.setQueryData([SOURCES, { window }], sources(window));
+  const stale = (key: unknown[]) => r.qc.getQueryState(key)?.isInvalidated;
+  return { ...r, stale };
+}
+
+describe("News & Learning — Refresh news (028c)", () => {
+  it("one POST of {}; while it runs the old running state and no polling; when it returns the status, stories, sources, weekly and Validation are read again", async () => {
+    let status = refreshStatus("partial");
+    const run = held(() => {
+      status = statusAfterRefresh();
+      return { started: true, run_id: status.last!.run_id, ...status };
+    });
+    const server = fakeServer({ refreshStatus: () => status, refresh: run.route });
+    const { stale } = await openedWithCache();
+    await screen.findByTestId("news-refresh-result");
+    const button = screen.getByTestId("news-refresh-button");
+    fireEvent.click(button);
+    await waitFor(() => expect(server.posts()).toEqual([{ method: "POST", path: "/api/news/refresh", body: {} }]));
+    // in flight: the old running state, the button disabled, the last outcome out of the way
+    expect(button).toHaveTextContent("Refreshing…");
+    expect(button).toBeDisabled();
+    expect(button).toHaveAttribute("aria-busy", "true");
+    expect(screen.getByTestId("news-refresh-progress")).toHaveTextContent("Refreshing news…");
+    expect(screen.queryByTestId("news-refresh-result")).toBeNull();
+    expect(screen.queryByText("Which sources failed?")).toBeNull();
+    fireEvent.click(button);
+    await new Promise((r) => setTimeout(r, 120));
+    expect(server.posts()).toHaveLength(1); // a second click while it runs sends nothing
+    expect(server.gets().filter((p) => p === "/api/news/refresh_status")).toHaveLength(1); // nothing polls
+    expect(server.reads()).toBe(1);
+
+    run.release();
+    const result = await screen.findByTestId("news-refresh-result");
+    expect(result).toHaveAttribute("data-tone", "ok");
+    expect(result).toHaveTextContent(
+      "Refresh complete 6 sources checked · 190 articles fetched · 2 new stories (1 material) · 1 new article(s) on existing stories · 187 already known · 10 stories stored · 2026-11-12 10:15 · 41 s",
+    );
+    expect(button).toHaveTextContent("Refresh news");
+    expect(button).toBeEnabled();
+    expect(screen.queryByTestId("news-refresh-progress")).toBeNull();
+    expect(screen.queryByText("Which sources failed?")).toBeNull();
+    expect(server.gets().filter((p) => p === "/api/news/refresh_status")).toHaveLength(2);
+    expect(server.reads()).toBe(2);
+    expect(stale([VALIDATION, {}])).toBe(true);
+    expect(stale([WEEKLY, {}])).toBe(true);
+    expect(stale([SOURCES, { window: "30" }])).toBe(true);
+    expect(stale([SOURCES, { window: "180" }])).toBe(true);
+    expect(screen.queryByText(/^✕/)).toBeNull();
+    expect(server.posts()).toHaveLength(1);
+  });
+
+  it("a run already active (409) is the old 'already running' line; nothing is read again; the next click tries again", async () => {
+    const server = fakeServer({ refresh: () => ({ status: 409, body: runRefusal("busy") }) });
+    const { stale } = await openedWithCache();
+    await screen.findByTestId("news-refresh-result");
+    fireEvent.click(screen.getByTestId("news-refresh-button"));
+    expect(await screen.findByTestId("news-refresh-message")).toHaveTextContent("A news refresh is already running.");
+    expect(screen.queryByText(/^✕/)).toBeNull();
+    expect(screen.getByTestId("news-refresh-result")).toHaveTextContent("Refresh partly done"); // the last outcome stays
+    expect(screen.getByTestId("news-refresh-button")).toHaveTextContent("Refresh news");
+    expect(screen.getByTestId("news-refresh-button")).toBeEnabled();
+    await settle();
+    expect(server.reads()).toBe(1);
+    expect(server.gets().filter((p) => p === "/api/news/refresh_status")).toHaveLength(1);
+    expect(stale([VALIDATION, {}])).toBe(false);
+    fireEvent.click(screen.getByTestId("news-refresh-button"));
+    await waitFor(() => expect(server.posts()).toHaveLength(2));
+    expect(server.posts().every((c) => c.path === "/api/news/refresh" && JSON.stringify(c.body) === "{}")).toBe(true);
+  });
+
+  it("a run cut by its deadline (503) is the failure toast with the server's text; nothing is read again", async () => {
+    const server = fakeServer({ refresh: () => ({ status: 503, body: runRefusal("deadline") }) });
+    const { stale } = await openedWithCache();
+    await screen.findByTestId("news-refresh-result");
+    fireEvent.click(screen.getByTestId("news-refresh-button"));
+    expect(await screen.findByText("✕ Refreshing news failed — The news refresh did not finish within its time limit; nothing was saved.")).toBeInTheDocument();
+    expect(server.posts()).toEqual([{ method: "POST", path: "/api/news/refresh", body: {} }]);
+    expect(screen.getByTestId("news-refresh-result")).toHaveTextContent("Refresh partly done");
+    expect(screen.queryByTestId("news-refresh-message")).toBeNull();
+    expect(screen.getByTestId("news-refresh-button")).toBeEnabled();
+    await settle();
+    expect(server.reads()).toBe(1);
+    expect(server.gets().filter((p) => p === "/api/news/refresh_status")).toHaveLength(1);
+    expect(stale([VALIDATION, {}])).toBe(false);
+    expect(stale([SOURCES, { window: "30" }])).toBe(false);
   });
 });
 
@@ -433,11 +527,60 @@ describe("News & Learning — News sources", () => {
     );
   });
 
-  it("'Re-measure now' is disabled with the 028c reason and sends nothing", async () => {
-    const { server, box } = await sourcesTab();
-    expectDeferred(within(box).getByRole("button", { name: "Re-measure now" }), NOT_PORTED.refresh);
+  it("'Re-measure now': one POST of {}, busy while it runs; when it returns, every Sources window, the stories and the status are read again", async () => {
+    let measured = "2026-11-12T07:00:39";
+    const run = held(() => {
+      measured = "2026-11-12T10:16:05";
+      return { ok: true, evaluated_at: measured };
+    });
+    const server = fakeServer({ sources: (w) => ({ ...sources(w as Window), evaluated_at: measured }), evaluate: run.route });
+    const { qc } = await opened();
+    open("News sources");
+    const box = screen.getByTestId("news-sources");
+    await within(box).findByTestId("news-sources-best");
+    fireEvent.click(within(box).getByRole("tab", { name: "30 days" }));
+    await waitFor(() => expect(within(box).getByTestId("news-sources-bias")).toHaveTextContent("4 of 10 material events"));
+    expect(box).toHaveTextContent("Last measured: 2026-11-12 07:00");
+    const remeasure = within(box).getByRole("button", { name: "Re-measure now" });
+    expect(remeasure).toBeEnabled();
+    expect(remeasure).not.toHaveAttribute("aria-disabled");
+    fireEvent.click(remeasure);
+    await waitFor(() => expect(server.posts()).toEqual([{ method: "POST", path: "/api/news/sources/evaluate", body: {} }]));
+    expect(remeasure).toBeDisabled();
+    expect(remeasure).toHaveAttribute("aria-busy", "true");
+    run.release();
+    expect(await screen.findByText("News sources re-measured")).toBeInTheDocument();
+    await waitFor(() => expect(box).toHaveTextContent("Last measured: 2026-11-12 10:16"));
+    expect(remeasure).toBeEnabled();
+    expect(server.gets().filter((p) => p === "/api/news/sources?window=30")).toHaveLength(2);
+    expect(server.gets().filter((p) => p === "/api/news/refresh_status")).toHaveLength(2);
+    expect(server.reads()).toBe(2);
+    expect(qc.getQueryState([SOURCES, { window: "90" }])?.isInvalidated).toBe(true); // the window not on screen is stale
+    fireEvent.click(within(box).getByRole("tab", { name: "90 days" }));
+    await waitFor(() => expect(server.gets().filter((p) => p === "/api/news/sources?window=90")).toHaveLength(2));
+    expect(server.posts()).toHaveLength(1);
+  });
+
+  it("'Re-measure now' while a run is active (409) says so; cut by its deadline (503) is the failure toast; nothing is read again", async () => {
+    let answer = { status: 409, body: runRefusal("busy") };
+    const server = fakeServer({ evaluate: () => answer });
+    await opened();
+    open("News sources");
+    const box = screen.getByTestId("news-sources");
+    await within(box).findByTestId("news-sources-best");
+    fireEvent.click(within(box).getByRole("button", { name: "Re-measure now" }));
+    expect(await screen.findByText("A news refresh is already running.")).toBeInTheDocument();
+    expect(screen.queryByText(/^✕/)).toBeNull();
+    answer = { status: 503, body: { ok: false, error: "The source evaluation did not finish within its time limit; nothing was saved." } };
+    fireEvent.click(within(box).getByRole("button", { name: "Re-measure now" }));
+    expect(await screen.findByText("✕ Re-measuring news sources failed — The source evaluation did not finish within its time limit; nothing was saved.")).toBeInTheDocument();
     await settle();
-    expect(server.writes()).toEqual([]);
+    expect(server.posts()).toEqual([
+      { method: "POST", path: "/api/news/sources/evaluate", body: {} },
+      { method: "POST", path: "/api/news/sources/evaluate", body: {} },
+    ]);
+    expect(server.gets().filter((p) => p.startsWith("/api/news/sources"))).toEqual(["/api/news/sources?window=90"]);
+    expect(server.reads()).toBe(1);
   });
 
   it("each window is its own read; 30 days is mostly COLLECTING DATA", async () => {
@@ -508,25 +651,26 @@ describe("News & Learning — empty and failing", () => {
     expect(await screen.findByTestId("news-concept")).toBeInTheDocument();
   });
 
-  it("only the refresh controls stay deferred (028c); the decisions are enabled and nothing is sent without a click", async () => {
+  it("nothing on the page is deferred any more (028c); every control is enabled and nothing is sent without a click", async () => {
     const server = fakeServer();
     await opened();
     const off = () => Array.from(document.querySelectorAll<HTMLElement>('[aria-disabled="true"]'));
     open("All stories");
     for (const s of stories()) fireEvent.click(within(s).getByRole("button", { name: /^(Backcast & sources|Sources & learning)$/ }));
-    expect(off().map((e) => [e.textContent, e.getAttribute("title")])).toEqual([["Refresh news", NOT_PORTED.refresh]]);
-    expect(Object.keys(NOT_PORTED)).toEqual(["refresh", "health"]); // the 028b reason is gone
+    expect(off()).toEqual([]);
+    expect(Object.keys(NOT_PORTED)).toEqual(["health"]); // the 028b and 028c reasons are gone
+    expect(screen.queryByText(/News refresh port \(028c\)/)).toBeNull();
+    expect(screen.getByTestId("news-refresh-button")).toBeEnabled();
     const enabled = (name: string) => screen.getAllByRole("button", { name }).filter((b) => !b.hasAttribute("aria-disabled") && !(b as HTMLButtonElement).disabled);
     expect(enabled("Confirm outcome")).toHaveLength(1);
     expect(enabled("Reject")).toHaveLength(1);
     expect(enabled("Not enough evidence")).toHaveLength(1);
     expect(enabled("Audit this miss")).toHaveLength(1); // Brightwell Bio
     expect(enabled("Add an early signal")).toHaveLength(4); // Vantor Kinetics, Quillon Labs, Brightwell Bio, Halvard Robotics
-    for (const el of off()) expectDeferred(el, el.getAttribute("title")!);
     open("News sources");
     await screen.findByTestId("news-sources-best");
-    expect(off().map((e) => e.textContent)).toEqual(["Refresh news", "Re-measure now"]);
-    for (const el of off()) expectDeferred(el, el.getAttribute("title")!);
+    expect(off()).toEqual([]);
+    expect(screen.getByRole("button", { name: "Re-measure now" })).toBeEnabled();
     await settle();
     expect(server.writes()).toEqual([]);
     expect(server.calls.every((c) => c.method === "GET")).toBe(true);

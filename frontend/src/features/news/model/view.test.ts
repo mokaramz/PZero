@@ -156,9 +156,8 @@ describe("What's moving and the deferrals", () => {
     expect(companiesLine(1)).toBe("Project Zero already holds 1 company with this theme.");
     expect(companiesLine(7)).toBe("Project Zero already holds 7 companies with this theme.");
   });
-  it("say which port brings each control (the 028b decisions are enabled)", () => {
+  it("say which port brings each control (the 028b decisions and the 028c runs are enabled)", () => {
     expect(NOT_PORTED).toEqual({
-      refresh: "Refreshing News arrives with the News refresh port (028c)",
       health: "System health arrives with its port",
     });
   });

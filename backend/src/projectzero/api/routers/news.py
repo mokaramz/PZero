@@ -14,7 +14,13 @@ curated seeding is applied in memory). A write runs in ONE transaction (review 0
 locks (intake, then news, then validation), the stored seeding (``news.store.ensure_seeded``, so the write sees a case
 it just seeded), a fresh load, the pure write (``news.writes``), then its rows (the Validation row, the action line,
 the event and its history). A refusal (400 ``{ok: false, error}``, the old texts) or any failure rolls ALL of it back.
-The refresh / source evaluation runs arrive with 028c.
+* ``POST /api/news/refresh``           the refresh run (review 028c), synchronous with a whole-run deadline: the old
+  ``{started, run_id, job, last, last_ok, events_total}``; 409 a run is already running (or before the import), 503 the
+  write was cut off by the deadline (nothing saved)
+* ``POST /api/news/sources/evaluate``  "Re-measure now": the evaluation alone -> ``{ok: true, evaluated_at}``; 409 / 503
+
+The runs use the network only through ``news.runs`` (read, fetch with no transaction, one bounded write that re-reads
+the stored inputs under the News lock); ``app.state.news_transport`` / ``news_resolver`` are the test seams.
 """
 
 from __future__ import annotations
@@ -32,7 +38,7 @@ from projectzero.api.routers.conviction import Body
 from projectzero.core.db import read_only_transaction, transaction
 from projectzero.dealflow.intake.postgres import IntakeClosedError
 from projectzero.network.view import BERLIN, berlin_now, berlin_today
-from projectzero.news import refresh_status, sources_view, view, weekly_review, writes
+from projectzero.news import refresh_status, runs, sources_view, view, weekly_review, writes
 from projectzero.news import store as news_store
 from projectzero.news.inputs import load, load_status
 from projectzero.news.inputs_model import NewsInputs, packaged_cases, with_entities
@@ -88,8 +94,10 @@ def get_refresh_status(request: Request) -> JSONResponse:
     settings = request.app.state.settings
     with read_only_transaction(settings.db_url) as conn:
         inputs, stored = load_status(conn, settings.schema)
+        active = news_store.run_active(conn, settings.schema)
     body = refresh_status(inputs)
     body["events_total"] = stored  # the stored events (the old ``len(load()["events"])``)
+    body["job"]["running"] = active  # a refresh or evaluation run holds its lock right now (review 028c)
     return _ok(body)
 
 
@@ -135,3 +143,31 @@ def _route(endpoint: str) -> Callable[[Request, Body], JSONResponse]:
 
 for _endpoint in _WRITES:
     router.add_api_route(f"/{_endpoint}", _route(_endpoint), methods=["POST"], name=f"news_{_endpoint}")
+
+
+# ── the runs (028c) ──────────────────────────────────────────────────────────────────────────────────────────────────
+@router.post("/refresh")
+def post_refresh(request: Request) -> JSONResponse:
+    settings = request.app.state.settings
+    try:
+        out = runs.refresh_run(settings.db_url, settings.schema, _clock(request),
+                               transport=getattr(request.app.state, "news_transport", None),
+                               resolver=getattr(request.app.state, "news_resolver", None),
+                               new_hex=getattr(request.app.state, "new_hex", None))  # fmt: skip
+    except IntakeClosedError as exc:
+        return _ok({"ok": False, "error": str(exc)}, 409)
+    except runs.RunRefused as exc:
+        return _ok({"ok": False, "error": str(exc)}, exc.status)
+    return _ok(out)
+
+
+@router.post("/sources/evaluate")
+def post_evaluate(request: Request) -> JSONResponse:
+    settings = request.app.state.settings
+    try:
+        out = runs.evaluate_run(settings.db_url, settings.schema, _clock(request))
+    except IntakeClosedError as exc:
+        return _ok({"ok": False, "error": str(exc)}, 409)
+    except runs.RunRefused as exc:
+        return _ok({"ok": False, "error": str(exc)}, exc.status)
+    return _ok(out)

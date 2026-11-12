@@ -1,7 +1,8 @@
 /** A fake backend for the News page tests: answers the four News reads (`GET news`, `news/weekly`,
- *  `news/sources?window=`, `news/refresh_status`) from the invented payloads in ./fixtures and the three writes (028b:
- *  `POST news/outcome`, `news/audit_miss`, `news/backcast`) with the old success shapes, records every call, and lets a
- *  test give its own answer. Anything else — the 028c refresh included — is a 404. */
+ *  `news/sources?window=`, `news/refresh_status`) from the invented payloads in ./fixtures, the three writes (028b:
+ *  `POST news/outcome`, `news/audit_miss`, `news/backcast`) with the old success shapes and the two runs (028c:
+ *  `POST news/refresh`, `news/sources/evaluate`) with their finished answers, records every call, and lets a test give
+ *  its own answer (a run's answer may be a promise, to hold the request in flight). Anything else is a 404. */
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render } from "@testing-library/react";
 import { createMemoryRouter, RouterProvider } from "react-router-dom";
@@ -10,7 +11,7 @@ import { vi } from "vitest";
 import { ToastProvider } from "@/components/Toast";
 import type { NewsPayload, RefreshStatus, SourcesPayload, Weekly, Window } from "../model/types";
 import NewsPage from "../NewsPage";
-import { news, refreshStatus, sources, weekly, writeAnswer, WRITE_PATHS, type WriteCase } from "./fixtures";
+import { evaluateAnswer, news, refreshAnswer, refreshStatus, sources, weekly, writeAnswer, WRITE_PATHS, type WriteCase } from "./fixtures";
 
 type Body = Record<string, unknown>;
 export type Call = { method: string; path: string; body?: Body };
@@ -24,6 +25,8 @@ export type Routes = {
   outcome?: (body: Body) => unknown;
   auditMiss?: (body: Body) => unknown;
   backcast?: (body: Body) => unknown;
+  refresh?: (body: Body) => unknown;
+  evaluate?: (body: Body) => unknown;
 };
 
 const isAnswer = (x: unknown): x is Answer => !!x && typeof x === "object" && "status" in x && "body" in x && Object.keys(x).length === 2;
@@ -61,6 +64,8 @@ export function fakeServer(routes: Routes = {}) {
         );
       if (p === "/api/news/audit_miss") return reply(routes.auditMiss?.(b) ?? writeAnswer("audit_miss"));
       if (p === "/api/news/backcast") return reply(routes.backcast?.(b) ?? writeAnswer("backcast"));
+      if (p === "/api/news/refresh") return reply((await routes.refresh?.(b)) ?? refreshAnswer());
+      if (p === "/api/news/sources/evaluate") return reply((await routes.evaluate?.(b)) ?? evaluateAnswer());
     }
     return json(404, { ok: false, error: "not found" });
   });

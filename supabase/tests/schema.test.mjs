@@ -1126,3 +1126,47 @@ describe("migration 0019 — News events and actions as tables, backfilled in ke
     assert.deepEqual((await nul.query(`select line from pz.news_actions order by seq`)).rows.map((r) => r.line), [`{"a": 1}`, null, `{"c": 3}`]);
   });
 });
+
+describe("migration 0020 — the News run's logs and documents, backfilled; the run's history actions", () => {
+  const archive = async (db, path, raw) => {
+    const bytes = Buffer.isBuffer(raw) ? raw : Buffer.from(raw, "utf8");
+    await db.query(`insert into pz.legacy_documents (path, sha256, bytes, raw, parsed) values ($1, $2, $3, $4, null)`,
+      [path, sha256(bytes), bytes.length, bytes]);
+  };
+  const backfill = async (db) => (await db.query(`select pz.backfill_news_files() as n`)).rows[0].n;
+  const keys = async (db, expr) => (await db.query(`select array_agg(k order by o) as k from json_object_keys((${expr})) with ordinality as t(k, o)`)).rows[0].k;
+
+  test("logs by line per log, documents in their key order (archive first, else the documents row); reruns keep runs' writes", async () => {
+    const db = await freshDb();
+    await archive(db, "news/runs.jsonl", `{"run_id": "news-1"}\n{"run_id": "news-1"}\n`); // duplicates survive
+    await archive(db, "news/disagreements.jsonl", `{"event_id": "nw-a"}\n`);
+    await archive(db, "news/source_metrics.json", `{"windows": {"90": {}}, "at": "2026-11-11T16:05:00"}`);
+    await archive(db, "news/source_state.json", `{not json`); // unreadable: the old tolerant default ...
+    await db.query(`insert into pz.documents (key, body) values ('news/feed_cooldown.json', '{}'), ('news/source_state.json', '{"Sifted": {"state": "ACTIVE"}}')`);
+    assert.equal(await backfill(db), 6); // 3 lines + metrics + cooldown + state (... else the documents row)
+    assert.deepEqual((await db.query(`select log, archive_line from pz.news_logs order by seq`)).rows.map((r) => [r.log, r.archive_line]),
+      [["runs", 1], ["runs", 2], ["disagreements", 1]]);
+    assert.deepEqual(await keys(db, `select body from pz.news_documents where key = 'news/source_metrics.json'`), ["windows", "at"]);
+    assert.equal((await db.query(`select body->'Sifted'->>'state' as s from pz.news_documents where key = 'news/source_state.json'`)).rows[0].s, "ACTIVE");
+    await db.query(`update pz.news_documents set body = '{"edited": true}'::json where key = 'news/source_metrics.json'`);
+    await db.query(`insert into pz.news_logs (log, line, source) values ('runs', '{"run_id": "news-2"}', 'app')`);
+    assert.equal(await backfill(db), 0); // a rerun adds nothing and keeps what a run wrote
+    assert.equal((await db.query(`select body->>'edited' as e from pz.news_documents where key = 'news/source_metrics.json'`)).rows[0].e, "true");
+  });
+
+  test("the 0018 line rules, the CHECKs, append-only, the new history actions", async () => {
+    const db = await freshDb();
+    await db.query(`insert into pz.news_logs (log, line, source) values ('runs', '{}', 'app')`);
+    await archive(db, "news/runs.jsonl", `{"run_id": "news-1"}\n`);
+    await rejects(db.query(`select pz.backfill_news_files()`), /not imported and the log already has live rows/);
+    await rejects(db.query(`update pz.news_logs set line = 'x'`), /append-only/);
+    await rejects(db.query(`insert into pz.news_logs (log, line, source) values ('cards', '{}', 'app')`), /news_logs_log_check/);
+    await rejects(db.query(`insert into pz.news_logs (log, line, source, archive_line) values ('runs', '{}', 'app', 1)`), /news_logs_archive_line_check/);
+    await rejects(db.query(`insert into pz.news_logs (log, line, source) values ('runs', null, 'app')`), /news_logs_line_check/);
+    await rejects(db.query(`insert into pz.news_documents (key, body) values ('news/events.json', '{}')`), /news_documents_key_check/);
+    for (const action of ["ingest", "rederive", "card", "seed", "backcast"]) {
+      await db.query(`insert into pz.news_event_history (event_id, action, after) values ('nw-a', $1, '{}')`, [action]);
+    }
+    await rejects(db.query(`insert into pz.news_event_history (event_id, action, after) values ('nw-a', 'purge', '{}')`), /news_event_history_action_check/);
+  });
+});
