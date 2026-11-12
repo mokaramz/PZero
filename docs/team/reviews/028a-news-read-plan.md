@@ -1,6 +1,6 @@
 # 028a — Plan: News & Learning, part 1 (the read side)
 
-Author: Claude · Date: 2026-11-12 · Status: plan APPROVED (H-243) — implementation next
+Author: Claude · Date: 2026-11-12 · Status: plan APPROVED (H-243) — implementation APPROVED
 
 ## Why
 News & Learning is tenth in the [port order](../PORT_ORDER.md). It "lands with Validation": its main page joins
@@ -99,5 +99,81 @@ I propose **four reviews**:
 ### Codex plan verdict (H-240)
 
 **APPROVE for implementation.** The four reviews separate the read model, transactions, feed refresh and model calls. Share the Validation entity build within the request and pass it into News without re-entering the Validation view. In the oracle, intercept the whole events-document save: legacy `seed_cases` calls `_save(d)`, and `view` immediately calls `load()` again. Exercise the legacy seed-count guard, a missing case, and a curated update retaining operator-added signals. Run each route against a fresh fixture so a preceding News GET cannot seed another route's baseline. Check that real GETs leave storage untouched.
+
+## Implementation (Claude, 2026-11-12)
+
+**What landed**
+- **The domain** (`backend/src/projectzero/news/`, pure):
+  - `catalog.py`, cut by `scripts/gen_news_catalog.py` with AST checks, plus the `claims.classify` slice;
+  - `inputs_model.py`: ONE frozen `NewsInputs`, `inputs_from_docs(docs, today, *, entities=None)`, `base_from_docs`
+    and `with_entities`;
+  - `core.py`: `classify`, `materiality`, `check`, `backcast_summary`, the themes, the in-memory `seed_cases`,
+    `view`, `weekly_review`, `learnings`, `observations` and `refresh_status`;
+  - `sources.py`: the pure `news_sources`, with `view(window)` and `scout_lines`;
+  - the shipped curated case, copied into `resources/news_cases/` from the old committed blob.
+- **Sharing the entities (Codex).** The Validation entity build runs ONCE per request and is passed into News. `view`
+  refuses to run without it. A test counts one `build` per Validation view.
+- **Seeding (decision a).** The old guard is kept: seed only while there are fewer seeded ids than case files, and
+  only when the folder exists. The seeding runs on a copy and is never stored.
+- **The reader.**
+  - `validation/inputs.load_docs` now also reads every News file: `news/events.json`,
+    `news/{actions,runs,disagreements,source_log}.jsonl`, `news/{source_metrics,source_state,feeds_extra}.json` and
+    `scan_history.json`. Each comes from its byte-exact archive, else (for the JSON files) the imported `documents`
+    row.
+  - `news/inputs.load` builds `NewsInputs` over those same documents.
+  - `load_status` reads only the runs log and the events, which is all the refresh status needs.
+- **The routes** (`api/routers/news.py`): `GET /api/news`, `/api/news/weekly`, `/api/news/sources?window=` and
+  `/api/news/refresh_status`, each in one read-only transaction at the Berlin clock.
+- **027a's deferrals are closed.**
+  - Validation's `news` block is the old `_news_metrics` over `news.view`.
+  - The packet's News learnings and News source lines are filled.
+  - The source-network section stays deferred: "The source network arrives with its port".
+  - The Validation goldens are regenerated with the old News available.
+  - The page shows the News panel when it is available and hides it otherwise, as the old page did.
+- **The page** (`/news`): every tab and panel as before.
+  - Confirm / Reject / Not enough evidence, Audit this miss and Add an early signal are disabled with "Recording News
+    decisions arrives with the News writes port (028b)".
+  - Refresh news and Re-measure now are disabled with "Refreshing News arrives with the News refresh port (028c)".
+  - The Swiss ticker's Technical line reads "UNKNOWN (System health arrives with its port)".
+  - Removed: the Scout Bridge backcast-job button and the refresh polling loop.
+- **The Map's `/news` links** now open the News page. The old page had no deep-link parameter, so `?event=` is
+  carried but not read, as before.
+
+**Verification**
+- **Goldens** (`parity_news goldens` / `check`). Eight sets: main, guard, noop, nocases, badcase, broken, torn and
+  empty. Each runs 8 routes on a FRESH fixture, with the old whole-document save intercepted in memory. The sets
+  cover the seed-count guard, a missing case file, and a curated update that keeps operator-added signals.
+  - Result: 0 differences.
+  - Declared (e): the Swiss technical row's added `reason`.
+  - Declared (s): the key order of `unique.by_scope`, which in the old code depended on string hashing; it is sorted on
+    both sides.
+  - `parity_validation check` and `writes-check` pass with the News block live.
+- **Real snapshot.** `parity_news real` runs the 8 routes against the old code over a byte-exact copy with the shipped
+  cases. Result: 0 differences, the old seeding saved nothing, and all tables are unchanged. `parity_validation real`
+  shows 0 differences with the News block live.
+- **Hosted** (3 tests, `test_news_hosted.py`):
+  - every News read and the Validation GET leave every table unchanged;
+  - the curated case appears in the answer only, and a second read is identical;
+  - the archived key order decides a tie (the long key first);
+  - missing archives read as their old defaults.
+- **Browser.**
+  - `news-mocked` (11) and `news.spec.ts` on the preview database (8);
+  - the Validation (6 + 15) and Map specs still pass;
+  - the old-vs-new capture at 1366 and 1920, light and dark: the layout is the same. The only signature differences
+    are the 6 deferred buttons' `off` style and screen-reader reasons, and the 2 added test ids (`news-vs`,
+    `news-footer`).
+- **Unit tests:** backend `tests/news` 13; frontend 65 new.
+
+**Not done here:**
+- the writes (028b);
+- the refresh and source-evaluation runs (028c);
+- the model cards, after a gateway review (028d).
+
+On the preview, each News GET takes about 4–6 s, mostly transferring the archives. The refresh status has its own
+light loader.
+
+### Codex implementation verdict (H-246)
+
+**APPROVE.** All 13 News unit tests and three hosted tests passed. The hosted checks cover read-only behavior, in-memory seeding, archived key order and missing archives. The legacy oracle intercepts the whole events-document save and resets that state before each route. The eight News fixture sets and both Validation read and write golden checks matched under the documented comparison rules. Browser and real-snapshot results are Claude's reported runs.
 
 ## Grok notes

@@ -48,7 +48,7 @@ export const NAV: NavSection[] = [
       { path: "/founder-calls", label: "Founder Calls", icon: "phone", legacyView: "calls", page: lazy(() => import("@/features/founder-calls/FounderCallsPage")) },
       { path: "/evaluator", label: "Active Evaluator", icon: "chat", legacyView: "evaluator", page: lazy(() => import("@/features/evaluator/EvaluatorPage")) },
       { path: "/validation", label: "Validation", icon: "validate", legacyView: "validation", page: lazy(() => import("@/features/validation/ValidationPage")) },
-      { path: "/news", label: "News & Learning", icon: "news", legacyView: "news" },
+      { path: "/news", label: "News & Learning", icon: "news", legacyView: "news", page: lazy(() => import("@/features/news/NewsPage")) },
     ],
   },
   {

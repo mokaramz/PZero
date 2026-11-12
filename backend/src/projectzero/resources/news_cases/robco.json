@@ -1,0 +1,123 @@
+{
+  "event_id": "nw-case-robco-unicorn-2026-10",
+  "curated": true,
+  "company": "RobCo",
+  "company_from": "curated case",
+  "headline": "Munich robotics company RobCo passes a $1 billion valuation",
+  "summary": "RobCo said on 5 October 2026 that it had passed a $1 billion valuation and that CEO Roman Hölzl had relocated to the United States. Reuters reported the valuation was based on a secondary sale of shares by employees to existing and new investors (including Cherry Ventures and the European Tech Collective) following a $100 million raise in January 2026; other outlets describe a mix of fresh capital and a secondary component. Up from about $500 million in January 2026.",
+  "event_type": "valuation",
+  "round": "",
+  "amount_m": 1000,
+  "event_date": "2026-10-05",
+  "geo": [
+    "DE"
+  ],
+  "themes": [
+    "robotics",
+    "ai",
+    "industrial"
+  ],
+  "noise": false,
+  "sources": [
+    {
+      "publisher": "Reuters (via The Star)",
+      "url": "https://www.thestar.com.my/tech/tech-news/2026/10/05/german-robot-startup-robco-hits-1-billion-valuation-ceo-moves-to-us",
+      "published": "2026-10-05",
+      "headline": "German robot startup RobCo hits $1 billion valuation, CEO moves to US",
+      "text_sha": "robco-reuters",
+      "independence": "independent"
+    },
+    {
+      "publisher": "Startbase",
+      "url": "https://www.startbase.de/news/robco-erreicht-milliardenbewertung-und-wird-zum-unicorn/",
+      "published": "2026-10-05",
+      "headline": "Neues Unicorn: RobCo erreicht Milliardenbewertung",
+      "text_sha": "robco-startbase",
+      "independence": "independent"
+    },
+    {
+      "publisher": "Dealroom news",
+      "url": "https://dealroom.co/news/159891-robco-hits-1b-valuation-as-sequoia-lightspeed-back-munich-robotics-maker/",
+      "published": "2026-10-05",
+      "headline": "RobCo hits $1B valuation as Sequoia, Lightspeed back Munich robotics maker",
+      "text_sha": "robco-dealroom",
+      "independence": "independent"
+    }
+  ],
+  "card": {
+    "what_happened": "RobCo, a Munich industrial-robotics company, said it has passed a $1 billion valuation (5 Oct 2026). The price was set mainly by employees selling existing shares to new and existing investors, after a $100M round in January 2026 at about $500M; reports differ on how much fresh money was involved.",
+    "why_it_matters": "It shows strong investor appetite for 'physical AI' — robots that small and mid-sized factories can actually deploy — and sets a valuation benchmark for European robotics. It is a late-stage event: the early-stage opportunity was years ago.",
+    "the_company": "RobCo builds modular industrial robots — a hardware kit plus software — that small and mid-sized manufacturers can configure for repetitive tasks.",
+    "vc_lesson": "A 'unicorn' headline can come from a secondary share sale: it tells you what buyers paid per share, not how much the company raised.",
+    "watch_next": [
+      "US expansion: the CEO moved to the US; production in Austin, a lab in San Francisco",
+      "The next product ('Alfie'), planned for March 2027"
+    ],
+    "generated_by": "curated from the linked sources"
+  },
+  "backcast": [
+    {
+      "date": "2020",
+      "precision": "year",
+      "text": "Years of research at TU Munich's robotics and AI chair underpin the later company (per the founders).",
+      "family": "university_lab",
+      "url": "https://www.innovationworldcup.com/robco/",
+      "kind": "in_retrospect"
+    },
+    {
+      "date": "2020",
+      "precision": "year",
+      "text": "RobCo founded in Munich (2020) by Roman Hölzl, Paul Maroldt and Constantin Dresel, research assistants at TU Munich's robotics & AI chair — a TUM spinout.",
+      "family": "university_lab",
+      "url": "https://intellectual-property-helpdesk.ec.europa.eu/ip-management-and-resources/publications/robco-robot-company-how-self-aware-robot-revolutionises-industrial-automation_en",
+      "kind": "known_early_signal",
+      "sources": [
+        "https://intellectual-property-helpdesk.ec.europa.eu/ip-management-and-resources/publications/robco-robot-company-how-self-aware-robot-revolutionises-industrial-automation_en",
+        "https://www.munich-startup.de/en/day/robco/"
+      ]
+    },
+    {
+      "date": "2021-06",
+      "precision": "month",
+      "text": "Seed round (amount not public in free sources).",
+      "family": "early_funding",
+      "url": "https://www.caplight.com/company/robco",
+      "kind": "known_early_signal"
+    },
+    {
+      "date": "2022-12",
+      "precision": "month",
+      "text": "Series A, roughly $14–16M (sources differ; Sequoia led per the founders).",
+      "family": "early_funding",
+      "url": "https://seedtable.com/startups/robco-de",
+      "kind": "known_early_signal"
+    },
+    {
+      "date": "2024-02",
+      "precision": "month",
+      "text": "Series B, about $43M.",
+      "family": "early_funding",
+      "url": "https://pitchbook.com/profiles/company/467561-44",
+      "kind": "known_early_signal"
+    },
+    {
+      "date": "2026-01-29",
+      "precision": "day",
+      "text": "Series C, $100M, at about a $500M valuation (aggregator data).",
+      "family": "early_funding",
+      "url": "https://multiples.vc/private-comps/robco",
+      "kind": "known_early_signal"
+    }
+  ],
+  "learning": "RobCo's earliest public signal was a TU Munich robotics spinout (2020), followed by a seed round (2021) — about five years before the unicorn headline and six years before Project Zero started (Sep 2026). By then RobCo was post-Series C: a benchmark, not an operational miss. Today a similar company would most likely surface through the university spinout sensors (TUM Venture Labs, UnternehmerTUM) or an incorporation on a watched name; by its first funding news (Series A, 2022) the earliest edge was already gone.",
+  "precursor_sources": [
+    {
+      "url": "https://www.mirmi.tum.de/en/mirmi/news/",
+      "name": "TUM MIRMI (robotics institute) news",
+      "family": "university_lab",
+      "signal_date": "2020",
+      "evidence_url": "https://www.mirmi.tum.de/en/mirmi/news/article/neue-foerderung-staerkt-tum-robotikinkubator-roboinnovate/",
+      "why": "RobCo was spun out of TUM robotics research; MIRMI runs the TUM robotics incubator robo.innovate (100+ robotics / AI start-up teams since 2022) and announces its teams and programmes here."
+    }
+  ]
+}

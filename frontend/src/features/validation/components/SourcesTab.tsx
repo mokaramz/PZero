@@ -1,5 +1,4 @@
 import { Panel } from "@/components/ui";
-import { NOT_PORTED } from "../model/deferred";
 import type { NewsMetrics, ValidationPayload } from "../model/types";
 import { newsTail, pct, sourceLead } from "../model/view";
 import styles from "../Validation.module.css";
@@ -51,7 +50,7 @@ export function SourcesTab({ d }: { d: ValidationPayload }) {
       </Panel>
 
       <Benchmarks b={d.benchmarks} />
-      <NewsBenchmark n={d.news} />
+      {d.news.available && <NewsBenchmark n={d.news} />}
     </div>
   );
 }
@@ -71,11 +70,7 @@ function NewsBenchmark({ n }: { n: NewsMetrics }) {
             The same events feed the lead-time numbers above — there is no separate News score. Details on the News &amp; Learning page.
           </div>
         </>
-      ) : (
-        <p className="small faint" data-testid="val-news-deferred">
-          {NOT_PORTED.news}
-        </p>
-      )}
+      ) : null}
     </Panel>
   );
 }

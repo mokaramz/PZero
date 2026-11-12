@@ -137,8 +137,7 @@
     "note": "Only dates we actually hold: scan observations, outcomes you recorded, exports you imported. No private database access is assumed and no date is estimated."
   },
   "news": {
-    "available": false,
-    "reason": "News & Learning arrives with its port"
+    "available": false
   },
   "verification_calibration": {},
   "data_issues": [],

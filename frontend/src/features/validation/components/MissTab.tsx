@@ -91,7 +91,7 @@ function ScoutFeedback({ d, packet, loading, prepare, copyAndLog }: { d: Validat
             {packet.text}
           </pre>
           <div className="small faint" data-testid="scout-packet-deferred">
-            News and source-network learnings: {NOT_PORTED.news}.
+            Source-network learnings: {NOT_PORTED.sourceNetwork}.
           </div>
         </>
       )}

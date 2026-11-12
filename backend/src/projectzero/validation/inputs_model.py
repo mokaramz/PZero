@@ -94,6 +94,12 @@ class ValidationInputs:
     # skipped); each is read as ``{ts, usd}`` with ``ts`` the naive Berlin wall time ``%Y-%m-%dT%H:%M:%S`` (the
     # database adapter: ``model_ledger.at`` in Europe/Berlin, formatted so, and its ``usd``)
     inference_ledger: list[Any] = field(default_factory=list)
+    # review 028a (additive): what the old ``news.view()`` / ``news.learnings()`` / ``news_sources.scout_lines()``
+    # read for Validation's News panel (``_news_metrics``) and the packet's News sections: a ``news.NewsInputs``
+    # WITHOUT entities (``news.base_from_docs``: the events archive, the actions / runs logs, the metric cache, the
+    # scan history, the curated cases, ...). Validation completes it with the entities it built itself (decision b:
+    # one entity build per request). ``None`` (a hand-built ``ValidationInputs``): an empty News store
+    news_inputs: Any = None
 
 
 MISSING = object()
@@ -134,6 +140,8 @@ def inputs_from_docs(docs: Mapping[str, Any], today: Any = None) -> ValidationIn
     """``ValidationInputs`` from old-format documents ``{path: parsed JSON}`` (the JSONL logs: their raw text, ``str``
     or ``bytes``), read as the old loaders read them, tolerance included. ``today`` is accepted for symmetry with the
     other ports (the inputs do not depend on the clock). Pure: ``docs`` is never modified."""
+    from projectzero.news.inputs_model import base_from_docs  # local: News imports Validation
+
     intake = _doc(docs, "scout_intake.json", {}) or {}
     return ValidationInputs(
         inbox=(_doc(docs, "inbox.json", {"candidates": []}) or {}).get("candidates"),
@@ -153,6 +161,7 @@ def inputs_from_docs(docs: Mapping[str, Any], today: Any = None) -> ValidationIn
         scout_log=text(docs.get("validation/scout_feedback.jsonl")),
         verification_log=text(docs.get(VERIFICATION_LOG)),
         inference_ledger=json_values(text(docs.get(INFERENCE_LEDGER))),
+        news_inputs=base_from_docs(docs),
     )
 
 

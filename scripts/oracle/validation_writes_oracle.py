@@ -21,8 +21,10 @@ steps, ``view``: the old ``view(today)`` (its own ``_snapshot`` append also in m
 
 The clock is frozen everywhere the old code read it (``date.today()`` / ``datetime.now()`` / ``ledger.now_ts()``), and
 the id seam: the old ``_id`` hashed ``str(datetime.now().timestamp())``; the frozen ``datetime.now()`` answers the
-step's ``seam`` values in order (the new code's ``new_hex()``). The deferred views are made unavailable as in the 027a
-oracle (``validation_oracle._defer``), so the old packet takes its own fallback lines.
+step's ``seam`` values in order (the new code's ``new_hex()``). News runs as in the 027a oracle (review 028a: its
+GET-time seeding in memory, ``news_oracle.install_news``, ``cases_dir`` the set's case folder); the views that stay
+deferred are made unavailable as there (``validation_oracle._defer``), so the old packet takes its own fallback
+lines.
 """
 
 from __future__ import annotations
@@ -39,6 +41,7 @@ from typing import Any, ClassVar
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
+from news_oracle import install_news  # the 028a oracle's in-memory events document, shared
 from validation_oracle import _defer  # the 027a oracle's stubs, shared
 
 LOGS = {
@@ -143,6 +146,7 @@ def main() -> int:
     memory: dict[str, list[str]] = {log: [] for log in LOGS.values()}
     step_log: list[list[str]] = []
     _guard(memory, step_log)
+    install_news({}, inp.get("cases_dir"))
     _defer()
     from projectzero.domain import taste  # the OLD package
     from projectzero.services import validation

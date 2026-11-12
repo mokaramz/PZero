@@ -148,12 +148,12 @@ describe("Map view logic", () => {
 });
 
 describe("Map links (decision d)", () => {
-  it("routes that exist stay links; /news is text with the News reason", () => {
+  it("routes that exist stay links, /news included (review 028a)", () => {
     expect(linkTarget("/conviction?company=Kestrel Robotics")).toEqual({ to: "/conviction?company=Kestrel Robotics" });
     expect(linkTarget("/deal-flow?candidate=cand-1")).toEqual({ to: "/deal-flow?candidate=cand-1" });
     expect(linkTarget("/network?person=p-1")).toEqual({ to: "/network?person=p-1" });
-    expect(linkTarget("/news")).toEqual({ to: null, reason: NOT_PORTED.news });
-    expect(linkTarget("/news?event=n-1")).toEqual({ to: null, reason: NOT_PORTED.news });
+    expect(linkTarget("/news")).toEqual({ to: "/news" });
+    expect(linkTarget("/news?event=n-1")).toEqual({ to: "/news?event=n-1" });
     expect(linkTarget(null)).toEqual({ to: null, reason: null });
     expect(linkTarget("")).toEqual({ to: null, reason: null });
   });

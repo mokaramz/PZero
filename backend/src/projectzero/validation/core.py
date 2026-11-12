@@ -8,8 +8,10 @@ instant, formatted as the old naive ``ledger.now_ts()`` Berlin wall time).
 Only mechanical changes: every store read is a field of the inputs (``inputs_model``); the old ``_snapshot`` WRITE is
 the in-memory ``snapshot_series`` (decision a: the old last-row rule, the row appended to the log text exactly as
 ``storage.append_line`` did, then the last 60); ``news.observations()`` is ported over the archived
-``news/events.json`` (decision b); the News panel and the native-bridge panel answer ``{available: false, reason}``
-(decisions b and d); ``compressor.metrics`` is ported pure in ``validation/routing.py``. Nothing here writes.
+``news/events.json`` (decision b); the News panel (old ``_news_metrics``) reads the News port (review 028a) over the
+inputs' ``news_inputs`` completed with THIS view's entity build (the old ``news.view()`` rebuilt the entities: the
+values are the same, decision b of 028a); the native-bridge panel answers ``{available: false, reason}`` (decision
+d); ``compressor.metrics`` is ported pure in ``validation/routing.py``. Nothing here writes.
 
 The pure parts the write side (027b) and News (028) reuse are importable: ``entities`` / ``build``, ``read_jsonl``,
 ``_live``, ``_date``, ``_valid``, ``_key``, ``miss_context`` (the old ``_miss_context`` over given entities),
@@ -54,8 +56,7 @@ from projectzero.validation.inputs_model import ValidationInputs
 
 TS_FORMAT = "%Y-%m-%dT%H:%M:%S"  # the old ``ledger.TS_FORMAT``
 SNAPSHOT_WINDOW = 60  # the old ``_read_jsonl(SNAPSHOTS)[-60:]``
-# decisions (b), (c) and (d): what is not ported yet answers with a visible reason
-NEWS_REASON = "News & Learning arrives with its port"
+# decision (d): what is not ported answers with a visible reason
 NATIVE_BRIDGE_REASON = "The native search bridge pilot is not part of the rewrite"
 
 
@@ -66,11 +67,6 @@ class ValidationError(ValueError):
 def ts(now: datetime) -> str:
     """The old ``ledger.now_ts()``: the naive Berlin wall time of the request instant."""
     return berlin_now(now).strftime(TS_FORMAT)
-
-
-def news_deferred() -> dict[str, Any]:
-    """Decision (b): the News panel (old ``_news_metrics``)."""
-    return {"available": False, "reason": NEWS_REASON}
 
 
 def native_bridge_deferred() -> dict[str, Any]:
@@ -929,6 +925,45 @@ def scout_summary(ents: dict[str, dict[str, Any]], inputs: ValidationInputs) -> 
 
 
 # ------------------------------------------------------------------------------------------------------- the view
+def news_inputs(inputs: ValidationInputs, ents: dict[str, dict[str, Any]]) -> Any:
+    """Review 028a: the News inputs Validation carries, completed with ITS entity build (one build per request)."""
+    from projectzero.news.inputs_model import NewsInputs, with_entities  # local: News imports Validation
+
+    return with_entities(inputs.news_inputs or NewsInputs(), ents)
+
+
+def _news_metrics(
+    inputs: ValidationInputs, ents: dict[str, dict[str, Any]], today: date, now: datetime
+) -> dict[str, Any]:
+    """News learning, integrated here so there is ONE place for lead time / misses (no competing News score)."""
+    try:
+        from projectzero.news import core as news
+
+        v = news.view(news_inputs(inputs, ents), today, now)
+    except Exception:
+        return {"available": False}
+    misses = [
+        a
+        for a in _live(read_jsonl(inputs.audits_log))
+        if a.get("type") == "miss" and "from News" in (a.get("note") or "")
+    ]
+    causes = Counter(a.get("why_missed") for a in misses)
+    sensors = Counter(r["check"].get("first_source") for r in v["caught_early"] if r["check"].get("first_source"))
+    return {
+        "available": True,
+        "reviewed": sum(v["counts"].get(k, 0) for k in ("CAUGHT_EARLY", "KNOWN_LATE", "MISSED", "HISTORICAL")),
+        "caught_early": v["counts"].get("CAUGHT_EARLY", 0),
+        "known_late": v["counts"].get("KNOWN_LATE", 0),
+        "operational_misses": v["counts"].get("MISSED", 0),
+        "historical_cases": v["counts"].get("HISTORICAL", 0),
+        "not_yet_reviewed": sum(1 for r in v["misses"] if r["state"] == "UNKNOWN"),
+        "median_lead_days": v["metrics"]["median_lead_days"],
+        "preventable_misses": sum(1 for a in misses if a.get("preventable") == "yes"),
+        "most_common_miss_cause": causes.most_common(1)[0][0] if causes else None,
+        "early_discovery_sources": [k for k, _ in sensors.most_common(3)],
+    }
+
+
 def view(inputs: ValidationInputs, today: date, now: datetime) -> dict[str, Any]:
     """The old ``GET /api/validation`` payload, key for key and in the old order. ``today``: the Berlin day of
     ``now`` (the router passes ``berlin_today(now)``). Reads only (decision a)."""
@@ -975,7 +1010,7 @@ def view(inputs: ValidationInputs, today: date, now: datetime) -> dict[str, Any]
         "snapshots": series[-SNAPSHOT_WINDOW:],
         "measurement": measurement(head, cal, ents),
         "benchmarks": benchmarks(ents),
-        "news": news_deferred(),
+        "news": _news_metrics(inputs, ents, today, now),
         "verification_calibration": _verification_calibration(inputs.verification_log),
         "data_issues": issues[:20],
         "cost": _ai_cost(inputs.inference_ledger, today),

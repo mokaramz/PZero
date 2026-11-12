@@ -1,0 +1,51 @@
+{
+  "date": "2026-11-12",
+  "pz_start": "2026-09-27",
+  "today": [],
+  "stories": [],
+  "caught_early": [],
+  "known_late": [],
+  "misses": [],
+  "historical": [],
+  "my_companies": [],
+  "themes": [],
+  "counts": {
+    "events": 0,
+    "noise_hidden": 0,
+    "low_hidden_from_top": 0
+  },
+  "metrics": {
+    "median_lead_days": null,
+    "caught_early": 0
+  },
+  "concept_of_the_day": {
+    "id": "accelerator",
+    "title": "What does an accelerator signal?",
+    "text": "Selection by a strong programme is an early, public filter on the team. Cohort lists are among the earliest places a company appears."
+  },
+  "notice_earlier": null,
+  "last_run": null,
+  "state_labels": {
+    "CAUGHT_EARLY": "Caught early",
+    "KNOWN_LATE": "Known, but late",
+    "MISSED": "Missed",
+    "HISTORICAL": "Historical learning case",
+    "NOT_RELEVANT": "Not relevant to Project Zero",
+    "UNKNOWN": "Not seen by Project Zero — not yet reviewed"
+  },
+  "signal_families": [
+    "accelerator",
+    "customer",
+    "early_funding",
+    "ecosystem",
+    "event",
+    "founder_move",
+    "github",
+    "grant",
+    "incorporation",
+    "patent",
+    "research_paper",
+    "university_lab"
+  ],
+  "note": "News is context and a benchmark — not sourcing alpha. Learnings are proposals; nothing here changes scores, sources, themes, Radar or IMQ."
+}

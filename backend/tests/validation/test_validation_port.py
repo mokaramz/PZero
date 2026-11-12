@@ -1,6 +1,7 @@
 """Review 027a, offline: the catalog is the old text cut by script, the port carries only the old literals, and the pure
 Validation read side matches the OLD code's goldens (``oracle_validation.json``, ``python -m
-projectzero.ops.parity_validation goldens``), key order included, with the declared (a)-(d) normalised. Also: reads
+projectzero.ops.parity_validation goldens``), key order included, with the declared (a), (c) and (d) normalised
+(review 028a closed (b): the News panel and the packet's News sections are the News port's). Also: reads
 never write, the snapshot last-row rule and the 60-row window, the per-list 30-row windows applied after retractions
 over the FULL logs, the order-sensitive points, the adapter's tolerance and decision (f)."""
 
@@ -17,6 +18,7 @@ from typing import Any
 
 import pytest
 
+from projectzero.news import base_from_docs
 from projectzero.ops.parity_ranking import OLD_REPO
 from projectzero.ops.parity_validation import CLOCK, SETS, compare_goldens, jl, main_docs, snap
 from projectzero.validation import (
@@ -94,10 +96,10 @@ def _literals(path: Path) -> set[str]:
 def test_the_port_carries_the_old_literals_unchanged() -> None:
     old = _literals(VALIDATION) | _literals(COMPRESSOR) | _literals(OLD / "services" / "news.py")
     old |= _literals(OLD / "services" / "source_network.py") | _literals(OLD / "inference" / "ledger.py")  # TS_FORMAT
-    # decisions (b)-(d): the deferred panels' visible reasons and keys
+    # decisions (c) and (d): the deferred panels' visible reasons and keys
     allowed = {
-        core: {core.NEWS_REASON, core.NATIVE_BRIDGE_REASON, "available", "reason"},
-        packet: {"not available: "},
+        core: {core.NATIVE_BRIDGE_REASON, "available", "reason"},
+        packet: {packet.SOURCE_NETWORK_REASON, "not available: "},
         routing: set(),
     }
     for module, extra in allowed.items():
@@ -142,12 +144,19 @@ def test_the_goldens_cover_the_planned_cases() -> None:
     assert "oc-002" not in {o["id"] for o in main["outcomes"]} and main["misses"][0]["id"] == "au-m07"
     assert main["false_positive_audits"][0]["id"] == "au-f06"
     assert main["scout"]["cycles"] == ["cycle-010", "c-9", "cycle-002", "cycle-777"]  # the archive key order
-    assert main["patterns"] and main["routing"] is not None and main["news"] == {"available": False}
+    assert main["patterns"] and main["routing"] is not None
+    # review 028a: the old News panel ran (its GET-time seeding in memory) over the same entities
+    assert (
+        main["news"]["available"] is True and main["news"]["reviewed"] == 10 and main["news"]["historical_cases"] == 1
+    )
+    assert main["news"]["preventable_misses"] == 2 and sets["broken"]["view"]["body"]["news"] == {"available": False}
+    assert sets["main"]["news_saved"]["seeded"] == ["nw-case-1"] and sets["empty"]["news_saved"] is None
     assert main["native_bridge"] is None and len(main["calibration"]["disagreements"]) == 20
     assert sets["broken"]["build"]["body"]["issues"] == ["news observations could not be read"]
     assert sets["broken"]["view"]["body"]["routing"] is None
     packet_text = sets["main"]["packets"][""]["body"]["text"]
-    assert "- none yet" in packet_text and "source learning: unavailable" in packet_text  # (c), the old fallbacks
+    assert "- none in probation yet" in packet_text and "source learning: unavailable" in packet_text  # (c)
+    assert "- HISTORICAL: Invented Case Robotics" in packet_text and "Scout use: early-signal source" in packet_text
 
 
 def _main() -> ValidationInputs:
@@ -155,6 +164,7 @@ def _main() -> ValidationInputs:
 
 
 def test_reads_never_write_and_answer_the_deferred_panels_with_a_reason() -> None:
+    reason = "The source network arrives with its port"
     docs = main_docs()
     before = copy.deepcopy(docs)
     inputs = inputs_from_docs(docs, TODAY)
@@ -164,10 +174,10 @@ def test_reads_never_write_and_answer_the_deferred_panels_with_a_reason() -> Non
     build(inputs, TODAY)
     assert inputs == frozen and docs == before
     assert list(v) == PAYLOAD_KEYS
-    assert v["news"] == {"available": False, "reason": "News & Learning arrives with its port"}
+    assert v["news"]["available"] is True  # review 028a: the News port, over this view's entities
     assert v["native_bridge"]["available"] is False and v["native_bridge"]["reason"]
-    assert p["text"].count("- not available: News & Learning arrives with its port") == 3
-    assert "source learning: not available: News & Learning arrives with its port" in p["text"]
+    assert p["text"].count(f"- not available: {reason}") == 1  # the source network only
+    assert f"source learning: not available: {reason}" in p["text"]
     assert v["stage_labels"] is not catalog.STAGE_LABEL and v["vocab"]["kinds"] is not catalog.KINDS
     # the same inputs at the same clock: the same answer (the daily point is computed, never stored)
     assert view(inputs, TODAY, NOW) == v
@@ -230,7 +240,9 @@ def test_the_first_seen_tie_keeps_the_earlier_candidate() -> None:
 
 def test_the_adapter_reads_like_the_old_loaders() -> None:
     empty = inputs_from_docs({}, TODAY)
-    assert empty == ValidationInputs(inbox=[], proposals={}, signals=[], scout_items=None)
+    news = base_from_docs({})  # review 028a: the News inputs (the packaged curated cases by default)
+    assert empty == ValidationInputs(inbox=[], proposals={}, signals=[], scout_items=None, news_inputs=news)
+    assert news.cases and news.cases[0][0] == "robco.json" and news.entities is None
     assert view(empty, TODAY, NOW)["snapshots"][-1]["date"] == "2026-11-12"
     crlf = inputs_from_docs(
         {"validation/snapshots.jsonl": b'{"date": "2026-11-12"}\r\n', "inference_ledger.jsonl": b"\xff\xfe"}, TODAY
