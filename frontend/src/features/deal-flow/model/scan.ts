@@ -10,12 +10,12 @@
  * - `GET deal-flow/scan_history?n=` → `{scans, total, pipeline_label}`, read only when the history is opened.
  * - The inbox carries `report`, `last_run` and `last_summary`, from the latest run.
  *
- * Two declared additions: the intake's refusals (`refused` in the summary and on a report row, the reason in the
- * row's note) are shown in the row and in the finish toast; and machine triage does NOT run after the scan yet (it
- * arrives with the triage port), so the page says so where the old post-scan triage status sat, and neither reads
- * nor refreshes the triage status.
+ * One declared addition: the intake's refusals (`refused` in the summary and on a report row, the reason in the
+ * row's note) are shown in the row and in the finish toast. Machine triage runs after the scan again (review 035b):
+ * a finished scan reads its status again, and the page watches it for 60 s (./triageAuto).
  */
 import { plainText } from "@/lib/activity";
+import { TRIAGE_AUTO } from "./triageAuto";
 import type { FindStatus, ScanSummary } from "./types";
 
 export const FIND = "deal-flow/find";
@@ -28,14 +28,13 @@ export const POLL_MS = 1200;
 export const HISTORY_N = 10;
 
 /** What a finished scan makes stale: the inbox (candidates, report, summary), the sources' runtime state, the history,
- *  System health and the runner's catch-up (the old list was inbox, sources, scan_history and triage_auto). */
-export const SCAN_FINISHED_INVALIDATES = ["deal-flow/inbox", "sources", SCAN_HISTORY, "system_health", "catchup"] as const;
+ *  the post-scan machine-triage status, System health and the runner's catch-up (the old list was inbox, sources,
+ *  scan_history and triage_auto). */
+export const SCAN_FINISHED_INVALIDATES = ["deal-flow/inbox", "sources", SCAN_HISTORY, TRIAGE_AUTO, "system_health", "catchup"] as const;
 
 /** The old activity label of `find` ("Scanning sources"). */
 export const FIND_LABEL = "Scanning sources";
 export const ALREADY_RUNNING = "Scan already running — showing progress";
-/** Declared (034a d): where the old post-scan machine-triage status sat. */
-export const TRIAGE_LATER = "Machine triage arrives with the triage port.";
 
 export const scanIcon = (s: string) => (s === "ok" ? "✓" : s === "off" ? "·" : "✕");
 

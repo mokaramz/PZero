@@ -1,6 +1,6 @@
 # 035b — Plan: machine triage, part 2 (the cascade, post-scan auto-triage, the retry)
 
-Author: Claude · Date: 2026-11-13 · Status: plan APPROVED (H-359) — implementation next
+Author: Claude · Date: 2026-11-13 · Status: plan APPROVED (H-359) · implementation APPROVED (H-363)
 
 ## Why
 The second of the three triage reviews agreed in 035a (H-349). 035a ported the operator's side; this one ports the
@@ -277,5 +277,218 @@ sequences.
 **APPROVE revision 3 for implementation.** Recording each candidate’s outcome in the same transaction as its eligibility check lets recovery distinguish a discarded result from unfinished work. A committed log-only KEEP or absorption stays out of pending. A changed card remains retryable with its attempt count intact. For an item with no recorded outcome, the eligibility recheck uses the survivor’s decision sequence captured at selection.
 
 H-357 is resolved at the plan level. In the implementation handoff, report the pending IDs, attempt counts and provider calls after recovery for the paused-provider cases, including the KEEP transaction that spans selection.
+
+### Claude — implementation
+
+**Domain** (`dealflow/triage/`)
+- **Cut by script with AST checks** (`scripts/gen_triage_cascade.py`):
+  - `cascade_rules`, 20 cuts: Stage 0, `combine`, the skip rule, `basis_as_proposal`, `reject_support_problem`, the
+    card helpers and so on;
+  - `auto_rules`, 9 cuts: the selection, backoff, the summary sentence and the reasons;
+  - the THEMES, ARCHETYPES and `_MATURE` tables are checked against the old ones.
+- **The system prompt** is asserted by its sha, `e0d09eb2df5b733692b2a8ef7dfd1e69bf190db4e23b4a13b8e3ced08bb8cc63`.
+  That is the same value in the old test and in `acceptance.json`.
+- **The validator** is hand-ported from the old pydantic 2 model, with its error texts. It equals the old model on
+  all 30 replies of the corpus: valid, repairable, malformed, unsupported REJECT and ungrounded founders.
+- **`runner.py`:**
+  - Stage 1 on CHEAP (`shadow_triage`); the veto on STANDARD with the Qwen model override and thinking off
+    (`shadow_triage_veto`); one schema retry with `use_cache=False`.
+  - The SAME `run_id` and `run_cap_usd` on every call, the schema retries included.
+  - Stop on `must_stop`; a retryable error is `error` and the run goes on; the skip rule makes 0 calls.
+- **The write per candidate** (revision 2) is one short transaction:
+  - `lock_for_triage`, then the re-checks under the locks: the survivor, still `new` with no `seq` above its
+    selection mark (revision 3), the same `input_sha`;
+  - then the old current row is cleared and the new one inserted;
+  - its retry-state row and its `triage_run_items` disposition commit with it.
+- **`auto.py`:**
+  - the old selection, with the selection marks recorded per id;
+  - the run record, the retry state and its 15/60/240/720/1,440-minute backoff (5 automatic retries);
+  - `pending_map`, `status()`, `run_retry`;
+  - recovery, done by the holder of the shared lock only, from the dispositions (revision 3).
+- **The one shared lock:** `pg_try_advisory_lock` on a key derived from the schema at run time, held through
+  recovery, the run and finalization.
+
+**Storage** (migration 0026)
+- `triage_runs`: append-only, `json`.
+- `triage_auto_runs`: a `json` record. At most one row is `running`. A finished row is frozen by a trigger, and its
+  identity and selection never change.
+- `triage_run_items`: append-only, one row per run and candidate.
+- `triage_retry_state`: `cleared` / `moved` / `ord` keep the old dict order, and rows are never deleted.
+- The readers put the imported documents first, then these rows. RLS is on, with no grants and no lock name in the
+  SQL.
+
+**Triggers, routes and the other views**
+- **After a scan:** the Find thread starts triage once the scan has committed. The `deal_flow_scan` job runs it
+  synchronously, and its note has the old texts ("machine triage PARTIAL/FAILED: x of y — …").
+- **The jobs:** `triage_retry` is now in `PORTED`, and its occurrence is the newest retry run. While paid is off, it
+  writes no run and notes the waiting count (d).
+- **Routes:** `GET /api/deal-flow/triage_auto` (the old `status()`) and `POST /api/deal-flow/triage_retry` (the old
+  answers). The triage view's `pending` comes from the new records.
+- **The scan summary's `triage` key is gone again,** as in the old summary.
+- **Health:** rule 4's old text and `triage_next_try`, read from the retry state, come back with the port.
+- **The page:**
+  - `AutoTriageStatus` with the old markup and texts: "Machine triage after scan (proposals only — the Attention
+    score is separate): …", "Retry now (N)";
+  - it polls every 2 s while a run is going, and for 60 s after a Find. A newly finished run gets ONE toast, and the
+    triage and Today views are invalidated;
+  - Health's "Retrying" mark appears only when the payload says `triage_retry` is ported;
+  - `TRIAGE_LATER` is removed.
+
+**Declared differences** (all in `parity_triage_cascade.normalise`)
+- **(c)** "(kill switch)" becomes "(PZ_AI_PAID is not 'on')", by a seam in the cut `_explain` and in `auto.reason`,
+  which works from `error_kind`.
+- **(d)** The paid-off job writes no run: the old side's extra run and its run-id suffix are dropped.
+- **Storage:** an `error` proposal is `UNKNOWN`, with every promoted column present.
+- `call_id` and `latency_ms` are not compared.
+- **(b) per-candidate commits and (g) the lock:** not visible on the scripted path; the hosted tests cover them.
+
+**Deviations, for your review**
+- **The running record:** `pid` is gone. `ids` stays, and the selection marks live in their own `selection` column.
+- **When the runner raises,** `triage_run_id` is kept and the dispositions already committed still count. The old
+  code set it to None and counted those as unchanged.
+- **A candidate decided between the selection and the runner's read** is `decided_meanwhile`. The old code gave
+  "pending, server error".
+- **A job deadline stop (900 s)** is retried like a timeout, with its own reason text.
+- **`accounting`** gains a `decided_meanwhile` key when it is not zero. A recovered run also carries `interrupted`
+  and `dropped`.
+- **If the scan job finds triage busy,** it adds no triage note; the old job waited for the other run.
+- **Under tests, the scan note's stop is `not_configured`:** with no key, the gateway refuses on the key before the
+  switch.
+- **The status line now announces a run that was already going when the page loaded.** The old line swallowed that
+  first finished run unless the 60 s watch was on. A run already finished at load still gets no toast, as before.
+
+**After recovery, the paused-provider cases** (H-359; hosted, `FakeProvider` paused on an event; invented ids)
+
+| Case | Pending after recovery (attempts) | Provider calls | Also checked |
+|---|---|---|---|
+| A log-only KEEP during inference, then a crash | t03, t04 (0, 0) | t01 1, t02 1; none for the KEEP's candidate | The KEEP line and the status `new` are unchanged |
+| An absorption during inference, then a crash | t03 (0) | t01 1, t02 1 | The survivor t09: 0 calls, not queued |
+| A changed card during inference, then a crash | t02, t03 (0, 0) | t01 1, t02 1 | The next scan re-selects t02 and calls it once more |
+| An operator decision during the pause | none | t01–t03, one each | `decided_meanwhile` 1 |
+| A KEEP transaction held open across the selection | none | t01–t03, one each | Selection mark 0, the KEEP's `seq` above it: caught |
+| A crash at the third commit, then two racing triggers | t04, t05, t06 (0 each) | every candidate exactly once | The winner selected 6, triaged 3, skipped 3; the loser answered "already in progress" |
+
+**The 035a batch-confirm timing** (hosted; synthetic obvious REJECTs; run while other hosted suites were running)
+
+| Batch | Duration | Per candidate |
+|---|---|---|
+| 50 | 21.7 s | 434 ms |
+| 200 | 88.3 s | 442 ms |
+| 500 | 207.4 s | 415 ms |
+
+- The real queue holds about 450 obvious REJECTs, so a "Reject all" today would hold its locks for about 3 minutes.
+  That is about 8 round trips per candidate over the session pooler.
+- **My recommendation:** a small follow-up review, before the cutover, that makes the confirm SET-BASED:
+  - one locked read of all the companies and candidates;
+  - one `update` of the statuses;
+  - one `insert` of the events and one of the log lines;
+  - the feedback and source snapshots built in memory from rows read once;
+  - the same eligibility, ordering and rollback, with a target under 2 s for 500.
+
+  I have not done it here; 035b's scope is the machine side.
+
+**Verification (all pass)**
+- **Goldens and hosted** (`parity_triage_cascade goldens` / `check` / `hosted`), 9 steps, with old calls per step
+  1/18/5/1/1/1/0/0/0:
+  - `check`: the validator corpus, the sha, each proposal replayed through the new cascade, and the cut
+    summary/plain;
+  - `hosted`: the real gateway, a paid `FakeProvider` and the Postgres budget store, with 0 differences besides the
+    declared items;
+  - the run-cap refusal text is the old one exactly ("$0.6001 spent + $0.0003 next > $0.50"), and every ledger row of
+    a run carries its `run_id`.
+- **Real snapshot, paid OFF** (`parity_triage_cascade real`; aggregates only):
+  - 1,055 undecided; 2 selected (two stale imported proposals);
+  - 0 provider calls; 0 proposals written;
+  - the triage view, Health and Today read back unchanged;
+  - the tables that changed: `model_ledger` (one `disabled` refusal at $0), `triage_auto_runs`, `triage_retry_state`
+    and `triage_runs`.
+- **Hosted** (`test_triage_cascade_hosted.py`, 16 tests plus the 3 timing cases):
+  - every hosted bullet and every revision 2 and 3 case;
+  - the whole-schema proposal-only invariant;
+  - nothing written on `pz` before the import.
+  - Rerun and passing: `test_scan_hosted`, `test_jobs_hosted` (now 7 ported jobs), `test_health_hosted`,
+    `test_today_hosted`, `test_triage_decide_hosted` and `test_dealflow_hosted`.
+- **PGlite:** 5 new tests for 0026 (84 in all).
+- **Backend unit:** `test_triage_cascade_unit.py`.
+- **Vitest:** 21 new tests (`triageAuto.test.ts`, `DealFlowTriageAuto.test.tsx`), plus the scan and health tests
+  updated from "deferred" to "live".
+- **E2e:**
+  - `triage-auto-mocked.spec.ts` (9): running, then done; partial, then Retry now; a refused reason; no overflow at
+    1366, 1920, 390 and 150 %;
+  - with `scan-mocked`, `triage-mocked`, `health-mocked`, and the preview `deal-flow.spec.ts` and `health.spec.ts`:
+    62 pass, and one Health variant is skipped by design;
+  - on the preview (paid off), Retry now answers "Nothing is waiting for a retry." and starts nothing.
+- **Capture, old vs new:** the post-scan triage line renders on both, the same element (`auto-triage-status`). The
+  capture now waits for its read on both sides (`settle`), as it does for Today and Health. The only additions are
+  its CSS class and the text's test id.
+- **Gate:** backend 1,921, frontend 967, PGlite 84.
+
+**Open**
+1. **The batch confirm timing,** above. A follow-up is recommended before the cutover.
+2. **The two stale imported proposals** will cost two calls each the first time paid is on, as the old app would have.
+3. **A recovered run with completed items** keeps the old `failed` heading ("could not run"). Keep it, or word it
+   "interrupted"?
+4. **Migration 0026** must be pushed with the others before the deploy.
+
+### H-360 implementation verdict
+
+**CHANGES REQUESTED.** The 26 cascade unit tests passed on this checkout. The hosted recovery results in the handoff cover decisions during inference. Two other paths still bypass the approved checks.
+
+1. In `auto.retry_now`, the empty-queue return precedes lock acquisition and recovery. If the first scan crashes after persisting its selection but before its first candidate commit, there can be a running record with no retry entries. Retry now reports nothing waiting and leaves the interrupted run open. Acquire the lock and recover before testing for due work. Preserve the synchronous busy and empty responses. Test Retry now as the first trigger after that crash with an initially empty retry state, and assert the recovered run, candidate IDs and provider calls.
+2. In `runner.run`, an unchanged proposal goes directly to `_skipped`, which records the skip and clears retry state without locking or checking the current card. If an operator edits a later candidate while the runner processes an earlier one, the runner can commit a final skip from its old snapshot. Recovery then omits the changed candidate from pending. Recheck the skip under the same candidate locks and selection mark as other outcomes. Test a two-candidate run with an initially matching second card edited during the first call, then interrupt after the second disposition. Expect the second ID pending, its attempt count unchanged, and zero calls for it before recovery.
+
+Keep the recovered run’s existing failed heading for parity. The reported batch timings justify a separate set-based confirm review before cutover.
+
+### Claude — implementation revision 2 (H-361)
+
+Both paths now go through the approved checks.
+
+**1. Retry now recovers first** (`auto.retry_now`).
+- It takes the shared lock FIRST (`pg_try_advisory_lock`), runs recovery, and only then tests for due work.
+- The synchronous answers are unchanged: "A machine triage run is already in progress." and "Nothing is waiting for
+  a retry.". The lock is released on every path, and due work runs in the background thread, which holds the lock
+  until it ends.
+- **Test** (hosted): a first scan saves its selection (t01–t03), then crashes before its first candidate: 0 calls, no
+  commit, an empty retry state. Retry now is then the FIRST trigger:
+  - **recovered first:** the run is finalized `failed`, with the old heading kept for parity ("Machine triage could
+    not run — 0 processed…");
+  - **pending:** t01, t02 and t03, each "interrupted by an app restart — will retry after the next scan", attempts
+    0/0/0, provider calls 0;
+  - **then** Retry now answers "Nothing is waiting for a retry." and does nothing more;
+  - **the next scan** re-selects all three and triages them, one call each.
+- **Why nothing is due for Retry now:** the old rule. A recovered id gets no retry-state entry (`recover_interrupted`
+  wrote none), and its reason is not a retryable failure in the legacy fold, so `waiting` is 0 and `next_try` is
+  null. It waits for the next scan, and the view's `pending` shows all three as "TRIAGE PENDING: …". It is kept for
+  parity; say if you would rather make recovered ids due for Retry now.
+
+**2. The skip is re-checked under the locks** (`runner.run`).
+- The direct `_skipped` path is gone. An unchanged proposal goes through the SAME locked write as every other
+  outcome: `lock_for_triage`, the survivor, the status, the selection mark (`seq`), and the `input_sha` recomputed
+  from the locked card.
+- A card changed since the snapshot is `changed_meanwhile`: no call, no final skip, pending with attempts
+  unchanged, and re-selected by the next run. That is the same treatment as the other late outcomes. A test seam,
+  `Hooks.before_candidate`, runs before any call.
+- **Test** (hosted): a two-candidate run. t02's card matches its proposal in the snapshot, and it is edited during
+  t01's paused call. The run is interrupted after t02's disposition.
+  - **dispositions:** t01 `proposed`, t02 `changed_meanwhile`;
+  - **provider calls before recovery:** t01 1, t02 0;
+  - **after recovery:** only t02 is pending, attempts 0, with no unchanged skip counted. t02's imported proposal is
+    still current.
+
+**Verification (all pass)**
+- 26 cascade unit tests; `test_triage_cascade_hosted.py` 18/18 (16 plus the 2 new; the 3 timing cases are measured
+  separately, as before);
+- `test_scan_hosted` and `test_jobs_hosted`: 29;
+- `parity_triage_cascade check` and `hosted`: 0 differences;
+- the gate: backend 1,921, frontend 967, PGlite 84.
+
+The recovered run keeps its `failed` heading, as you asked. The set-based batch confirm is added to REMAINING_PORTS
+as a review before the cutover.
+
+### H-362 implementation verdict
+
+**APPROVE implementation revision 2.** Retry now holds the shared lock while it recovers and checks the retry queue. The skip path compares the card hash under the candidate lock before clearing retry state. Both H-361 findings are resolved.
+
+Keep the next-scan rule for interrupted candidates with no retry entry. Recovery records unfinished work without charging an attempt. Existing retry entries retain their usual eligibility. The hosted regression tests assert that t01–t03 each receive one call on the next scan, and that an edited t02 survives a stale skip with zero attempts and zero calls before recovery. I inspected those assertions and reran all 26 cascade unit tests locally. The hosted results are from Claude’s run.
 
 ## Grok notes

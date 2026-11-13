@@ -163,7 +163,7 @@ describe("pipeline", () => {
     expect(n["df-conviction"].fact).toBe("10 in Conviction · 0 sent");
     expect(n["df-triage"].mark).toEqual(["ok", "Clear"]);
   });
-  it("job marks: failing, overdue, budget-blocked, partial, not run yet, and pending triage never says retrying", () => {
+  it("job marks: failing, overdue, budget-blocked, partial, not run yet; pending triage says Pending without the runner", () => {
     const j = (id: string, x: Partial<Health["jobs"][number]>) => ({ id, label: id, interval_h: 1, last_ok: "2026-11-01T00:00:00", next_due: "now", overdue: false, state: "ok", last_note: "", ...x });
     const mark = (x: Partial<Health["jobs"][number]>) =>
       lanes(health({ jobs: [j("deal_flow_scan", x)] }), overview())[0].nodes[0].mark;
@@ -177,6 +177,24 @@ describe("pipeline", () => {
     const triage = lanes(health({ triage_pending: 4 }), overview())[0].nodes[1];
     expect(triage.mark).toEqual(["lim", "Pending"]);
     expect(triage.fact).toBe("4 pending");
+  });
+  it("pending triage: the old Retrying only while the live runner runs a ported triage_retry job (035b)", () => {
+    const retry = { id: "triage_retry", label: "Machine triage retry (after a provider outage)", interval_h: 1, last_ok: "2026-11-10T15:05:00", next_due: "2026-11-10T16:05:00", overdue: false, state: "ok", last_note: "4 still pending" };
+    const lock = { held: false, source: "", pid: null, since: "", alive: false, suspect: false };
+    const mark = (p: Partial<Health>) => lanes(health({ triage_pending: 4, ...p }), overview())[0].nodes[1].mark;
+    const live = { job_runner: { lock, runners: {} } } as Partial<Health>;
+    expect(mark({ ...live, jobs: [retry] })).toEqual(["lim", "Retrying"]);
+    expect(mark({ ...live, jobs: [{ ...retry, availability: "available" }] })).toEqual(["lim", "Retrying"]);
+    // the job not ported, the runner deferred or absent, or no such job: nothing retries them
+    expect(mark({ ...live, jobs: [{ ...retry, ported: false }] })).toEqual(["lim", "Pending"]);
+    expect(mark({ ...live, jobs: [{ ...retry, availability: "not ported yet" }] })).toEqual(["lim", "Pending"]);
+    expect(mark({ job_runner: { lock: { deferred: "The job runner lock is not ported yet: no runner is alive." }, runners: {} }, jobs: [retry] } as Partial<Health>)).toEqual(["lim", "Pending"]);
+    expect(mark({ jobs: [retry] })).toEqual(["lim", "Pending"]);
+    expect(mark({ ...live, jobs: [] })).toEqual(["lim", "Pending"]);
+    // nothing pending: clear either way
+    expect(lanes(health({ ...live, triage_pending: 0, jobs: [retry] }), overview())[0].nodes[1].mark).toEqual(["ok", "Clear"]);
+    // the drawer's retry job line is its last note
+    expect(lanes(health({ ...live, triage_pending: 4, jobs: [retry] }), overview())[0].nodes[1].details).toContainEqual(["Retry job", "4 still pending"]);
   });
   it("missing telemetry is shown as no data, never as healthy", () => {
     const n = Object.fromEntries(lanes(health({ jobs: [], last_scan: "" }), overview()).flatMap((l) => l.nodes).map((x) => [x.id, x]));

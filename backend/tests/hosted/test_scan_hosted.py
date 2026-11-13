@@ -196,7 +196,7 @@ def test_2_first_scan_records_baseline_and_ledger(settings: Settings, world: Cal
     assert (s["new"], s["baseline"], s["known_skipped"], s["known_pipeline"]) == (1, 2, 0, 0)
     assert (s["sources_attempted"], s["sources_ok"], s["sources_failed"]) == (3, 3, 0)
     assert s["raw_records"] == 3 and s["merged_cross_source"] == 0 and s["refused"] == 0
-    assert s["triage"] == "machine triage arrives with the triage port"  # decision d
+    assert "triage" not in s  # review 035b: the old summary (machine triage runs after the scan)
     n = s["new_companies"][0]
     assert n["name"] == "Aurora Robotics" and n["source_date"] == "2026-10-19"
     assert n["source_url"] == "https://feed.invented.example/news/aurora-robotics" and n["first_seen"] == "2026-11-13"
@@ -681,7 +681,12 @@ def test_the_runners_job_runs_the_scan_once(settings: Settings, world: Callable[
     later = now + timedelta(days=8)
     rows = runner.run_due(settings.db_url, schema, source="cli", now=later, only=["deal_flow_scan"], deps=deps)
     assert [(r["job"], r["ok"], r["note"]) for r in rows] == [
-        ("deal_flow_scan", True, "1 genuinely new · 0 baseline · machine triage arrives with the triage port")
+        (
+            "deal_flow_scan",
+            True,
+            "1 genuinely new · 0 baseline · machine triage FAILED: 0 of 1 — not_configured: deepinfra: API key "
+            "not set (environment variable DEEPINFRA_API_KEY)",  # review 035b: no key under tests, so no call
+        )
     ]
     assert q(settings, schema, "select count(*), max(trigger) from {s}.scan_runs") == [(1, "cli")]
     assert runner.run_due(settings.db_url, schema, source="cli", now=later, only=["deal_flow_scan"], deps=deps) == []

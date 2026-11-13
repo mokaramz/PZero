@@ -7,7 +7,9 @@
  * `{status, expected_status}`; analysis is not ported, so the test asserts its controls are disabled and silent. Keep is
  * live since review 011, the scan since review 034a (its page is covered on fixtures by `scan-mocked.spec.ts`) and the
  * machine-triage accept / override and batch reject since review 035a (covered on fixtures by `triage-mocked.spec.ts`;
- * never clicked here); the deep link `?find=1` still only focuses Find.
+ * never clicked here) and the post-scan machine-triage status with Retry now since review 035b (covered on fixtures by
+ * `triage-auto-mocked.spec.ts`; only read here, Retry now is never clicked); the deep link `?find=1` still only focuses
+ * Find.
  */
 import { expect, test } from "@playwright/test";
 
@@ -26,6 +28,10 @@ test.describe("Deal Flow — new app, preview database", () => {
     await expect(page.getByText(/Attention queue shows the top 15 by signal/)).toContainText(/\d+ more undecided under All to decide/);
     await expect(page.getByTestId("ib-count")).toContainText(/\d+ to decide · \d+ researching · \d+ watching · \d+ kept · \d+ rejected · \d+ baseline/);
     await expect(page.getByTestId("find-status")).toContainText(/Last run .* genuinely new/);
+    // machine triage runs after the scan again (035b): the old status line when there is a run, never the deferral note
+    await expect(page.getByText("Machine triage arrives with the triage port.")).toHaveCount(0);
+    const auto = page.getByTestId("auto-triage-status");
+    if (await auto.count()) await expect(auto).toContainText(/^(⚠ )?Machine triage after scan \(proposals only — the Attention score is separate\): \S/);
 
     for (const [ws, label] of [["na", "Exceptional opportunity hunting"], ["unk", "nothing here defaults to Europe"], ["all", "All geographies mixed"]] as const) {
       await page.locator(`[data-ws="${ws}"]`).click();

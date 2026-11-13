@@ -306,8 +306,8 @@ scan history. The old `_get_raw` and `_request_json` answer from the recorded re
 writes outside the scratch folder are refused (none happened). Recorded after each step: the pure registry scan (the
 batch and the report), the summary, `inbox.json`, `sources.json`, `scan_history.json` and every `.watch/` baseline.
 Declared differences, all normalised in `parity_scan.normalise`: (a) an imported record is never rewritten, and a
-created candidate's id is the intake's (mapped back to the record's old id); (d) the summary's `triage` note; revision
-2's `refused` key; (e) `core/net`'s HTTP error text. `check` compares the pure phase-2 output step by step; `hosted`
+created candidate's id is the intake's (mapped back to the record's old id); revision 2's `refused` key (review 035b
+reversed (d): the summary carries no `triage` note again); (e) `core/net`'s HTTP error text. `check` compares the pure phase-2 output step by step; `hosted`
 runs the new scan with the same bytes in a scratch schema, imported by the production importer, and compares the
 report rows, the summary, every candidate record, the sources' runtime keys, cursors and `candidates_found`, the watch
 baselines and the history (`python -m projectzero.ops.parity_scan goldens` / `check` / `hosted`).
@@ -328,4 +328,25 @@ verdict and the calibration per survivor; revision 2's `same candidate as anothe
 (review 009); the 400 status of the old `ApiError`. `check` runs the new pure answer, line, batch classification and
 view build over the old state of each step; `hosted` imports the world with the production importer into a scratch
 schema and runs the script through the routes (`python -m projectzero.ops.parity_triage_decide goldens` / `check` /
+`hosted`).
+
+`oracle_triage_cascade.json` (review 035b): the old machine triage, `auto_triage.start` (its thread synchronous),
+the scheduler's `_run_triage_retry` and the old `POST /api/triage_retry` route, over `shadow_triage.run`, at a frozen
+clock and uuid over a scratch data folder holding an INVENTED world: a scan made while paid calls were off (Stage 0
+junk before and after the first non-junk candidate), a scan with every cascade case (Stage 0, a Flash KEEP with an
+unknown theme and founder, a supported REJECT confirmed by the veto, a REJECT vetoed to WATCH, a veto unavailable, a
+malformed reply then a valid one, two broken replies, a timeout, an unsupported REJECT, the veto's formatting repair),
+imported proposals (unchanged, stale, an older prompt version), a backlog and a decided candidate, a scan that reaches
+the run cap part-way, the hourly job and Retry now with paid off, the job with paid on, Retry now with nothing
+waiting, the job with nothing due and a scan with nothing to do. The old `gateway.complete` is a script returning the
+old `Result` from the recorded replies (`input.replies`; the run cap's refusal priced as the new gateway prices it);
+writes outside the scratch folder are refused (none happened). Recorded after each step: the answer, the calls (role,
+purpose, model, `use_cache`, entity, run id, cap, extra body, the messages' sha256), every proposal, the runner
+`runs[]`, the automatic runs, the retry state in key order, `pending_map`, `status()` and the view; plus the old
+pydantic validator over `input.corpus` and the system prompt's sha256 (the locked `e0d09eb2...`). Declared
+differences, all normalised in `parity_triage_cascade.normalise`: (c) the paid switch's name; (d) no hourly run while
+paid is off; an `error` proposal stored as `UNKNOWN` with every promoted column; `call_id` / `latency_ms` not
+compared. `check` runs the hand-ported validator, the cut prompt, the new `cascade.triage_one` over the same replies
+and the cut `summary` / `plain`; `hosted` runs the script through the real gateway, a paid `FakeProvider` and the
+Postgres budget store in a scratch schema (`python -m projectzero.ops.parity_triage_cascade goldens` / `check` /
 `hosted`).

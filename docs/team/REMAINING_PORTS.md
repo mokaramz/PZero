@@ -18,6 +18,9 @@ cutover if it is missing, then what only completes a view.
 | 9 | **Identity** (`founders`) | Founder identities in Deal Flow | |
 
 **Small follow-ups** (each a small review of its own):
+- **Before the cutover:** a set-based triage batch confirm (035b timing: 500 obvious REJECTs held their locks for
+  207 s, about 0.43 s each; the real queue holds about 450). One locked read, one status update, one insert each for
+  the events and the log lines; the same eligibility, order and rollback; target under 2 s for 500.
 - Conviction's request clock: its naive `datetime.now` fallback, read and write timestamps together (032a H-301).
 - The importer skipping and reporting malformed legacy records (031a finding).
 - `bounded_transaction` moved into `core/db`.

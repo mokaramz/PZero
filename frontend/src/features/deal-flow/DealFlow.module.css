@@ -165,6 +165,10 @@
 .findSt b {
   color: var(--ink-2);
 }
+/* the post-scan machine-triage line (review 035b): the old inline line; a long sentence wraps at any width */
+.autoTriage {
+  overflow-wrap: anywhere;
+}
 .report {
   margin-top: 12px;
   font-size: 12.5px;

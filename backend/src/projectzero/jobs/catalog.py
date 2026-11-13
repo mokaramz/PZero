@@ -10,14 +10,20 @@ runner's ``still_due`` check (plan revision 3).
 | news_refresh | ``news.runs.refresh_run(trigger="scheduled")`` | the newest ``runs`` News log line |
 | news_weekly_review | ``writers.record_weekly`` + ``news.runs.evaluation`` | the newest ``weekly`` News log line |
 | news_source_review | ``news.runs.evaluation(record_history=True)`` | the newest monthly-review mark (``run_notes``) |
+| triage_retry | ``dealflow.triage.auto.run_retry`` (the triage run lock, review 035b) | the newest retry run |
 
-The other five active jobs are not ported (decision b): ``REAL`` holds no entry for them, so they never run.
+The scan job runs machine triage of what it found right after the scan committed, synchronously, inside the job's
+900 seconds (review 035b, decision e); a triage failure never fails the scan, and the note gains the old "machine
+triage PARTIAL: ..." when the run was not done. The other four active jobs are not ported (decision b): ``REAL``
+holds no entry for them, so they never run.
 """
 
 from __future__ import annotations
 
+import logging
+import time
 from collections.abc import Callable, Mapping
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from datetime import datetime
 from typing import Any
 
@@ -27,6 +33,7 @@ from psycopg import sql
 from projectzero.core import occurrence
 from projectzero.core.db import schema_ident, transaction
 from projectzero.dealflow.scan import run as dealflow_scan
+from projectzero.dealflow.triage import auto as triage_auto
 from projectzero.events import scan
 from projectzero.health.catalog import JOBS as JOB_ROWS
 from projectzero.jobs import store, writers
@@ -35,6 +42,7 @@ from projectzero.network.view import berlin_today
 from projectzero.news import refresh, runs
 
 Guard = Callable[[psycopg.Connection[Any], str], None]
+logger = logging.getLogger(__name__)
 
 
 @dataclass(frozen=True)
@@ -53,6 +61,7 @@ class JobDeps:
     news_resolver: Any = None
     new_hex: Callable[[], str] | None = None
     card_gateway: Mapping[str, Any] | None = None
+    triage: Any = None  # review 035b: the machine-triage ``auto.Deps`` (gateway injectables, hooks); None: production
     extra: Mapping[str, Any] = field(default_factory=dict)  # test seams for fake jobs
 
 
@@ -114,10 +123,30 @@ def snapshot_occurrence(conn: psycopg.Connection[Any], schema: str) -> Any:
 
 
 # ------------------------------------------------------------------------------------------------ the old _run_*
+SCAN_JOB_BUDGET_S = 900.0  # the old scheduler's wait for the scan and its machine triage together
+
+
+def scan_note(res: Mapping[str, Any], tri: Mapping[str, Any] | None) -> str:
+    """The old ``_run_scan`` note: never hide a triage run that stopped behind a "successful" scan."""
+    note = f"{res.get('new', 0)} genuinely new · {res.get('baseline', 0)} baseline"
+    if tri and tri.get("state") not in (None, "done"):
+        why = str(tri.get("stopped") or tri.get("summary") or "")[:160]
+        state = str(tri.get("state")).upper()
+        note += f" · machine triage {state}: {tri.get('triaged', 0)} of {tri.get('selected', 0)} — {why}"
+    return note
+
+
+def _triage_deps(ctx: JobContext, deadline: float | None, still_due: occurrence.StillDue | None = None) -> Any:
+    base = ctx.deps.triage if ctx.deps.triage is not None else triage_auto.Deps()
+    return replace(base, clock=base.clock or (lambda: ctx.now), deadline=deadline, still_due=still_due)
+
+
 def _run_scan(ctx: JobContext) -> str:
-    """The old ``_run_scan``: the scan (the config's ``catch_up_scan_days``, else 7) and its old note. Decision d
-    (review 034a): no machine triage runs after it; the note says so."""
+    """The old ``_run_scan``: the scan (the config's ``catch_up_scan_days``, else 7), then machine triage of what it
+    found (review 035b, decision e: after the scan committed, synchronously, inside the job's 900 s; a triage
+    failure never fails the scan), and the old note."""
     d = ctx.deps
+    t0 = time.monotonic()
     with transaction(ctx.db_url) as conn:
         cfg = store.config(conn, ctx.schema)
     days = int((cfg if isinstance(cfg, dict) else {}).get("catch_up_scan_days") or dealflow_scan.DEFAULT_DAYS)
@@ -128,7 +157,24 @@ def _run_scan(ctx: JobContext) -> str:
                                  **dict(d.dealflow_options))  # fmt: skip
     except dealflow_scan.ScanBusy:
         return dealflow_scan.ALREADY_RUNNING_JOB
-    return f"{res.get('new', 0)} genuinely new · {res.get('baseline', 0)} baseline · {res.get('triage')}"
+    tri: Mapping[str, Any] | None = None
+    try:
+        deps = _triage_deps(ctx, t0 + SCAN_JOB_BUDGET_S)
+        out = triage_auto.after_scan(ctx.db_url, ctx.schema, str(res.get("run_id") or ""), deps)
+        tri = out if "state" in out else None
+    except Exception:  # the scan job never fails because of triage (the old try/except)
+        logger.exception("machine triage after the scan job failed (scan unaffected)")
+    return scan_note(res, tri)
+
+
+def triage_retry_occurrence(conn: psycopg.Connection[Any], schema: str) -> Any:
+    return _one(conn, schema, "select max(id) from {s}.triage_auto_runs where kind = 'retry'")
+
+
+def _run_triage_retry(ctx: JobContext) -> str:
+    """The old ``_run_triage_retry``: ``run_retry()``'s summary or reason (decision d: no run while paid is off)."""
+    out = triage_auto.run_retry(ctx.db_url, ctx.schema, deps=_triage_deps(ctx, None, ctx.still_due))
+    return triage_auto.retry_note(out)
 
 
 def _run_events(ctx: JobContext) -> str:
@@ -185,6 +231,7 @@ _ENTRY: dict[str, tuple[Callable[[JobContext], str], Callable[[psycopg.Connectio
     "news_refresh": (_run_news, news_log_occurrence("runs")),
     "news_weekly_review": (_run_news_weekly, news_log_occurrence("weekly")),
     "news_source_review": (_run_news_sources_monthly, source_review_occurrence),
+    "triage_retry": (_run_triage_retry, triage_retry_occurrence),
 }
 assert set(_ENTRY) == PORTED
 

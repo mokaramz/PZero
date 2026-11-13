@@ -22,9 +22,10 @@ Where each input comes from (``load``):
   verdict per candidate is chosen per SURVIVOR (``latest_verdicts`` maps each line's id through the ``candidate``
   aliases first, decision e), so an archived line for an absorbed id and a new line for its survivor count once, in
   the panel's verdict and in ``calibration``.
-* acceptance (``shadow_triage/acceptance.json``) and the automatic-triage runs (``shadow_triage/auto_runs.json``):
-  ``documents`` (un-modelled state, one row per old file). ``pending`` keys are mapped to survivors through the
-  ``candidate`` merge aliases, and their proposal status is read from the survivor.
+* acceptance (``shadow_triage/acceptance.json``): ``documents``. The automatic-triage runs (review 035b): the
+  imported ``shadow_triage/auto_runs.json`` runs, then the ``triage_auto_runs`` records (``records.auto_runs``, the
+  last 30). ``pending`` keys are mapped to survivors through the ``candidate`` merge aliases, and their proposal
+  status is read from the survivor.
 * Conviction records: ``conviction_entries`` (live), as the old signal: ``legacy`` overlaid with today's ``attrs``,
   ``company`` from the legacy record (else the company name); file order of the archived ``real_data.json`` first,
   then creation order (a later record of the same normalised name wins, as before).
@@ -365,6 +366,8 @@ def load(conn: psycopg.Connection[Any], schema: str, only: list[str] | None = No
                     .format(s))  # fmt: skip
         aliases = {str(r["alias_id"]): str(r["candidate_id"]) for r in cur.fetchall()}
     intake = _tolerant_json(archived.get(SCOUT_INTAKE))
+    from projectzero.dealflow.triage import records  # review 035b: the new runs overlaid (records imports this module)
+
     return TriageInputs(
         candidates=candidates,
         proposals=proposals,
@@ -373,7 +376,7 @@ def load(conn: psycopg.Connection[Any], schema: str, only: list[str] | None = No
         conviction_signals=signals,
         scout_items=(intake.get("items", {}) or {}) if isinstance(intake, dict) else {},
         acceptance=docs.get(ACCEPTANCE_DOC) or {},
-        auto_runs=docs.get(AUTO_RUNS_DOC) or {},
+        auto_runs=records.auto_runs(conn, schema),
         aliases=aliases,
         override=workspaces.parse_override(docs.get("workspace_geos.json") or {}),
     )

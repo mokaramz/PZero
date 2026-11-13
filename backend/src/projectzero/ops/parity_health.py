@@ -661,8 +661,16 @@ def expected_status(verdict: str, issues: list[dict[str, str]], old: dict[str, A
 
 # 032c: the jobs the real runner can run (restated from the plan's table, checked against ``jobs.ported``)
 PORTED_JOBS = frozenset(
-    {"deal_flow_scan", "event_scan", "validation_snapshot", "news_refresh", "news_weekly_review", "news_source_review"}
-)  # review 034a: the Deal Flow scan is ported
+    {
+        "deal_flow_scan",
+        "event_scan",
+        "validation_snapshot",
+        "news_refresh",
+        "news_weekly_review",
+        "news_source_review",
+        "triage_retry",
+    }
+)  # review 034a: the Deal Flow scan is ported; review 035b: the machine-triage retry
 NEW_NOT_PORTED = "not ported yet"
 JOB_RULES: dict[int, tuple[str, str, Callable[[dict[str, Any]], str]]] = {  # rule -> (prefix, separator, item)
     6: ("", ", ", lambda p: p["label"].split(" (")[0]),

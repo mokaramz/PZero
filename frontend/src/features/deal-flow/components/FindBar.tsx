@@ -1,12 +1,14 @@
-import { useState, type RefObject } from "react";
+import { useCallback, useState, type RefObject } from "react";
 
 import { Button, Card } from "@/components/ui";
 import { cx } from "@/lib/format";
 import { useScan } from "../hooks/useScan";
+import { useTriageWatch } from "../hooks/useTriageAuto";
 import { NOT_PORTED } from "../model/deferred";
 import type { Workspace } from "../model/geo";
-import { mergedOf, scanIcon, scanningLabel, TRIAGE_LATER } from "../model/scan";
+import { mergedOf, scanIcon, scanningLabel } from "../model/scan";
 import type { InboxPayload, WsGeos } from "../model/types";
+import { AutoTriageStatus } from "./AutoTriageStatus";
 import { useDeferred } from "./Deferred";
 import { DeferredButton } from "./DeferredButton";
 import { ScanReport } from "./ScanReport";
@@ -14,8 +16,8 @@ import styles from "../DealFlow.module.css";
 
 /**
  * Find New Candidates (POST find + find_status polling), the feed window and the last-scan report — ported from the old
- * `FindBar` (review 034a). Analyze Top N stays in place, disabled until the analysis port; the old post-scan machine
- * triage status is the one declared line, since triage does not run after the scan yet.
+ * `FindBar` (review 034a). Analyze Top N stays in place, disabled until the analysis port. Under the scan status sits
+ * the old post-scan machine-triage status (review 035b), watched for 60 s after a scan this page saw finish.
  */
 export function FindBar({
   ib,
@@ -32,7 +34,14 @@ export function FindBar({
   anchorRef: RefObject<HTMLDivElement | null>;
 }) {
   const [days, setDays] = useState("7");
-  const scan = useScan(onScanFinished);
+  const triageWatch = useTriageWatch();
+  const { start: watchTriage } = triageWatch;
+  // machine triage of the new candidates starts once the scan has committed: watch for it
+  const finished = useCallback(() => {
+    watchTriage();
+    onScanFinished();
+  }, [watchTriage, onScanFinished]);
+  const scan = useScan(finished);
   const fs = scan.status;
   const running = scan.running;
   const batch = useDeferred(NOT_PORTED.analysis);
@@ -102,11 +111,7 @@ export function FindBar({
             </>
           )}
         </div>
-        {!running && ib.last_run && (
-          <div className="faint small" data-testid="scan-triage">
-            {TRIAGE_LATER}
-          </div>
-        )}
+        <AutoTriageStatus watch={triageWatch.watching} hidden={running} />
         {running ? (
           <div className={styles.repGrid} data-testid="scan-progress">
             {(fs?.rows || []).slice(-6).map((r, i) => (

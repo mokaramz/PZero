@@ -7,8 +7,8 @@
  * `?find=1` deep link).
  *
  * Covered: a click posts `find {days}`, the running label and progress while `find_status` is polled, then the finish
- * toast with the declared refusal, the fresh inbox and the catch-up read again, the declared triage line and no triage
- * read; a scan started elsewhere is picked up on load, and a stopped one gives the old error toast; the report (the
+ * toast with the declared refusal, the fresh inbox, the catch-up and the post-scan triage status read again (the triage
+ * view only once a new triage run finished — covered by `triage-auto-mocked.spec.ts`); a scan started elsewhere is picked up on load, and a stopped one gives the old error toast; the report (the
  * workspace's geographies, the failed source, the refused row, the ledger) and the lazy history; `?find=1` focuses Find
  * and posts nothing; no horizontal overflow at 1366, 1920, 390 and 150 %.
  *
@@ -21,13 +21,15 @@ import { resolve } from "node:path";
 import { expand, expectNoHorizontalOverflow, watch, zoom150 } from "./helpers";
 
 const FIX = resolve(import.meta.dirname, "fixtures/scan");
+const AUTO = resolve(import.meta.dirname, "fixtures/triage_auto");
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type J = any;
 const load = (n: string): J => JSON.parse(readFileSync(resolve(FIX, n), "utf8"));
 
 type Case = "idle" | "running" | "running_more" | "done" | "stopped";
 const DONE_TOAST = "2 genuinely new (1 pre-company) · 4 baseline · 1 noise · 9 already known · 1 existing pipeline · 1 refused by the intake";
-const TRIAGE_LATER = "Machine triage arrives with the triage port.";
+/** The post-scan machine-triage line (review 035b) for the previous scan's run (fixtures/triage_auto/status.json). */
+const AUTO_DONE = "Machine triage after scan (proposals only — the Attention score is separate): Machine triage complete — 3 processed (1 KEEP · 1 WATCH · 1 REJECT) · $0.0031.";
 const TRIAGE = { architecture: { prompt_version: "v3" }, proposals: {}, counts: {}, calibration: { decisions: 0, agreement: null }, note: "Proposals only." };
 const CATCHUP = { running: false, queue: [], current: null, done: [], enabled: true };
 
@@ -64,6 +66,7 @@ async function mockApi(page: Page, { before = "idle" as Case, script = ["running
   await page.route(/\/api\/deal-flow\/inbox(\?.*)?$/, (route) => route.fulfill({ json: state.last === "done" ? afterScan() : load("inbox.json") }));
   await page.route(/\/api\/deal-flow\/triage(\?.*)?$/, (route) => route.fulfill({ json: TRIAGE }));
   await page.route(/\/api\/catchup(\?.*)?$/, (route) => route.fulfill({ json: CATCHUP }));
+  await page.route(/\/api\/deal-flow\/triage_auto(\?.*)?$/, (route) => route.fulfill({ json: JSON.parse(readFileSync(resolve(AUTO, "status.json"), "utf8")).done }));
   await page.route(/\/api\/deal-flow\/find_status(\?.*)?$/, (route) => {
     if (state.started) state.last = state.queue.length > 1 ? state.queue.shift()! : state.queue[0];
     return route.fulfill({ json: status[state.last] });
@@ -85,7 +88,7 @@ async function open(page: Page, url = "/deal-flow") {
 const findBtn = (page: Page) => page.getByTestId("find-btn");
 
 test.describe("Deal Flow scan — mocked API", () => {
-  test("Find New Candidates: the post, the polled progress, then the finish toast, the fresh inbox and no triage", async ({ page }) => {
+  test("Find New Candidates: the post, the polled progress, then the finish toast, the fresh inbox and the triage status", async ({ page }) => {
     const w = watch(page);
     const api = await mockApi(page);
     await open(page);
@@ -94,6 +97,7 @@ test.describe("Deal Flow scan — mocked API", () => {
     const inboxReads = api.reads("/api/deal-flow/inbox");
     const catchupReads = api.reads("/api/catchup");
     const triageReads = api.reads("/api/deal-flow/triage");
+    const autoReads = api.reads("/api/deal-flow/triage_auto");
     await page.getByLabel("Feed window").selectOption("14");
     await findBtn(page).click();
     await expect(findBtn(page)).toHaveText("Scanning 2 / 7…");
@@ -113,13 +117,13 @@ test.describe("Deal Flow scan — mocked API", () => {
     await expect(page.getByTestId("find-status")).toContainText("Last run 2026-11-13 09:30 — 2 genuinely new (1 from pre-company channels)");
     await expect(page.getByTestId("scan-ledger")).toContainText("Scan ledger 2026-11-13 09:30");
     await expect(page.getByTestId("scan-ledger")).toContainText("genuinely new 2");
-    await expect(page.getByTestId("scan-triage")).toHaveText(TRIAGE_LATER);
-    // polling has stopped; the triage is neither read again nor asked about
+    await expect(page.getByTestId("auto-triage-status")).toHaveText(AUTO_DONE);
+    // the scan's polling has stopped; the triage status is watched (no new triage run here, so the triage view is not read again)
     const after = api.reads("/api/deal-flow/find_status");
     await page.waitForTimeout(3000);
     expect(api.reads("/api/deal-flow/find_status")).toBe(after);
+    expect(api.reads("/api/deal-flow/triage_auto")).toBeGreaterThan(autoReads + 1);
     expect(api.reads("/api/deal-flow/triage")).toBe(triageReads);
-    expect(api.requested.some((r) => r.path.includes("triage_auto"))).toBe(false);
     expect(api.posts()).toHaveLength(1);
     w.expectClean();
   });
@@ -170,7 +174,7 @@ test.describe("Deal Flow scan — mocked API", () => {
     await expect(led).toContainText("raw records retrieved 61");
     await expect(led).toContainText("Existing pipeline — not discovered in this scan: 2 (Varnholt Systems, Ellery Foods)");
     await expect(led).toContainText("Tamberlane Optics (Prairie SBIR awards · source date UNKNOWN");
-    await expect(page.getByTestId("scan-triage")).toHaveText(TRIAGE_LATER);
+    await expect(page.getByTestId("auto-triage-status")).toHaveText(AUTO_DONE);
     await page.locator('[data-ws="na"]').click();
     await expect(rep).toContainText("showing North America (3)");
 

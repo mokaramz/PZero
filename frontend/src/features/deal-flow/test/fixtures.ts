@@ -1,5 +1,6 @@
 /** A small Deal Flow: enough candidates to exercise the top-15 cut, every workspace and every decision. */
 import type { TriagePayload, TriageSummary } from "../model/triage";
+import type { AutoStatus, RetryAnswer } from "../model/triageAuto";
 import type { Candidate, FindStart, FindStatus, InboxPayload, ScanHistory } from "../model/types";
 import findAnswersJson from "./scan/find_answers.json";
 import findStatusJson from "./scan/find_status.json";
@@ -8,6 +9,9 @@ import scanHistoryJson from "./scan/scan_history.json";
 import triageAnswersJson from "./triage/answers.json";
 import triageInboxJson from "./triage/inbox.json";
 import triagePayloadJson from "./triage/triage.json";
+import autoRetryJson from "./triage_auto/retry.json";
+import autoStatusJson from "./triage_auto/status.json";
+import autoTriageJson from "./triage_auto/triage.json";
 
 const DAY = 864e5;
 const iso = (daysAgo: number) => new Date(Date.now() - daysAgo * DAY).toISOString().slice(0, 10);
@@ -145,3 +149,17 @@ export type TriageAnswer = keyof typeof triageAnswersJson;
 export const triageInbox = (): InboxPayload => structuredClone(triageInboxJson) as unknown as InboxPayload;
 export const triageWorld = (): TriagePayload => structuredClone(triagePayloadJson) as unknown as TriagePayload;
 export const triageAnswer = <T = Record<string, unknown>>(name: TriageAnswer): T => structuredClone(triageAnswersJson[name]) as unknown as T;
+
+/* ------------------------------------------------------------------ machine triage after a scan (review 035b)
+ * Kept as JSON in `triage_auto/` (invented names only), byte-identical copies in `e2e/tests/fixtures/triage_auto/` for
+ * the mocked Playwright spec. The world is the scan's (`scan/inbox.json`): its last scan selected Quillon Robotics,
+ * Fennmoor Grid and Tamberlane Optics.
+ * - `status.json`: `GET triage_auto` — no run yet, switched off, running, done, partial (two kept for an automatic
+ *   retry, Retry now (2)), failed (one needs a manual retry), and a Retry now run going, then done;
+ * - `retry.json`: `POST triage_retry` — started, and the two old refusals;
+ * - `triage.json`: the triage view after the partial run — a KEEP for Quillon Robotics, the other two in `pending`. */
+
+export type AutoCase = keyof typeof autoStatusJson;
+export const autoStatus = (c: AutoCase = "done"): AutoStatus => structuredClone(autoStatusJson[c]) as unknown as AutoStatus;
+export const retryAnswer = (c: keyof typeof autoRetryJson = "started"): RetryAnswer => structuredClone(autoRetryJson[c]) as RetryAnswer;
+export const autoTriageView = (): TriagePayload => structuredClone(autoTriageJson) as unknown as TriagePayload;

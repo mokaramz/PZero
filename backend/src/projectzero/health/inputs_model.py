@@ -82,8 +82,9 @@ class HealthInputs:
     # old ids -> survivor ids (none in the old app). NEW reader: ``dealflow.triage.view.load(conn, schema).aliases``
     aliases: Mapping[str, str] = field(default_factory=dict)
     # old ``auto_triage.status()["retry"]["next_try"]`` (the earliest ``next_eligible`` of
-    # ``shadow_triage/retry_state.json``): read ONLY by the runner's rule-4 text (032c). NEW reader: none yet (the
-    # triage retry is the runner's, 032c): ``None``
+    # ``shadow_triage/retry_state.json``, with the legacy runs folded in): read ONLY by the runner's rule-4 text
+    # (032c). NEW reader (review 035b): ``dealflow.triage.auto.next_try(conn, schema)`` (the imported retry state
+    # overlaid with ``triage_retry_state``)
     triage_next_try: str | None = None
     # ── research / watch ──────────────────────────────────────────────────────────────────────────────────────
     # old ``(storage.load_json("research_questions.json", {"questions": {}}, tolerant=True) or {}).get("questions")
