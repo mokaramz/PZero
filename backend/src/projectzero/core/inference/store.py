@@ -6,7 +6,7 @@ store (``pg_store.py``) implements the same Protocol over ``model_ledger``, ``mo
 The contract, per method (each runs as ONE atomic step: in Postgres one transaction under
 ``pg_advisory_xact_lock(hashtext('<schema>.model_budget'))``; here one ``threading.Lock``):
 
-``admit(attempt)``
+``admit(attempt, *, wait_s=None)``
     1. **reconcile**: every reservation with ``expires_at <= attempt.now`` becomes the ledger row
        ``abandoned_row(reservation)`` (outcome ``abandoned``, ``usd`` = its estimate, ``usd_source`` ``estimated``),
        inserted ``on conflict (call_id, attempt) where call_id is not null do nothing``, and the reservation is
@@ -15,11 +15,17 @@ The contract, per method (each runs as ONE atomic step: in Postgres one transact
        ledger and EVERY remaining live reservation (``Spend`` documents each sum). A refusal returns
        ``Admission(False, reason)`` and reserves nothing;
     3. **reserve**: one reservation keyed by (``call_id``, ``attempt``) with the estimate and ``expires_at``.
-``settle(settlement)``
+``settle(settlement, *, wait_s=None)``
     inserts ``settlement.row`` ``on conflict (call_id, attempt) where call_id is not null do nothing`` AND deletes the
     reservation (``call_id``, ``attempt``) if there is one. Returns True when the row was inserted, False when that
     attempt was already recorded (a repeated or late settlement: nothing is inserted, the existing row stands, so
     exactly one debit exists). The next admitter therefore sees either the reservation or the committed charge.
+``wait_s`` (review 028d, plan revision 3): ``None`` waits for the budget lock as long as it takes (029a); a number
+    waits at most that many seconds, and ``<= 0`` takes the lock only if it is free right now (Postgres:
+    ``lock_timeout`` / ``statement_timeout`` set to it before ``pg_advisory_xact_lock``, or
+    ``pg_try_advisory_xact_lock`` for no wait). A store that cannot get the lock in time raises ``BudgetBusy`` and
+    has done NOTHING: no reconciliation, no reservation, no row, no reservation retired. The gateway passes ``wait_s``
+    only when its caller gave a ``deadline``, so a store without the keyword keeps working for calls without one.
 ``cache_get(key)`` / ``cache_put(entry)``
     the response cache (no TTL, as before); a put replaces the entry under the same key.
 ``totals(now)``
@@ -32,7 +38,9 @@ Every row the gateway writes carries ``call_id`` and ``attempt`` in ``detail`` (
 from __future__ import annotations
 
 import threading
-from collections.abc import Iterable, Mapping
+import time
+from collections.abc import Callable, Iterable, Iterator, Mapping
+from contextlib import contextmanager
 from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Any, Protocol
@@ -57,6 +65,10 @@ DETAIL_KEYS = (
     "cached_input_tokens",  # usage.prompt_tokens_details.cached_tokens, or None
     "override_reason",  # only when an override was given (stripped, at most 300 characters)
 )
+
+
+class BudgetBusy(Exception):
+    """The budget lock could not be taken within the caller's ``wait_s`` (review 028d): the store did nothing."""
 
 
 @dataclass(frozen=True)
@@ -224,13 +236,13 @@ class Totals:
 class BudgetStore(Protocol):
     """The gateway's persistence. Each method is atomic (see the module docstring for the exact contract)."""
 
-    def admit(self, attempt: AttemptRequest) -> Admission: ...
+    def admit(self, attempt: AttemptRequest, *, wait_s: float | None = None) -> Admission: ...
 
-    def settle(self, settlement: Settlement) -> bool: ...
+    def settle(self, settlement: Settlement, *, wait_s: float | None = None) -> bool: ...
 
-    def cache_get(self, key: str) -> CacheEntry | None: ...
+    def cache_get(self, key: str, *, wait_s: float | None = None) -> CacheEntry | None: ...
 
-    def cache_put(self, entry: CacheEntry) -> None: ...
+    def cache_put(self, entry: CacheEntry, *, wait_s: float | None = None) -> None: ...
 
     def totals(self, now: datetime) -> Totals: ...
 
@@ -325,18 +337,66 @@ def spend_of(
 
 class InMemoryBudgetStore:
     """The reference ``BudgetStore``: rows in insertion order, reservations keyed by (``call_id``, ``attempt``), the
-    cache in a dict, every method under one lock. ``rows`` seeds the ledger (imported rows may lack the key)."""
+    cache in a dict, every method under one lock. ``rows`` seeds the ledger (imported rows may lack the key).
 
-    def __init__(self, rows: Iterable[LedgerRow] = ()) -> None:
+    The busy-lock seam (review 028d): while ``monotonic() < busy_until`` the budget lock is held by "another
+    connection". ``admit`` / ``settle`` then wait for it through ``sleep`` (a fake clock's advance in tests) at most
+    ``wait_s``: the lock is taken if it frees within the bound, else ``BudgetBusy`` is raised after waiting the bound
+    (``wait_s`` None waits until it frees, as an unbounded advisory lock would). ``waited`` records every wait.
+    ``busy_until`` None (the default) is a free lock; the real ``threading.Lock`` is also taken within ``wait_s``."""
+
+    def __init__(
+        self,
+        rows: Iterable[LedgerRow] = (),
+        *,
+        monotonic: Callable[[], float] = time.monotonic,
+        sleep: Callable[[float], None] = time.sleep,
+    ) -> None:
         self._lock = threading.Lock()
         self.rows: list[LedgerRow] = list(rows)
         self.reservations: dict[tuple[str, int], Reservation] = {}
         self.cache: dict[str, CacheEntry] = {}
         self.late: list[tuple[str, int]] = []  # settlements that found their attempt already recorded
+        self.monotonic = monotonic
+        self.sleep = sleep
+        self.busy_until: float | None = None
+        self.waited: list[float] = []
+        self.busy: list[tuple[str, str, int]] = []  # (method, call_id, attempt) refused with BudgetBusy
+
+    @contextmanager
+    def _budget_lock(self, wait_s: float | None, what: tuple[str, str, int]) -> Iterator[None]:
+        """The budget lock within ``wait_s`` (see the class docstring), else ``BudgetBusy`` with nothing done."""
+        left = wait_s
+        if self.busy_until is not None:
+            hold = self.busy_until - self.monotonic()
+            if hold > 0:
+                if left is not None and hold > left:
+                    pause = max(0.0, left)
+                    if pause:
+                        self.waited.append(pause)
+                        self.sleep(pause)
+                    self.busy.append(what)
+                    raise BudgetBusy(f"the budget lock was busy for more than {max(0.0, left):.3f}s")
+                self.waited.append(hold)
+                self.sleep(hold)
+                left = None if left is None else max(0.0, left - hold)
+        if left is None:
+            got = self._lock.acquire()
+        elif left > 0:
+            got = self._lock.acquire(timeout=left)
+        else:
+            got = self._lock.acquire(blocking=False)
+        if not got:
+            self.busy.append(what)
+            raise BudgetBusy(f"the budget lock was busy for more than {max(0.0, left or 0.0):.3f}s")
+        try:
+            yield
+        finally:
+            self._lock.release()
 
     # ---- the Protocol
-    def admit(self, attempt: AttemptRequest) -> Admission:
-        with self._lock:
+    def admit(self, attempt: AttemptRequest, *, wait_s: float | None = None) -> Admission:
+        with self._budget_lock(wait_s, ("admit", attempt.call_id, attempt.attempt)):
             reconciled = self._reconcile(attempt.now)
             if attempt.check:
                 spend = spend_of(
@@ -363,8 +423,8 @@ class InMemoryBudgetStore:
             self.reservations[(attempt.call_id, attempt.attempt)] = reservation_of(attempt)
             return Admission(True, "", reconciled)
 
-    def settle(self, settlement: Settlement) -> bool:
-        with self._lock:
+    def settle(self, settlement: Settlement, *, wait_s: float | None = None) -> bool:
+        with self._budget_lock(wait_s, ("settle", settlement.call_id, settlement.attempt)):
             key = (settlement.call_id, settlement.attempt)
             inserted = self._insert(settlement.row)
             self.reservations.pop(key, None)
@@ -372,11 +432,11 @@ class InMemoryBudgetStore:
                 self.late.append(key)
             return inserted
 
-    def cache_get(self, key: str) -> CacheEntry | None:
+    def cache_get(self, key: str, *, wait_s: float | None = None) -> CacheEntry | None:
         with self._lock:
             return self.cache.get(key)
 
-    def cache_put(self, entry: CacheEntry) -> None:
+    def cache_put(self, entry: CacheEntry, *, wait_s: float | None = None) -> None:
         with self._lock:
             self.cache[entry.key] = entry
 

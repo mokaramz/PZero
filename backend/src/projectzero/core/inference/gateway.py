@@ -19,6 +19,24 @@ Order of operations for one call (the old order, except where marked):
 
 Expected failures never raise: callers branch on ``Result.ok`` / ``Result.error_kind``. ``STOP_KINDS`` are the
 failures after which a batch must stop instead of moving on to the next item. Prompts and keys are never stored.
+
+The deadline (review 028d, plan revisions 2 and 3; additive: without ``deadline`` the call is exactly 029a's). With
+``deadline`` (a ``monotonic()`` time) the WHOLE call is bounded:
+  * before each attempt's admission: no time left -> the call ends ``deadline`` (not a ``STOP_KINDS`` kind), nothing
+    admitted, nothing sent, no row for that attempt (writing one would need the budget lock);
+  * ``store.admit`` / ``store.settle`` get ``wait_s`` = the time left (``<= 0``: only a free lock); ``BudgetBusy`` at
+    admission ends the call ``deadline`` with nothing reserved and nothing sent;
+  * after admission (which may have waited) the deadline is checked again: no time left -> the attempt is NOT sent
+    and its fresh reservation is settled at $0 ``none`` (outcome ``error``, kind ``deadline``) without waiting;
+  * each attempt's timeout is ``min(role timeout, time left)`` (the provider's own deadline over the exchange is
+    ``timeout_s`` from its start, so the transport ends by the call's deadline);
+  * a retry wait that would end at or past the deadline is not taken: the call ends ``deadline``, no further
+    dispatch;
+  * a DISPATCHED attempt whose settlement raises ``BudgetBusy`` keeps its reservation (it already counts as pending;
+    after ``expires_at`` the next admission reconciles it into an ``abandoned`` row charged its estimate, and a late
+    settlement records nothing, so there is never a duplicate debit). The settlement is NOT retried past the
+    deadline: ``Result.unsettled`` lists the attempt, ``Result.settled`` is False, and the call ends (a failed
+    attempt ends it ``deadline``; a valid reply stays ``ok``: it is paid for).
 """
 
 from __future__ import annotations
@@ -39,7 +57,15 @@ from projectzero.core.inference import budget
 from projectzero.core.inference import config as icfg
 from projectzero.core.inference.providers import Provider, ProviderError, Reply
 from projectzero.core.inference.providers import resolve as resolve_provider
-from projectzero.core.inference.store import AttemptRequest, BudgetStore, CacheEntry, LedgerRow, Settlement
+from projectzero.core.inference.store import (
+    Admission,
+    AttemptRequest,
+    BudgetBusy,
+    BudgetStore,
+    CacheEntry,
+    LedgerRow,
+    Settlement,
+)
 
 log = logging.getLogger("projectzero.inference")
 
@@ -58,6 +84,7 @@ ERROR_KINDS = frozenset(
         "bad_request",  # another 4xx, a refused URL
         "malformed",  # an unusable response, or no JSON in the reply
         "invalid",  # the caller's validation refused the reply
+        "deadline",  # the caller's deadline: no time left to admit, send, wait for a retry or get the budget lock
     }
 )
 RESERVATION_MARGIN_S = 60.0  # expires_at = the reservation time + the attempt's timeout + this margin
@@ -94,6 +121,17 @@ class Result:
     @property
     def must_stop(self) -> bool:
         return not self.ok and self.error_kind in STOP_KINDS
+
+    @property
+    def unsettled(self) -> tuple[int, ...]:
+        """The attempts whose settlement could not get the budget lock before the deadline (review 028d): each keeps
+        its reservation until the reconciler charges it. Kept outside the dataclass fields, so a 029a ``Result``
+        (its fields, ``__dict__``) is unchanged."""
+        return tuple(self.__dict__.get("_unsettled", ()))
+
+    @property
+    def settled(self) -> bool:
+        return not self.unsettled
 
 
 def extract_json(text: str) -> Any:
@@ -150,12 +188,15 @@ def complete(
     config: Mapping[str, Any] | None = None,
     sleep: Callable[[float], None] | None = None,
     new_id: Callable[[], str] | None = None,
+    deadline: float | None = None,
+    monotonic: Callable[[], float] = time.monotonic,
 ) -> Result:
     """Run one model call under the budget. ``validate(data)`` may return a cleaned value or raise ``ValueError``.
     ``extra_body`` (merged over the role's ``extra_body``) carries provider-specific options; it is part of the cache
     key. ``store`` holds the ledger, the reservations and the cache; ``clock`` (aware; Europe/Berlin by default),
     ``env`` (``os.environ`` by default: the paid switch and the key, read at call time), ``providers`` (by name, over
-    the configured ones), ``config`` (``config.load()`` by default), ``sleep`` and ``new_id`` are injectable."""
+    the configured ones), ``config`` (``config.load()`` by default), ``sleep`` and ``new_id`` are injectable.
+    ``deadline`` (a ``monotonic()`` time, review 028d) bounds the whole call: see the module docstring."""
     cfg = config if config is not None else icfg.load()
     environ: Mapping[str, str] = os.environ if env is None else env
     now = clock or berlin_now
@@ -175,6 +216,16 @@ def complete(
     if override_reason is not None:
         base["override_reason"] = override_reason.strip()[:300]
     charged = 0.0
+
+    def left() -> float:
+        return float("inf") if deadline is None else deadline - monotonic()
+
+    def bound() -> dict[str, float]:
+        """The store's wait bound: only with a deadline (a store without ``wait_s`` keeps working without one)."""
+        return {} if deadline is None else {"wait_s": max(0.0, left())}
+
+    def unsettled(attempt: int) -> None:
+        res.__dict__.setdefault("_unsettled", []).append(attempt)
 
     def row(
         outcome: str,
@@ -210,7 +261,12 @@ def complete(
             outcome=outcome,
             detail=detail,
         )
-        inserted = store.settle(Settlement(entry))
+        try:
+            inserted = store.settle(Settlement(entry), **bound())
+        except BudgetBusy:  # review 028d: never retried past the deadline; a reservation, if any, is left to expire
+            log.warning("settlement of %s attempt %d: the budget lock was busy until the deadline", call_id, attempt)
+            unsettled(attempt)
+            return False
         if not inserted:  # a late settlement (already reconciled): exactly one debit stands
             log.warning("late settlement for %s attempt %d: already recorded", call_id, attempt)
         return inserted
@@ -305,7 +361,10 @@ def complete(
         return fail("disabled", f"paid inference is switched off ({icfg.PAID_ENV} is not 'on')", "disabled")
 
     if caching:
-        hit = store.cache_get(key)
+        try:
+            hit = store.cache_get(key, **bound())  # Codex H-282: bounded by the same deadline
+        except BudgetBusy:  # no time left to read the cache: nothing is sent
+            return fail("deadline", "the response cache was busy until the deadline; nothing was sent")
         if hit is not None and isinstance(hit.text, str):
             res.cached = True
             if accept(hit.text):
@@ -321,29 +380,42 @@ def complete(
     t0 = time.monotonic()
     attempt = 0
     last_source = "none"
+
+    def out_of_time(msg: str) -> Result:
+        res.error_kind, res.error = "deadline", msg
+        res.latency_ms = int((time.monotonic() - t0) * 1000) if attempt > 1 else 0
+        res.usd, res.usd_source = round(charged, 8), last_source
+        return res
+
     while True:
         attempt += 1
+        if left() <= 0:
+            return out_of_time(f"the deadline passed before attempt {attempt} could be admitted; nothing was sent")
         if paid:
             at = now()
-            admission = store.admit(
-                AttemptRequest(
-                    call_id=call_id,
-                    attempt=attempt,
-                    role=role,
-                    purpose=purpose,
-                    provider=res.provider,
-                    model=res.model,
-                    entity_id=entity_id,
-                    run_id=run_id,
-                    est_usd=est,
-                    limits=lim,
-                    run_cap_usd=run_cap_usd,
-                    override_reason=override_reason,
-                    now=at,
-                    expires_at=at + timedelta(seconds=timeout + RESERVATION_MARGIN_S),
-                    detail={k: base[k] for k in ("prompt_sha", "request_sha", "override_reason") if k in base},
+            try:
+                admission: Admission = store.admit(
+                    AttemptRequest(
+                        call_id=call_id,
+                        attempt=attempt,
+                        role=role,
+                        purpose=purpose,
+                        provider=res.provider,
+                        model=res.model,
+                        entity_id=entity_id,
+                        run_id=run_id,
+                        est_usd=est,
+                        limits=lim,
+                        run_cap_usd=run_cap_usd,
+                        override_reason=override_reason,
+                        now=at,
+                        expires_at=at + timedelta(seconds=timeout + RESERVATION_MARGIN_S),
+                        detail={k: base[k] for k in ("prompt_sha", "request_sha", "override_reason") if k in base},
+                    ),
+                    **bound(),
                 )
-            )
+            except BudgetBusy:
+                return out_of_time(f"the budget was busy until the deadline; attempt {attempt} was not sent")
             if not admission.admitted:
                 res.error_kind, res.error = "budget_blocked", admission.reason
                 res.latency_ms = int((time.monotonic() - t0) * 1000) if attempt > 1 else 0
@@ -358,6 +430,9 @@ def complete(
                     latency_ms=res.latency_ms,
                 )
                 return res
+            if left() <= 0:  # plan revision 3: the admission may have waited; the deadline is checked again
+                row("error", attempt, usd=0.0, usd_source="none", usage={}, error_kind="deadline", latency_ms=0)
+                return out_of_time(f"the deadline passed while attempt {attempt} was admitted; it was not sent")
         res.attempts = attempt
         a0 = time.monotonic()
         try:
@@ -367,7 +442,7 @@ def complete(
                 max_output_tokens=max_out,
                 temperature=temperature,
                 json_mode=json_mode,
-                timeout_s=timeout,
+                timeout_s=min(timeout, left()),
                 extra_body=extra_req or None,
                 env=environ,
             )
@@ -385,6 +460,11 @@ def complete(
                 error_kind=e.kind,
                 latency_ms=int((time.monotonic() - a0) * 1000),
             )
+            if attempt in res.unsettled:  # review 028d: the deadline came while settling it
+                return out_of_time(
+                    f"attempt {attempt} failed ({e.kind}) and the budget was busy until the deadline; its reservation "
+                    "stands until it is reconciled"
+                )
             if not e.retryable or attempt > max_retries:
                 break
             wait = backoff[min(attempt - 1, len(backoff) - 1)]
@@ -392,6 +472,10 @@ def complete(
                 wait = min(max(wait, float(e.retry_after)), MAX_WAIT_S)
             elif "overloaded" in str(e).lower() or "busy" in str(e).lower():
                 wait = min(wait * 2, MAX_WAIT_S)  # an overloaded engine needs a little longer than a blip
+            if wait >= left():  # review 028d: the retry wait would end at or past the deadline
+                return out_of_time(
+                    f"attempt {attempt} failed ({e.kind}); the {wait:.0f}s retry wait would end past the deadline"
+                )
             pause(wait)
             continue
         except Exception:  # a bug, not an expected failure: settle the attempt as possibly billed, then raise
@@ -421,8 +505,13 @@ def complete(
         error_kind=res.error_kind,
         latency_ms=int((time.monotonic() - a0) * 1000),
     )
-    if ok and caching and not res.tool_calls:
-        store.cache_put(CacheEntry(key=key, provider=res.provider, model=res.model, text=reply.text, stored_at=now()))
+    if ok and caching and not res.tool_calls and left() > 0:
+        try:
+            store.cache_put(
+                CacheEntry(key=key, provider=res.provider, model=res.model, text=reply.text, stored_at=now()), **bound()
+            )
+        except BudgetBusy:  # Codex H-282: the answer and its debit stand; the reply is just not cached
+            log.warning("cache write for %s skipped: the cache was busy until the deadline", call_id)
     return res
 
 

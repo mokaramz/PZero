@@ -405,6 +405,14 @@ class _Canceller:
         self._thread.join(timeout=3.0)
 
 
+MIN_CONNECT_S = 2  # libpq treats any connect_timeout below 2 s as 2 s
+
+
+def _connect(db_url: str, *, connect_timeout: int) -> psycopg.Connection[Any]:
+    """The connection ``bounded_transaction`` opens (a seam: a test delays it deterministically)."""
+    return connect(db_url, connect_timeout=connect_timeout)
+
+
 @contextmanager
 def bounded_transaction(db_url: str, done_by: float, clock: Callable[[], float]) -> Iterator[psycopg.Connection[Any]]:
     """A transaction that cannot outlive ``done_by`` (Codex H-117 / H-119 / H-121): the connect waits at most the time
@@ -413,10 +421,12 @@ def bounded_transaction(db_url: str, done_by: float, clock: Callable[[], float])
     exits (cumulative work, and a statement that slipped past the check); and the deadline is checked again before
     commit, so a late write rolls back. Any of these is a 503 that saved nothing."""
     left = done_by - clock()
-    if left <= 0:
+    # Codex H-284: libpq's smallest connect timeout is 2 s, so a new connection that cannot fit in the time left is not
+    # attempted at all, and any timeout is rounded DOWN to the time left (never past the deadline)
+    if left < MIN_CONNECT_S:
         raise EventsError(503, WRITE_DEADLINE)
     try:
-        conn = connect(db_url, connect_timeout=max(2, math.ceil(left)))
+        conn = _connect(db_url, connect_timeout=math.floor(left))
     except psycopg.OperationalError as exc:
         if done_by - clock() <= 0:
             raise EventsError(503, WRITE_DEADLINE) from exc

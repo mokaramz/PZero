@@ -4,6 +4,8 @@ Every method runs in ONE transaction under ``pg_advisory_xact_lock(hashtext('<sc
 and settlements of every process are serialized and the next admitter always sees an attempt either as its
 reservation or as its committed charge, never neither:
 
+* every method takes ``wait_s`` (reviews 028d, Codex H-282): ONE absolute deadline over the connect, the lock waits,
+  every statement and the commit (``_tx``); running out raises ``BudgetBusy`` having done nothing.
 * ``admit``: reconcile the reservations with ``expires_at <= now`` (each becomes an ``abandoned`` ledger row charged its
   estimate, dated when it was reserved, inserted on (``call_id``, ``attempt``); then deleted), sum the ``Spend`` the
   rules read (the same sets as ``store.spend_of``: committed rows by window / role / entity / run, live reservations),
@@ -19,6 +21,7 @@ The connection is opened per call (``db_url``) unless a caller passes one alread
 
 from __future__ import annotations
 
+import time
 from collections.abc import Iterator
 from contextlib import contextmanager
 from datetime import datetime
@@ -34,6 +37,7 @@ from projectzero.core.inference import budget
 from projectzero.core.inference.store import (
     Admission,
     AttemptRequest,
+    BudgetBusy,
     CacheEntry,
     LedgerRow,
     Reservation,
@@ -77,14 +81,42 @@ class PostgresBudgetStore:
         self.s = schema_ident(schema)
 
     @contextmanager
-    def _locked(self) -> Iterator[psycopg.Connection[Any]]:
-        with transaction(self.db_url) as conn:
-            conn.execute("select pg_advisory_xact_lock(hashtext(%s))", (f"{self.schema}.model_budget",))
-            yield conn
+    def _tx(self, wait_s: float | None, *, budget_lock: bool) -> Iterator[psycopg.Connection[Any]]:
+        """One transaction, bounded by ONE absolute deadline when ``wait_s`` is given (reviews 028d, Codex H-282).
+
+        ``None``: an ordinary transaction (and, with ``budget_lock``, an unbounded wait for the budget lock). A bound:
+        ``events.scan.bounded_transaction`` with ``done_by = now + wait_s``, which limits the connect, every lock wait,
+        every statement (cancelled at the deadline, not given a fresh allowance each) and the commit; ``<= 0`` is no
+        time at all. Running out rolls back and raises ``BudgetBusy``: the store did nothing (a settlement then stays a
+        durable reservation, reconciled later)."""
+        if wait_s is None:
+            with transaction(self.db_url) as conn:
+                if budget_lock:
+                    conn.execute("select pg_advisory_xact_lock(hashtext(%s))", (f"{self.schema}.model_budget",))
+                yield conn
+            return
+        if wait_s <= 0:
+            raise BudgetBusy("no time left for the budget store")
+        from projectzero.events.edits import EventsError  # the shared bounded transaction (core never imports
+        from projectzero.events.scan import bounded_transaction  # a feature at module level; follow-up: core/db)
+
+        done_by = time.monotonic() + wait_s
+        try:
+            with bounded_transaction(self.db_url, done_by, time.monotonic) as conn:
+                if budget_lock:
+                    conn.execute("select pg_advisory_xact_lock(hashtext(%s))", (f"{self.schema}.model_budget",))
+                yield conn
+        except (EventsError, psycopg.OperationalError) as exc:  # out of time, a lock or statement cut off, or no
+            # connection within the time left (Codex H-284): the store did nothing; a dispatched attempt keeps its
+            # durable reservation for reconciliation
+            raise BudgetBusy(f"the budget store was not available within {wait_s:.3f}s") from exc
+
+    def _locked(self, wait_s: float | None = None) -> Any:
+        return self._tx(wait_s, budget_lock=True)
 
     # ---- the Protocol
-    def admit(self, attempt: AttemptRequest) -> Admission:
-        with self._locked() as conn:
+    def admit(self, attempt: AttemptRequest, *, wait_s: float | None = None) -> Admission:
+        with self._locked(wait_s) as conn:
             reconciled = self._reconcile(conn, attempt.now)
             if attempt.check:
                 spend = self._spend(conn, attempt)
@@ -104,14 +136,14 @@ class PostgresBudgetStore:
             self._reserve(conn, reservation_of(attempt))
             return Admission(True, "", reconciled)
 
-    def settle(self, settlement: Settlement) -> bool:
-        with self._locked() as conn:
+    def settle(self, settlement: Settlement, *, wait_s: float | None = None) -> bool:
+        with self._locked(wait_s) as conn:
             inserted = self._insert(conn, settlement.row)
             conn.execute(sql.SQL(_RETIRE).format(s=self.s), (settlement.call_id, settlement.attempt))
             return inserted
 
-    def cache_get(self, key: str) -> CacheEntry | None:
-        with transaction(self.db_url) as conn, conn.cursor(row_factory=dict_row) as cur:
+    def cache_get(self, key: str, *, wait_s: float | None = None) -> CacheEntry | None:
+        with self._tx(wait_s, budget_lock=False) as conn, conn.cursor(row_factory=dict_row) as cur:
             cur.execute(
                 sql.SQL("select key, provider, model, text, stored_at from {}.model_cache where key = %s").format(
                     self.s
@@ -121,8 +153,8 @@ class PostgresBudgetStore:
             r = cur.fetchone()
         return CacheEntry(r["key"], r["provider"], r["model"], r["text"], r["stored_at"]) if r else None
 
-    def cache_put(self, entry: CacheEntry) -> None:
-        with transaction(self.db_url) as conn:
+    def cache_put(self, entry: CacheEntry, *, wait_s: float | None = None) -> None:
+        with self._tx(wait_s, budget_lock=False) as conn:
             conn.execute(
                 sql.SQL(
                     "insert into {}.model_cache (key, provider, model, text, stored_at) values (%s, %s, %s, %s, %s) "

@@ -1,6 +1,6 @@
 # 028d — Plan: News & Learning, part 4 (the model cards, through the gateway)
 
-Author: Claude · Date: 2026-11-13 · Status: plan APPROVED (H-280) — implementation next
+Author: Claude · Date: 2026-11-13 · Status: plan APPROVED (H-280) — implementation APPROVED
 
 ## Why
 028c writes the old deterministic `rules` card for every new MEDIUM/HIGH relevant story. That is what the old code
@@ -175,5 +175,142 @@ A second case: the attempt is admitted and dispatched, then the lock is held dur
 ### H-278 plan revision 3 verdict
 
 **APPROVE for implementation.** The revised plan bounds the budget-lock waits, rechecks the deadline before dispatch and allows the committed phase-3 response to return when the card note cannot be written. A timed-out settlement leaves durable budget coverage until reconciliation. The two planned contention tests distinguish admission before dispatch from settlement after dispatch and check the eventual debit count. An abandoned estimate can conservatively consume budget even for an unsent attempt whose zero-cost settlement timed out. Keep its estimated provenance visible.
+
+## Implementation (Claude, 2026-11-13)
+
+**What landed**
+- **The gateway's deadline** (`core/inference/gateway.py`, `store.py`):
+  - `complete(..., deadline=None, monotonic=time.monotonic)`, with the new kind `deadline`, which is not a stop kind.
+    Without a deadline it behaves exactly as in 029a. With one:
+    - no admission with no time left;
+    - each attempt's timeout is the time left;
+    - no backoff past the deadline;
+    - a recheck after admission and before dispatch;
+    - the transport gets the deadline.
+  - The store Protocol is now `admit(attempt, *, wait_s=None)` / `settle(settlement, *, wait_s=None)`; a wait that runs
+    out raises `store.BudgetBusy` having done nothing.
+    - `BudgetBusy` at admission ends the call `deadline`, with nothing sent.
+    - At the settlement of a dispatched attempt, it leaves the reservation in place (`Result.settled` False), for the
+      029a reconciliation to charge.
+- **`PostgresBudgetStore`.**
+  - A positive `wait_s` sets local `lock_timeout` and `statement_timeout` before `pg_advisory_xact_lock`.
+  - `<= 0` uses `pg_try_advisory_xact_lock`, since `lock_timeout = 0` would mean waiting forever.
+  - A lock timeout or cancellation rolls back and raises `BudgetBusy`.
+- **`news/cards.py`** (pure):
+  - the old prompt, plus the untrusted-data sentence over the headline, text and source in SYSTEM;
+  - `plan_cards`: the old selection, at most 12;
+  - `still_fits` (still needing a card, the same prompt inputs, still selectable) and `with_card` (sets only `card`);
+  - `call_card`, `run_cards` (the old loop, stopping at `must_stop`, `run_cap` or `deadline`) and `card_note`.
+- **Phase 4 in `news/runs.py`**, after phase 3 commits, still under the session run lock:
+  - it selects from the committed events in a bounded transaction;
+  - the gateway is called with no transaction open, with `deadline = done_by`;
+  - each accepted card is written in a `bounded_transaction(done_by)` under the News lock: re-read, `still_fits`, then
+    `save_event_passes` with one `card` pass. The writer answers `written`, `stale` or `late`;
+  - the `run_notes` card line is bounded too, and skipped with a log line if there is no time left;
+  - any failure in phase 4 is logged and never changes phase 3's committed answer, which is always returned.
+- **Seams for the tests:** `refresh_run(card_gateway=..., before_card_write=job -> None)`.
+
+**Paid calls are still off.** With the default env, phase 4's first gateway call is refused (`disabled`, a
+`must_stop`), so no dispatch happens and every card stays `rules`, exactly as before.
+
+**Verification**
+- **Cards golden** (`parity_news cards-goldens` / `cards-check`): 5 cases over the 028c world, which has 68
+  candidates, so the cut at 12 is exercised: valid cards, failures, `must_stop`, the run cap, and a concurrent card.
+  All match. Breaking the max tokens, the run cap or the stale rule on purpose produced differences, so the comparison
+  is real. Declared:
+  - (b) the prompt sentence: the prompt sha and the cache key change;
+  - (a) the card spend recorded in `run_notes`;
+  - 029a's one row per attempt and the after-dispatch charge;
+  - the stale rule: the old loop wrote over a concurrent card or changed inputs, the new one skips them;
+  - no rewrite of the rules card on a failure.
+
+  `parity_inference check` shows 0 differences beyond the declared ones, and every other News and Validation check
+  still matches.
+- **Unit tests:** the deadline (16) and the cards (20), including the fake-clock expiry during a retry delay (no
+  second dispatch, no card write, the dispatched attempt settled) and the paused-provider stale cases.
+- **Hosted** (5 new, in `test_news_runs_hosted.py`):
+  - **Paid off:** cards stay `rules`, `stopped: "must_stop"`, $0 in the ledger.
+  - **A fake-provider card** is written, with its `card` history row and one `ok` ledger row per attempt.
+  - **Stale and unrelated edits, while paused between the call and the write:** a changed headline makes the card
+    stale, with its charge kept; an unrelated backcast is kept with the card (history `backcast`, then `card`).
+  - **The budget lock held past a 10 s deadline** by another connection: the refresh answers phase 3's result
+    (`started`) within the deadline, WHILE the lock is still held. Nothing is dispatched and the card stays `rules`.
+    The card note is skipped (no time left) or says `deadline`.
+  - **The budget lock taken during a dispatched attempt's settlement:** the reservation stays. After expiry the next
+    admission reconciles it into exactly one `abandoned` row.
+
+  The 028c run tests (7) pass with phase 4 in place.
+- **The whole backend suite** and the gate pass; see the HANDOFF post.
+
+**Not done here:** turning on paid calls, which is Mohamed's decision. Later callers (Deal Flow triage, the analyst,
+the Associate) come with their views.
+
+### H-281 implementation verdict
+
+**REQUEST CHANGES.** All 125 focused card and inference tests passed locally. Two database paths can still hold the refresh session lock after phase 3 commits and delay its response past the run deadline.
+
+1. In `gateway.complete`, the cache read before admission and the cache write after settlement receive no deadline. Both Postgres cache methods use ordinary transactions. Bound both by the same absolute deadline, including connection time. Test a blocked cache read with the fake provider enabled and a blocked cache write after a successful dispatch. The committed response must return while the blocker is held. Verify zero dispatches for the blocked read and exactly one debit for the blocked write.
+2. In `PostgresBudgetStore._locked`, the zero-time path can acquire the free advisory lock and then execute ledger or reservation SQL without a statement or lock timeout. The positive-time path also gives each statement the original allowance even after earlier waits. Carry an absolute deadline through connection and statement execution, and defer settlement to the durable reservation when the time is exhausted. Test a free budget advisory lock alongside a blocked ledger insert at expiry. Verify the response while the table lock is held, followed by reconciliation to exactly one debit.
+
+
+### Claude — implementation revision 2 (2026-11-13 01:25 CET)
+
+Both points of H-282 are taken.
+
+1. **The cache is bounded by the same deadline.**
+   - The Protocol's `cache_get` / `cache_put` take `wait_s`, and the gateway passes the time left to both.
+   - A cache read that cannot finish ends the call `deadline` with NOTHING sent.
+   - A cache write that cannot finish is skipped and logged; the answer and its single debit stand.
+2. **Every Postgres store call has one absolute deadline.**
+   - `PostgresBudgetStore._tx(wait_s)` runs every bounded call (`admit`, `settle`, `cache_get`, `cache_put`) in
+     `events.scan.bounded_transaction` with `done_by = now + wait_s`. That limits the connect, every lock wait, every
+     statement (cancelled AT the deadline, not given a fresh allowance each) and the commit.
+   - `wait_s <= 0` is no time at all: `BudgetBusy` with nothing done.
+   - So a settlement that cannot write its row in time leaves its durable reservation, reconciled later into exactly
+     one debit.
+   - The import of `bounded_transaction` is local. Moving it into `core/db` is a small follow-up.
+- **Tests** (`test_news_runs_hosted.py`, another connection holding a table lock):
+  - `model_cache` in ACCESS EXCLUSIVE before the run: the refresh answers phase 3's result (`started`) within the
+    10 s deadline, WHILE the lock is still held, with zero dispatches;
+  - `model_cache` locked right after the first successful dispatch: the answer arrives on time while the lock is held,
+    one dispatch, exactly one `ok` debit;
+  - `model_ledger` in EXCLUSIVE right after the first dispatch, with the budget advisory lock free: the settlement's
+    insert cannot finish, and the refresh answers on time while the table lock is held. The reservation stays, and
+    after expiry it is reconciled into one `abandoned` row each, with no duplicate (call_id, attempt) anywhere.
+- **Results.** The inference and News unit tests pass; the gateway and run hosted tests pass (19, including the three new ones); the gate passes.
+
+### H-283 implementation revision 2 verdict
+
+**REQUEST CHANGES.** The cache and ledger table-lock fixes address H-282 once a connection exists. I reviewed the three hosted regressions and reran the 125 focused unit tests successfully. Claude reports 19 hosted tests passed.
+
+Connection establishment still has a deadline gap. In `events.scan.bounded_transaction`, `connect_timeout=max(2, math.ceil(left))` gives a new synchronous connection up to two seconds when only 100 ms remain. The cancellation machinery starts after connect returns. Under connection delay the already committed refresh can therefore miss its response deadline before any SQL runs. Skip a new connection when its supported timeout cannot fit, and round any connection timeout down to the available budget, or use deadline-aware connection acquisition. Add a deterministic short-budget regression with a delayed connection seam and verify that phase 3’s committed response returns within budget. If settlement is skipped, preserve the reservation for reconciliation.
+
+
+### Claude — implementation revision 3 (2026-11-13 01:35 CET)
+
+H-284 is taken, in the shared `events.scan.bounded_transaction` (used by the Events scan, the Founder Radar and
+News runs, and the budget store).
+- **A new connection that cannot fit is not attempted.** libpq's smallest connect timeout is 2 s, so with less than
+  `MIN_CONNECT_S` (2) left the helper raises its 503 with nothing done.
+- **Any connect timeout is rounded DOWN** to the time left (`math.floor`), never up past the deadline.
+- **A `_connect` seam** lets tests delay the connection deterministically.
+- **The budget store** treats any `OperationalError` on its bounded path as `BudgetBusy` ("not available within the
+  time left"): a failed connect, a lock or statement cut off. The gateway therefore never raises on a slow connection,
+  and a dispatched attempt keeps its durable reservation for reconciliation.
+- **Tests.**
+  - `tests/events/test_bounded_connect.py` (7): with 0, 0.1, 1 or 1.99 s left no connection is attempted (503); with
+    2, 3.7 or 59.99 s left the timeout is 2, 3 or 59.
+  - **Hosted** `test_a_short_budget_with_slow_connections_returns_the_committed_refresh_in_time`: after the first
+    card's dispatch, every new connection takes its whole timeout and then fails, as libpq would.
+    - The refresh answers phase 3's committed result within its 12 s budget (plus the lock release).
+    - No card call raised.
+    - The dispatched attempt is either settled or a durable reservation, which reconciles into exactly one debit with
+      no duplicates.
+- **Results.** The run and gateway hosted tests pass (20). One run had a pooler connection error in an unchanged 028c
+  test, which passed on rerun. The backend suite passes (1,762).
+
+### H-285 implementation revision 3 verdict
+
+**APPROVE.** The bounded transaction now skips connection acquisition below two seconds and rounds longer timeouts down. This resolves H-284. The slow-connection regression exercises the post-dispatch path where phase 3 has committed and an unsettled attempt retains its reservation for reconciliation. All 132 focused connection, card and inference tests passed locally. Claude reports 20 hosted tests passed, including one pooler case on rerun.
 
 ## Grok notes

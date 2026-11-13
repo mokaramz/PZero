@@ -23,9 +23,10 @@ old 409 "A news refresh is already running."), and the status reports it as ``jo
 from __future__ import annotations
 
 import json
+import logging
 import secrets
 import time
-from collections.abc import Callable
+from collections.abc import Callable, Mapping
 from datetime import datetime
 from typing import Any
 
@@ -33,11 +34,12 @@ import psycopg
 
 from projectzero.core import net
 from projectzero.core.db import connect
+from projectzero.core.inference.pg_store import PostgresBudgetStore
 from projectzero.dealflow.intake.postgres import ensure_intake_open
 from projectzero.events.edits import EventsError
 from projectzero.events.scan import bounded_transaction, budget
 from projectzero.network.view import berlin_now, berlin_today
-from projectzero.news import refresh
+from projectzero.news import cards, refresh
 from projectzero.news import store as news_store
 from projectzero.news.fetching import FeedFetch
 from projectzero.news.inputs_model import base_from_docs, packaged_cases
@@ -45,6 +47,7 @@ from projectzero.validation.inputs import load_docs
 from projectzero.validation.inputs_model import ValidationInputs
 from projectzero.validation.inputs_model import inputs_from_docs as validation_inputs
 
+logger = logging.getLogger(__name__)
 RUN_DEADLINE_S = 180.0  # the whole run: 10 feeds at up to 20 s each, plus the write
 WRITE_DEADLINE = (
     "the news refresh's deadline passed before its results could be saved (News was busy) — nothing was saved; "
@@ -106,10 +109,13 @@ def refresh_run(
     deadline_s: float | None = None,
     trigger: str = "manual",
     after_fetch: Callable[[], None] | None = None,
+    card_gateway: Mapping[str, Any] | None = None,
+    before_card_write: Callable[[cards.CardJob], None] | None = None,
 ) -> dict[str, Any]:
     """One refresh run. Returns the old ``POST /api/news_refresh`` answer (``job.running`` false: the run finished);
     raises ``RunRefused`` (409 already running / before the import, 503 the write was cut off). ``after_fetch``: a test
-    seam called between the fetch and the write phase."""
+    seam called between the fetch and the write phase. ``card_gateway``: the gateway's injectables for phase 4 (tests:
+    the fake provider, the env); ``before_card_write``: a test seam called before each card write."""
     today, wall = berlin_today(now), berlin_now(now)
     hexes = new_hex or (lambda: secrets.token_hex(2))
     session = _locked_session(db_url, schema)
@@ -148,11 +154,71 @@ def refresh_run(
             _write_documents(conn, schema, out.documents)
             note = {"run_id": p.run_id, "deferred": list(out.deferred)}
             news_store.append_log(conn, schema, "run_notes", json.dumps(note, ensure_ascii=False, sort_keys=True))
-            return out.answer
+            answer = out.answer
     except EventsError as exc:  # the write phase's deadline: rolled back, nothing saved
+        _release(session, schema)
         raise RunRefused(exc.status, WRITE_DEADLINE) from exc
+    except BaseException:
+        _release(session, schema)
+        raise
+    # ── phase 4: the model cards (review 028d), after phase 3 committed; phase 3's answer is final either way
+    try:
+        _cards(db_url, schema, now, p.run_id, done_by, clock, card_gateway or {}, before_card_write)
+    except Exception:  # never turns a committed refresh into a failure
+        logger.exception("news refresh %s: the card phase failed; the run is committed", p.run_id)
     finally:
         _release(session, schema)
+    return answer
+
+
+def _cards(
+    db_url: str,
+    schema: str,
+    now: datetime,
+    run_id: str,
+    done_by: float,
+    clock: Callable[[], float],
+    gateway_kw: Mapping[str, Any],
+    before_write: Callable[[cards.CardJob], None] | None,
+) -> cards.CardOutcome | None:
+    """Phase 4 (plan revisions 2 / 3): select from the COMMITTED events, call the gateway with no transaction open and
+    one deadline (``done_by``) through admission, retries, backoff, the transport and every lock wait, and write each
+    accepted card in its own bounded transaction under the News lock if it still fits. The note is bounded too and
+    skipped (logged) when it cannot be written in time."""
+    try:
+        with bounded_transaction(db_url, done_by, clock) as conn:
+            doc = news_store.events_doc(conn, schema) or {}
+    except EventsError:
+        logger.warning("news refresh %s: no time left to select the cards", run_id)
+        return None
+    jobs = cards.plan_cards(doc)
+    store = PostgresBudgetStore(db_url, schema)
+
+    def call(job: cards.CardJob, deadline: float | None) -> Any:
+        return cards.call_card(job, deadline, run_id=cards.card_run_id(now), store=store, monotonic=clock, **gateway_kw)
+
+    def write(job: cards.CardJob, card: dict[str, Any]) -> cards.WriteVerdict:
+        if before_write is not None:
+            before_write(job)
+        try:
+            with bounded_transaction(db_url, done_by, clock) as conn:
+                news_store.lock(conn, schema)
+                current = (news_store.events_doc(conn, schema) or {}).get("events", {}).get(job.event_id)
+                if not cards.still_fits(current, job):
+                    return "stale"
+                record = cards.with_card(current, card)
+                news_store.save_event_passes(conn, schema, job.event_id, record, [("card", record)], {"run_id": run_id})
+                return "written"
+        except EventsError:
+            return "late"
+
+    outcome = cards.run_cards(jobs, call=call, write=write, deadline=done_by, monotonic=clock)
+    try:
+        with bounded_transaction(db_url, done_by, clock) as conn:
+            news_store.append_log(conn, schema, "run_notes", cards.card_note(run_id, outcome))
+    except EventsError:
+        logger.warning("news refresh %s: the card note missed the deadline (cards and charges are saved)", run_id)
+    return outcome
 
 
 def evaluate_run(
