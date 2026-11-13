@@ -30,7 +30,8 @@ Declared differences, ALL applied by ``normalise`` (the ONE place):
   record (``absorb``); an IMPORTED candidate keeps its imported record (the count is the old one).
 * **(a) a created candidate's id:** the summary's ``new_companies`` / ``baseline_companies`` carry the NEW candidate id;
   the collection maps it back to the record's old id (``attrs.scan_record.id``) before comparing.
-* **(d) machine triage:** the summary gains ``triage`` ("machine triage arrives with the triage port").
+* **(d) machine triage:** reversed by review 035b: the summary carries no ``triage`` key, as before (machine triage
+  runs after the scan committed; ``parity_triage_cascade`` covers it).
 * **revision 2, refusals:** the summary gains ``refused`` (0 here: this world holds no refused record; the hosted tests
   cover refusals and replays).
 * **(e) the network errors:** an HTTP error status is ``core/net``'s ``FetchError: HTTP Error <n>`` where the old
@@ -57,7 +58,6 @@ from typing import Any
 
 from projectzero.core import net
 from projectzero.core.paths import REPO_ROOT
-from projectzero.dealflow.scan import ingest
 from projectzero.dealflow.sources.catalog import registry_entries
 from projectzero.dealflow.sources.normalize import load_registry
 from projectzero.network.view import BERLIN
@@ -476,11 +476,11 @@ def _errors(v: Any) -> Any:
 def normalise(step: Mapping[str, Any], seed: Mapping[str, Any]) -> dict[str, Any]:
     """The old step -> the expected new one. ``seed``: the imported inbox records by id (declared a)."""
     s = _errors(copy.deepcopy(dict(step)))
-    summary = {**s["summary"], "refused": 0, "triage": ingest.TRIAGE_NOTE}  # revision 2 / (d)
+    summary = {**s["summary"], "refused": 0}  # revision 2
     candidates = {
         c["id"]: (copy.deepcopy(seed[c["id"]]) if c["id"] in seed else c) for c in s["inbox"]["candidates"]
     }  # (a)
-    scans = [({**h, "refused": 0, "triage": ingest.TRIAGE_NOTE} if h.get("run_id") in s["new_runs"] else h)
+    scans = [({**h, "refused": 0} if h.get("run_id") in s["new_runs"] else h)
              for h in s["history"]["scans"]]  # fmt: skip
     return {"summary": summary, "report": s["inbox"]["report"], "last_run": s["inbox"]["last_run"],
             "candidates": candidates, "sources": sources_state(s["sources"]["sources"]), "watch": s["watch"],

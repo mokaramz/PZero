@@ -169,18 +169,20 @@ def test_the_real_runner_restores_the_old_texts_only_for_the_ported_jobs() -> No
     body = system_view(_inputs("jobs_unrun"), NOW, JOBS_RUNNER)
     labels = {j["id"]: j["label"] for j in catalog.JOBS}
     unported = {j["id"] for j in core.active_jobs()} - PORTED
-    assert len(unported) == 5  # review 034a: the Deal Flow scan is ported
-    for j in body["jobs"]:  # (b): the five unported jobs are never overdue and say so
+    assert len(unported) == 4  # review 034a: the Deal Flow scan is ported; 035b: the triage retry
+    for j in body["jobs"]:  # (b): the four unported jobs are never overdue and say so
         assert (j.get("availability") == NOT_PORTED) == (j["id"] in unported)
         assert not (j["overdue"] and j["id"] in unported)
-    assert body["overdue"] == sum(1 for j in body["jobs"] if j["overdue"]) == 4
+    assert body["overdue"] == sum(1 for j in body["jobs"] if j["overdue"]) == 5  # 035b: triage_retry too
     for i in body["issues"]:
         named = {jid for jid in labels if labels[jid] in i["what"]}
         if ph.rule_of(i) in (6, 7, 8, 9, 10, 11) and named <= PORTED:  # the old guidance, old level and group
             assert i["do"] not in core.NO_RUNNER_DO.values(), i
         elif ph.rule_of(i) == 3:  # review 034a: the scan is ported, so rule 3 has its old advice back
             assert (i["level"], i["do"]) == ("warn", "Run Find New Candidates (or let catch-up run it)."), i
-        elif ph.rule_of(i) in (4, 6, 7, 8, 9, 10, 11):  # revision 2's wording for the others (rule 4 too)
+        elif ph.rule_of(i) == 4:  # review 035b: the triage retry is ported, so rule 4 has its old advice back
+            assert i["do"].startswith("Retried automatically") and i["group"] == "auto", i
+        elif ph.rule_of(i) in (6, 7, 8, 9, 10, 11):  # revision 2's wording for the others
             assert named <= unported and (i["level"], i["group"]) == ("info", "info"), i
             assert i["do"] in core.NO_RUNNER_DO.values() and not [p for p in PROMISES if p in i["do"]], i
         if ph.rule_of(i) == 1:

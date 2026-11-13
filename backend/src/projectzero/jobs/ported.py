@@ -2,9 +2,9 @@
 
 Pure, with no import of the runner (``health.core`` imports this module; the runner imports ``health``).
 
-* ``PORTED``: the jobs with a NEW equivalent (``deal_flow_scan`` since review 034a). The other five active jobs
-  (``watch_checks``, ``triage_retry``, ``source_network``, ``triage_compression``, ``case_refresh``) stay in ``JOBS``
-  with their imported history but never run (b); their plan rows say ``NOT_PORTED`` in place of overdue.
+* ``PORTED``: the jobs with a NEW equivalent (``deal_flow_scan`` since review 034a, ``triage_retry`` since 035b).
+  The other four active jobs (``watch_checks``, ``source_network``, ``triage_compression``, ``case_refresh``) stay
+  in ``JOBS`` with their imported history but never run (b); their plan rows say ``NOT_PORTED`` in place of overdue.
 * ``JobsRunner``: the ``health.core.Runner`` the views take. ``ported(job_id)`` drives the per-job texts (c);
   ``alive(record)`` replaces the old ``pid == os.getpid() or pid_alive(pid)``: a record marked ``running`` is still
   running only if the runner holding the scheduler lock NOW claimed it (its ``generation``). An imported record, or
@@ -18,7 +18,15 @@ from dataclasses import dataclass, replace
 from typing import Any
 
 PORTED: frozenset[str] = frozenset(
-    {"deal_flow_scan", "event_scan", "validation_snapshot", "news_refresh", "news_weekly_review", "news_source_review"}
+    {
+        "deal_flow_scan",
+        "event_scan",
+        "validation_snapshot",
+        "news_refresh",
+        "news_weekly_review",
+        "news_source_review",
+        "triage_retry",
+    }
 )
 NOT_PORTED = "not ported yet"
 

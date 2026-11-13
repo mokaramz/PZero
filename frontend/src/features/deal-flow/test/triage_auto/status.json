@@ -1,0 +1,163 @@
+{
+  "none": {
+    "running": false,
+    "last": null,
+    "enabled": true,
+    "retry": { "waiting": 0, "next_try": null }
+  },
+  "disabled": {
+    "running": false,
+    "last": {
+      "scan_run_id": "2026-11-12 22:15",
+      "started": "2026-11-12 22:18:41",
+      "selected": 3,
+      "state": "done",
+      "finished": "2026-11-12 22:19:05",
+      "triage_run_id": "triage-2026-11-12T22:18:41",
+      "triaged": 3,
+      "counts": { "KEEP": 1, "WATCH": 1, "REJECT": 1 },
+      "unchanged_skipped": 0,
+      "pending": [],
+      "failed": [],
+      "usd": 0.0031,
+      "summary": "Machine triage complete — 3 processed (1 KEEP · 1 WATCH · 1 REJECT) · $0.0031."
+    },
+    "enabled": false,
+    "retry": { "waiting": 0, "next_try": null }
+  },
+  "running": {
+    "running": true,
+    "last": {
+      "scan_run_id": "2026-11-12 22:15",
+      "started": "2026-11-12 22:18:41",
+      "selected": 3,
+      "state": "running",
+      "summary": "Machine triage running — 3 candidate(s)"
+    },
+    "enabled": true,
+    "retry": { "waiting": 0, "next_try": null }
+  },
+  "done": {
+    "running": false,
+    "last": {
+      "scan_run_id": "2026-11-12 22:15",
+      "started": "2026-11-12 22:18:41",
+      "selected": 3,
+      "state": "done",
+      "finished": "2026-11-12 22:19:05",
+      "triage_run_id": "triage-2026-11-12T22:18:41",
+      "triaged": 3,
+      "counts": { "KEEP": 1, "WATCH": 1, "REJECT": 1 },
+      "unchanged_skipped": 0,
+      "pending": [],
+      "failed": [],
+      "usd": 0.0031,
+      "summary": "Machine triage complete — 3 processed (1 KEEP · 1 WATCH · 1 REJECT) · $0.0031."
+    },
+    "enabled": true,
+    "retry": { "waiting": 0, "next_try": null }
+  },
+  "partial": {
+    "running": false,
+    "last": {
+      "scan_run_id": "2026-11-12 22:15",
+      "started": "2026-11-12 22:18:41",
+      "selected": 3,
+      "state": "partial",
+      "finished": "2026-11-12 22:19:30",
+      "triage_run_id": "triage-2026-11-12T22:18:41",
+      "triaged": 1,
+      "counts": { "KEEP": 1 },
+      "unchanged_skipped": 0,
+      "pending": [
+        {
+          "id": "s-0102",
+          "name": "Fennmoor Grid",
+          "reason": "the model provider did not answer in time — kept for an automatic retry after 22:34",
+          "category": "RETRYABLE",
+          "retry": "automatic",
+          "next_try": "2026-11-12T22:34:30",
+          "attempts": 1
+        },
+        {
+          "id": "s-0104",
+          "name": "Tamberlane Optics",
+          "reason": "the model provider did not answer in time — kept for an automatic retry after 22:34",
+          "category": "RETRYABLE",
+          "retry": "automatic",
+          "next_try": "2026-11-12T22:34:30",
+          "attempts": 1
+        }
+      ],
+      "failed": [],
+      "usd": 0.0012,
+      "summary": "Machine triage partially complete — 1 processed (1 KEEP); 2 preserved for automatic retry because the model provider did not answer in time (next try after 22:34) · $0.0012. No data was lost; these are proposals only."
+    },
+    "enabled": true,
+    "retry": { "waiting": 2, "next_try": "2026-11-12T22:34:30" }
+  },
+  "failed": {
+    "running": false,
+    "last": {
+      "scan_run_id": "2026-11-12 22:15",
+      "started": "2026-11-12 22:18:41",
+      "selected": 1,
+      "state": "failed",
+      "finished": "2026-11-12 22:18:52",
+      "triage_run_id": "triage-2026-11-12T22:18:41",
+      "triaged": 0,
+      "counts": {},
+      "unchanged_skipped": 0,
+      "pending": [],
+      "failed": [
+        {
+          "id": "s-0104",
+          "name": "Tamberlane Optics",
+          "reason": "the model provider refused the request — this needs a look — use “Retry now” in Deal Flow; the candidate is kept",
+          "category": "NON_RETRYABLE",
+          "retry": "manual",
+          "next_try": null,
+          "attempts": 1
+        }
+      ],
+      "usd": 0,
+      "summary": "Machine triage could not run — 0 processed; 1 need a manual retry (“Retry now”) — the model provider refused the request. No data was lost; these are proposals only."
+    },
+    "enabled": true,
+    "retry": { "waiting": 1, "next_try": null }
+  },
+  "retry_running": {
+    "running": true,
+    "last": {
+      "scan_run_id": "retry-now 2026-11-12 22:25:10",
+      "started": "2026-11-12 22:25:10",
+      "selected": 2,
+      "state": "running",
+      "retry": true,
+      "summary": "Machine triage running — 2 candidate(s)"
+    },
+    "enabled": true,
+    "retry": { "waiting": 2, "next_try": "2026-11-12T22:34:30" }
+  },
+  "retry_done": {
+    "running": false,
+    "last": {
+      "scan_run_id": "retry-now 2026-11-12 22:25:10",
+      "started": "2026-11-12 22:25:10",
+      "selected": 2,
+      "state": "done",
+      "finished": "2026-11-12 22:25:31",
+      "triage_run_id": "triage-2026-11-12T22:25:10",
+      "triaged": 2,
+      "counts": { "KEEP": 1, "RESEARCH": 1 },
+      "unchanged_skipped": 0,
+      "pending": [],
+      "failed": [],
+      "usd": 0.002,
+      "retry": true,
+      "summary": "Machine triage complete — 2 processed (1 KEEP · 1 RESEARCH) · $0.0020."
+    },
+    "enabled": true,
+    "retry": { "waiting": 0, "next_try": null }
+  }
+}

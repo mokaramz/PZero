@@ -204,6 +204,24 @@ describe("the unported jobs — labelled, never sent, their history kept", () =>
     expect(screen.getByTestId("health-detail")).toHaveTextContent(`Next due${JOB_NOT_PORTED}`);
   });
 
+  it("the pipeline's machine triage: Pending while triage_retry is not ported; the old Retrying once the runner runs it (035b)", async () => {
+    const { unmount } = await settled();
+    const node = () => document.querySelector('[data-node="df-triage"]') as HTMLElement;
+    expect(node()).toHaveTextContent("3 pending");
+    expect(node()).toHaveTextContent("Pending");
+    expect(node()).not.toHaveTextContent("Retrying");
+    unmount();
+    await settled({
+      health: (): Health => {
+        const h = healthRunner();
+        delete h.jobs.find((j) => j.id === "triage_retry")!.ported;
+        return h;
+      },
+    });
+    expect(node()).toHaveTextContent("3 pending");
+    expect(node()).toHaveTextContent("Retrying");
+  });
+
   it("an unported job's period: the snapshot line for that job, no promised run", async () => {
     await settled();
     fireEvent.click(screen.getByTestId("job-matrix").querySelector('[data-job="case_refresh"] button[data-state="budget_blocked"]') as HTMLElement);

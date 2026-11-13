@@ -1427,3 +1427,76 @@ describe("migration 0025 — the triage decision log: append-only rows in insert
     assert.deepEqual(grants.rows, []);
   });
 });
+
+describe("migration 0026 — machine triage: runner runs and dispositions append-only, auto runs frozen once finished", () => {
+  let db;
+  const RUN = "triage-20261113-081000-a1a1";
+
+  before(async () => {
+    db = await freshDb();
+    await db.query(`insert into pz.candidates (id, name) values ('cand00000001', 'Invented Robotics'), ('cand00000002', 'Invented Optics')`);
+  });
+
+  test("a runner run keeps its key order (json) and is never edited or deleted", async () => {
+    const summary = '{"run_id": "triage-20261113-081000-a1a1", "started_model": "m", "counts": {"final_keep": 1}, "usd": 0.0001}';
+    await db.query(`insert into pz.triage_runs (run_id, finished_at, summary) values ($1, now(), $2::json)`, [RUN, summary]);
+    assert.equal((await db.query(`select summary::text as s from pz.triage_runs`)).rows[0].s, summary);
+    await rejects(db.query(`update pz.triage_runs set run_id = run_id`), /append-only/);
+    await rejects(db.query(`delete from pz.triage_runs`), /append-only/);
+    await rejects(db.query(`insert into pz.triage_runs (run_id, finished_at, summary) values ('nope', now(), '{}')`), /check/);
+    await rejects(db.query(`insert into pz.triage_runs (run_id, finished_at, summary) values ($1, now(), '{}')`, [RUN]), /unique|duplicate/);
+  });
+
+  test("an automatic run is updated while it runs, then frozen; one running at a time; never deleted", async () => {
+    const running = '{"scan_run_id": "2026-11-13 08:10:00", "started": "2026-11-13T08:10:00", "state": "running", "selected": 1, "ids": ["cand00000001"]}';
+    const row = await db.query(
+      `insert into pz.triage_auto_runs (scan_run_id, kind, triage_run_id, state, selection, record, started_at)
+       values ('2026-11-13 08:10:00', 'scan', $1, 'running', '[["cand00000001", 0]]', $2::json, now()) returning id`,
+      [RUN, running],
+    );
+    const id = row.rows[0].id;
+    await rejects(db.query(`insert into pz.triage_auto_runs (scan_run_id, kind, state, record, started_at) values ('x', 'retry', 'running', '{}', now())`), /unique|duplicate/);
+    await rejects(db.query(`update pz.triage_auto_runs set selection = '[]' where id = $1`, [id]), /never change/);
+    await rejects(db.query(`update pz.triage_auto_runs set state = 'done' where id = $1`, [id]), /finished_check|check/);
+    const done = '{"scan_run_id": "2026-11-13 08:10:00", "state": "done", "summary": "ünïcode — kept"}';
+    await db.query(`update pz.triage_auto_runs set state = 'done', record = $1::json, finished_at = now() where id = $2`, [done, id]);
+    assert.equal((await db.query(`select record::text as r from pz.triage_auto_runs where id = $1`, [id])).rows[0].r, done);
+    await rejects(db.query(`update pz.triage_auto_runs set record = '{}' where id = $1`, [id]), /frozen/);
+    await rejects(db.query(`delete from pz.triage_auto_runs`), /append-only/);
+    await rejects(db.query(`insert into pz.triage_auto_runs (scan_run_id, kind, state, record, started_at) values ('x', 'later', 'running', '{}', now())`), /check/);
+  });
+
+  test("a disposition is recorded once per run and candidate, for a known run and candidate, and never changed", async () => {
+    await db.query(`insert into pz.triage_run_items (triage_run_id, candidate_id, disposition, detail) values ($1, 'cand00000001', 'decided_meanwhile', '{"why": "verdict"}')`, [RUN]);
+    await rejects(db.query(`insert into pz.triage_run_items (triage_run_id, candidate_id, disposition) values ($1, 'cand00000001', 'proposed')`, [RUN]), /unique|duplicate/);
+    await rejects(db.query(`insert into pz.triage_run_items (triage_run_id, candidate_id, disposition) values ('triage-20990101-000000-ffff', 'cand00000002', 'proposed')`), /foreign key|violates/);
+    await rejects(db.query(`insert into pz.triage_run_items (triage_run_id, candidate_id, disposition) values ($1, 'cand00000002', 'maybe')`, [RUN]), /check/);
+    await rejects(db.query(`update pz.triage_run_items set disposition = 'proposed'`), /append-only/);
+    await rejects(db.query(`delete from pz.triage_run_items`), /append-only/);
+  });
+
+  test("the retry state is one row per candidate in its first order; a re-added entry takes a new place; no delete", async () => {
+    await db.query(`insert into pz.triage_retry_state (candidate_id, entry) values ('cand00000002', '{"attempts": 1}'), ('cand00000001', '{"attempts": 0}')`);
+    const order = async () => (await db.query(`select candidate_id from pz.triage_retry_state order by ord`)).rows.map((r) => r.candidate_id);
+    assert.deepEqual(await order(), ["cand00000002", "cand00000001"]);
+    await db.query(`update pz.triage_retry_state set cleared = true where candidate_id = 'cand00000002'`);
+    await db.query(`update pz.triage_retry_state set cleared = false, moved = true, ord = default where candidate_id = 'cand00000002'`);
+    assert.deepEqual(await order(), ["cand00000001", "cand00000002"]);
+    await rejects(db.query(`insert into pz.triage_retry_state (candidate_id, entry) values ('cand00000001', '{}')`), /unique|duplicate/);
+    await rejects(db.query(`insert into pz.triage_retry_state (candidate_id, entry) values ('cand00000001x', '{}')`), /foreign key|violates/);
+    await rejects(db.query(`delete from pz.triage_retry_state`), /append-only/);
+  });
+
+  test("the four new tables have row level security and no API grants; no lock or setting names the schema", async () => {
+    const names = ["triage_runs", "triage_auto_runs", "triage_run_items", "triage_retry_state"];
+    const rls = await db.query(`select relname, relrowsecurity from pg_class where relname = any($1) and relkind = 'r' order by relname`, [names]);
+    assert.deepEqual(rls.rows.map((r) => r.relrowsecurity), [true, true, true, true]);
+    const grants = await db.query(
+      `select table_name from information_schema.role_table_grants where table_name = any($1) and grantee in ('anon', 'authenticated', 'PUBLIC')`,
+      [names],
+    );
+    assert.deepEqual(grants.rows, []);
+    const sql = readFileSync(join(MIGRATIONS, "20261113000026_triage_cascade.sql"), "utf8");
+    assert.ok(!/advisory|set_config|current_setting/i.test(sql));
+  });
+});

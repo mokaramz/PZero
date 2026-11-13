@@ -2,7 +2,7 @@
 import { describe, expect, it } from "vitest";
 
 import { findStatus } from "../test/fixtures";
-import { finishToast, mergedOf, refusedText, scanIcon, scanningLabel, SCAN_FINISHED_INVALIDATES, stoppedToast, TRIAGE_LATER } from "./scan";
+import { finishToast, mergedOf, refusedText, scanIcon, scanningLabel, SCAN_FINISHED_INVALIDATES, stoppedToast } from "./scan";
 
 describe("the scan's texts", () => {
   it("the finish toast is the old one, plus the intake's refusals when there are any", () => {
@@ -29,9 +29,9 @@ describe("the scan's texts", () => {
     expect([refusedText(2), refusedText(0), refusedText(null), refusedText(undefined)]).toEqual(["2 refused by the intake", "", "", ""]);
   });
 
-  it("a finished scan refreshes the inbox, the sources, the history, System health and the catch-up — never the triage", () => {
-    expect([...SCAN_FINISHED_INVALIDATES]).toEqual(["deal-flow/inbox", "sources", "deal-flow/scan_history", "system_health", "catchup"]);
-    expect(SCAN_FINISHED_INVALIDATES.some((k) => k.includes("triage"))).toBe(false);
-    expect(TRIAGE_LATER).toBe("Machine triage arrives with the triage port.");
+  it("a finished scan refreshes the inbox, the sources, the history, the post-scan triage status, System health and the catch-up", () => {
+    expect([...SCAN_FINISHED_INVALIDATES]).toEqual(["deal-flow/inbox", "sources", "deal-flow/scan_history", "deal-flow/triage_auto", "system_health", "catchup"]);
+    // the triage view itself is read again when the post-scan run finishes, not when the scan does (the old order)
+    expect(SCAN_FINISHED_INVALIDATES).not.toContain("deal-flow/triage");
   });
 });

@@ -19,6 +19,7 @@ import { expectNoHorizontalOverflow, watch, zoom150 } from "./helpers";
 
 const FIX = resolve(import.meta.dirname, "fixtures/triage");
 const SCAN = resolve(import.meta.dirname, "fixtures/scan");
+const AUTO = resolve(import.meta.dirname, "fixtures/triage_auto");
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type J = any;
 const load = (dir: string, n: string): J => JSON.parse(readFileSync(resolve(dir, n), "utf8"));
@@ -64,6 +65,7 @@ async function mockApi(page: Page, { decide = "accept_reject", decideStatus = 20
   await page.route(/\/api\/deal-flow\/inbox(\?.*)?$/, (route) => route.fulfill({ json: db }));
   await page.route(/\/api\/deal-flow\/triage(\?.*)?$/, (route) => route.fulfill({ json: load(FIX, "triage.json") }));
   await page.route(/\/api\/deal-flow\/find_status(\?.*)?$/, (route) => route.fulfill({ json: load(SCAN, "find_status.json").idle }));
+  await page.route(/\/api\/deal-flow\/triage_auto(\?.*)?$/, (route) => route.fulfill({ json: load(AUTO, "status.json").done }));
   await page.route(/\/api\/catchup(\?.*)?$/, (route) => route.fulfill({ json: CATCHUP }));
   await page.route(/\/api\/conviction\/meta(\?.*)?$/, (route) => route.fulfill({ json: META }));
   await page.route(/\/api\/deal-flow\/triage\/decide$/, (route) => {

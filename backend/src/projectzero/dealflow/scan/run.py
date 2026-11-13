@@ -16,13 +16,16 @@ network is used:
 One scan at a time: a SESSION advisory lock ``<schema>.dealflow.scan`` on a dedicated autocommit connection, released
 on every path. ``start_scan`` (the route) answers the old busy body when this process or another session holds it.
 ``still_due``: the runner's occurrence check (032c), run on the lock's connection right after the lock is taken.
-No machine triage is started (decision d): the summary's ``triage`` says it arrives with the triage port.
+Machine triage (review 035b, reversing 034a's decision d) runs AFTER the scan committed: ``start_scan``'s thread
+calls its ``after_scan`` hook with the summary once the job shows the result (a triage failure never fails the scan);
+the runner's job runs it synchronously (``jobs/catalog.py``).
 """
 
 from __future__ import annotations
 
 import contextlib
 import copy
+import logging
 import threading
 import time
 from collections.abc import Callable
@@ -45,6 +48,7 @@ from projectzero.events.edits import EventsError
 from projectzero.events.scan import bounded_transaction
 from projectzero.network.view import BERLIN, berlin_now
 
+logger = logging.getLogger(__name__)
 cut: Any = parsers  # the cut old code is untyped (see parsers.py): every call goes through this alias
 MAX_WORKERS = 6
 TIME_BUDGET_S = 240  # the old ``scan_time_budget``: the whole fetch
@@ -311,9 +315,12 @@ def start_scan(
     resolver: net.Resolver | None = None,
     options: dict[str, Any] | None = None,
     wait_for: bool = False,
+    after_scan: Callable[[dict[str, Any]], Any] | None = None,
 ) -> dict[str, Any]:
     """The old ``start_scan`` (``POST /api/find``): the scan runs in a background thread, ``{"started": true}``; the old
-    busy body while one runs, here or in another session (the scan lock). ``wait_for``: join the thread (tests)."""
+    busy body while one runs, here or in another session (the scan lock). ``wait_for``: join the thread (tests).
+    ``after_scan(summary)``: the old ``auto_triage.start`` after a SUCCESSFUL scan, in the same thread once the job
+    shows its result (review 035b); its failure is logged, never the scan's."""
     now = _berlin_clock(clock)
     with transaction(db_url) as conn:  # decision f: before the import, refused at once (IntakeClosedError)
         ensure_intake_open(conn, schema)
@@ -345,6 +352,12 @@ def start_scan(
             with _JOBS_LOCK:
                 job["error"] = type(e).__name__ + ": " + str(e)[:160]
                 job["running"] = False
+            return
+        if after_scan is not None:  # the scan is complete and stored; triage can never block or roll it back
+            try:
+                after_scan(summary)
+            except Exception:
+                logger.exception("automatic triage could not start (scan unaffected)")
 
     thread = threading.Thread(target=body, daemon=True, name="pz-dealflow-scan")
     thread.start()

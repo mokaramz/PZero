@@ -31,12 +31,14 @@ from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
 
 from projectzero.api.routers.conviction import Body
+from projectzero.api.routers.dealflow_triage import triage_deps
 from projectzero.core.db import transaction
 from projectzero.dealflow.candidates import DealFlowStore, DecisionError, ListQuery, validate_operator_status
 from projectzero.dealflow.inbox_view import inbox_view
 from projectzero.dealflow.intake.postgres import IntakeClosedError
 from projectzero.dealflow.scan import history as scan_history
 from projectzero.dealflow.scan import run as scan_run
+from projectzero.dealflow.triage import auto as triage_auto
 
 router = APIRouter(prefix="/api/deal-flow", tags=["deal-flow"])
 
@@ -145,6 +147,9 @@ def find(request: Request, body: Body) -> JSONResponse:
             resolver=getattr(state, "dealflow_resolver", None),
             options=getattr(state, "dealflow_scan_options", None),
             wait_for=bool(getattr(state, "dealflow_scan_wait", False)),
+            after_scan=lambda summary: triage_auto.after_scan(
+                settings.db_url, settings.schema, str(summary.get("run_id") or ""), triage_deps(state)
+            ),
         )
     except IntakeClosedError as exc:
         return JSONResponse({"ok": False, "error": str(exc)}, status_code=409)

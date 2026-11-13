@@ -1,0 +1,5 @@
+{
+  "started": { "started": true },
+  "nothing_waiting": { "started": false, "reason": "Nothing is waiting for a retry." },
+  "in_progress": { "started": false, "reason": "A machine triage run is already in progress." }
+}

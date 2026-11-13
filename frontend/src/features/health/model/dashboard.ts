@@ -3,9 +3,10 @@
  *
  *  Ported verbatim from the old `features/health/dashboard.ts` (review 032a), except `lanes`: the retired Scout 00 and
  *  Native Scout lanes are removed with their payload keys (decision c), so the pipeline is the Deal Flow lane; and
- *  the machine-triage node no longer says "Retrying" while no runner retries it (revision 2); a step whose job the
- *  runner cannot run yet (`ported: false`, 032c) says "Not ported yet" in place of "Overdue" or its next run. */
-import { isPortedJob, JOB_NOT_PORTED } from "./jobs";
+ *  the machine-triage node says the old "Retrying" only while the runner retries it — the runner is live and its
+ *  `triage_retry` job is ported (035b) — and "Pending" otherwise (revision 2); a step whose job the runner cannot run
+ *  yet (`ported: false`, 032c) says "Not ported yet" in place of "Overdue" or its next run. */
+import { isPortedJob, JOB_NOT_PORTED, runnerLive } from "./jobs";
 import type { Health, Issue, IssueGroup, Overview, Run } from "./types";
 
 export type Tone = "ok" | "lim" | "warn" | "bad" | "unk";
@@ -146,6 +147,8 @@ export function lanes(h: Health, o: Overview): Lane[] {
   };
   const p = o.pipeline;
   const rc = p.routing.counts ?? {};
+  // the old "Retrying": the pending items are retried by the hourly job — only when the runner runs it (035b)
+  const retried = runnerLive(h) && !!job.triage_retry && isPortedJob(job.triage_retry);
   const conv = Object.values(p.conviction).reduce((a, b) => a + b, 0);
   return [
     {
@@ -154,8 +157,7 @@ export function lanes(h: Health, o: Overview): Lane[] {
       sub: "sources → decision",
       nodes: [
         { id: "df-scan", name: "Source scan", fact: `weekly · last ${h.last_scan ? fmtT(h.last_scan).split(",")[0] : "never"}`, mark: jm("deal_flow_scan"), details: jd("deal_flow_scan") },
-        // old mark: "Retrying" — no runner retries the triage until 032c (revision 2), so the pending items wait
-        { id: "df-triage", name: "Machine triage", fact: `${h.triage_pending} pending`, mark: h.triage_pending ? ["lim", "Pending"] : ["ok", "Clear"],
+        { id: "df-triage", name: "Machine triage", fact: `${h.triage_pending} pending`, mark: h.triage_pending ? ["lim", retried ? "Retrying" : "Pending"] : ["ok", "Clear"],
           details: [["Waiting for triage", String(h.triage_pending)], ["Retry job", job.triage_retry?.last_note ?? "—"], ["Configured models", h.providers.filter((x) => x.enabled).map((x) => `${x.role}: ${shortModel(x.model)}`).join(" · ") || "none"], ["Note", "Machine triage proposes only; it never decides."]] },
         { id: "df-queue", name: "Queue compression", fact: `${rc.NEEDS_MOHAMED ?? 0} routed to you · ${rc.BACKGROUND_RESEARCH ?? 0} researching`, mark: jm("triage_compression"),
           details: [["Routes", Object.entries(rc).map(([k, v]) => `${v} ${k.toLowerCase().replace(/_/g, " ").replace("needs mohamed", "routed to you")}`).join(" · ") || "—"], ["At", fmtT(p.routing.at)]] },

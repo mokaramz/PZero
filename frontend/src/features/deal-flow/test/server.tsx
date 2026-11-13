@@ -8,6 +8,7 @@ import { ScoutIntakeRedirect } from "@/app/redirects";
 import { ToastProvider } from "@/components/Toast";
 import DealFlowPage from "../DealFlowPage";
 import type { TriagePayload } from "../model/triage";
+import type { AutoStatus } from "../model/triageAuto";
 import type { FindStatus, InboxPayload, ScanHistory } from "../model/types";
 
 export type Call = { method: string; path: string; body?: unknown };
@@ -29,6 +30,9 @@ export type Routes = {
   /** machine triage writes (review 035a): accept / override one proposal, and the batch preview / confirm */
   triageDecide?: (body: Record<string, unknown>) => Answer;
   batchReject?: (body: Record<string, unknown>) => Answer;
+  /** machine triage after a scan (review 035b): each `triage_auto` read (n counts them), and Retry now */
+  triageAuto?: (n: number) => AutoStatus | Answer;
+  triageRetry?: (body: Record<string, unknown>) => Answer;
 };
 
 const isAnswer = (x: unknown): x is { status: number; body: unknown } => !!x && typeof x === "object" && "status" in x && "body" in x;
@@ -37,6 +41,7 @@ export function fakeServer(routes: Routes) {
   const calls: Call[] = [];
   let inboxReads = 0;
   let statusReads = 0;
+  let autoReads = 0;
   const json = (status: number, body: unknown) => new Response(JSON.stringify(body), { status, headers: { "Content-Type": "application/json" } });
   const fetchMock = vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
     const method = (init?.method ?? "GET").toUpperCase();
@@ -79,6 +84,14 @@ export function fakeServer(routes: Routes) {
       const a = await routes.batchReject(body);
       return json(a.status, a.body);
     }
+    if (method === "GET" && path === "/api/deal-flow/triage_auto" && routes.triageAuto) {
+      const a = await routes.triageAuto(++autoReads);
+      return isAnswer(a) ? json(a.status, a.body) : json(200, a);
+    }
+    if (method === "POST" && path === "/api/deal-flow/triage_retry" && routes.triageRetry) {
+      const a = await routes.triageRetry(body);
+      return json(a.status, a.body);
+    }
     if (method === "GET" && path === "/api/conviction/meta" && routes.meta) return json(200, routes.meta());
     if (method === "POST" && path === "/api/conviction/save" && routes.save) {
       const a = await routes.save(body);
@@ -92,6 +105,7 @@ export function fakeServer(routes: Routes) {
     posts: () => calls.filter((c) => c.method === "POST"),
     inboxReads: () => inboxReads,
     statusReads: () => statusReads,
+    autoReads: () => autoReads,
     gets: (p: string) => calls.filter((c) => c.method === "GET" && c.path === p).length,
   };
 }

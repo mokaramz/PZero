@@ -1,0 +1,75 @@
+{
+  "architecture": {
+    "prompt_version": "triage-v3",
+    "accepted": "2026-10-01"
+  },
+  "proposals": {
+    "s-0101": {
+      "candidate_id": "s-0101",
+      "proposal": "KEEP",
+      "display_proposal": "KEEP",
+      "status": "proposed",
+      "stage": "stage1",
+      "path": "stage1",
+      "confidence": "high",
+      "reject_basis": null,
+      "reject_evidence": null,
+      "reasons": [
+        "A robotics spin-out of a university lab",
+        "Accelerator cohort this month"
+      ],
+      "missing": [],
+      "flags": [],
+      "flash": {
+        "model": "flash",
+        "proposal": "KEEP",
+        "confidence": "high",
+        "reject_basis": null
+      },
+      "veto": null,
+      "edge": "PRE_FUNDING_EDGE",
+      "themes": [],
+      "routing": {
+        "queue": "operating",
+        "reason": "European startup"
+      },
+      "entity": {
+        "display_name": "Quillon Robotics",
+        "broken": "",
+        "entities": []
+      },
+      "portfolio": {
+        "status": "NONE",
+        "route_to_omar": false,
+        "evidence": [],
+        "twins": [],
+        "record": null
+      },
+      "stale": false,
+      "obvious_reject": false,
+      "prompt_version": "triage-v3",
+      "mohamed": null,
+      "queue": {
+        "state": "NEEDS_MOHAMED",
+        "reason": "a KEEP with a pre-funding edge",
+        "priority": 41,
+        "priority_why": [
+          "KEEP +12",
+          "edge +10"
+        ]
+      }
+    }
+  },
+  "counts": {},
+  "calibration": {
+    "decisions": 4,
+    "agreement": 0.75,
+    "machine_rejects_reviewed": 0,
+    "machine_rejects_overturned_to_keep_or_research": 0
+  },
+  "pending": {
+    "s-0102": "TRIAGE PENDING: the model provider did not answer in time — kept for an automatic retry after 22:34",
+    "s-0104": "TRIAGE PENDING: the model provider did not answer in time — kept for an automatic retry after 22:34"
+  },
+  "note": "Proposals only — every decision is yours."
+}

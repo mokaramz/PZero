@@ -1,20 +1,21 @@
 /**
  * The Deal Flow scan on the page (review 034a): Find New Candidates (the feed window, `POST deal-flow/find {days}`, the
  * running label and progress), the 1.2 s polling of `find_status` (fake timers), a scan started elsewhere, the finish
- * and stopped toasts with the declared refusal, the declared triage line (no triage read or refresh), the per-source
+ * and stopped toasts with the declared refusal, the post-scan triage status read again (review 035b), the per-source
  * report (the workspace's geographies, the failed sources, the refused rows, the ledger), the lazy scan history and
  * `?find=1`. Invented names only (`test/scan/*.json`).
  */
 import { act, fireEvent, screen, waitFor, within } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { POLL_MS, TRIAGE_LATER } from "./model/scan";
+import { POLL_MS } from "./model/scan";
 import type { InboxPayload } from "./model/types";
-import { afterScan, findAnswer, findStatus, scanHistory, scanInbox, triage, type FindCase } from "./test/fixtures";
+import { afterScan, autoStatus, findAnswer, findStatus, scanHistory, scanInbox, triage, type FindCase } from "./test/fixtures";
 import { fakeServer, renderPage, type Routes } from "./test/server";
 
 const STATUS = "/api/deal-flow/find_status";
 const DONE_TOAST = "2 genuinely new (1 pre-company) · 4 baseline · 1 noise · 9 already known · 1 existing pipeline · 1 refused by the intake";
+const AUTO_DONE = "Machine triage after scan (proposals only — the Attention score is separate): Machine triage complete — 3 processed (1 KEEP · 1 WATCH · 1 REJECT) · $0.0031.";
 
 const findBtn = () => screen.getByTestId("find-btn");
 const fold = () => screen.getByTestId("scan-fold") as HTMLDetailsElement;
@@ -44,6 +45,7 @@ function scanServer({ before = "idle", script = ["running", "done"], over = {} }
       return { status: 200, body: findAnswer("started") };
     },
     scanHistory: () => scanHistory(),
+    triageAuto: () => autoStatus("done"),
     ...over,
   });
   return { ...server, state };
@@ -105,13 +107,13 @@ describe("Find New Candidates", () => {
     const progress = screen.getByTestId("scan-progress");
     expect(progress).toHaveTextContent("✓ Isarwerk Venture Lab 2 new lines");
     expect(progress).toHaveTextContent("✕ Halden Feed HTTP Error 503: Service Unavailable");
-    // while running: no report, no triage line
+    // while running: no report, no triage status
     expect(screen.queryByTestId("scan-report")).toBeNull();
-    expect(screen.queryByTestId("scan-triage")).toBeNull();
+    expect(screen.queryByTestId("auto-triage-status")).toBeNull();
     expect(toasts()).toContain("Scanning sources — started; it runs in the background (see Background activity)");
   });
 
-  it("polls find_status every 1.2 s while running; when done: the toast with the refusal, the refreshes, no triage", async () => {
+  it("polls find_status every 1.2 s while running; when done: the toast with the refusal, the refreshes, the triage status", async () => {
     vi.useFakeTimers();
     const server = scanServer({ script: ["running", "running", "running", "running_more", "running_more", "done"] });
     const { qc } = renderPage();
@@ -133,19 +135,22 @@ describe("Find New Candidates", () => {
     expect(labels.at(-1)).toBe("Find New Candidates");
     expect(toasts()).toContain(DONE_TOAST);
 
-    // the views a scan changes are read again; the triage never
+    // the views a scan changes are read again, the post-scan triage status among them; the triage view only once a
+    // new triage run has finished (none here: the same run as before)
     const keys = invalidate.mock.calls.map((c) => (c[0] as { queryKey?: unknown[] } | undefined)?.queryKey?.[0]);
-    for (const k of ["deal-flow/inbox", "sources", "deal-flow/scan_history", "system_health", "catchup"]) expect(keys).toContain(k);
-    expect(keys.some((k) => typeof k === "string" && k.includes("triage"))).toBe(false);
+    for (const k of ["deal-flow/inbox", "sources", "deal-flow/scan_history", "deal-flow/triage_auto", "system_health", "catchup"]) expect(keys).toContain(k);
+    const autoReads = server.autoReads();
     await advance(0);
     expect(server.inboxReads()).toBeGreaterThan(inboxReads);
+    expect(server.autoReads()).toBeGreaterThan(1);
+    expect(keys).not.toContain("deal-flow/triage");
     expect(server.gets("/api/deal-flow/triage")).toBe(triageReads);
-    expect(server.calls.some((c) => c.path.includes("triage_auto"))).toBe(false);
 
-    // the fresh inbox: the new run's ledger, the triage line; polling has stopped
+    // the fresh inbox: the new run's ledger, the triage status; the scan's polling has stopped
     expect(screen.getByTestId("find-status")).toHaveTextContent("Last run 2026-11-13 09:30 — 2 genuinely new");
     expect(screen.getByTestId("scan-ledger")).toHaveTextContent("Scan ledger 2026-11-13 09:30");
-    expect(screen.getByTestId("scan-triage")).toHaveTextContent(TRIAGE_LATER);
+    expect(screen.getByTestId("auto-triage-status")).toHaveTextContent(AUTO_DONE);
+    expect(autoReads).toBeGreaterThanOrEqual(1);
     const reads = server.statusReads();
     await advance(5 * POLL_MS);
     expect(server.statusReads()).toBe(reads);
@@ -228,20 +233,20 @@ describe("Find New Candidates", () => {
     expect(screen.getByTestId("scan-report")).toBeInTheDocument();
   });
 
-  it("never run: the old first-run note, no report, no triage line", async () => {
+  it("never run: the old first-run note, no report, no triage status", async () => {
     const ib: InboxPayload = { ...scanInbox(), last_run: null, last_summary: {}, report: [] };
-    fakeServer({ inbox: () => ib, triage: () => triage(), findStatus: () => findStatus("idle") });
+    fakeServer({ inbox: () => ib, triage: () => triage(), findStatus: () => findStatus("idle"), triageAuto: () => autoStatus("none") });
     renderPage();
     await waitFor(() => expect(screen.getByTestId("find-status")).toHaveTextContent(/^Never run\. First run only saves a baseline/));
     expect(within(fold()).getByText(/never run/)).toBeInTheDocument();
     expect(screen.queryByTestId("scan-report")).toBeNull();
-    expect(screen.queryByTestId("scan-triage")).toBeNull();
+    expect(screen.queryByTestId("auto-triage-status")).toBeNull();
   });
 });
 
 describe("the scan report", () => {
   async function report() {
-    fakeServer({ inbox: () => scanInbox(), triage: () => triage(), findStatus: () => findStatus("idle") });
+    fakeServer({ inbox: () => scanInbox(), triage: () => triage(), findStatus: () => findStatus("idle"), triageAuto: () => autoStatus("done") });
     renderPage();
     return waitFor(() => screen.getByTestId("scan-report"));
   }
@@ -288,7 +293,7 @@ describe("the scan report", () => {
     expect(within(rep).getAllByTestId("scan-rep-refused")).toHaveLength(1);
   });
 
-  it("the summary line, the ledger and the triage line", async () => {
+  it("the summary line, the ledger and the triage status", async () => {
     const rep = await report();
     expect(screen.getByTestId("find-status")).toHaveTextContent(
       "Last run 2026-11-12 22:15 — 3 genuinely new (1 from pre-company channels) · 0 baseline · 1 noise auto-rejected · 11 already known (skipped) · 3 merged · 2 existing pipeline — not discovered in this scan",
@@ -301,7 +306,7 @@ describe("the scan report", () => {
     expect(led).toHaveTextContent("New this scan: Quillon Robotics (Isarwerk Venture Lab · source date 2026-11-10 · first seen 2026-11-12 22:16)");
     expect(led).toHaveTextContent("Tamberlane Optics (Prairie SBIR awards · source date UNKNOWN · first seen 2026-11-12 22:16)");
     expect(within(led).getByRole("link", { name: "Fennmoor Grid" })).toHaveAttribute("href", "https://grants.example.org/fennmoor");
-    expect(screen.getByTestId("scan-triage")).toHaveTextContent(/^Machine triage arrives with the triage port\.$/);
+    await waitFor(() => expect(screen.getByTestId("auto-triage-status")).toHaveTextContent(AUTO_DONE));
   });
 });
 

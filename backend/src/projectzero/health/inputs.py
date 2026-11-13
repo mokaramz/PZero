@@ -23,6 +23,7 @@ from projectzero.core.inference import config as icfg
 from projectzero.dealflow.inbox_view import candidate_rows
 from projectzero.dealflow.ranking.service import ranking_input
 from projectzero.dealflow.sources.store import SourcesStore
+from projectzero.dealflow.triage import auto as triage_auto
 from projectzero.dealflow.triage import view as triage_view
 from projectzero.ecosystems.store import EcosystemsStore
 from projectzero.health.inputs_model import HealthInputs
@@ -89,7 +90,7 @@ def load(conn: psycopg.Connection[Any], schema: str, now: datetime) -> HealthInp
         auto_runs=triage.auto_runs,
         proposals=triage.proposals,
         aliases=triage.aliases,
-        triage_next_try=None,  # the triage retry is the runner's (032c)
+        triage_next_try=triage_auto.next_try(conn, schema),  # review 035b: the retry state's earliest next try
         research_questions=(
             _archived_first(conn, s, "research_questions.json", "research_questions.json", {}) or {}
         ).get("questions")

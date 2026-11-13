@@ -57,7 +57,6 @@ from projectzero.dealflow.sources.store import SourcesStore
 from projectzero.network.view import berlin_now
 
 cut: Any = parsers  # the cut old code is untyped (see parsers.py): every call goes through this alias
-TRIAGE_NOTE = "machine triage arrives with the triage port"  # decision d: no auto-triage from the scan
 SUBMITTED_BY = "scheduler:deal_flow_scan"
 _WEB_URL = re.compile(r"^https?://([A-Za-z0-9]([A-Za-z0-9-]*[A-Za-z0-9])?\.)+[A-Za-z]{2,}(:[0-9]{1,5})?([/?#][^\s]*)?$")
 _EXTERNAL_ID = re.compile(r"[^A-Za-z0-9._:-]")
@@ -392,7 +391,7 @@ def _name_of(conn: psycopg.Connection[Any], schema: str, candidate_id: str) -> s
 def _summary(
     report: list[dict[str, Any]], t: Tally, run_id: str, started: datetime, finished: datetime
 ) -> dict[str, Any]:
-    """The old ``last_summary`` (the old key order), plus ``refused`` and ``triage`` (declared, revision 2 / d).
+    """The old ``last_summary`` (the old key order), plus ``refused`` (declared, revision 2).
     Appends the old system row to ``report`` when anything was known or merged."""
     src_rows = [r for r in report if r.get("tier") != "system"]
     ok_rows = [r for r in src_rows if r.get("status") == "ok"]
@@ -466,7 +465,6 @@ def _summary(
         ][:200],
         "merged_names": sorted(set(t.merged_names))[:100],
         "refused": t.refused,
-        "triage": TRIAGE_NOTE,
     }
 
 
