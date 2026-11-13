@@ -21,6 +21,9 @@ Each function answers what the old route answered (status + body). Expected refu
 * (e) only real changes write: an outcome whose documents equal the input returns no document (and an action or
   import that changes nothing records no metrics either).
 * (f) an unknown ``state`` is a 400 ``{ok: false, error: "state must be one of: ..."}`` (the old route raised: 500).
+* review 036a: a ``confirm`` that is supplied but is not a JSON boolean is a 400 ``{ok: false, error}`` that writes
+  nothing, on the actions that read it (``CONFIRMING_ACTIONS``) and on ``radar_company``'s nested ``fact.confirm``;
+  ``radar_review``'s ``confirm`` is the list of proposal ids to confirm, unchanged.
 * (g) one clock: ``now`` (Berlin wall clock) and ``today`` (its day) are parameters.
 * ``radar_pair`` uses the founder references derived on read (the old route read only the stored ones, which the old
   GET always persisted first) and stores them with the pairing; a pairing or binding to a person who is not live is
@@ -39,6 +42,7 @@ from dataclasses import dataclass, field
 from datetime import date, datetime
 from typing import Any
 
+from projectzero.core.body import BadConfirm, confirmed
 from projectzero.ecosystems.coverage import radar_health
 from projectzero.founder_radar import companies as companies_mod
 from projectzero.founder_radar import review as review_mod
@@ -59,6 +63,7 @@ from projectzero.founder_radar.sources import geo_options, load_regions, source_
 from projectzero.network.view import listing
 from projectzero.network.view import records as _records
 
+CONFIRMING_ACTIONS = ("linkedin", "confirm_identity", "verify_identity", "merge")  # the actions that read ``confirm``
 UNKNOWN_PERSON = "unknown person"
 UNKNOWN_ACTION = "unknown action"
 STATE_REFUSAL = "state must be one of: "  # decision f (review 026a), the one new text
@@ -242,6 +247,12 @@ def action(inputs: Inputs, body: dict[str, Any], *, today: date, now: datetime) 
     act = body.get("action")
     pid = body.get("id")
     people = inputs.people
+    confirm = False
+    if act in CONFIRMING_ACTIONS:  # review 036a: only JSON true confirms; a malformed value is a 400, nothing written,
+        try:  # checked BEFORE the person lookup (H-371), so an unknown person never hides a malformed confirmation
+            confirm = confirmed(body)
+        except BadConfirm as exc:
+            return Outcome(400, {"ok": False, "error": str(exc)})
     i = _index(people, pid)
     if i is None:
         return Outcome(200, {"ok": False, "error": UNKNOWN_PERSON})
@@ -313,7 +324,7 @@ def action(inputs: Inputs, body: dict[str, Any], *, today: date, now: datetime) 
             }
         )
         if body.get("verified"):
-            if not (body.get("fact") and body.get("confirm") and url):
+            if not (body.get("fact") and confirm and url):
                 return Outcome(
                     200,
                     {
@@ -376,7 +387,7 @@ def action(inputs: Inputs, body: dict[str, Any], *, today: date, now: datetime) 
             url_,
             body.get("label"),
             body.get("fact"),
-            bool(body.get("confirm")),
+            confirm,
             official_domain=od,
             research=review_mod.loaded_research(inputs.research),
             ck=ck,
@@ -395,7 +406,7 @@ def action(inputs: Inputs, body: dict[str, Any], *, today: date, now: datetime) 
         )
     elif act == "verify_identity":
         ev2 = add_evidence("identity", body.get("url"), body.get("label"), body.get("fact"), now=ck.now, today=ck.today)
-        if not ev2["ok"] or not body.get("confirm"):
+        if not ev2["ok"] or not confirm:
             return Outcome(
                 200,
                 {
@@ -414,7 +425,7 @@ def action(inputs: Inputs, body: dict[str, Any], *, today: date, now: datetime) 
         j = _index(people, body.get("other"))
         other = people[j] if j is not None else None
         ok, why = can_merge(pr, other or {})
-        if not (other and ok and body.get("confirm")):
+        if not (other and ok and confirm):
             return Outcome(
                 200,
                 {
@@ -480,6 +491,11 @@ def import_csv(inputs: Inputs, body: dict[str, Any], *, today: date, now: dateti
 def company(inputs: Inputs, body: dict[str, Any], *, today: date, now: datetime) -> Outcome:
     """``POST radar_company {key, fact, evidence, description, notes}``."""
     ck = Clock.at(now, today)
+    f_in = body.get("fact")
+    try:  # review 036a (H-371): the NESTED ``fact.confirm`` is checked FIRST, so no earlier refusal hides a malformed one
+        fact_confirm = confirmed(f_in) if isinstance(f_in, dict) else False
+    except BadConfirm as exc:
+        return Outcome(400, {"ok": False, "error": str(exc)})
     key = body.get("key", "")
     if not key:
         return Outcome(200, {"ok": False, "error": "company key required"})
@@ -495,14 +511,14 @@ def company(inputs: Inputs, body: dict[str, Any], *, today: date, now: datetime)
     new_fact = None
     new_ev = None
     if body.get("fact"):
-        f = body["fact"]
+        f = body["fact"]  # its ``confirm`` was checked above (a non-object fact: unchanged)
         r = companies_mod.sourced_fact(
             f.get("field"),
             f.get("value"),
             f.get("claim"),
             f.get("url"),
             f.get("label"),
-            bool(f.get("confirm")),
+            fact_confirm,
             f.get("activity_date"),
             now=ck.now,
             today=ck.today,

@@ -1,6 +1,6 @@
 """Review 027b, offline: the pure Validation writes (``validation/writes.py``) match the OLD writes' goldens
 (``oracle_validation_writes.json``, ``python -m projectzero.ops.parity_validation writes-goldens``): the answers, the
-appended lines byte for byte and the next view, with only the declared (e) and (f). Also: the id / clock seam, the
+appended lines byte for byte and the next view, with only the declared (e), (f) and (g). Also: the id / clock seam, the
 Berlin clock, the old refusal texts, retraction routing over the CURRENT logs, the miss context built before
 ``why_missed`` is validated, the two former-500 CSVs, the verified packet mark and purity."""
 
@@ -67,7 +67,7 @@ def test_provenance_and_inputs_are_current() -> None:
 def test_the_pure_writes_match_the_old_code_with_only_the_declared_differences() -> None:
     problems, declared = compare_writes(GOLDEN)
     assert problems == []
-    assert declared == {"e": 4, "f": 5}
+    assert declared == {"e": 4, "f": 5, "g": 2}
 
 
 def test_the_goldens_cover_the_planned_cases() -> None:

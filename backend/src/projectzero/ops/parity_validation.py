@@ -29,6 +29,9 @@ Declared differences, normalised here and nowhere else:
   ``not available: <reason>`` to the old ``unavailable`` (text and JSON), then ``sha`` is recomputed.
 * (d) ``native_bridge``: the old ``None`` (the pilot, unavailable in the oracle); the new ``{available: false,
   reason}``.
+* (g) review 036a (the writes golden): a benchmark import whose ``confirm`` is supplied but is not a JSON boolean (the
+  script's ``1`` and ``"yes"``) is a 400 that appends nothing (``core.body.CONFIRM_REFUSAL``, checked on the new side);
+  the step is then replayed with the old truthiness (``bool(confirm)``) so the rest of the script compares as recorded.
 
 The synthetic data folders hold INVENTED names only:
 
@@ -80,6 +83,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
+from projectzero.core.body import CONFIRM_REFUSAL
 from projectzero.core.paths import REPO_ROOT
 from projectzero.dealflow.ranking.names import norm_company
 from projectzero.news import seed_cases
@@ -927,6 +931,11 @@ def write_answer(fn: Any) -> tuple[dict[str, Any], list[list[str]], writes.Writt
     return {"code": 200, "body": js(w.answer)}, [[log, line + "\n"] for log, line in w.appends], w
 
 
+def declared_g(step: dict[str, Any]) -> bool:
+    """(g): a benchmark import with a supplied, non-boolean ``confirm`` (review 036a)."""
+    return step["op"] == "benchmark" and "confirm" in step["body"] and not isinstance(step["body"]["confirm"], bool)
+
+
 def new_writes(docs: dict[str, Any], clock: str, steps: list[dict[str, Any]]) -> tuple[dict[str, Any], list[str]]:
     """The pure writes over the inputs, each step's lines appended to the inputs' log texts (``writes.appended``),
     then the 027a ``view``. Decision (f): a mark sends the ``{cycle, generated, sha}`` of the packet the GET shows at
@@ -961,6 +970,13 @@ def new_writes(docs: dict[str, Any], clock: str, steps: list[dict[str, Any]]) ->
             answer, lines, w = write_answer(lambda ins=inputs, b=sent: writes.packet_mark(ins, b, today=today, now=now))
         else:
             fn = fns[step["op"]]
+            if declared_g(step):  # (g): the strict 400 with nothing appended, then the old truthiness (see above)
+                refused, lines, _ = write_answer(
+                    lambda b=body, f=fn, ins=inputs: f(ins, b, today=today, now=now, new_hex=lambda: "0" * 16)
+                )
+                if refused != {"code": 400, "error": CONFIRM_REFUSAL} or lines:
+                    problems.append(f"/steps[{i}]/benchmark: confirm {body['confirm']!r} answered {refused} {lines}")
+                body["confirm"] = bool(body["confirm"])
             answer, lines, w = write_answer(
                 lambda: fn(inputs, body, today=today, now=now, new_hex=lambda: hexes.pop(0))  # noqa: B023 - called now
             )
@@ -1001,7 +1017,7 @@ def _mark_problems(at: str, old: dict[str, Any], new: dict[str, Any], shas: dict
 def compare_writes_set(name: str, s: dict[str, Any], clock: str) -> tuple[list[str], dict[str, int]]:
     expected = s["expected"]
     problems: list[str] = []
-    declared = {"e": 0, "f": 0}
+    declared = {"e": 0, "f": 0, "g": 0}
     if expected.get("changed"):
         problems.append(f"/{name}/changed: the OLD writes changed {expected['changed']}")
     got, invariants = new_writes(s["docs"], clock, s["steps"])
@@ -1020,6 +1036,7 @@ def compare_writes_set(name: str, s: dict[str, Any], clock: str) -> tuple[list[s
             declared["f"] += 1
             problems += _mark_problems(at, old, new, shas)
             continue
+        declared["g"] += declared_g(step)  # the strict 400 is checked in ``new_writes``; the replay compares here
         problems += [f"{at}/answer{p}" for p in diff(js(old["answer"]), js(new["answer"]))]
         if _text(old["answer"]) != _text(new["answer"]):
             problems.append(f"{at}/answer: the serialized answer differs (key order)")
@@ -1037,7 +1054,7 @@ def compare_writes_set(name: str, s: dict[str, Any], clock: str) -> tuple[list[s
 
 def compare_writes(golden: dict[str, Any]) -> tuple[list[str], dict[str, int]]:
     problems: list[str] = []
-    declared = {"e": 0, "f": 0}
+    declared = {"e": 0, "f": 0, "g": 0}
     for name, s in golden["sets"].items():
         p, d = compare_writes_set(name, s, golden["clock"])
         problems += p
@@ -1049,7 +1066,10 @@ def writes_report(golden: dict[str, Any]) -> int:
     problems, declared = compare_writes(golden)
     for p in problems[:60]:
         print("  DIFF", p)
-    print(f"declared: (e) {declared['e']} former-500 CSVs, (f) {declared['f']} packet marks")
+    print(
+        f"declared: (e) {declared['e']} former-500 CSVs, (f) {declared['f']} packet marks, "
+        f"(g) {declared['g']} non-boolean confirms"
+    )
     print("VALIDATION WRITES GOLDENS MATCH" if not problems else f"VALIDATION WRITES GOLDENS DIFFER ({len(problems)})")
     return 1 if problems else 0
 
