@@ -215,6 +215,18 @@ class DealFlowStore:
             return alias_id  # a current id always resolves, even if its own alias row was never written
         return None
 
+    def resolve_many(self, alias_ids: list[str]) -> dict[str, str | None]:
+        """``resolve_id("candidate", ...)`` for many ids in two reads: each id's survivor, or ``None``."""
+        rows = self._rows(
+            "select alias_id, candidate_id from {s}.candidate_aliases where namespace = 'candidate' "
+            "and alias_id = any(%s)",
+            (list(alias_ids),),
+        )
+        found: dict[str, str | None] = {str(r["alias_id"]): str(r["candidate_id"]) for r in rows}
+        rest = [i for i in alias_ids if i not in found]
+        current = {str(r["id"]) for r in self._rows("select id from {s}.candidates where id = any(%s)", (rest,))}
+        return {i: found.get(i) or (i if i in current else None) for i in alias_ids}
+
     def get_candidate(self, candidate_id: str) -> dict[str, Any] | None:
         found = self._rows("select * from {s}.candidates where id = %s", (candidate_id,))
         if not found:
@@ -316,7 +328,10 @@ class DealFlowStore:
         reason: str | None = None,
         notes: str | None = None,
         expected_status: str | None = None,
+        feedback_answer: bool = True,
     ) -> dict[str, Any]:
+        """``feedback_answer=False`` leaves the answer's ``feedback`` out (``None``): a batch decides many candidates
+        and answers none of them, so it skips that read; the event and its snapshot are the same."""
         validate_operator_status(status)
         locked = self._lock_candidate(candidate_id)
         current, company_id = locked["status"], locked["company_id"]  # re-read under both locks
@@ -361,8 +376,48 @@ class DealFlowStore:
                     Jsonb(detail),
                 ),
             )
-        fb = feedback.for_candidate(c, RankingContext.load(self.conn, self._schema).table)  # the old decide response
+        fb = (
+            feedback.for_candidate(c, RankingContext.load(self.conn, self._schema).table) if feedback_answer else None
+        )  # the old decide response
         return {"id": candidate_id, "status": status, "previous_status": current, "changed": changed, "feedback": fb}
+
+    # ── machine triage (review 035a) ────────────────────────────────────────────────────────────────────────────
+    def lock_for_triage(self, candidate_id: str, expected_status: str | None = None) -> dict[str, Any]:
+        """The one locked check of a triage decision, every verdict included (KEEP writes only its log line): the
+        company row, then the candidate row (``_lock_candidate``: a 409 when the company moved meanwhile), then
+        ``expected_status`` against the status read under both locks (the decision route's 409). Returns
+        ``{status, company_id}``; a later ``decide`` in the same transaction re-takes the locks it holds (no-op)."""
+        locked = self._lock_candidate(candidate_id)
+        if expected_status is not None and expected_status != locked["status"]:
+            raise DecisionError(
+                409, "the candidate changed meanwhile; reload and decide again", current=locked["status"]
+            )
+        return locked
+
+    def lock_for_triage_batch(self, candidate_ids: list[str]) -> dict[str, dict[str, Any]]:
+        """A batch's locks in the ONE order across the whole batch (Codex H-347): every candidate's company is read
+        without a lock, the DISTINCT companies are locked in company-id order, then the candidates in candidate-id
+        order. A candidate whose company changed between the read and the lock refuses the whole batch with the
+        decision writer's retryable 409 (nothing is written; the caller's transaction rolls back). A candidate with
+        no company is locked at the candidate step only. Returns ``{id: {status, company_id}}`` read under the locks."""
+        ids = sorted(set(candidate_ids))
+        if not ids:
+            return {}
+        peek = {str(r["id"]): r["company_id"] for r in self._rows(
+            "select id, company_id from {s}.candidates where id = any(%s)", (ids,))}  # fmt: skip
+        companies = sorted({str(c) for c in peek.values() if c})
+        if companies:
+            self._rows("select id from {s}.companies where id = any(%s::uuid[]) order by id for update", (companies,))
+        locked = {
+            str(r["id"]): r
+            for r in self._rows(
+                "select id, status, company_id from {s}.candidates where id = any(%s) order by id for update", (ids,)
+            )
+        }
+        for cid, row in locked.items():
+            if row["company_id"] != peek.get(cid):
+                raise DecisionError(409, "the candidate moved to another company meanwhile; reload and decide again")
+        return {cid: {"status": r["status"], "company_id": r["company_id"]} for cid, r in locked.items()}
 
     # ── Keep (review 011) ───────────────────────────────────────────────────────────────────────────────────────
     def lock_for_keep(self, candidate_id: str) -> dict[str, Any]:

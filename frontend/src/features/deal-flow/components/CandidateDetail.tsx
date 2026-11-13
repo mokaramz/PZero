@@ -12,7 +12,7 @@ import { hostOf, isoDay, revisitLabel } from "../model/revisit";
 import type { TriageSummary } from "../model/triage";
 import type { Candidate, InboxPayload, Revisit } from "../model/types";
 import { AnalystChip } from "./AnalystChip";
-import { TriagePanel } from "./TriagePanel";
+import { TriagePanel, type TriageDecide } from "./TriagePanel";
 import styles from "../DealFlow.module.css";
 
 export type DetailActions = {
@@ -22,6 +22,9 @@ export type DetailActions = {
   /** opens Keep & score (a Conviction save with the candidate's inbox_id) */
   keep: () => void;
   busy: boolean;
+  /** accept / override the machine proposal (review 035a); a KEEP opens Keep & score */
+  triage: TriageDecide;
+  triageBusy: boolean;
 };
 
 type Props = {
@@ -247,7 +250,7 @@ export function CandidateDetail({ c, ib, im, actions, tri, triPending }: Props) 
           <div className={`small ${styles.amberText}`}>{triPending}</div>
         </section>
       )}
-      {tri && <TriagePanel t={tri} themes={ib.themes} decided={c.decision !== "new"} />}
+      {tri && <TriagePanel t={tri} themes={ib.themes} decided={c.decision !== "new"} busy={actions.triageBusy} onDecide={actions.triage} />}
 
       {/* Layer 2 / 3 — one open at a time */}
       <DisclosureGroup>

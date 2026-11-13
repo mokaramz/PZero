@@ -6,7 +6,6 @@ export const NOT_PORTED = {
   analysis: "Machine analysis arrives with the analysis port",
   reviewQueue: "The Agent Review Queue arrives with the analysis port",
   redTeam: "The red team arrives with the analysis port",
-  triage: "Accepting or overriding machine triage arrives with the triage port",
   watch: "Watch sensors arrive with the Watchlist port",
   founders: "Founders arrive with the identity port",
 } as const;

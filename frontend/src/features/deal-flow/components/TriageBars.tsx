@@ -1,4 +1,4 @@
-import { Chip } from "@/components/ui";
+import { Button, Chip } from "@/components/ui";
 import { NOT_PORTED } from "../model/deferred";
 import {
   PROPOSAL_LABEL,
@@ -31,11 +31,14 @@ type Props = {
   rCounts: Partial<Record<RouteState, number>>;
   tCounts: Partial<Record<TriageKind, number>>;
   payload?: TriagePayload;
+  /** "Accept obvious REJECTs…" (review 035a): previews, confirms, then applies */
+  onBatchReject: () => void;
+  batchBusy: boolean;
 };
 
-/** The Machine triage view's controls: routing views, queue scope and proposal kind. Its three batch actions (Analyst,
- *  Red Team, batch REJECT) are not ported yet and stay in place, disabled. */
-export function TriageBars({ tRoute, setTRoute, tScope, setTScope, tKind, setTKind, rCounts, tCounts, payload }: Props) {
+/** The Machine triage view's controls: routing views, queue scope and proposal kind, and the batch accept of the obvious
+ *  REJECTs (review 035a). The Analyst and Red Team batches wait for the analysis port and stay in place, disabled. */
+export function TriageBars({ tRoute, setTRoute, tScope, setTScope, tKind, setTKind, rCounts, tCounts, payload, onBatchReject, batchBusy }: Props) {
   return (
     <>
       <div className={styles.filters} data-testid="triage-routes">
@@ -72,9 +75,9 @@ export function TriageBars({ tRoute, setTRoute, tScope, setTScope, tKind, setTKi
           <DeferredButton size="sm" reason={NOT_PORTED.redTeam} data-testid="triage-redteam">
             Red-team analysed…
           </DeferredButton>
-          <DeferredButton size="sm" variant="danger" reason={NOT_PORTED.triage} data-testid="triage-batch">
+          <Button size="sm" variant="danger" onClick={onBatchReject} busy={batchBusy} disabled={!payload} data-testid="triage-batch">
             Accept obvious REJECTs…
-          </DeferredButton>
+          </Button>
         </div>
       )}
       {payload?.calibration && (

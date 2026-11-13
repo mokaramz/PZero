@@ -1391,3 +1391,39 @@ describe("migration 0024 — the Deal Flow scan: append-only runs in key order, 
     assert.deepEqual(grants.rows, []);
   });
 });
+
+describe("migration 0025 — the triage decision log: append-only rows in insertion order, the old line byte-kept", () => {
+  let db;
+
+  before(async () => {
+    db = await freshDb();
+    await db.query(`insert into pz.candidates (id, name) values ('cand00000001', 'Invented Robotics'), ('cand00000002', 'Invented Optics')`);
+  });
+
+  test("a line keeps its sorted key order (json) and the rows read back by seq", async () => {
+    const first = '{"agreed": true, "candidate_id": "cand00000002", "mode": "accept", "note": "", "verdict": "REJECT"}';
+    const second = '{"agreed": false, "candidate_id": "cand00000001", "mode": "override", "note": "ünïcode", "verdict": "KEEP"}';
+    await db.query(`insert into pz.triage_decisions (candidate_id, entry) values ('cand00000002', $1::json)`, [first]);
+    await db.query(`insert into pz.triage_decisions (candidate_id, entry, recorded_at) values ('cand00000001', $1::json, '2026-11-13T08:00:00Z')`, [second]);
+    const rows = (await db.query(`select candidate_id, entry::text as e from pz.triage_decisions order by seq`)).rows;
+    assert.deepEqual(rows, [{ candidate_id: "cand00000002", e: first }, { candidate_id: "cand00000001", e: second }]);
+  });
+
+  test("rows are never edited or deleted, and every row names a known candidate and holds an object", async () => {
+    await rejects(db.query(`update pz.triage_decisions set candidate_id = 'cand00000001'`), /append-only/);
+    await rejects(db.query(`delete from pz.triage_decisions`), /append-only/);
+    await rejects(db.query(`insert into pz.triage_decisions (candidate_id, entry) values ('nope', '{}')`), /foreign key|violates/);
+    await rejects(db.query(`insert into pz.triage_decisions (candidate_id, entry) values ('cand00000001', '[]')`), /check/);
+    await rejects(db.query(`insert into pz.triage_decisions (seq, candidate_id, entry) values (99, 'cand00000001', '{}')`), /generated|cannot insert|non-DEFAULT/i);
+    assert.equal((await db.query(`select count(*)::int as n from pz.triage_decisions`)).rows[0].n, 2);
+  });
+
+  test("the new table has row level security and no API grants", async () => {
+    const rls = await db.query(`select relrowsecurity from pg_class where relname = 'triage_decisions'`);
+    assert.deepEqual(rls.rows, [{ relrowsecurity: true }]);
+    const grants = await db.query(
+      `select table_name from information_schema.role_table_grants where table_name = 'triage_decisions' and grantee in ('anon', 'authenticated', 'PUBLIC')`,
+    );
+    assert.deepEqual(grants.rows, []);
+  });
+});

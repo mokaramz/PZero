@@ -103,6 +103,6 @@ def record_snapshot(
         inputs = validation_inputs.load(conn, schema, now)
         ents, _issues = validation_core.build(inputs, today)
         head = validation_core._headline(ents, today, inputs.audits_log)
-        cal = validation_core.calibration(ents, inputs.decisions_log)
+        cal = validation_core.calibration(ents, inputs.decisions_log, inputs.candidate_aliases)
         validation_store.append(conn, schema, [("snapshots", validation_core.snapshot_line(head, cal, today, now))])
         return True

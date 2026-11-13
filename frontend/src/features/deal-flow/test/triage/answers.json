@@ -1,0 +1,77 @@
+{
+  "accept_reject": {
+    "ok": true,
+    "verdict": "REJECT",
+    "agreed": true,
+    "inbox_decision": "rejected",
+    "open_keep": false
+  },
+  "accept_keep": {
+    "ok": true,
+    "verdict": "KEEP",
+    "agreed": true,
+    "inbox_decision": null,
+    "open_keep": true
+  },
+  "accept_research": {
+    "ok": true,
+    "verdict": "RESEARCH",
+    "agreed": true,
+    "inbox_decision": "research",
+    "open_keep": false
+  },
+  "override_watch": {
+    "ok": true,
+    "verdict": "WATCH",
+    "agreed": false,
+    "inbox_decision": "watch",
+    "open_keep": false
+  },
+  "conflict": {
+    "ok": false,
+    "error": "the candidate changed meanwhile; reload and decide again",
+    "current": "reviewing"
+  },
+  "invalid": {
+    "ok": false,
+    "error": "accept means taking the machine proposal (KEEP); use override for WATCH"
+  },
+  "preview": {
+    "ok": true,
+    "preview": true,
+    "eligible": 2,
+    "skipped": {}
+  },
+  "preview_partial": {
+    "ok": true,
+    "preview": true,
+    "eligible": 1,
+    "skipped": {
+      "already decided": 1
+    }
+  },
+  "preview_none": {
+    "ok": true,
+    "preview": true,
+    "eligible": 0,
+    "skipped": {
+      "not an obvious reject (stale, flagged or single-model)": 2
+    }
+  },
+  "applied": {
+    "ok": true,
+    "applied": 2,
+    "skipped": {}
+  },
+  "applied_partial": {
+    "ok": true,
+    "applied": 1,
+    "skipped": {
+      "already decided": 1
+    }
+  },
+  "moved": {
+    "ok": false,
+    "error": "the candidate moved to another company meanwhile; reload and decide again"
+  }
+}

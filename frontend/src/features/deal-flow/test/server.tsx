@@ -26,6 +26,9 @@ export type Routes = {
   findStatus?: (n: number) => FindStatus | Answer;
   find?: (body: Record<string, unknown>) => Answer;
   scanHistory?: (n: string | null) => ScanHistory | Answer;
+  /** machine triage writes (review 035a): accept / override one proposal, and the batch preview / confirm */
+  triageDecide?: (body: Record<string, unknown>) => Answer;
+  batchReject?: (body: Record<string, unknown>) => Answer;
 };
 
 const isAnswer = (x: unknown): x is { status: number; body: unknown } => !!x && typeof x === "object" && "status" in x && "body" in x;
@@ -67,6 +70,14 @@ export function fakeServer(routes: Routes) {
     if (method === "GET" && hist && routes.scanHistory) {
       const a = await routes.scanHistory(hist[1] ?? null);
       return isAnswer(a) ? json(a.status, a.body) : json(200, a);
+    }
+    if (method === "POST" && path === "/api/deal-flow/triage/decide" && routes.triageDecide) {
+      const a = await routes.triageDecide(body);
+      return json(a.status, a.body);
+    }
+    if (method === "POST" && path === "/api/deal-flow/triage/batch_reject" && routes.batchReject) {
+      const a = await routes.batchReject(body);
+      return json(a.status, a.body);
     }
     if (method === "GET" && path === "/api/conviction/meta" && routes.meta) return json(200, routes.meta());
     if (method === "POST" && path === "/api/conviction/save" && routes.save) {

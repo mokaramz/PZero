@@ -16,9 +16,12 @@ Where each input comes from (``load``):
   (``%Y-%m-%dT%H:%M:%S``, ``ledger.now_ts``); a proposal the import found without a usable ``proposed_at`` carries the
   import time instead (the old view showed the raw value).
 * routing overlay: ``candidate_routing`` (``detail`` plus ``state`` / ``priority`` / ``reason``), keyed by survivor.
-* the operator's verdicts: NOT modelled yet (the triage decide port comes later): the archived
-  ``triage_decisions.jsonl`` (``legacy_documents.raw``), read line by line as the old ``decisions()`` did. Its
-  ``candidate_id`` values are the recorded old ids (``calibration`` counts them as recorded).
+* the operator's verdicts (review 035a): the archived ``triage_decisions.jsonl`` (``legacy_documents.raw``) FIRST,
+  then the ``triage_decisions`` rows ``order by seq`` (``triage.log.log_text``), read line by line as the old
+  ``decisions()`` did. Each line keeps its ``candidate_id`` as recorded (an archived line names the old id); the latest
+  verdict per candidate is chosen per SURVIVOR (``latest_verdicts`` maps each line's id through the ``candidate``
+  aliases first, decision e), so an archived line for an absorbed id and a new line for its survivor count once, in
+  the panel's verdict and in ``calibration``.
 * acceptance (``shadow_triage/acceptance.json``) and the automatic-triage runs (``shadow_triage/auto_runs.json``):
   ``documents`` (un-modelled state, one row per old file). ``pending`` keys are mapped to survivors through the
   ``candidate`` merge aliases, and their proposal status is read from the survivor.
@@ -47,7 +50,7 @@ from psycopg.rows import dict_row
 from projectzero.core.db import schema_ident
 from projectzero.dealflow import workspaces
 from projectzero.dealflow.ranking.service import ranking_input
-from projectzero.dealflow.triage import card, entity_repair, portfolio_check, routing
+from projectzero.dealflow.triage import card, entity_repair, log, portfolio_check, routing
 
 PRE_FUNDING = {"PRE_COMPANY", "INCORPORATED_NO_INSTITUTIONAL", "GRANT_ONLY", "BOOTSTRAPPED", "ANGEL_ONLY"}
 NOTE = "Machine proposals only. Nothing becomes a decision until Mohamed accepts or overrides it."
@@ -100,11 +103,15 @@ def decisions(text: str) -> list[dict[str, Any]]:
     return out
 
 
-def latest_verdicts(log: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
+def latest_verdicts(log: list[dict[str, Any]], aliases: Mapping[str, str] | None = None) -> dict[str, dict[str, Any]]:
+    """The last line per candidate (the old ``_latest_verdicts``), keyed by SURVIVOR: each line's recorded
+    ``candidate_id`` is mapped through ``aliases`` (old id -> survivor) for the selection only (decision e)."""
+    aliases = aliases or {}
     latest: dict[str, dict[str, Any]] = {}
     for e in log:
         if e.get("candidate_id"):
-            latest[e["candidate_id"]] = e
+            cid = e["candidate_id"]
+            latest[aliases.get(cid, cid) if isinstance(cid, str) else cid] = e
     return latest
 
 
@@ -227,7 +234,7 @@ def pending_map(auto_runs: Any, props: Mapping[str, Any], aliases: Mapping[str, 
 def build(inp: TriageInputs) -> dict[str, Any]:
     """The old ``view()``."""
     props = inp.proposals
-    latest = latest_verdicts(decisions(inp.decision_log))
+    latest = latest_verdicts(decisions(inp.decision_log), inp.aliases)
     checker = portfolio_check.Checker(inp.conviction_signals, inp.scout_items)
     out: dict[str, Any] = {}
     counts: dict[str, Counter[str]] = defaultdict(Counter)
@@ -322,15 +329,18 @@ def _tolerant_json(raw: Any) -> Any:
         return {}
 
 
-def load(conn: psycopg.Connection[Any], schema: str) -> TriageInputs:
+def load(conn: psycopg.Connection[Any], schema: str, only: list[str] | None = None) -> TriageInputs:
+    """``only``: the candidate ids to read (the triage writes judge a few candidates with the same build); every other
+    input is read whole, as the view reads it."""
     s = schema_ident(schema)
     with conn.cursor(row_factory=dict_row) as cur:
         # a survivor's own current proposal, else the newest proposal of a record merged into it (review 009: an
         # absorbed lead's machine KEEP must not vanish; it is judged against the survivor's card, so it reads stale)
         cur.execute(sql.SQL(
             "select distinct on (candidate_id) * from {}.triage_proposals "
-            "order by candidate_id, is_current desc, proposed_at desc, id desc"
-        ).format(s))  # fmt: skip
+            + ("where candidate_id = any(%s) " if only is not None else "")
+            + "order by candidate_id, is_current desc, proposed_at desc, id desc"
+        ).format(s), (list(only),) if only is not None else ())  # fmt: skip
         proposals = {str(r["candidate_id"]): proposal_record(r) for r in cur.fetchall()}
         cur.execute(sql.SQL("select * from {}.candidates where id = any(%s) order by id").format(s), (list(proposals),))
         candidates = []
@@ -338,7 +348,10 @@ def load(conn: psycopg.Connection[Any], schema: str) -> TriageInputs:
             c, _ = ranking_input(row)
             c["id"] = row["id"]
             candidates.append(c)
-        cur.execute(sql.SQL("select * from {}.candidate_routing").format(s))
+        # every route unless ``only`` (Today reads the whole table from these inputs)
+        cur.execute(sql.SQL("select * from {}.candidate_routing"
+                            + (" where candidate_id = any(%s)" if only is not None else "")).format(s),
+                    (list(proposals),) if only is not None else ())  # fmt: skip
         routes = {str(r["candidate_id"]): route_record(r) for r in cur.fetchall()}
         cur.execute(sql.SQL(_CONVICTION).format(s=s))
         signals = [conviction_signal(r) for r in cur.fetchall()]
@@ -356,7 +369,7 @@ def load(conn: psycopg.Connection[Any], schema: str) -> TriageInputs:
         candidates=candidates,
         proposals=proposals,
         routes=routes,
-        decision_log=_text(archived.get(DECISION_LOG)),
+        decision_log=log.log_text(conn, schema, _text(archived.get(DECISION_LOG))),
         conviction_signals=signals,
         scout_items=(intake.get("items", {}) or {}) if isinstance(intake, dict) else {},
         acceptance=docs.get(ACCEPTANCE_DOC) or {},

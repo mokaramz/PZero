@@ -1,0 +1,131 @@
+{
+  "candidates": [
+    {
+      "id": "t-0201",
+      "name": "Corvane Thermal",
+      "decision": "new",
+      "pz_status": "new",
+      "source": "Lindqvist Grants",
+      "discovery_tier": "announcement",
+      "location": "Aarhus, Denmark",
+      "description": "Heat pumps sized for terraced houses.",
+      "source_date": "2026-11-09",
+      "run_id": "2026-11-12 22:15",
+      "first_seen": "2026-11-12 22:16"
+    },
+    {
+      "id": "t-0202",
+      "name": "Haskby Ledger",
+      "decision": "new",
+      "pz_status": "new",
+      "source": "Lindqvist Grants",
+      "discovery_tier": "announcement",
+      "location": "Tallinn, Estonia",
+      "description": "Bookkeeping for village cooperatives.",
+      "source_date": "2026-11-09",
+      "run_id": "2026-11-12 22:15",
+      "first_seen": "2026-11-12 22:16"
+    },
+    {
+      "id": "t-0203",
+      "name": "Mirelund Freight",
+      "decision": "new",
+      "pz_status": "new",
+      "source": "Lindqvist Grants",
+      "discovery_tier": "announcement",
+      "location": "Gothenburg, Sweden",
+      "description": "A freight-matching marketplace for inland barges.",
+      "source_date": "2026-11-09",
+      "run_id": "2026-11-12 22:15",
+      "first_seen": "2026-11-12 22:16"
+    },
+    {
+      "id": "t-0204",
+      "name": "Pellow & Daughters Bakery",
+      "decision": "new",
+      "pz_status": "new",
+      "source": "Lindqvist Grants",
+      "discovery_tier": "announcement",
+      "location": "Leeds, UK",
+      "description": "A family bakery opening a second shop.",
+      "source_date": "2026-11-09",
+      "run_id": "2026-11-12 22:15",
+      "first_seen": "2026-11-12 22:16"
+    },
+    {
+      "id": "t-0205",
+      "name": "Notice 4471",
+      "decision": "new",
+      "pz_status": "new",
+      "source": "Lindqvist Grants",
+      "discovery_tier": "announcement",
+      "location": "Ghent, Belgium",
+      "description": "Call reference 4471 / 2026 / 11",
+      "source_date": "2026-11-09",
+      "run_id": "2026-11-12 22:15",
+      "first_seen": "2026-11-12 22:16"
+    },
+    {
+      "id": "t-0206",
+      "name": "Velloria Consulting",
+      "decision": "new",
+      "pz_status": "new",
+      "source": "Lindqvist Grants",
+      "discovery_tier": "announcement",
+      "location": "Porto, Portugal",
+      "description": "Strategy advice for regional retailers.",
+      "source_date": "2026-11-09",
+      "run_id": "2026-11-12 22:15",
+      "first_seen": "2026-11-12 22:16"
+    },
+    {
+      "id": "t-0207",
+      "name": "Saltmarsh Studio",
+      "decision": "new",
+      "pz_status": "new",
+      "source": "Prairie SBIR awards",
+      "discovery_tier": "announcement",
+      "location": "Austin, TX",
+      "description": "A design studio for restaurant interiors.",
+      "source_date": "2026-11-09",
+      "run_id": "2026-11-12 22:15",
+      "first_seen": "2026-11-12 22:16"
+    },
+    {
+      "id": "t-0208",
+      "name": "Brindle Works",
+      "decision": "rejected",
+      "pz_status": "rejected",
+      "source": "Lindqvist Grants",
+      "discovery_tier": "announcement",
+      "location": "Lyon, France",
+      "description": "A metal workshop.",
+      "source_date": "2026-11-09",
+      "run_id": "2026-11-12 22:15",
+      "first_seen": "2026-11-12 22:16"
+    }
+  ],
+  "last_run": "2026-11-12 22:15",
+  "last_summary": {
+    "new": 0,
+    "run_id": "2026-11-12 22:15"
+  },
+  "report": [],
+  "themes": {
+    "climate": "Climate"
+  },
+  "feedback_cap": 3,
+  "feedback_min_reviewed": 5,
+  "ws_geos": {
+    "eu": [
+      "DACH",
+      "EU",
+      "UK"
+    ],
+    "na": [
+      "US",
+      "CA"
+    ],
+    "un": []
+  }
+}

@@ -311,3 +311,21 @@ created candidate's id is the intake's (mapped back to the record's old id); (d)
 runs the new scan with the same bytes in a scratch schema, imported by the production importer, and compares the
 report rows, the summary, every candidate record, the sources' runtime keys, cursors and `candidates_found`, the watch
 baselines and the history (`python -m projectzero.ops.parity_scan goldens` / `check` / `hosted`).
+
+`oracle_triage_decide.json` (review 035a): the old operator triage decisions, `triage_review.decide` and
+`batch_reject`, then `view()`, at a frozen clock (2026-11-13 10:00, one minute per step) over a scratch data folder
+holding an INVENTED world: proposals of every path (Stage 0, both models reject, a veto WATCH, a `needs_human`, a
+stale one, a Conviction-conflict flagged one, a single-model REJECT, a KEEP, a RESEARCH), an already decided
+candidate, one without a proposal (pending in the automatic runs), two inbox records of one company (the importer
+merges `dup-b` into `dup-a`) and an archived `triage_decisions.jsonl` (an absorbed id's line, a line for a candidate
+that no longer exists, an unreadable line, a CRLF line). The script: accept, override, KEEP, RESEARCH with a note,
+every refusal, an override with a note, an empty batch, the batch preview, then its confirm. Recorded after each step:
+the answer, the whole log, every inbox candidate's decision and notes, the view, and the old `_latest_verdicts` /
+`calibration` over the same lines with each id mapped through the merge aliases first; the old RESEARCH case
+preparation is a recorder (two calls, declared c); writes outside the scratch folder are refused (none happened).
+Declared differences, all normalised in `parity_triage_decide.normalise`: (c) no case preparation; (e) the latest
+verdict and the calibration per survivor; revision 2's `same candidate as another id` skip; the absorbed record
+(review 009); the 400 status of the old `ApiError`. `check` runs the new pure answer, line, batch classification and
+view build over the old state of each step; `hosted` imports the world with the production importer into a scratch
+schema and runs the script through the routes (`python -m projectzero.ops.parity_triage_decide goldens` / `check` /
+`hosted`).

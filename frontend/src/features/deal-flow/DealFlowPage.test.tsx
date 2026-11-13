@@ -340,17 +340,19 @@ describe("Deal Flow — entry points that are not ported yet", () => {
     expect(screen.getByLabelText("Feed window")).toBeEnabled();
     expect(screen.getByLabelText("Number of candidates to analyze")).toBeDisabled();
 
-    // the triage view's batch actions and the selected candidate's triage panel + analyst
+    // the triage view's analysis batches and the selected candidate's analyst; the triage writes are live since 035a
     fireEvent.click(screen.getByRole("button", { name: "Machine triage" }));
     await waitFor(() => expect(rowIds()).toEqual(["tri1"]));
     fireEvent.click(within(screen.getByTestId("cand-models")).getByText("Analyst · Red Team · Reviewer"));
     await waitFor(() => expect(screen.getByRole("button", { name: "Analyzed — review" })).toBeInTheDocument());
     off = checkInert(server);
-    expect(off.map((e) => e.textContent)).toEqual(
-      expect.arrayContaining(["Analyze top KEEPs…", "Red-team analysed…", "Accept obvious REJECTs…", "Accept KEEP — score it", "Override", "Analyzed — review"]),
-    );
+    expect(off.map((e) => e.textContent)).toEqual(expect.arrayContaining(["Analyze top KEEPs…", "Red-team analysed…", "Analyzed — review"]));
+    for (const live of ["Accept obvious REJECTs…", "Accept KEEP — score it", "Override"]) expect(off.map((e) => e.textContent)).not.toContain(live);
+    expect(screen.getByTestId("triage-batch")).not.toHaveAttribute("aria-disabled");
+    expect(screen.getByTestId("triage-accept")).not.toHaveAttribute("aria-disabled");
     expect(screen.getByTestId("red-team")).toHaveTextContent("The red team arrives with the analysis port");
-    expect(screen.getByLabelText("Override verdict")).toBeDisabled();
+    expect(screen.getByLabelText("Override verdict")).toBeEnabled();
+    expect(screen.getByTestId("triage-override")).toBeDisabled(); // until a verdict is picked
 
     // the Research drawer's Keep is live as well
     fireEvent.click(within(screen.getByTestId("cand-detail")).getByRole("button", { name: "Research" }));

@@ -1,0 +1,421 @@
+{
+  "architecture": {
+    "prompt_version": "triage-v3",
+    "accepted": "2026-10-01"
+  },
+  "proposals": {
+    "t-0201": {
+      "candidate_id": "t-0201",
+      "proposal": "KEEP",
+      "display_proposal": "KEEP",
+      "status": "proposed",
+      "stage": "stage1",
+      "path": "stage1",
+      "confidence": "high",
+      "reject_basis": null,
+      "reject_evidence": null,
+      "reasons": [
+        "Two founders from a heat-pump maker",
+        "Pre-seed grant this month"
+      ],
+      "missing": [],
+      "flags": [],
+      "flash": {
+        "model": "flash",
+        "proposal": "KEEP",
+        "confidence": "high",
+        "reject_basis": null
+      },
+      "veto": null,
+      "edge": "PRE_FUNDING_EDGE",
+      "themes": [],
+      "routing": {
+        "queue": "operating",
+        "reason": "European startup"
+      },
+      "entity": {
+        "display_name": "Corvane Thermal",
+        "broken": "",
+        "entities": []
+      },
+      "portfolio": {
+        "status": "NONE",
+        "route_to_omar": false,
+        "evidence": [],
+        "twins": [],
+        "record": null
+      },
+      "stale": false,
+      "obvious_reject": false,
+      "prompt_version": "triage-v3",
+      "mohamed": null,
+      "queue": {
+        "state": "NEEDS_MOHAMED",
+        "reason": "a KEEP with a pre-funding edge",
+        "priority": 41,
+        "priority_why": [
+          "KEEP +12",
+          "edge +10"
+        ]
+      }
+    },
+    "t-0202": {
+      "candidate_id": "t-0202",
+      "proposal": "RESEARCH",
+      "display_proposal": "RESEARCH",
+      "status": "proposed",
+      "stage": "stage1",
+      "path": "stage1",
+      "confidence": "medium",
+      "reject_basis": null,
+      "reject_evidence": null,
+      "reasons": [
+        "Software for a niche, the team is unnamed"
+      ],
+      "missing": [],
+      "flags": [],
+      "flash": {
+        "model": "flash",
+        "proposal": "RESEARCH",
+        "confidence": "medium",
+        "reject_basis": null
+      },
+      "veto": null,
+      "edge": "UNKNOWN",
+      "themes": [],
+      "routing": {
+        "queue": "operating",
+        "reason": "European startup"
+      },
+      "entity": {
+        "display_name": "Haskby Ledger",
+        "broken": "",
+        "entities": []
+      },
+      "portfolio": {
+        "status": "NONE",
+        "route_to_omar": false,
+        "evidence": [],
+        "twins": [],
+        "record": null
+      },
+      "stale": false,
+      "obvious_reject": false,
+      "prompt_version": "triage-v3",
+      "mohamed": null,
+      "queue": null
+    },
+    "t-0203": {
+      "candidate_id": "t-0203",
+      "proposal": "WATCH",
+      "display_proposal": "WATCH",
+      "status": "proposed",
+      "stage": "veto",
+      "path": "second opinion WATCH",
+      "confidence": "medium",
+      "reject_basis": null,
+      "reject_evidence": null,
+      "reasons": [
+        "Marketplace with no public traction yet"
+      ],
+      "missing": [],
+      "flags": [],
+      "flash": {
+        "model": "flash",
+        "proposal": "WATCH",
+        "confidence": "medium",
+        "reject_basis": null
+      },
+      "veto": {
+        "model": "veto",
+        "mode": "independent",
+        "ok": true,
+        "proposal": "WATCH",
+        "reject_basis": null,
+        "reasons": []
+      },
+      "edge": "ROUND_FORMING",
+      "themes": [],
+      "routing": {
+        "queue": "operating",
+        "reason": "European startup"
+      },
+      "entity": {
+        "display_name": "Mirelund Freight",
+        "broken": "",
+        "entities": []
+      },
+      "portfolio": {
+        "status": "NONE",
+        "route_to_omar": false,
+        "evidence": [],
+        "twins": [],
+        "record": null
+      },
+      "stale": false,
+      "obvious_reject": false,
+      "prompt_version": "triage-v3",
+      "mohamed": null,
+      "queue": null
+    },
+    "t-0204": {
+      "candidate_id": "t-0204",
+      "proposal": "REJECT",
+      "display_proposal": "REJECT",
+      "status": "proposed",
+      "stage": "veto",
+      "path": "both reject",
+      "confidence": "high",
+      "reject_basis": "NON_VENTURE",
+      "reject_evidence": "a family bakery opening a second shop",
+      "reasons": [
+        "A local shop, not a venture"
+      ],
+      "missing": [],
+      "flags": [],
+      "flash": {
+        "model": "flash",
+        "proposal": "REJECT",
+        "confidence": "high",
+        "reject_basis": "NON_VENTURE"
+      },
+      "veto": {
+        "model": "veto",
+        "mode": "independent",
+        "ok": true,
+        "proposal": "REJECT",
+        "reject_basis": "NON_VENTURE",
+        "reasons": []
+      },
+      "edge": "UNKNOWN",
+      "themes": [],
+      "routing": {
+        "queue": "operating",
+        "reason": "European startup"
+      },
+      "entity": {
+        "display_name": "Pellow & Daughters Bakery",
+        "broken": "",
+        "entities": []
+      },
+      "portfolio": {
+        "status": "NONE",
+        "route_to_omar": false,
+        "evidence": [],
+        "twins": [],
+        "record": null
+      },
+      "stale": false,
+      "obvious_reject": true,
+      "prompt_version": "triage-v3",
+      "mohamed": null,
+      "queue": null
+    },
+    "t-0205": {
+      "candidate_id": "t-0205",
+      "proposal": "REJECT",
+      "display_proposal": "REJECT",
+      "status": "proposed",
+      "stage": "stage0",
+      "path": "stage0",
+      "confidence": null,
+      "reject_basis": "NOT_AN_ENTITY",
+      "reject_evidence": null,
+      "reasons": [
+        "Stage 0: a reference number, not a company"
+      ],
+      "missing": [],
+      "flags": [],
+      "flash": {
+        "model": null,
+        "proposal": "REJECT",
+        "reject_basis": "NOT_AN_ENTITY"
+      },
+      "veto": null,
+      "edge": "UNKNOWN",
+      "themes": [],
+      "routing": {
+        "queue": "operating",
+        "reason": "European startup"
+      },
+      "entity": {
+        "display_name": "Notice 4471",
+        "broken": "",
+        "entities": []
+      },
+      "portfolio": {
+        "status": "NONE",
+        "route_to_omar": false,
+        "evidence": [],
+        "twins": [],
+        "record": null
+      },
+      "stale": false,
+      "obvious_reject": true,
+      "prompt_version": "triage-v3",
+      "mohamed": null,
+      "queue": null
+    },
+    "t-0206": {
+      "candidate_id": "t-0206",
+      "proposal": "REJECT",
+      "display_proposal": "REJECT",
+      "status": "proposed",
+      "stage": "stage1",
+      "path": "stage1",
+      "confidence": "high",
+      "reject_basis": "NON_VENTURE",
+      "reject_evidence": "strategy advice for regional retailers",
+      "reasons": [
+        "A consultancy"
+      ],
+      "missing": [],
+      "flags": [],
+      "flash": {
+        "model": "flash",
+        "proposal": "REJECT",
+        "confidence": "high",
+        "reject_basis": "NON_VENTURE"
+      },
+      "veto": null,
+      "edge": "UNKNOWN",
+      "themes": [],
+      "routing": {
+        "queue": "operating",
+        "reason": "European startup"
+      },
+      "entity": {
+        "display_name": "Velloria Consulting",
+        "broken": "",
+        "entities": []
+      },
+      "portfolio": {
+        "status": "NONE",
+        "route_to_omar": false,
+        "evidence": [],
+        "twins": [],
+        "record": null
+      },
+      "stale": false,
+      "obvious_reject": false,
+      "prompt_version": "triage-v3",
+      "mohamed": null,
+      "queue": null
+    },
+    "t-0207": {
+      "candidate_id": "t-0207",
+      "proposal": "REJECT",
+      "display_proposal": "REJECT",
+      "status": "proposed",
+      "stage": "veto",
+      "path": "both reject",
+      "confidence": "high",
+      "reject_basis": "NON_VENTURE",
+      "reject_evidence": "a design studio for restaurant interiors",
+      "reasons": [
+        "A services studio"
+      ],
+      "missing": [],
+      "flags": [],
+      "flash": {
+        "model": "flash",
+        "proposal": "REJECT",
+        "confidence": "high",
+        "reject_basis": "NON_VENTURE"
+      },
+      "veto": {
+        "model": "veto",
+        "mode": "independent",
+        "ok": true,
+        "proposal": "REJECT",
+        "reject_basis": "NON_VENTURE",
+        "reasons": []
+      },
+      "edge": "UNKNOWN",
+      "themes": [],
+      "routing": {
+        "queue": "global_only",
+        "reason": "outside Europe"
+      },
+      "entity": {
+        "display_name": "Saltmarsh Studio",
+        "broken": "",
+        "entities": []
+      },
+      "portfolio": {
+        "status": "NONE",
+        "route_to_omar": false,
+        "evidence": [],
+        "twins": [],
+        "record": null
+      },
+      "stale": false,
+      "obvious_reject": true,
+      "prompt_version": "triage-v3",
+      "mohamed": null,
+      "queue": null
+    },
+    "t-0208": {
+      "candidate_id": "t-0208",
+      "proposal": "REJECT",
+      "display_proposal": "REJECT",
+      "status": "proposed",
+      "stage": "veto",
+      "path": "both reject",
+      "confidence": "high",
+      "reject_basis": "NON_VENTURE",
+      "reject_evidence": "a metal workshop",
+      "reasons": [
+        "A workshop"
+      ],
+      "missing": [],
+      "flags": [],
+      "flash": {
+        "model": "flash",
+        "proposal": "REJECT",
+        "confidence": "high",
+        "reject_basis": "NON_VENTURE"
+      },
+      "veto": {
+        "model": "veto",
+        "mode": "independent",
+        "ok": true,
+        "proposal": "REJECT",
+        "reject_basis": "NON_VENTURE",
+        "reasons": []
+      },
+      "edge": "UNKNOWN",
+      "themes": [],
+      "routing": {
+        "queue": "operating",
+        "reason": "European startup"
+      },
+      "entity": {
+        "display_name": "Brindle Works",
+        "broken": "",
+        "entities": []
+      },
+      "portfolio": {
+        "status": "NONE",
+        "route_to_omar": false,
+        "evidence": [],
+        "twins": [],
+        "record": null
+      },
+      "stale": false,
+      "obvious_reject": true,
+      "prompt_version": "triage-v3",
+      "mohamed": null,
+      "queue": null
+    }
+  },
+  "counts": {},
+  "calibration": {
+    "decisions": 4,
+    "agreement": 0.75,
+    "machine_rejects_reviewed": 0,
+    "machine_rejects_overturned_to_keep_or_research": 0
+  },
+  "pending": {},
+  "note": "Proposals only — every decision is yours."
+}
