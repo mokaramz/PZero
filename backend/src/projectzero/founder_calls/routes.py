@@ -17,6 +17,7 @@ from datetime import date, datetime
 from typing import Any
 
 from projectzero.conviction.records import records
+from projectzero.core.body import BadConfirm, confirmed
 from projectzero.dealflow.ranking.names import slug as radar_slug
 from projectzero.founder_calls import core
 from projectzero.founder_calls.catalog import LABEL
@@ -110,8 +111,13 @@ def memo(doc: Any, call_id: Any, *, today: date) -> dict[str, Any] | None:
 
 
 def briefing(doc: Any, body: dict[str, Any], *, today: date) -> tuple[int, dict[str, Any]]:
-    """``POST /api/call_briefing``: explicit request only — generated on demand, never stored, never sent."""
-    if not body.get("confirm"):
+    """``POST /api/call_briefing``: explicit request only — generated on demand, never stored, never sent. A
+    ``confirm`` that is not a JSON boolean is a 400 ``{error}`` before any briefing is generated (review 036a)."""
+    try:
+        confirm = confirmed(body)
+    except BadConfirm as exc:
+        return 400, {"error": str(exc)}
+    if not confirm:
         return 400, {"error": "explicit confirmation required"}
     md = core.briefing_markdown(core.loaded(doc), body.get("founder_id", ""), today)
     if md is None:

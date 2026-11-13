@@ -107,7 +107,8 @@ def _drop(settings: Settings, name: str) -> None:
 
 
 def _seed(settings: Settings, schema: str) -> None:
-    """The byte-exact archives, the Founder Calls backfill (0014) and the imported-style Conviction entries."""
+    """The byte-exact archives, the Founder Calls (0014) and Founder Radar (0016) backfills and the imported-style
+    Conviction entries."""
     with transaction(settings.db_url) as conn:
         for path, doc in ARCHIVES.items():
             raw = json.dumps(doc, indent=1, ensure_ascii=False).encode("utf-8")
@@ -115,6 +116,12 @@ def _seed(settings: Settings, schema: str) -> None:
                          "(%s, %s, %s, %s, %s::jsonb)".encode(),
                          (path, hashlib.sha256(raw).hexdigest(), len(raw), raw, raw.decode("utf-8")))  # fmt: skip
         conn.execute(f"select {schema}.backfill_founder_calls()".encode())
+        # review 026a moved the Radar company records into ``radar_companies`` (the archive keeps the top-level keys
+        # only): seed them the way an import does, or the readers see no company (stale since 026a, found in 036a).
+        # The "upgrade" path seeds before 0016 exists; 0016's own migration then backfills, as it does in production.
+        exists = conn.execute(f"select to_regprocedure('{schema}.backfill_founder_radar()')".encode()).fetchone()
+        if exists and exists[0] is not None:
+            conn.execute(f"select {schema}.backfill_founder_radar()".encode())
         for r in signals():
             co = conn.execute(f"insert into {schema}.companies (name) values (%s) returning id".encode(),
                               (r["company"],)).fetchone()  # fmt: skip

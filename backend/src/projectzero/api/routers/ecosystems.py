@@ -5,7 +5,8 @@
 * ``GET  /api/ecosystems/registry``         the city registry
 * ``GET  /api/ecosystems/coverage``         coverage by ecosystem and source family
 * ``POST /api/ecosystems/coverage/adopt``   ``{id, confirm}`` -> the old answers, HTTP 200 (``{ok: false, error}``
-                                            for a refusal); 409 before the legacy import (the write boundary)
+                                            for a refusal); 409 before the legacy import (the write boundary); a
+                                            ``confirm`` that is not a JSON boolean is a 400 (review 036a)
 
 A body that is not a JSON object is a 400. Nothing on these paths calls the network or a model.
 """
@@ -20,6 +21,7 @@ from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 
 from projectzero.api.routers.conviction import Body
+from projectzero.core.body import BadConfirm, confirmed
 from projectzero.core.db import read_only_transaction, transaction
 from projectzero.dealflow.intake.postgres import IntakeClosedError
 from projectzero.ecosystems.store import EcosystemsStore
@@ -59,10 +61,14 @@ def get_coverage(request: Request) -> JSONResponse:
 def adopt(request: Request, body: Body) -> JSONResponse:
     if isinstance(body, JSONResponse):
         return body
+    try:
+        confirm = confirmed(body)  # review 036a: only JSON true confirms; a malformed value never opens a connection
+    except BadConfirm as exc:
+        return JSONResponse({"ok": False, "error": str(exc)}, status_code=400)
     settings = request.app.state.settings
     try:
         with transaction(settings.db_url) as conn:
-            out = EcosystemsStore(conn, settings.schema).adopt(body.get("id"), body.get("confirm"), _clock(request))
+            out = EcosystemsStore(conn, settings.schema).adopt(body.get("id"), confirm, _clock(request))
     except IntakeClosedError as exc:
         return JSONResponse({"ok": False, "error": str(exc)}, status_code=409)
     return JSONResponse(jsonable_encoder(out))

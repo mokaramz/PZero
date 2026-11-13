@@ -46,6 +46,7 @@ from dataclasses import dataclass, replace
 from datetime import date, datetime
 from typing import Any
 
+from projectzero.core.body import BadConfirm, confirmed
 from projectzero.dealflow.triage.view import decisions as read_jsonl
 from projectzero.validation.catalog import (
     _DATE_COLS,
@@ -203,7 +204,12 @@ def benchmark_import(
 ) -> Written:
     """The old ``import_benchmark`` (``POST /api/validation_benchmark_import``): CSV text from an export Mohamed
     supplies -> append-only ``external_db_listing`` outcomes (preview unless ``confirm``; every usable row is appended,
-    matched or not). Decision (e): an unreadable CSV is a ``ValidationError``, not a 500."""
+    matched or not). Decision (e): an unreadable CSV is a ``ValidationError``, not a 500. Review 036a: a ``confirm``
+    that is supplied but is not a JSON boolean is a ``ValidationError`` (400), so it never appends."""
+    try:
+        confirm = confirmed(body)
+    except BadConfirm as exc:
+        raise ValidationError(str(exc)) from None
     system = str(body.get("system") or "").strip()
     text = str(body.get("csv") or "")
     if not system or len(text) < 10:
@@ -238,7 +244,7 @@ def benchmark_import(
     known = entities(inputs, today)
     matched = [x for x in ok if _key(x["company"]) in known]
     appends: list[tuple[str, str]] = []
-    if body.get("confirm"):
+    if confirm:
         for x in ok:
             row = {
                 "id": _id("bm", system, x["company"], now=now, new_hex=new_hex),
@@ -263,7 +269,7 @@ def benchmark_import(
         "matched_to_pz": len(matched),
         "name_column": name_col,
         "date_column": date_col,
-        "imported": bool(body.get("confirm")),
+        "imported": confirm,
         "file_sha": sha,
     }
     return Written(summary, appends)

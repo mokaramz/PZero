@@ -19,6 +19,10 @@ script follows plan revision 3 (no confirm, unknown, limited, no URL, a first ad
 ``cov-`` source, the historical retry with and without confirm, two more adoptions). ``variant`` covers the
 documents' defaults and malformed bodies; ``broken_regions`` records that the old coverage raised. Identical views in
 consecutive steps are stored once (``{"same_as": index}``). Exit 1 on any difference.
+
+Review 036a: the adopt ROUTE refuses a ``confirm`` that is not a JSON boolean (a 400, before any connection); the
+pure ``adopt_plan`` compared here takes the route's boolean, so the script's ``1`` / ``"yes"`` / ``""`` steps still
+record the old truthiness of the decision itself (the hosted ``test_strict_confirm_hosted`` covers the route).
 """
 
 from __future__ import annotations

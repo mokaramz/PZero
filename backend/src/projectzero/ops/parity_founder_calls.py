@@ -21,6 +21,10 @@ person's record, an unknown person, a person without a name, an unknown founder,
 neither id, saves through merged ids, the briefing refusals, and a final read at a later day. ``empty``: no file at
 all; ``partial``: a file missing two of its objects and no other documents. Identical ``GET calls`` keys are stored
 once (``{"same_as": index}``). Exit 1 on any difference.
+
+Declared (review 036a): a briefing whose ``confirm`` is supplied but is not a JSON boolean (the script's ``1``) is a
+400 ``{error: "confirm must be true or false"}`` with no briefing generated; the new side checks that answer, then
+replays the step with the old truthiness (``bool(confirm)``) and compares it with the recorded one.
 """
 
 from __future__ import annotations
@@ -38,6 +42,7 @@ from datetime import UTC, date, datetime
 from pathlib import Path
 from typing import Any
 
+from projectzero.core.body import CONFIRM_REFUSAL
 from projectzero.core.paths import REPO_ROOT
 from projectzero.events.when import BERLIN
 from projectzero.founder_calls import core, routes
@@ -429,7 +434,13 @@ def new_side(docs: dict[str, Any], clock: str, steps: list[dict[str, Any]]) -> t
         elif op == "memo":
             row["answer"] = st.memo(step["id"], today)
         elif op == "briefing":
-            row["answer"] = st.briefing(step["body"], today)
+            body = step["body"]
+            if "confirm" in body and not isinstance(body["confirm"], bool):  # declared (review 036a), see the docstring
+                strict = st.briefing(body, today)
+                if strict != {"code": 400, "body": {"error": CONFIRM_REFUSAL}}:
+                    problems.append(f"/steps[{i}]/briefing: confirm {body['confirm']!r} answered {strict}")
+                body = {**body, "confirm": bool(body["confirm"])}
+            row["answer"] = st.briefing(body, today)
         elif op == "read_all":
             d = core.loaded(st.doc)
             row["view"] = st.view(today)

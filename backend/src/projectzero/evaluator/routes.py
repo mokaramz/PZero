@@ -6,7 +6,9 @@ Each function answers what the old route answered (status + body): ``GET evaluat
 and an unknown session answers without them. The writes never change their input: they work on a copy and return an
 ``Outcome`` whose ``doc`` is the evaluations document as the old route left ``evaluations.json`` — the INPUT object
 itself when the session did not change (decision c: a refusal that changed nothing writes nothing), else a new
-document (only the touched session is copied) — with ``changed`` the ids of the new or changed sessions.
+document (only the touched session is copied) — with ``changed`` the ids of the new or changed sessions. Review 036a:
+an ``evidence`` or ``imq_trigger`` body whose ``confirm`` is supplied but is not a JSON boolean is a 400
+``{ok: false, error}`` (without the session), decided before the session lookup: nothing is written.
 """
 
 from __future__ import annotations
@@ -19,6 +21,7 @@ from datetime import date, datetime
 from typing import Any, Protocol
 
 from projectzero.conviction import imq
+from projectzero.core.body import BadConfirm, confirmed
 from projectzero.dealflow.ranking.names import slug as radar_slug
 from projectzero.evaluator import core
 from projectzero.evaluator.core import ConvictionChange
@@ -32,7 +35,7 @@ ACTIONS = ("start", "deck", "next", "skip", "answer", "evidence", "resolve", "en
 
 @dataclass(frozen=True)
 class Outcome:
-    status: int  # the old HTTP status (always 200 for the actions)
+    status: int  # the old HTTP status (200 for the actions; 400 for a malformed evidence `confirm`, review 036a)
     body: dict[str, Any]  # the old answer
     doc: Any  # the evaluations document after the request (the input object when nothing changed)
     changed: list[str] = field(default_factory=list)  # the ids of the new / changed sessions, in document order
@@ -42,7 +45,7 @@ class Outcome:
 
 @dataclass(frozen=True)
 class TriggerOutcome:
-    status: int  # the old HTTP status (200, also for a refusal)
+    status: int  # the old HTTP status (200, also for a refusal; 400 for a malformed `confirm`, review 036a)
     body: dict[str, Any]  # the old answer: {ok, trigger} or {ok: false, error}
     conviction: tuple[ConvictionChange, ...] = ()  # the changed Conviction records (empty: refused, nothing saved)
 
@@ -122,6 +125,12 @@ def action(
     if act == "start":
         return start(doc, body, conviction=conviction, people=people, radar_companies=radar_companies, today=today,
                      now=now, new_hex=new_hex)  # fmt: skip
+    confirm = False
+    if act == "evidence":  # review 036a: only JSON true confirms; a malformed value is a 400 for either kind
+        try:
+            confirm = confirmed(body)
+        except BadConfirm as exc:
+            return Outcome(400, {"ok": False, "error": str(exc)}, doc)
     ck = core.clock(now, today, new_hex)
     base = loaded(doc)
     sid = body.get("id") or ""
@@ -151,7 +160,7 @@ def action(
             body.get("label", ""),
             body.get("note", ""),
             body.get("kind", "public"),
-            bool(body.get("confirm")),
+            confirm,
         )
     elif act == "resolve":
         r = core.resolve_contradiction(sd, ck, body.get("claim_id"), body.get("note", ""))
@@ -234,14 +243,19 @@ def end(
 def imq_trigger(body: dict[str, Any], *, conviction: Any, today: date, now: datetime) -> TriggerOutcome:
     """``POST /api/imq_trigger {slug, kind, date, url, fact, confirm}``: an operator-recorded, sourced, dated why-now
     trigger on every Conviction record whose radar slug is ``slug`` (the old loop; the last answer wins). The records
-    change only when the answer is ``ok`` (the old route saved only then)."""
+    change only when the answer is ``ok`` (the old route saved only then). A ``confirm`` that is not a JSON boolean
+    is a 400 ``{ok: false, error}`` (review 036a)."""
+    try:
+        confirm = confirmed(body)
+    except BadConfirm as exc:
+        return TriggerOutcome(400, {"ok": False, "error": str(exc)})
     r: dict[str, Any] = {"ok": False, "error": "unknown company"}
     changes = []
     for i, e in core._indexed(conviction):
         if radar_slug(e["company"]) == body.get("slug"):
             x = copy.deepcopy(e)
             r = imq.record_trigger(
-                x, body.get("kind"), body.get("date"), body.get("url"), body.get("fact"), bool(body.get("confirm")),
+                x, body.get("kind"), body.get("date"), body.get("url"), body.get("fact"), confirm,
                 now=berlin_now(now).replace(tzinfo=None), today=today,
             )  # fmt: skip
             if r.get("ok"):
