@@ -113,6 +113,8 @@ export type ReportRow = {
   raw?: number | null;
   count?: number | null;
   baseline?: number | null;
+  /** new (034a): the items of this source the intake refused, the first reason in `note` */
+  refused?: number | null;
 };
 
 export type NamedCompany = {
@@ -145,6 +147,8 @@ export type ScanSummary = {
   pipeline_label?: string;
   new_companies?: NamedCompany[];
   sources?: ReportRow[];
+  /** new (034a): the items the intake refused in this scan */
+  refused?: number;
 };
 
 export type WsGeos = { eu: string[]; na: string[]; un?: string[] };
@@ -174,3 +178,22 @@ export type DecisionResult = {
   feedback: Feedback | null;
   resolved_from?: { namespace: string; id: string };
 };
+
+/* ------------------------------------------------------------------ the scan (034a): the old bodies, new paths */
+
+/** `GET /api/deal-flow/find_status`: the scan job, polled while it runs. */
+export type FindStatus = {
+  running: boolean;
+  done: number;
+  total: number;
+  rows: ReportRow[];
+  result: (ScanSummary & { new: number; pre_company_new: number; baseline: number; noise: number }) | null;
+  error: string;
+  started: string;
+};
+
+/** `POST /api/deal-flow/find {days}`: the old `start_scan` answer. */
+export type FindStart = { started?: boolean; running?: boolean; done?: number; total?: number; note?: string };
+
+/** `GET /api/deal-flow/scan_history?n=`. */
+export type ScanHistory = { scans: ScanSummary[]; total: number; pipeline_label: string };

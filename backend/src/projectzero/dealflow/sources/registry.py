@@ -36,6 +36,19 @@ def registry_value(raw: Any) -> str | None:
     return value
 
 
+REGISTRY_KINDS = ("uei", "duns", "org_id")  # the registry ids an old scan record carries (``entity_ids``)
+
+
+def registry_namespace(kind: str, source_id: Any) -> str:
+    """The storage namespace of a registry id an old scan record carried (``entity_ids``), shared by the importer and
+    the scan's identity resolution (review 034a, H-343): a DUNS is global; a UK GtR organisation id is ``gtr_org``;
+    every other id (a UEI, another ``org_id``) is qualified by its source, so equal values from distinct sources never
+    join companies on their own."""
+    if kind == "org_id" and source_id == "uk-gtr":
+        return "gtr_org"
+    return kind if kind == "duns" else f"{kind}:{source_id}"
+
+
 def entity_from_registry_record(record: Mapping[str, Any]) -> dict[str, Any]:
     """Build a contract entity. Fields the record cannot support are omitted, never invented."""
     entity: dict[str, Any] = {

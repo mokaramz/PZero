@@ -16,8 +16,10 @@ have added since, with the old rules:
   with no source credits nothing and consumes nothing (the old milestone returned before marking).
 * ``quality.researched``: once per candidate, its first live status event to research, the same guard.
 * ``quality.radar``: the Conviction ``radar_milestone`` events with ``counted: true`` (review 019), by ``source_id``.
-* ``candidates_found``, ``attention_queue``, ``sent_to_omar``, ``omar_positive``, ``omar_negative``: no delta; their
-  producing flows (source scans, the inbox read credit, the Manager handoff) are not ported yet.
+* ``quality.candidates_found`` (review 034a): the Deal Flow scan's candidates carry the old milestone's ``q_found``
+  in their scan record (``attrs.scan_record``, every source the record was credited to, once each): +1 per entry.
+* ``attention_queue``, ``sent_to_omar``, ``omar_positive``, ``omar_negative``: no delta; their producing flows (the
+  inbox read credit, the Manager handoff) are not ported yet.
 
 ``deltas`` READS only; the totals exist only in the view (``view.apply``). The stored records keep the baseline.
 """
@@ -46,6 +48,10 @@ _STATUS = """
 _CREATES = """
     select id, after->>'inbox_id' as candidate_id, after->>'source_id' as source_id, at from {s}.conviction_events
     where action = 'create' and coalesce(after->>'inbox_id', '') <> '' order by at, id
+"""
+_FOUND = """
+    select attrs->'scan_record'->'q_found' as found from {s}.candidates
+    where jsonb_typeof(attrs->'scan_record'->'q_found') = 'array' order by id
 """
 _RADAR = """
     select detail->>'source_id' as source_id, count(*) as n from {s}.conviction_events
@@ -79,6 +85,7 @@ def derive(
     creates: Iterable[Mapping[str, Any]],
     candidates: Mapping[str, Mapping[str, Any]],
     radar: Mapping[str, int],
+    found: Iterable[Any] = (),
 ) -> Deltas:
     """The pure rule. ``candidates``: id -> the candidate's ranking record (``source_id``, ``quality_source_id``,
     ``q_milestones``). Status events and Conviction creations are taken in their RELATIVE time order (``at``, then a
@@ -119,6 +126,8 @@ def derive(
     for sid, n in radar.items():
         for _ in range(int(n)):
             _bump(out, sid, "quality", "radar")
+    for sid in found:  # review 034a: the scan's candidates_found milestones (each record's ``q_found``)
+        _bump(out, sid, "quality", "candidates_found")
     return out
 
 
@@ -131,9 +140,11 @@ def deltas(conn: psycopg.Connection[Any], schema: str) -> Deltas:
         creates = list(cur.fetchall())
         cur.execute(sql.SQL(_RADAR).format(s=s))
         radar = {r["source_id"]: int(r["n"]) for r in cur.fetchall() if r["source_id"]}
+        cur.execute(sql.SQL(_FOUND).format(s=s))
+        found = [sid for r in cur.fetchall() for sid in r["found"] or [] if isinstance(sid, str)]
         ids = sorted({str(e["candidate_id"]) for e in status} | {str(c["candidate_id"]) for c in creates})
         candidates: dict[str, dict[str, Any]] = {}
         if ids:
             cur.execute(sql.SQL("select * from {s}.candidates where id = any(%s)").format(s=s), (ids,))
             candidates = {str(r["id"]): ranking_input(r)[0] for r in cur.fetchall()}
-    return derive(status, creates, candidates, radar)
+    return derive(status, creates, candidates, radar, found)

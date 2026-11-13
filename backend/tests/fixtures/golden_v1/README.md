@@ -293,3 +293,21 @@ records' `generation` key dropped, every `pid` the running process's); (e) no ba
 pure initial plans; `hosted` runs the same steps through the new runner in scratch schemas, imported by the production
 importer, and compares every step's answer, the job records, the history lines and the runner records, also as
 serialized text (`python -m projectzero.ops.parity_jobs goldens` / `check` / `hosted`).
+
+`oracle_scan.json` (review 034a): the old Deal Flow scan, `connectors.run_registry_concurrent` (one worker) then
+`discovery.ingest_scan` (its auto-triage start left out, decision d), in two steps at two frozen clocks (2026-11-13
+09:00 and 2026-11-20 09:00) over a scratch data folder holding a registry of INVENTED sources (two RSS feeds with a
+cross-source merge, a pipeline company and a noisy item; two page watchers, one with an archived `.watch/` baseline
+and a timestamp/title pair; a watcher that fails with 404 then recovers; a failing connection; a disabled source; the
+structured SBIR / NSF / NIH / UKRI GtR / CORDIS / CKAN parsers on invented records, the second step bringing a
+strong-key merge into a scanned company) plus the registry's own six V2 official sources over the old golden
+SYNTHETIC pages (`backend/tests/fixtures/golden/sources_v2_pages.json`), an imported inbox candidate and an imported
+scan history. The old `_get_raw` and `_request_json` answer from the recorded responses (`input.steps[].responses`);
+writes outside the scratch folder are refused (none happened). Recorded after each step: the pure registry scan (the
+batch and the report), the summary, `inbox.json`, `sources.json`, `scan_history.json` and every `.watch/` baseline.
+Declared differences, all normalised in `parity_scan.normalise`: (a) an imported record is never rewritten, and a
+created candidate's id is the intake's (mapped back to the record's old id); (d) the summary's `triage` note; revision
+2's `refused` key; (e) `core/net`'s HTTP error text. `check` compares the pure phase-2 output step by step; `hosted`
+runs the new scan with the same bytes in a scratch schema, imported by the production importer, and compares the
+report rows, the summary, every candidate record, the sources' runtime keys, cursors and `candidates_found`, the watch
+baselines and the history (`python -m projectzero.ops.parity_scan goldens` / `check` / `hosted`).

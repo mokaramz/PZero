@@ -42,8 +42,8 @@ Declared differences, ALL applied by ``normalise`` (old payload -> the expected 
 (k): the old texts and groups come back exactly (032c's switch); the runner's lock is then the old answer too.
 
 * **032c (c), the real runner (``real``):** the runner can run only ``PORTED_JOBS`` (restated here). Its plan rows
-  for the six other jobs are never overdue and carry ``availability: "not ported yet"`` (b); rules 3 and 4 keep
-  revision 2's advice (no scan, no triage retry); rules 6-11 are split per job: the runnable jobs keep the old item
+  for the five other jobs are never overdue and carry ``availability: "not ported yet"`` (b); rule 3 has its old item
+  back (the Deal Flow scan is ported, review 034a) and rule 4 keeps revision 2's advice (no triage retry); rules 6-11 are split per job: the runnable jobs keep the old item
   (text, level, group), the others get revision 2's item (``NEW_DO``, level ``info``) over their own labels, right
   after it (rule 6: an unported job is not overdue, so it is not listed). The items are rebuilt from the old jobs
   rows, each rebuild checked first against the old item; then the verdict and the status are re-derived.
@@ -661,8 +661,8 @@ def expected_status(verdict: str, issues: list[dict[str, str]], old: dict[str, A
 
 # 032c: the jobs the real runner can run (restated from the plan's table, checked against ``jobs.ported``)
 PORTED_JOBS = frozenset(
-    {"event_scan", "validation_snapshot", "news_refresh", "news_weekly_review", "news_source_review"}
-)
+    {"deal_flow_scan", "event_scan", "validation_snapshot", "news_refresh", "news_weekly_review", "news_source_review"}
+)  # review 034a: the Deal Flow scan is ported
 NEW_NOT_PORTED = "not ported yet"
 JOB_RULES: dict[int, tuple[str, str, Callable[[dict[str, Any]], str]]] = {  # rule -> (prefix, separator, item)
     6: ("", ", ", lambda p: p["label"].split(" (")[0]),
@@ -730,9 +730,9 @@ def normalise_system(
             i = {**i, "do": health_core.PAID_OFF_DO}
         elif rule is not None and not runner:  # (k)
             i = {"level": "info", "what": i["what"], "do": NEW_DO[rule], "group": "info"}
-        elif rule in (3, 4) and ported is not None:  # 032c (c): neither the scan nor the triage retry is ported
-            assert {3: "deal_flow_scan", 4: "triage_retry"}[rule] not in ported
-            i = {"level": "info", "what": i["what"], "do": NEW_DO[rule], "group": "info"}
+        elif rule in (3, 4) and ported is not None:  # 032c (c): the old item only when its job is ported (034a: 3)
+            if {3: "deal_flow_scan", 4: "triage_retry"}[rule] not in ported:
+                i = {"level": "info", "what": i["what"], "do": NEW_DO[rule], "group": "info"}
         elif rule is not None and rule >= 6 and ported is not None:  # 032c (c): split per job
             issues += per_job_issues(i, rule, old["jobs"], ported)
             continue

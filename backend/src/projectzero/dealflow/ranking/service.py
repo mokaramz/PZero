@@ -6,11 +6,14 @@
     so notes always fed the ranking text).
   - **full** too: a live Grok / manual lead tagged at intake (``attrs.tagging``, review 007). The rules read the
     stored old-scan-shaped record, with today's status and operator notes, exactly like an imported record.
+  - **full** too: a candidate the Deal Flow scan created (``attrs.scan_record``, review 034a): the old inbox record
+    the scan built, with today's status as ``decision`` and today's notes, exactly like an imported record.
   - **partial**: anything else — a Scout Intake / Native record, a pre-007 untagged lead, or an origin without a
-    tagging mapping yet (registry scans until the scanner port). The stored columns are mapped onto the same
-    fields, but the ingest tags (``archetype_hits``, ``noise``, ``priority``, ``discovery_tier``) are missing.
+    tagging mapping. The stored columns are mapped onto the same fields, but the ingest tags (``archetype_hits``,
+    ``noise``, ``priority``, ``discovery_tier``) are missing.
 * ``RankingContext`` holds the two inputs that are not per candidate, loaded once per request, so the list and the
-  detail paths read the SAME values: the old inbox's exact ``last_run`` (compared directly with ``run_id``) and the
+  detail paths read the SAME values: the old inbox's exact ``last_run`` (the latest Deal Flow scan's ``run_id``, else
+  the imported one; compared directly with ``run_id``) and the
   effective feedback ledger: the imported one plus every operator decision since (``ranking.ledger``, review 008).
 """
 
@@ -26,6 +29,8 @@ from psycopg.rows import dict_row
 
 from projectzero.core.db import schema_ident
 from projectzero.dealflow.ranking import attention, feedback, ledger, tagging, themes
+from projectzero.dealflow.scan import history as scan_history
+from projectzero.dealflow.scan.records import is_scan_record
 
 STATUS_TO_DECISION = {"new": "new", "reviewing": "research", "watch": "watch", "baseline": "baseline",
                       "rejected": "rejected", "archived": "rejected", "kept": "kept"}  # fmt: skip
@@ -73,7 +78,7 @@ class RankingContext:
                 for a in cur.fetchall():
                     aliases.setdefault(str(a["candidate_id"]), []).append(str(a["alias_id"]))
             events = backfill_snapshots(events, rows, aliases)
-        inbox_rest = docs.get("inbox.json#rest") or {}
+        inbox_rest = scan_history.overlay_rest(docs.get("inbox.json#rest") or {}, scan_history.latest(conn, schema))
         base = ledger.parse_base(archived["raw"] if archived else None, docs.get("feedback.json"))
         effective = ledger.effective(base, events)
         return cls(last_run=inbox_rest.get("last_run"), ledger=effective, table=feedback.table(effective))
@@ -108,6 +113,13 @@ def ranking_input(row: Mapping[str, Any]) -> tuple[dict[str, Any], str]:
     legacy = row.get("legacy")
     if is_legacy_inbox_record(legacy):
         c = dict(legacy)
+        c["decision"] = STATUS_TO_DECISION.get(str(row.get("status")), c.get("decision"))
+        if "notes" in attrs:
+            c["notes"] = attrs["notes"]
+        return c, "full"
+    scan = attrs.get("scan_record")
+    if is_scan_record(scan):  # review 034a: the Deal Flow scan's record, read like an imported one
+        c = dict(scan)
         c["decision"] = STATUS_TO_DECISION.get(str(row.get("status")), c.get("decision"))
         if "notes" in attrs:
             c["notes"] = attrs["notes"]

@@ -1,6 +1,10 @@
 /** A small Deal Flow: enough candidates to exercise the top-15 cut, every workspace and every decision. */
 import type { TriagePayload, TriageSummary } from "../model/triage";
-import type { Candidate, InboxPayload } from "../model/types";
+import type { Candidate, FindStart, FindStatus, InboxPayload, ScanHistory } from "../model/types";
+import findAnswersJson from "./scan/find_answers.json";
+import findStatusJson from "./scan/find_status.json";
+import scanInboxJson from "./scan/inbox.json";
+import scanHistoryJson from "./scan/scan_history.json";
 
 const DAY = 864e5;
 const iso = (daysAgo: number) => new Date(Date.now() - daysAgo * DAY).toISOString().slice(0, 10);
@@ -96,4 +100,31 @@ export function triage(): TriagePayload {
     calibration: { decisions: 0, agreement: null, machine_rejects_reviewed: 0, machine_rejects_overturned_to_keep_or_research: 0 },
     note: "Proposals only.",
   };
+}
+
+/* ------------------------------------------------------------------ the scan (review 034a)
+ * Kept as JSON in `scan/` (invented names only) so the mocked Playwright spec reads the same shapes
+ * (`e2e/tests/fixtures/scan/`, byte-identical copies):
+ * - `inbox.json`: five candidates and the last scan — a report of seven sources (a watcher, two structured registries
+ *   in Europe, a failed UK feed, an all-geography wire, a US registry and a disabled Canadian feed; one row with an
+ *   intake refusal) and its full summary (three new companies, two pipeline names, one refusal);
+ * - `find_status.json`: `GET find_status` idle, running (2 / 7), running further (5 / 7), done (its result with one
+ *   refusal) and stopped (an error);
+ * - `find_answers.json`: `POST find` started, and already running;
+ * - `scan_history.json`: two scans of 14 recorded. */
+
+export type FindCase = keyof typeof findStatusJson;
+export const scanInbox = (): InboxPayload => structuredClone(scanInboxJson) as unknown as InboxPayload;
+export const findStatus = (c: FindCase = "idle"): FindStatus => structuredClone(findStatusJson[c]) as unknown as FindStatus;
+export const findAnswer = (c: keyof typeof findAnswersJson = "started"): FindStart => structuredClone(findAnswersJson[c]);
+export const scanHistory = (): ScanHistory => structuredClone(scanHistoryJson) as unknown as ScanHistory;
+
+/** The inbox a read finds after the `done` scan: its run, summary and report, and its two new companies. */
+export function afterScan(ib: InboxPayload = scanInbox()): InboxPayload {
+  const done = findStatus("done");
+  const r = done.result!;
+  const fresh = (r.new_companies ?? []).map((n) =>
+    cand(n.id!, { name: n.name, source: n.source, source_url: n.source_url, source_date: n.source_date, first_seen: n.first_seen, run_id: r.run_id }),
+  );
+  return { ...ib, candidates: [...fresh, ...ib.candidates], last_run: r.run_id ?? null, last_summary: r, report: done.rows };
 }

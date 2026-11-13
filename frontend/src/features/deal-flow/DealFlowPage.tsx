@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { ContextInspector } from "@/components/attention";
@@ -41,6 +41,8 @@ export default function DealFlowPage() {
   const [keepId, setKeepId] = useState<string | null>(null);
   const navigate = useNavigate();
   const findRef = useRef<HTMLDivElement | null>(null);
+  /** set when a scan finishes: the run the inbox showed then, so the next run's rows can be highlighted */
+  const [scanFrom, setScanFrom] = useState<{ from: string | null } | null>(null);
 
   useDeepLinks(ib, { show, setFilter: set.setFilter, setRoute: set.setTRoute, findRef });
 
@@ -60,6 +62,16 @@ export default function DealFlowPage() {
   const detail = useDecision(selected);
   const research = useDecision(researchC);
   const toast = useToast();
+
+  // After a scan (review 034a), briefly highlight the rows of the new run once the fresh inbox arrives (the old page).
+  const lastRun = ib?.last_run ?? null;
+  const onScanFinished = useCallback(() => setScanFrom({ from: lastRun }), [lastRun]);
+  const freshRun = scanFrom && lastRun && lastRun !== scanFrom.from ? lastRun : null;
+  useEffect(() => {
+    if (!freshRun) return;
+    const t = setTimeout(() => setScanFrom(null), 1500);
+    return () => clearTimeout(t);
+  }, [freshRun]);
 
   return (
     <>
@@ -105,6 +117,7 @@ export default function DealFlowPage() {
                   <CandidateList
                     list={view.list}
                     selId={selId}
+                    freshRun={freshRun}
                     im={im}
                     themes={ib.themes}
                     onSelect={setSel}
@@ -131,7 +144,7 @@ export default function DealFlowPage() {
                 </div>
               )}
             </Panel>
-            <MachineZone ib={ib} findRef={findRef} />
+            <MachineZone ib={ib} ws={ws} findRef={findRef} onScanFinished={onScanFinished} />
           </>
         )}
       </Async>

@@ -287,7 +287,7 @@ test.describe("Investment Desk — mocked API", () => {
     expect(api.writes()).toEqual([]);
   });
 
-  test("every navigation button lands on a ported route; Find only focuses the deferred Find control — nothing is posted", async ({ page }) => {
+  test("every navigation button lands on a ported route; Find only focuses the Find control — nothing is posted", async ({ page }) => {
     const api = await mockApi(page);
     const buttons: Array<[string, (p: Page) => ReturnType<Page["getByRole"]>, string]> = [
       ["best name", (p) => p.getByTestId("desk-best").getByRole("button", { name: "Halvorsen Robotics" }), "/conviction?company=halvorsen-robotics"],
@@ -306,7 +306,7 @@ test.describe("Investment Desk — mocked API", () => {
       if (name === "Find New Candidates") {
         // the old deal-flow deep link: ?find=1 focuses the Find control and never starts a scan
         await expect(page.getByTestId("find-btn")).toBeFocused({ timeout: 30_000 });
-        await expect(page.getByTestId("find-btn")).toHaveAttribute("aria-disabled", "true");
+        await expect(page.getByTestId("find-btn")).not.toHaveAttribute("aria-disabled"); // live since the scan port (034a)
       }
     }
     expect(api.writes()).toEqual([]);

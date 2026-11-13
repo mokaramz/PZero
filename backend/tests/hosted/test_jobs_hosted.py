@@ -50,6 +50,7 @@ from projectzero.jobs.ported import NOT_PORTED, PORTED
 from projectzero.ops.db_check import _scratch_sql
 from projectzero.ops.parity_events_scan import RecordedFetcher
 from projectzero.ops.parity_news import FEED_URLS, FixtureTransport, fixture_resolver, item, rfc, rss
+from projectzero.ops.parity_scan import FixtureTransport as ScanTransport
 from projectzero.ops.parity_validation import _fingerprint
 
 pytestmark = pytest.mark.hosted
@@ -400,7 +401,8 @@ def deps() -> JobDeps:
             '"2026-12-04", "location": {"@type": "Place", "name": "Hall A", "address": {"addressLocality": "Karlsruhe"}}}</script>')  # fmt: skip
     hexes = count(100)
     return JobDeps(events_fetcher=RecordedFetcher({LD["url"]: {"text": page}}), news_transport=FixtureTransport(FEEDS),
-                   news_resolver=fixture_resolver, new_hex=lambda: f"{next(hexes):016x}")  # fmt: skip
+                   news_resolver=fixture_resolver, new_hex=lambda: f"{next(hexes):016x}",
+                   dealflow_transport=ScanTransport({}), dealflow_resolver=fixture_resolver)  # fmt: skip
 
 
 def test_every_ported_job_runs_once_through_the_runner_and_the_unported_never_run(
@@ -411,12 +413,13 @@ def test_every_ported_job_runs_once_through_the_runner_and_the_unported_never_ru
         conn.execute(f"insert into {schema}.documents (key, body) values ('event_sources.json', %s)".encode(),
                      (Jsonb({"sources": [LD], "offered_defaults": NEW_DEFAULTS}),))  # fmt: skip
     unported = sorted({j["id"] for j in health_core.active_jobs()} - PORTED)
-    assert len(unported) == 6 and not set(unported) & set(REAL)
+    assert len(unported) == 5 and not set(unported) & set(REAL)  # review 034a: the Deal Flow scan is ported
     assert runner.run_due(settings.db_url, schema, source="cli", now=NOW, only=unported, deps=deps()) == []  # (b)
     rows = runner.run_due(settings.db_url, schema, source="cli", now=NOW, deps=deps())
     print("\n[ported jobs] " + " | ".join(f"{r['job']}: [{r['outcome']}] {r['note']}" for r in rows))
-    assert [r["job"] for r in rows] == ["event_scan", "validation_snapshot", "news_refresh", "news_weekly_review",
-                                        "news_source_review"]  # fmt: skip
+    assert [r["job"] for r in rows] == ["deal_flow_scan", "event_scan", "validation_snapshot", "news_refresh",
+                                        "news_weekly_review", "news_source_review"]  # fmt: skip
+    assert q(settings, schema, "select count(*) from {s}.scan_runs") == [(1,)]  # an empty registry: one empty run
     assert all(r["ok"] for r in rows), rows
     assert not [r for r in rows if r["outcome"] == "skipped"], rows  # an earlier job of the run is no "already ran"
     marks = q(settings, schema, "select count(*) from {s}.news_logs where log = 'run_notes' and line like %s",
@@ -435,7 +438,7 @@ def test_every_ported_job_runs_once_through_the_runner_and_the_unported_never_ru
     assert {p["id"] for p in plan if p.get("availability") == NOT_PORTED} == set(unported)
     assert not [p for p in plan if p["id"] in unported and p["overdue"]]
     h = q(settings, schema, "select job, started_at <= finished_at from {s}.job_runs order by id")
-    assert [r[1] for r in h] == [True] * 5  # the real start and finish of every new history row
+    assert [r[1] for r in h] == [True] * 6  # the real start and finish of every new history row
 
 
 # ------------------------------------------------------------------ (a) the live refusal

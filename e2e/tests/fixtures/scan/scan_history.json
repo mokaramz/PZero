@@ -1,0 +1,8 @@
+{
+  "scans": [
+    { "run_id": "2026-11-05 22:10", "sources_ok": 6, "sources_failed": 0, "sources_off": 1, "raw_records": 70, "new": 5, "known_skipped": 8, "merged_cross_source": 1, "merged_into_existing": 0, "baseline": 2, "known_pipeline": 1 },
+    { "run_id": "2026-11-12 22:15", "sources_ok": 5, "sources_failed": 1, "sources_off": 1, "raw_records": 61, "new": 3, "known_skipped": 11, "merged_cross_source": 1, "merged_into_existing": 2, "baseline": 0, "known_pipeline": 2, "refused": 1 }
+  ],
+  "total": 14,
+  "pipeline_label": "Existing pipeline — not discovered in this scan"
+}

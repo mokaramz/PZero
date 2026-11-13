@@ -30,6 +30,12 @@ manual) stores ``attrs.tagging`` = the old scan's tags for it, with the inputs t
 re-report the tags are replayed from the stored columns (so unchanged inputs give identical tags), and a different
 live origin is added once as a cross-source sighting. Imported and untagged candidates are never retagged here.
 Interstitial entities never reach this module: the contract refuses them before identity grouping.
+
+**The Deal Flow scan's hints** (review 034a, decision c; ``service.TrustedBatch.scan``): a candidate the resolution
+CREATES for a scan entity gets the hint's status (``new``, ``baseline`` for a watcher's first run, ``rejected`` for
+noise) and ``attrs.scan_record`` (the old inbox record, which the ranking reads); a scan entity that RE-REPORTS a
+candidate whose ``attrs.scan_record`` exists folds its provenance into that record (the old ``absorb``) and its
+result says ``provenance_added``. Nothing else changes for an existing candidate: never its status.
 """
 
 from __future__ import annotations
@@ -54,10 +60,11 @@ from projectzero.dealflow.identity_rules import (
     origin_family,
     plan_delivery,
 )
-from projectzero.dealflow.intake.contract import COMPANY_KINDS
+from projectzero.dealflow.intake.contract import COMPANY_KINDS, Origin
 from projectzero.dealflow.intake.service import SubmissionRecord
 from projectzero.dealflow.ranking import tagging
-from projectzero.dealflow.sources.registry import registry_value
+from projectzero.dealflow.scan import records as scan_records
+from projectzero.dealflow.sources.registry import REGISTRY_KINDS, registry_namespace, registry_value
 
 _ENTITY_ATTRS = (
     "external_id", "related_external_ids", "flags", "intent", "source_scouts", "scout_assessment", "claims", "stage",
@@ -97,6 +104,7 @@ class PostgresIntake:
         self.s = schema_ident(schema)
         self._schema = schema
         self.submission_id: str | None = None
+        self._hints: Mapping[int, Mapping[str, Any]] = {}
 
     def _q(self, query: str) -> sql.Composed:
         return sql.SQL(query).format(s=self.s)
@@ -124,15 +132,20 @@ class PostgresIntake:
 
     # ── EntityResolver ──────────────────────────────────────────────────────────────────────────────────────────
     def resolve_submission(
-        self, submission: SubmissionRecord, entities: Sequence[tuple[int, Mapping[str, Any]]]
+        self,
+        submission: SubmissionRecord,
+        entities: Sequence[tuple[int, Mapping[str, Any]]],
+        hints: Mapping[int, Mapping[str, Any]] | None = None,
     ) -> list[dict[str, Any]]:
+        self._hints = hints or {}
         self.conn.execute(sql.SQL("select pg_advisory_xact_lock(hashtext(%s))"), (f"{self._schema}.intake",))
         origin = submission.origin.value
         family = origin_family(origin)
         by_index = dict(entities)
         companies = {i: e for i, e in entities if str(e["kind"]) in COMPANY_KINDS}
         facts = [
-            EntityFacts(i, tuple(self._strong_keys(e, origin)), self._name_key(e)) for i, e in sorted(companies.items())
+            EntityFacts(i, tuple(self._strong_keys(e, origin, self._hints.get(i))), self._name_key(e))
+            for i, e in sorted(companies.items())
         ]
         owner_of = {key: owner for f in facts for key in f.keys if (owner := self._owner(key))}
         plan = plan_delivery(facts, owner_of)
@@ -193,11 +206,12 @@ class PostgresIntake:
     ) -> dict[str, Any]:
         kind = str(entity["kind"])
         name = str(entity["name"]).strip()
+        hint = self._hints.get(index)
         if kind in COMPANY_KINDS and company_id:
-            candidate_id, action = self._company_candidate(company_id, entity, name, origin)
+            candidate_id, action = self._company_candidate(company_id, entity, name, origin, hint)
         elif kind in COMPANY_KINDS:
             candidate_id, action = (
-                self._create_candidate(None, entity, name, origin, identity=decision.basis),
+                self._create_candidate(None, entity, name, origin, identity=decision.basis, hint=hint),
                 "created",
             )
         elif existing := self._by_external_id(kind, origin, entity.get("external_id")):
@@ -207,8 +221,11 @@ class PostgresIntake:
                 self._create_candidate(None, entity, name, origin, identity=decision.basis),
                 "created",
             )
+        provenance = None
         if action != "created":
             self._touch(candidate_id, entity, origin)
+            if hint is not None:
+                provenance = self._absorb_scan(candidate_id, hint)
         self._observe(candidate_id, entity, origin)
         detail = {
             "submission_id": self.submission_id,
@@ -228,7 +245,7 @@ class PostgresIntake:
             self._flag_revisit(candidate_id, revisit_flag)
         if decision.action == "conflict":
             self._event(candidate_id, "identity_conflict", detail)
-        return {
+        out = {
             "index": index,
             "name": name,
             "kind": kind,
@@ -237,14 +254,26 @@ class PostgresIntake:
             "company_id": company_id,
             "company_decision": decision.basis,
         }
+        if provenance is not None:  # a scan entity re-reporting a candidate (review 034a)
+            out["provenance_added"] = provenance
+        return out
 
     # ── identity ────────────────────────────────────────────────────────────────────────────────────────────────
     @staticmethod
-    def _strong_keys(entity: Mapping[str, Any], origin: str) -> list[StrongKey]:
+    def _strong_keys(entity: Mapping[str, Any], origin: str, hint: Mapping[str, Any] | None = None) -> list[StrongKey]:
+        # H-343: a scan delivery's registry ids come under their schema-valid kinds; the hint's source qualifies them
+        # exactly as the importer stored the old scan's ids (``registry_namespace``), so a new award with a known UEI
+        # joins its imported company, and equal ids from distinct sources never join on their own
+        source = hint.get("source_id") if hint is not None and origin == Origin.REGISTRY_SCAN.value else None
         keys: list[StrongKey] = []
         for namespace, raw in sorted((entity.get("registry_ids") or {}).items()):
             if (value := registry_value(raw)) is not None:
-                keys.append(("registry", str(namespace), value))
+                ns = (
+                    registry_namespace(namespace, source)
+                    if source is not None and namespace in REGISTRY_KINDS
+                    else namespace
+                )
+                keys.append(("registry", str(ns), value))
         if domain := company_domain(entity.get("website")):
             keys.append(("domain", "", domain))
         if external_id := entity.get("external_id"):
@@ -333,7 +362,14 @@ class PostgresIntake:
         )
 
     # ── candidates ──────────────────────────────────────────────────────────────────────────────────────────────
-    def _company_candidate(self, company_id: str, entity: Mapping[str, Any], name: str, origin: str) -> tuple[str, str]:
+    def _company_candidate(
+        self,
+        company_id: str,
+        entity: Mapping[str, Any],
+        name: str,
+        origin: str,
+        hint: Mapping[str, Any] | None = None,
+    ) -> tuple[str, str]:
         open_row = self._one(
             "select id from {s}.candidates where company_id = %s and status not in ('rejected', 'archived')",
             (company_id,),
@@ -346,7 +382,7 @@ class PostgresIntake:
         )
         if closed:
             return str(closed[0]), "re_reported_closed"
-        return self._create_candidate(company_id, entity, name, origin, identity=None), "created"
+        return self._create_candidate(company_id, entity, name, origin, identity=None, hint=hint), "created"
 
     def _by_external_id(self, kind: str, origin: str, external_id: Any) -> str | None:
         if not external_id:
@@ -359,7 +395,14 @@ class PostgresIntake:
         return str(row[0]) if row else None
 
     def _create_candidate(
-        self, company_id: str | None, entity: Mapping[str, Any], name: str, origin: str, *, identity: str | None
+        self,
+        company_id: str | None,
+        entity: Mapping[str, Any],
+        name: str,
+        origin: str,
+        *,
+        identity: str | None,
+        hint: Mapping[str, Any] | None = None,
     ) -> str:
         location = entity.get("location") or {}
         assessment = entity.get("scout_assessment") or {}
@@ -371,11 +414,15 @@ class PostgresIntake:
         if entity["kind"] in COMPANY_KINDS and origin in tagging.LIVE_SOURCES:
             inputs = tagging.live_inputs(origin, name, entity.get("key_fact"), entity.get("stage"), entity.get("flags"))
             attrs["tagging"] = tagging.tag(inputs)
+        status = "new"
+        if hint is not None:  # decision c (review 034a): the scan's status and record, at creation only
+            status = str(hint["status"])
+            attrs["scan_record"] = dict(hint["record"])
         row = self._one(
             "insert into {s}.candidates (company_id, subject_kind, name, status, origins, country, location, "
             "description, key_fact, key_unknown, recommended_object_type, sectors, attrs) "
-            "values (%s, %s, %s, 'new', %s, %s, %s, %s, %s, %s, %s, %s, %s) returning id",
-            (company_id, entity["kind"], name, [origin], location.get("country"), location.get("city"),
+            "values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) returning id",
+            (company_id, entity["kind"], name, status, [origin], location.get("country"), location.get("city"),
              entity.get("thesis_fit"), entity.get("key_fact"), entity.get("key_unknown"),
              assessment.get("recommended_object_type"), list(entity.get("sectors") or []), Jsonb(attrs)),
         )  # fmt: skip
@@ -426,6 +473,20 @@ class PostgresIntake:
                 ),
                 (Jsonb(fresh), candidate_id),
             )
+
+    def _absorb_scan(self, candidate_id: str, hint: Mapping[str, Any]) -> int:
+        """The old ``absorb``: a scan entity re-reporting a candidate the scan created folds its provenance into the
+        stored scan record (never the status). Any other candidate (imported, live-tagged) keeps its record: 0."""
+        row = self._one("select attrs->'scan_record' from {s}.candidates where id = %s", (candidate_id,))
+        host = row[0] if row else None
+        if not scan_records.is_scan_record(host):
+            return 0
+        added = scan_records.absorb(host, hint["record"], str(hint["run_id"]))
+        self.conn.execute(
+            self._q("update {s}.candidates set attrs = jsonb_set(attrs, '{{scan_record}}', %s::jsonb) where id = %s"),
+            (Jsonb(host), candidate_id),
+        )
+        return added
 
     def _observe(self, candidate_id: str, entity: Mapping[str, Any], origin: str) -> None:
         evidence = list(entity.get("evidence") or [])

@@ -8,7 +8,7 @@ import { ScoutIntakeRedirect } from "@/app/redirects";
 import { ToastProvider } from "@/components/Toast";
 import DealFlowPage from "../DealFlowPage";
 import type { TriagePayload } from "../model/triage";
-import type { InboxPayload } from "../model/types";
+import type { FindStatus, InboxPayload, ScanHistory } from "../model/types";
 
 export type Call = { method: string; path: string; body?: unknown };
 type Answer = { status: number; body: unknown } | Promise<{ status: number; body: unknown }>;
@@ -22,11 +22,18 @@ export type Routes = {
   /** the Conviction scoring tables and save, for Keep (review 011) */
   meta?: () => unknown;
   save?: (body: Record<string, unknown>) => Answer;
+  /** the scan (review 034a): each `find_status` read (n counts them), the start, and the history (its `n`) */
+  findStatus?: (n: number) => FindStatus | Answer;
+  find?: (body: Record<string, unknown>) => Answer;
+  scanHistory?: (n: string | null) => ScanHistory | Answer;
 };
+
+const isAnswer = (x: unknown): x is { status: number; body: unknown } => !!x && typeof x === "object" && "status" in x && "body" in x;
 
 export function fakeServer(routes: Routes) {
   const calls: Call[] = [];
   let inboxReads = 0;
+  let statusReads = 0;
   const json = (status: number, body: unknown) => new Response(JSON.stringify(body), { status, headers: { "Content-Type": "application/json" } });
   const fetchMock = vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
     const method = (init?.method ?? "GET").toUpperCase();
@@ -48,6 +55,19 @@ export function fakeServer(routes: Routes) {
       const a = await routes.decide(decodeURIComponent(dec[1]), body);
       return json(a.status, a.body);
     }
+    if (method === "GET" && path === "/api/deal-flow/find_status" && routes.findStatus) {
+      const a = await routes.findStatus(++statusReads);
+      return isAnswer(a) ? json(a.status, a.body) : json(200, a);
+    }
+    if (method === "POST" && path === "/api/deal-flow/find" && routes.find) {
+      const a = await routes.find(body);
+      return json(a.status, a.body);
+    }
+    const hist = /^\/api\/deal-flow\/scan_history(?:\?n=(\d+))?$/.exec(path);
+    if (method === "GET" && hist && routes.scanHistory) {
+      const a = await routes.scanHistory(hist[1] ?? null);
+      return isAnswer(a) ? json(a.status, a.body) : json(200, a);
+    }
     if (method === "GET" && path === "/api/conviction/meta" && routes.meta) return json(200, routes.meta());
     if (method === "POST" && path === "/api/conviction/save" && routes.save) {
       const a = await routes.save(body);
@@ -60,6 +80,8 @@ export function fakeServer(routes: Routes) {
     calls,
     posts: () => calls.filter((c) => c.method === "POST"),
     inboxReads: () => inboxReads,
+    statusReads: () => statusReads,
+    gets: (p: string) => calls.filter((c) => c.method === "GET" && c.path === p).length,
   };
 }
 

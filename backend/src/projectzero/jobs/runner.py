@@ -43,6 +43,7 @@ import psycopg
 from projectzero.core.db import connect, read_only_transaction, transaction
 from projectzero.core.occurrence import ALREADY_RAN, AlreadyRan, StillDue
 from projectzero.dealflow.intake.postgres import IntakeClosedError, ensure_intake_open
+from projectzero.dealflow.scan import history as scan_history
 from projectzero.events.when import BERLIN
 from projectzero.health import core as health_core
 from projectzero.health.catalog import classify
@@ -130,11 +131,11 @@ def catalog(jobs: Sequence[Job] | None = None) -> Catalog:
 def plan_inputs(conn: psycopg.Connection[Any], schema: str) -> HealthInputs:
     """Only what the plan reads (``health.core.plan``): the job records, ``config.json``, and the three ``last``
     readers' stores (the archived scan history, ``event_health.json``, the News runs log)."""
-    scans = store.archived(conn, schema, "scan_history.json")
+    scans = store.archived(conn, schema, "scan_history.json")  # overlaid by the new runs (review 034a, the ONE reader)
     return HealthInputs(
         job_state=store.job_records(conn, schema),
         config=store.config(conn, schema),
-        scan_history=scans if isinstance(scans, dict) else {"scans": []},
+        scan_history=scan_history.scan_history(conn, schema, scans if isinstance(scans, dict) else {"scans": []}),
         event_health=store.document(conn, schema, "event_health.json") or {},
         news=base_from_docs(news_store.log_texts(conn, schema, ("runs",))),
     )

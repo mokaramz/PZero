@@ -7,6 +7,13 @@
   (``partial``), so one malformed registry record cannot block a whole scan.
 
 Both paths deduplicate on the canonical sha256 of what was received: the same delivery twice is a no-op.
+
+**The Deal Flow scan's creation hints** (review 034a, decision c): a ``REGISTRY_SCAN`` batch may carry ``scan``, per
+entity index ``{"status": "new" | "baseline" | "rejected", "record": <the old scan record>, "run_id": ...}``. They act
+ONLY when the resolution creates the candidate (its status, and ``attrs.scan_record``), or when it re-reports a
+candidate the scan itself created (the old ``absorb``: provenance on ``attrs.scan_record``). An existing candidate's
+status is never changed. The hints are not part of the delivery's canonical hash (the entities and ``external_ref``
+are); any other origin carrying them is a programming error.
 When a ``resolver`` is given, the accepted entities are resolved into companies and candidates right after the
 submission is recorded. Postgres runs both in ONE transaction (``dealflow.intake.postgres``): a failure while
 resolving also rolls back the submission row, so the same delivery can simply be resubmitted.
@@ -41,12 +48,26 @@ class TrustedBatch:
     entities: Sequence[Mapping[str, Any]]
     external_ref: str | None = None
     summary: str | None = None
+    scan: Mapping[int, Mapping[str, Any]] | None = None  # the Deal Flow scan's creation hints (REGISTRY_SCAN only)
 
     def __post_init__(self) -> None:
         if self.origin in EXTERNAL_ORIGINS:
             raise ValueError(f"origin '{self.origin}' must come through the external envelope (submit_external)")
         if not self.submitted_by.strip():
             raise ValueError("submitted_by is required")
+        if self.scan is not None:
+            if self.origin is not Origin.REGISTRY_SCAN:
+                raise ValueError("scan creation hints are for the registry scan only")
+            for index, hint in self.scan.items():
+                if (
+                    not 0 <= index < len(self.entities)
+                    or hint.get("status") not in SCAN_CREATION_STATUSES
+                    or ("source_id" in hint and not isinstance(hint["source_id"], str))
+                ):
+                    raise ValueError(f"invalid scan creation hint for entity {index}")
+
+
+SCAN_CREATION_STATUSES = frozenset({"new", "baseline", "rejected"})  # decision c (review 034a): at creation only
 
 
 @dataclass(frozen=True)
@@ -74,9 +95,13 @@ class SubmissionStore(Protocol):
 
 class EntityResolver(Protocol):
     def resolve_submission(
-        self, submission: SubmissionRecord, entities: Sequence[tuple[int, Mapping[str, Any]]]
+        self,
+        submission: SubmissionRecord,
+        entities: Sequence[tuple[int, Mapping[str, Any]]],
+        hints: Mapping[int, Mapping[str, Any]] | None = None,
     ) -> list[dict[str, Any]]:
-        """Resolve the accepted (index, entity) pairs of the submission just recorded; one result each."""
+        """Resolve the accepted (index, entity) pairs of the submission just recorded; one result each. ``hints``:
+        the scan's creation hints (only ever passed for a ``REGISTRY_SCAN`` batch that carries them)."""
         ...
 
 
@@ -98,10 +123,15 @@ class IntakeService:
         self._resolver = resolver
 
     def _resolve(
-        self, record: SubmissionRecord, accepted: Sequence[tuple[int, Mapping[str, Any]]]
+        self,
+        record: SubmissionRecord,
+        accepted: Sequence[tuple[int, Mapping[str, Any]]],
+        hints: Mapping[int, Mapping[str, Any]] | None = None,
     ) -> tuple[dict[str, Any], ...]:
         if self._resolver is None:
             return ()
+        if hints is not None:  # only the scan's batches: every other caller's resolver is called as before
+            return tuple(self._resolver.resolve_submission(record, accepted, hints=hints))
         return tuple(self._resolver.resolve_submission(record, accepted))
 
     def submit_external(self, payload: Any, *, submitted_by: str) -> IntakeResult:
@@ -161,5 +191,6 @@ class IntakeService:
             return IntakeResult("duplicate", sha)
         refused_at = {index for index, _ in refused}
         good = [(i, e) for i, e in enumerate(batch.entities) if i not in refused_at]
-        resolution = self._resolve(record, good)
+        hints = None if batch.scan is None else {i: batch.scan[i] for i, _ in good if i in batch.scan}
+        resolution = self._resolve(record, good, hints)
         return IntakeResult(outcome, sha, accepted=accepted, refused=refused, resolution=resolution)
