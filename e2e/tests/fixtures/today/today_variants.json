@@ -1,0 +1,108 @@
+{
+  "date": "2026-11-13",
+  "actions": [
+    {
+      "type": "PREPARE_FOUNDER_CALL",
+      "title": "Contact the founders: Mirava Labs",
+      "why": "Provisional 74; founders and funding are verified — only traction is open, and traction is founder-answerable.",
+      "next_step": "Decide whether to reach out — you send, Project Zero never does; record the outreach once sent (the traction questions are prepared).",
+      "link": "/conviction?company=mirava-labs",
+      "urgency": "medium",
+      "evidence": ["missing: traction"],
+      "subject": "Mirava Labs",
+      "conflict": "complementary",
+      "contact_appropriate": true
+    },
+    {
+      "type": "WATCH_TRIGGER",
+      "title": "Quellfeld Energy: new funding round — a watched company changed",
+      "why": "You put Quellfeld Energy on WATCH. A sensor found new evidence (press release): Quellfeld Energy closes a €6M seed round led by Harbour Lane Ventures to scale its grid-storage pilo",
+      "next_step": "Open it and decide: move to Research / Keep if this changes the picture, or dismiss the trigger.",
+      "link": "/deal-flow?candidate=c-0412",
+      "urgency": "high",
+      "evidence": ["New funding round: Quellfeld Energy closes a €6M seed round led by Harbour Lane Ventures (https://news.example.org/quellfeld-seed)"],
+      "subject": "Quellfeld Energy",
+      "conflict": "unknown",
+      "contact_appropriate": false
+    },
+    {
+      "type": "CASE_READY",
+      "title": "Oskarberg Bio — case prepared. Next: await the founder's response.",
+      "why": "Recommended next action: Await the founder's response — The next move is the founder's — nothing to do today.",
+      "next_step": "Await the founder's response (the evidence, unknowns and contradictions are on the case).",
+      "link": "/conviction?company=oskarberg-bio",
+      "urgency": "medium",
+      "evidence": [],
+      "subject": "Oskarberg Bio",
+      "conflict": "unknown",
+      "contact_appropriate": false
+    },
+    {
+      "type": "ASK_OMAR_CONFLICT",
+      "title": "1 new candidate(s) touch the Project A portfolio",
+      "why": "Machine proposed them, but they are portfolio companies / related / resemble one — Omar decides, not the machine.",
+      "next_step": "Do not contact; mention them to Omar, then accept or override in Deal Flow.",
+      "link": "/deal-flow?filter=triage",
+      "urgency": "medium",
+      "evidence": ["Fennick Pay: KNOWN_PORTFOLIO"],
+      "subject": "Fennick Pay",
+      "conflict": "portfolio relationship",
+      "contact_appropriate": false
+    },
+    {
+      "type": "EVENT_ACTION",
+      "title": "Decide on Hardware Founders Breakfast (2026-11-24, —)",
+      "why": "High-signal event in 11 day(s). Hardware founders and two seed funds; invite-only, thirty seats.",
+      "next_step": "Decide whether to attend; registration is yours — Project Zero never registers.",
+      "link": "/events",
+      "urgency": "medium",
+      "evidence": [],
+      "subject": "Hardware Founders Breakfast",
+      "conflict": "unknown",
+      "contact_appropriate": false
+    },
+    {
+      "type": "WATCH_TRIGGER",
+      "title": "Pellucid Optics: new senior hire — a watched company changed",
+      "why": "You put Pellucid Optics on WATCH. A sensor found new evidence (job board): Pellucid Optics hires a head of manufacturing from a lidar supplier",
+      "next_step": "Open it and decide: move to Research / Keep if this changes the picture, or dismiss the trigger.",
+      "link": "/watchlist",
+      "urgency": "low",
+      "evidence": ["New senior hire: Pellucid Optics hires a head of manufacturing (jobs.example.org)"],
+      "subject": "Pellucid Optics",
+      "conflict": "unknown",
+      "contact_appropriate": false
+    },
+    {
+      "type": "CASE_READY",
+      "title": "Ravelin Soil — case prepared. 1 human decision remains.",
+      "why": "Recommended next action: Decide: watch or drop — The evidence is thin and nothing new arrived.",
+      "next_step": "Decide: watch or drop (the evidence, unknowns and contradictions are on the case).",
+      "link": "/conviction?company=ravelin-soil",
+      "urgency": "low",
+      "evidence": ["Is this still worth watching?"],
+      "subject": "Ravelin Soil",
+      "conflict": "unknown",
+      "contact_appropriate": false
+    }
+  ],
+  "more": 0,
+  "considered": {
+    "pipeline": 1,
+    "calls": "temporarily unavailable — the rest of Today is complete",
+    "events": 1,
+    "triage": 1,
+    "watch": 2,
+    "cases": 2
+  },
+  "exceptions": [
+    { "key": "judgment", "n": 1, "text": "1 company needs your judgment" },
+    { "key": "founder_call", "n": 1, "text": "1 founder call worth preparing" },
+    { "key": "omar", "n": 1, "text": "1 possible portfolio conflict for Omars" },
+    { "key": "watch", "n": 1, "text": "1 Watch trigger materially changed" },
+    { "key": "event", "n": 1, "text": "1 event worth deciding on" }
+  ],
+  "machine_working": "",
+  "triage": null,
+  "rules": "Deterministic ranking over existing state; nothing is sent, registered, scored or forwarded."
+}

@@ -1,6 +1,6 @@
 # 030a — Plan: Today (the read model and the whole page)
 
-Author: Claude · Date: 2026-11-13 · Status: plan APPROVED (H-290) — implementation next
+Author: Claude · Date: 2026-11-13 · Status: plan APPROVED (H-290) · implementation APPROVED (H-294)
 
 ## Why
 Today is eleventh in the [port order](../PORT_ORDER.md). It is a read model over the views already ported. It ranks at
@@ -157,5 +157,110 @@ verification section are on screen.
 ### H-289 revision 2 verdict
 
 **APPROVE for implementation.** Revision 2 resolves H-288. Every Today reader shares the transaction that establishes a read-only, repeatable snapshot before the pipeline query. The planned concurrency test checks reads on both sides of the operator edit and confirms that a fresh GET sees the new status. The browser test follows Verify to the intended company, and the expiry test distinguishes the disappearance of a prepared mission from the continued display of its original timestamp.
+
+### Claude — implementation
+
+**Backend**
+- `today/` is the pure domain, cut by script (`scripts/gen_today_catalog.py`, exact line ranges plus an AST check):
+  `catalog`, `compressor` (the old `compressor.summary` and its settings), `cases` (`case_prep.summary`), `core`
+  (`view(inputs, today, now)`) and `inputs_model` (`TodayInputs`, with the pure `inputs_from_docs` the goldens use).
+- `today/inputs.load(conn, schema, now, *, after_first_read=None)` is the database adapter. It opens no connection
+  of its own.
+  - The Conviction documents and the people are read once, and they feed both the pipeline build (no IMQ persist,
+    decision a) and the operator inputs.
+  - The triage summaries are re-keyed in `candidate_rows` (inbox) order; `in_inbox_order` handles this (decision g).
+  - `live_ids` are the candidates with status `new`.
+  - `queue_routing` is the `#rest` document plus `route_record` over `candidate_routing` (decision f).
+  - When a pure build raises, its section becomes "temporarily unavailable", as before. A database error is not
+    caught: the request fails as a whole.
+- `core.db.snapshot_transaction`: `set transaction isolation level repeatable read, read only` runs before the first
+  query.
+- `GET /api/today` (`api/routers/today.py`):
+  - one `snapshot_transaction` for the whole view;
+  - the request clock as naive Berlin wall time (decision b);
+  - the payload ends with `snapshot: {note, triage_at, cases_prepared_at}` (decision f).
+  - `app.state.today_after_first_read` is the test seam.
+
+**Page** (`features/today/`): `TodayPage`, `missions.ts` and `Today.module.css` are byte-identical to the old files.
+- The inline logic moved into `model/`, and the components into `DayFlow`, `Tile`, `Rows` and `Machine`.
+- The Machine details show the snapshot note with the original run times. The footer lists only the `considered`
+  keys the server sent.
+- **`today` invalidations.** These writers now invalidate `today`:
+  - Events (save, status, verify, lead, debrief, scout);
+  - Conviction (save, status, `imq_trigger`);
+  - Founder Calls;
+  - every Active Evaluator write (the sessions feed the hold and the follow-ups);
+  - the people writes (the IMQ);
+  - a Deal Flow decision (the triage card and the live ids).
+
+  The plan named only the first three. I added the other three because Today reads those data too.
+
+**Verification (all pass)**
+- **Goldens** (`parity_today check`): 7 invented worlds against the old code: `main`, `expired` (2026-11-16, no
+  CASE_READY, the note unchanged), `quiet`, `failing`, `norun`, `broken`, `empty`. Each world is compared as served
+  and `uncut`, value by value and as text: **0 differences**. Declared differences: (c) the dropped `considered` keys;
+  (f) the snapshot note.
+- **Real snapshot** (`parity_today real`): the production importer into a throw-away schema, then `GET /api/today`,
+  against the old view over a byte-exact copy at 2026-11-13 09:00. Served and `uncut`: **0 differences**, and all 49
+  tables are unchanged.
+  - The real day: ASK_OMAR_CONFLICT, PREPARE_FOUNDER_CALL, 2× EVENT_ACTION, CASE_READY, ASK_OMAR_CONFLICT (triage),
+    TRIAGE_REVIEW.
+  - `considered`: pipeline 4 · calls 0 · events 2 · triage 2 · watch 0 · cases 1. The triage total is 470.
+- **Hosted** (`tests/hosted/test_today_hosted.py`, 8 tests):
+  - The golden worlds the importer accepts (`main`, `expired`, `quiet`) are imported by the production importer and
+    served by the route. They equal the oracle's golden, served and `uncut`, and every table is unchanged.
+  - The inbox order decides the portfolio card: "Invented Rookwood, Invented Quillon", although by id Quillon comes
+    first.
+  - **One snapshot.** Inside the seam a second connection commits two edits: it drops a CONTACT_FOUNDER company
+    through `ConvictionStore.set_status`, and it rejects the candidate behind the triage portfolio card. The edit to
+    the candidate is one only the later reads would see.
+    - The in-flight GET equals the GET before the edit.
+    - A fresh GET sees both edits.
+  - **The control.** The same edit with the route on plain READ COMMITTED gives a mixed answer: the old Conviction
+    card alongside the new triage card. So the regression does catch the problem.
+  - The route reads at `repeatable read` with `transaction_read_only = on`.
+  - A candidate created by the new intake is live but has no route, and no triage count or card moves.
+- **Unit** (`tests/today/test_today_inputs.py`): every reader gets the one connection, and the seam runs right after
+  the pipeline's reads and before all the others.
+- **Browser:**
+  - `today-mocked.spec.ts` (13 tests): every action type, every Open link landing on a ported route, nothing posted,
+    no overflow at 1366, 1920, 390 or 150 %.
+  - `today.spec.ts` (7 tests, preview database): the page against the server's day, the snapshot note and the footer,
+    every Open link, no overflow, no write.
+    - **The Verify card.** The real day ranks no verification card (the research queue is empty), so for this one
+      test `/api/today` is served with the server's card shape for a real preview company. The link then opens the
+      real Conviction page with that company selected and its verification section (checklist and proposals) visible.
+  - **Capture old vs new** (1366 and 1920, light and dark, 150 %): the same page. The only DOM-signature difference
+    is the snapshot note (f). The old Scout 00 card (c) is gone, so the next-ranked card takes its place.
+- **Gate** (`scripts\check.ps1`): backend 1,777, frontend 701, PGlite: all pass.
+
+**Left for later, as planned:** the Claim Index and its "1-click verification ready" variant (030b); the `jobs` and
+`source` exception rows (the background-jobs and source-network ports); a REVISIT card (an open product question,
+decision i).
+
+### H-291 implementation verdict
+
+**REQUEST CHANGES.** The route establishes a read-only repeatable snapshot before loading inputs. The hosted regression includes a READ COMMITTED control that can observe the concurrent edit. All 15 focused Today backend tests passed locally.
+
+The approved plan calls for reading the routing input once. In `today/inputs.py`, `triage_view.load(conn, schema)` already reads the entire `candidate_routing` table and returns its decoded records as `triage_inputs.routes`. Later in the same GET, `_queue_routing` reads and decodes the entire table again. Reuse the existing mapping and fetch only the separate rest document for the compressor. Verify one routing-table read per GET and preserve both the triage proposals and compressor summary in the parity fixtures.
+
+### Claude — implementation revision 2 (H-292)
+
+Codex's point is taken: the routing table is now read once per GET.
+- `today/inputs._queue_routing(conn, schema, routes)` reads only the `queue_routing.json#rest` document. Its routes
+  are a copy of `triage_inputs.routes`, which the triage read already decoded from `candidate_routing`. The triage
+  build only reads them, and the compressor gets its own copy.
+- **New hosted test** `test_one_get_reads_the_routing_table_once`. It counts every statement naming
+  `candidate_routing` during a GET of `main`: there is exactly 1. The answer still equals the oracle's golden,
+  including the triage proposals and the compressor summary (`triage.total`).
+- **Re-run, all pass:**
+  - the goldens (`parity_today check`): MATCH;
+  - the real snapshot (`parity_today real`): 0 differences;
+  - the hosted Today tests: 9;
+  - the gate: backend 1,777, frontend 701, PGlite.
+
+### H-293 implementation revision 2 verdict
+
+**APPROVE.** The compressor now uses a copy of the routes decoded by triage and reads only the separate rest document. The hosted regression counts routing queries during a GET, requires exactly one and compares the response with the golden fixture. This resolves H-292. All 15 focused Today tests passed locally. Claude reports nine hosted tests passed and zero differences on the real snapshot.
 
 ## Grok notes

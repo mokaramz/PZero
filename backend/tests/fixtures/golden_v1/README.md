@@ -191,3 +191,23 @@ decisions match after the declared differences, applied by `parity_inference.exp
 `d_ref`), (h) RESEARCH dropped, one row per attempt (`attempt` in `detail`), a failure after dispatch charged its
 estimate, and per-attempt admission (`retry_blocked`). Written and read as bytes
 (`python -m projectzero.ops.parity_inference goldens` / `check`).
+
+`oracle_today.json` (review 030a): the old Today view (`services/today.view(date)`) over seven worlds of invented
+names, each in its own scratch data folder with a frozen clock (naive Berlin wall time; 2026-11-13 09:00, and
+2026-11-16 09:00 for `expired`), answered twice: as served (at most 7 actions) and `uncut` (`MAX_ACTIONS` lifted on
+both sides, so every ranked action is compared). The old view runs with the new side's decisions stubbed: the two
+retired Scout sections answer `[]` (c), the scheduler raises (the `jobs` row omitted) and the source network has no
+candidate (`source` 0) (d), `_ready_proposals` answers `[]` (e); the pipeline's IMQ save is held in memory (`main`
+saves once; the later old reads saw it) and every other write is blocked (the folders are checked unchanged).
+Covered: every action type and its rank / urgency branch (CONTACT_FOUNDER from the high, emerging and wildcard
+slots; ASK_OMAR_CONFLICT from the pipeline above and below 65 and from the triage in inbox order; PREPARE_FOUNDER_CALL
+from the research queue through every contact state and from the calls, cut to 3 before the due filter;
+REVIEW_VERIFICATION and its replacement by a prepared case; EVENT_ACTION at 2, 5, 10 and 13 days; TRIAGE_REVIEW with
+and without NEEDS_MOHAMED and over the attention budget; WATCH_TRIGGER high and low; CASE_READY in each state), more
+than 7 actions, rank ties, the human-outcome hold and its re-opening, failing sections (a non-text WATCH label, a
+route without a state, an unreadable pipeline and call store), `triage: null`, the "for Omars" text, and the world
+after the last prepared case expired (no CASE_READY; the snapshot note keeps the original run timestamps). The pure
+`today.inputs_from_docs` -> `today.view` matches value by value and as serialized text after the declared
+normalisation in `parity_today`: (c) the old `considered.native` / `scout00` (0) dropped, (f) the new last key
+`snapshot` checked against the documents and dropped. Written and read as bytes
+(`python -m projectzero.ops.parity_today goldens` / `check`).

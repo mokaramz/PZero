@@ -19,8 +19,9 @@ export const PERSON_SAVE = "network/person_save";
 export const TALENTED = "network/talented";
 export const WATCH_LOG = "network/watch_log";
 
-/** What a people write makes stale: every people view, and Conviction (it reads people for founders and the IMQ). */
-export const NETWORK_KEYS = [PEOPLE, GRAPH, WATCHLIST, PIPELINE, "conviction/case"];
+/** What a people write makes stale: every people view, Conviction (it reads people for founders and the IMQ) and
+ *  Today (its Radar missions evaluate the IMQ over the people). */
+export const NETWORK_KEYS = [PEOPLE, GRAPH, WATCHLIST, PIPELINE, "conviction/case", "today"];
 
 export type PersonSaveResult = { ok: boolean; id: string };
 export type TalentedResult = { ok: boolean; created: string[] };

@@ -29,6 +29,7 @@ export function useDecision(c: Candidate | undefined) {
           onSuccess: (r) => {
             qc.setQueryData<InboxPayload>(INBOX_KEY, (old) => old && patchDecided(old, c.id, decision, notes, r));
             void qc.invalidateQueries({ queryKey: [INBOX] });
+            void qc.invalidateQueries({ queryKey: ["today"] }); // Today's triage and live candidates (030a)
             resolve(true);
           },
           onError: (e) => {

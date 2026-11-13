@@ -25,7 +25,7 @@ export const NAV: NavSection[] = [
     title: null,
     items: [
       { path: "/", label: "Investment Desk", icon: "home", legacyView: "home" },
-      { path: "/today", label: "Today", icon: "today", legacyView: "today" },
+      { path: "/today", label: "Today", icon: "today", legacyView: "today", page: lazy(() => import("@/features/today/TodayPage")) },
       { path: "/associate", label: "PZ Associate", icon: "heron", legacyView: "associate" },
       { path: "/health", label: "System health", icon: "pulse", legacyView: "health" },
     ],

@@ -28,8 +28,8 @@ export const SAVE = "founder-calls/save";
 export const FOLLOWUP = "founder-calls/followup";
 export const LINK = "founder-calls/link";
 
-/** What a save, follow-up or link makes stale: the workspace, and Conviction's pipeline (it reads the same calls). */
-export const CALL_KEYS = [CALLS, PIPELINE];
+/** What a save, follow-up or link makes stale: the workspace, Conviction's pipeline and Today (they read the same calls). */
+export const CALL_KEYS = [CALLS, PIPELINE, "today"];
 
 /** The old action labels (Background activity and the "✓ … — done" / "✕ … failed" toasts); link and briefing had no
  *  label of their own and showed the generic one. */

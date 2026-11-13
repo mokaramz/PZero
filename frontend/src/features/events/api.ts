@@ -37,8 +37,8 @@ export const DEBRIEF = "events/debrief";
 export const SCOUT = "events/scout";
 export const FIND = "events/find";
 
-/** What an event write makes stale: every Events read. */
-export const EVENT_KEYS = [EVENTS, WSIG, EVENT_HEALTH];
+/** What an event write makes stale: every Events read, and Today (its event decisions read the same events). */
+export const EVENT_KEYS = [EVENTS, WSIG, EVENT_HEALTH, "today"];
 /** A debrief also creates people and Deal Flow candidates; a Scout 00 action changes the Scout reports Deal Flow reads. */
 export const DEBRIEF_KEYS = [...EVENT_KEYS, PEOPLE, GRAPH, INBOX];
 export const SCOUT_KEYS = [...EVENT_KEYS, INBOX];

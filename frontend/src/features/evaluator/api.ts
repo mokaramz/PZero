@@ -26,8 +26,9 @@ export const EVIDENCE = "evaluator/evidence";
 export const RESOLVE = "evaluator/resolve";
 export const END = "evaluator/end";
 
-/** What every evaluator write makes stale: the strip and the open session. */
-export const EVAL_KEYS = [SESSIONS, SESSION];
+/** What every evaluator write makes stale: the strip, the open session and Today (it reads the sessions for the
+ *  human-outcome hold and the founder-call follow-ups, review 030a). */
+export const EVAL_KEYS = [SESSIONS, SESSION, "today"];
 /** Ending a session also writes a founder call and the linked Conviction fields. */
 export const END_KEYS = [...EVAL_KEYS, CALLS, PIPELINE];
 /** A why-now trigger changes the Conviction record, and the session's IMQ panel reads it. */

@@ -1,0 +1,247 @@
+{
+  "week": "2026-W46",
+  "signals": [
+    {
+      "slug": "halvorsen-robotics",
+      "company": "Halvorsen Robotics",
+      "status": "new",
+      "one_liner": "Autonomous palletising cells for mid-sized food plants. Retrofit in a weekend.",
+      "location": "Germany",
+      "conflict": "none",
+      "sc": {
+        "provisional": 82,
+        "verified": 78,
+        "missing": [],
+        "fully_verified": true,
+        "verdict": "INVESTIGATE",
+        "timing_label": "timing unknown",
+        "timing_action": ""
+      },
+      "why_now_text": "Two plant pilots converted to paid contracts in October; the seed round opens in January.",
+      "op": {
+        "status": "READY FOR OUTREACH",
+        "action": "Contact the founder",
+        "why": "Fully verified on Radar",
+        "tone": "neutral",
+        "source": "score band",
+        "score_band": "INVESTIGATE"
+      },
+      "verified": {
+        "founders": true,
+        "traction": true,
+        "funding": true
+      }
+    },
+    {
+      "slug": "brightwell-analytics",
+      "company": "Brightwell Analytics",
+      "status": "new",
+      "one_liner": "Demand forecasting for regional grocers.",
+      "location": "Germany",
+      "conflict": "potential_conflict",
+      "sc": {
+        "provisional": 68,
+        "verified": 40,
+        "missing": [
+          "founders",
+          "traction"
+        ],
+        "fully_verified": false,
+        "verdict": "INVESTIGATE",
+        "timing_label": "timing unknown",
+        "timing_action": ""
+      },
+      "op": {
+        "status": "BLOCKED BY CONFLICT",
+        "action": "Ask the Manager",
+        "why": "Possible portfolio conflict",
+        "tone": "amber",
+        "source": "conflict gate",
+        "score_band": "INVESTIGATE"
+      }
+    },
+    {
+      "slug": "corvane-systems",
+      "company": "Corvane Systems",
+      "status": "new",
+      "one_liner": "Firmware security scanning for industrial controllers.",
+      "location": "Germany",
+      "conflict": "unclear",
+      "sc": {
+        "provisional": 61,
+        "verified": 35,
+        "missing": [
+          "founders",
+          "traction",
+          "funding"
+        ],
+        "fully_verified": false,
+        "verdict": "WATCH",
+        "timing_label": "timing unknown",
+        "timing_action": ""
+      }
+    },
+    {
+      "slug": "lumora-health",
+      "company": "Lumora Health",
+      "status": "new",
+      "one_liner": "Remote cardiac rehab programmes for insurers.",
+      "location": "Germany",
+      "conflict": "none",
+      "sc": {
+        "provisional": 66,
+        "verified": 52,
+        "missing": [
+          "traction"
+        ],
+        "fully_verified": false,
+        "verdict": "INVESTIGATE",
+        "timing_label": "timing unknown",
+        "timing_action": ""
+      }
+    },
+    {
+      "slug": "tessaro-grid",
+      "company": "Tessaro Grid",
+      "status": "new",
+      "one_liner": "Software that lets small utilities bid flexible load into balancing markets.",
+      "location": "Germany",
+      "conflict": "none",
+      "sc": {
+        "provisional": 76,
+        "verified": 61,
+        "missing": [
+          "traction"
+        ],
+        "fully_verified": false,
+        "verdict": "INVESTIGATE",
+        "timing_label": "timing unknown",
+        "timing_action": ""
+      },
+      "why_project_a": "Grid flexibility is a core Project A energy thesis.",
+      "op": {
+        "status": "CASE PREPARED",
+        "action": "Prepare a founder call",
+        "why": "Traction can only be answered by the founders",
+        "tone": "neutral",
+        "source": "prepared case",
+        "score_band": "INVESTIGATE"
+      }
+    },
+    {
+      "slug": "nordvik-materials",
+      "company": "Nordvik Materials",
+      "status": "new",
+      "one_liner": "Low-carbon cement additive from mining tailings.",
+      "location": "Germany",
+      "conflict": "none",
+      "sc": {
+        "provisional": 71,
+        "verified": 30,
+        "missing": [
+          "founders",
+          "traction"
+        ],
+        "fully_verified": false,
+        "verdict": "INVESTIGATE",
+        "timing_label": "timing unknown",
+        "timing_action": ""
+      }
+    },
+    {
+      "slug": "mirava-labs",
+      "company": "Mirava Labs",
+      "status": "new",
+      "one_liner": "Lab automation scheduling for contract research organisations.",
+      "location": "Germany",
+      "conflict": "complementary",
+      "sc": {
+        "provisional": 74,
+        "verified": 59,
+        "missing": [
+          "traction"
+        ],
+        "fully_verified": false,
+        "verdict": "INVESTIGATE",
+        "timing_label": "timing unknown",
+        "timing_action": ""
+      },
+      "why_now_text": "The founders left a leading CRO in September and are raising a pre-seed round."
+    },
+    {
+      "slug": "oskarberg-bio",
+      "company": "Oskarberg Bio",
+      "status": "new",
+      "one_liner": "Enzymes that recycle textile blends.",
+      "location": "Germany",
+      "conflict": "none",
+      "sc": {
+        "provisional": 70,
+        "verified": 55,
+        "missing": [
+          "funding"
+        ],
+        "fully_verified": false,
+        "verdict": "INVESTIGATE",
+        "timing_label": "timing unknown",
+        "timing_action": ""
+      },
+      "op": {
+        "status": "AWAITING FOUNDER",
+        "action": "Await the founder's response",
+        "why": "Outreach sent on 2026-11-06",
+        "tone": "blue",
+        "source": "human outcome",
+        "score_band": "INVESTIGATE"
+      }
+    },
+    {
+      "slug": "ravelin-soil",
+      "company": "Ravelin Soil",
+      "status": "new",
+      "one_liner": "Soil-carbon measurement with drone spectroscopy.",
+      "location": "Germany",
+      "conflict": "none",
+      "sc": {
+        "provisional": 58,
+        "verified": 31,
+        "missing": [
+          "founders",
+          "traction",
+          "funding"
+        ],
+        "fully_verified": false,
+        "verdict": "WATCH",
+        "timing_label": "timing unknown",
+        "timing_action": ""
+      },
+      "op": {
+        "status": "WATCHING",
+        "action": "Re-check in March",
+        "why": "Below the investigate band",
+        "tone": "neutral",
+        "source": "score band",
+        "score_band": "WATCH"
+      }
+    },
+    {
+      "slug": "dunmore-freight",
+      "company": "Dunmore Freight",
+      "status": "dropped",
+      "one_liner": "Freight matching for short-sea shipping.",
+      "location": "Germany",
+      "conflict": "none",
+      "sc": {
+        "provisional": 64,
+        "verified": 44,
+        "missing": [
+          "traction"
+        ],
+        "fully_verified": false,
+        "verdict": "WATCH",
+        "timing_label": "timing unknown",
+        "timing_action": ""
+      }
+    }
+  ]
+}
