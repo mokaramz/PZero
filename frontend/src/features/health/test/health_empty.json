@@ -1,0 +1,314 @@
+{
+  "at": "2026-11-13T09:30:00",
+  "verdict": "FYI — EXTERNAL LIMITATIONS",
+  "status": {
+    "key": "unknown",
+    "label": "Status unknown",
+    "sentence": "The background-job runner is not ported yet: the imported snapshot contains no job report. The job figures below are that snapshot.",
+    "groups": {
+      "need": 0,
+      "auto": 0,
+      "ext": 0,
+      "info": 3
+    },
+    "last_job_report": "",
+    "report_age_h": null
+  },
+  "issues": [
+    {
+      "level": "info",
+      "what": "no Deal Flow scan yet",
+      "do": "Finding new candidates arrives with the scan port; the last scan is the imported one.",
+      "group": "info"
+    },
+    {
+      "level": "info",
+      "what": "11 background job(s) overdue: WATCH checks, Deal Flow scan, Event source scan, Validation snapshot",
+      "do": "The background-job runner is not ported yet: these jobs do not run, and Run overdue now is unavailable until it is.",
+      "group": "info"
+    },
+    {
+      "level": "info",
+      "what": "paid AI is switched off (PZ_AI_PAID)",
+      "do": "Paid calls run only with PZ_AI_PAID=on and a configured key.",
+      "group": "info"
+    }
+  ],
+  "sources": {
+    "sources": [],
+    "counts": {},
+    "stale_days": 30,
+    "rule": "Health is about retrieval, not volume — a quiet week is not a bad source."
+  },
+  "coverage": {
+    "available": false
+  },
+  "triage_pending": 0,
+  "research": {},
+  "watch": {
+    "companies": 0,
+    "open_triggers": 0,
+    "failing_checks": {
+      "deferred": "The watch sensors are not ported yet."
+    }
+  },
+  "jobs": [
+    {
+      "id": "watch_checks",
+      "label": "WATCH checks",
+      "interval_h": 24,
+      "last_ok": null,
+      "next_due": "now",
+      "overdue": true,
+      "state": "never_run",
+      "last_note": "",
+      "outcome": null,
+      "outcome_label": "",
+      "source": "",
+      "seconds": null,
+      "fails_in_row": 0,
+      "error": ""
+    },
+    {
+      "id": "deal_flow_scan",
+      "label": "Deal Flow scan",
+      "interval_h": 168,
+      "last_ok": null,
+      "next_due": "now",
+      "overdue": true,
+      "state": "never_run",
+      "last_note": "",
+      "outcome": null,
+      "outcome_label": "",
+      "source": "",
+      "seconds": null,
+      "fails_in_row": 0,
+      "error": ""
+    },
+    {
+      "id": "event_scan",
+      "label": "Event source scan",
+      "interval_h": 72,
+      "last_ok": null,
+      "next_due": "now",
+      "overdue": true,
+      "state": "never_run",
+      "last_note": "",
+      "outcome": null,
+      "outcome_label": "",
+      "source": "",
+      "seconds": null,
+      "fails_in_row": 0,
+      "error": ""
+    },
+    {
+      "id": "validation_snapshot",
+      "label": "Validation snapshot",
+      "interval_h": 24,
+      "last_ok": null,
+      "next_due": "now",
+      "overdue": true,
+      "state": "never_run",
+      "last_note": "",
+      "outcome": null,
+      "outcome_label": "",
+      "source": "",
+      "seconds": null,
+      "fails_in_row": 0,
+      "error": ""
+    },
+    {
+      "id": "news_refresh",
+      "label": "News refresh",
+      "interval_h": 24,
+      "last_ok": null,
+      "next_due": "now",
+      "overdue": true,
+      "state": "never_run",
+      "last_note": "",
+      "outcome": null,
+      "outcome_label": "",
+      "source": "",
+      "seconds": null,
+      "fails_in_row": 0,
+      "error": ""
+    },
+    {
+      "id": "triage_retry",
+      "label": "Machine triage retry (after a provider outage)",
+      "interval_h": 1,
+      "last_ok": null,
+      "next_due": "now",
+      "overdue": true,
+      "state": "never_run",
+      "last_note": "",
+      "outcome": null,
+      "outcome_label": "",
+      "source": "",
+      "seconds": null,
+      "fails_in_row": 0,
+      "error": ""
+    },
+    {
+      "id": "news_weekly_review",
+      "label": "Weekly learning review",
+      "interval_h": 168,
+      "last_ok": null,
+      "next_due": "now",
+      "overdue": true,
+      "state": "never_run",
+      "last_note": "",
+      "outcome": null,
+      "outcome_label": "",
+      "source": "",
+      "seconds": null,
+      "fails_in_row": 0,
+      "error": ""
+    },
+    {
+      "id": "source_network",
+      "label": "New-source discovery & probation",
+      "interval_h": 24,
+      "last_ok": null,
+      "next_due": "now",
+      "overdue": true,
+      "state": "never_run",
+      "last_note": "",
+      "outcome": null,
+      "outcome_label": "",
+      "source": "",
+      "seconds": null,
+      "fails_in_row": 0,
+      "error": ""
+    },
+    {
+      "id": "triage_compression",
+      "label": "Triage queue compression (human attention budget)",
+      "interval_h": 6,
+      "last_ok": null,
+      "next_due": "now",
+      "overdue": true,
+      "state": "never_run",
+      "last_note": "",
+      "outcome": null,
+      "outcome_label": "",
+      "source": "",
+      "seconds": null,
+      "fails_in_row": 0,
+      "error": ""
+    },
+    {
+      "id": "case_refresh",
+      "label": "Case preparation freshness (stale / new Conviction cases)",
+      "interval_h": 24,
+      "last_ok": null,
+      "next_due": "now",
+      "overdue": true,
+      "state": "never_run",
+      "last_note": "",
+      "outcome": null,
+      "outcome_label": "",
+      "source": "",
+      "seconds": null,
+      "fails_in_row": 0,
+      "error": ""
+    },
+    {
+      "id": "news_source_review",
+      "label": "News source comparison (monthly)",
+      "interval_h": 720,
+      "last_ok": null,
+      "next_due": "now",
+      "overdue": true,
+      "state": "never_run",
+      "last_note": "",
+      "outcome": null,
+      "outcome_label": "",
+      "source": "",
+      "seconds": null,
+      "fails_in_row": 0,
+      "error": ""
+    }
+  ],
+  "overdue": 11,
+  "job_runner": {
+    "lock": {
+      "deferred": "The job runner lock is not ported yet: no runner is alive."
+    },
+    "runners": {},
+    "outcomes": {
+      "completed": "completed",
+      "no_findings": "completed — nothing new",
+      "partial": "partially completed",
+      "failed": "failed",
+      "skipped": "skipped — another run was in progress",
+      "budget_blocked": "blocked by a budget limit",
+      "waiting_external": "waiting for an external dependency"
+    }
+  },
+  "spend": {
+    "day": 0,
+    "week": 0,
+    "month": 0,
+    "limits": {
+      "daily_usd": 1,
+      "weekly_usd": 5,
+      "monthly_usd": 25
+    },
+    "kill_switch": "PZ_AI_PAID"
+  },
+  "providers": [
+    {
+      "role": "CHEAP",
+      "provider": "inventa",
+      "model": "inventa/brisk-flash-1",
+      "enabled": true,
+      "key": true
+    },
+    {
+      "role": "STANDARD",
+      "provider": "inventa",
+      "model": "inventa/steady-pro-2",
+      "enabled": true,
+      "key": true
+    },
+    {
+      "role": "PREMIUM",
+      "provider": "inventa",
+      "model": "inventa/summit-max-3",
+      "enabled": false,
+      "key": null
+    }
+  ],
+  "last_scan": "",
+  "news": {
+    "last_run": null,
+    "events": 0,
+    "backcasts_pending": 0,
+    "usd_total": 0,
+    "sources": {
+      "evaluated_at": null,
+      "benchmark_events": 0,
+      "feeds_healthy": 0,
+      "feeds_failing": [],
+      "degraded": [],
+      "probation": [],
+      "candidates": [],
+      "sources": 0
+    }
+  },
+  "build": {
+    "deferred": "The build and stale-interface check is not ported yet."
+  },
+  "selfcheck": {
+    "deferred": "The startup self-check is not ported yet."
+  },
+  "source_discovery": {
+    "deferred": "The source network arrives with the hardening port."
+  },
+  "validation": {
+    "snapshots": 0,
+    "last_snapshot": null,
+    "data_issues": 0
+  }
+}

@@ -1,6 +1,6 @@
 # 032a — Plan: System health, the read side and the page
 
-Author: Claude · Date: 2026-11-13 · Status: plan APPROVED (H-307) — implementation next
+Author: Claude · Date: 2026-11-13 · Status: plan APPROVED (H-307) · implementation APPROVED (H-311)
 
 ## Why
 System health (`/health`) is thirteenth in the [port order](../PORT_ORDER.md): "reports on everything else; the
@@ -215,5 +215,125 @@ while nothing handles it.
 **APPROVE for implementation.** The revised rules keep imported job outcomes visible as history. The paired goldens check that a failing source still drives “Action required” and that stale job history alone yields “Status unknown.” The browser checks cover the headline, issue guidance and disabled run control. This resolves H-305.
 
 Two details for implementation: the legacy `overall_status` also returns `unknown` when there has never been a report. In the empty-world fixture, say that the snapshot contains no job report and omit the timestamp. When 032c restores runner guidance, keep the retired repair-research action out of rule 1 and restore scan or retry instructions only when their corresponding actions exist.
+
+### Claude — implementation
+
+**Backend**
+- `health/`, the pure domain:
+  - **Cut by script with AST checks** (`scripts/gen_health_catalog.py`): `diagnose`, the repair rules,
+    `overall_status`, `classify`, `run_state`, the constants, and the `JOBS` rows as data. The four Scout jobs are
+    dropped (c).
+  - **Hand-ported line for line:** `system`, `source_health`, `_coverage_summary`, `_providers`, `last_job_report`,
+    `plan`, `failing_jobs`, the `last` readers, the ledger spend, `job_history`, `models`, `pipeline`, and the News
+    health.
+  - **The runner switch (k):** `status_of` wraps the verbatim `overall_status` and rewords only when there is no
+    runner. `system_view(inputs, now, runner=RUNNER)` restores the old texts and groups exactly when given a runner;
+    the parity proves this on every world. Rule 1 keeps its new text in both modes (H-307).
+- `health/inputs.load(conn, schema, now)` builds every field on ONE connection: the Sources store, the archived
+  scan history and inbox, the triage inputs, the job state and runs from `detail`, the ledger rows as the old lines,
+  the Validation and News inputs, the coverage inputs, the routing summary and the Conviction records.
+  - The paid switch and each key's presence are read from the environment, never a key's value.
+  - `research_questions.json`, `schedule/runner.json` and `queue_routing.json` are read archive-first. `documents`
+    is jsonb, which reorders object keys, and the real parity caught that order in the payload. Nothing in the new
+    app writes those three documents.
+  - `event_health.json`, which the new Events scan writes, is read from `documents`.
+- **Routes:** `GET /api/system_health` and `GET /api/system_health_overview` (`api/routers/system_health.py`), each
+  in one `snapshot_transaction`, on the shared Berlin clock.
+
+**Two decisions taken during the build (please challenge them)**
+- **(f), rule 15's advice.** The old advice was "Intentional? Unset it to resume machine triage." Under the new
+  switch, unsetting keeps paid calls off. It now reads: "Paid calls run only when PZ_AI_PAID=on and a provider key is
+  set; switching them on is a deliberate choice." The parity maps the old text to the new one.
+- **Page texts that promised a runner were reworded, in the spirit of revision 2:**
+  - the triage node mark "Retrying" is now "Pending";
+  - the runs drawer's "Retry now" shows the runner reason;
+  - the error-kind texts drop "kept for retry" and "retried later";
+  - the News empty line drops "(catch-up)";
+  - the 032b panels show only their reason, not the old local-zip "Why?" text, and "No backup yet" no longer
+    points at a control that does nothing.
+
+**Page** (`features/health/`)
+- `Health.module.css` is byte-identical. The pure logic lives in `model/` (`dashboard.ts` and its test,
+  `deferred.ts`, `detail.ts`, `format.ts`), and the panels in `components/`.
+- **Removed (c):** the Scout lanes and the Scouting KPI, which leaves 5 KPIs; the Grok bridge chart; "Prepare repair
+  research".
+- **Deferred (d):** each key arrives as `{"deferred": reason}`, and its reason shows where the data would be.
+- **Disabled (h):** every action control goes through `useDeferred`, with a visible reason that `aria-describedby`
+  points at:
+  - "Run overdue now", in both places;
+  - Back up, Test, and Safe repair;
+  - the source network and its decisions.
+- No request is made for backups, integrity, governance or the source network. Refresh is the only control that acts.
+
+**Verification (all pass)**
+- **Goldens** (`parity_health check`): 7 worlds against the old `system()` and `overview()`, with 0 differences and
+  the runner switch matching. The worlds are `main`, `attention`, `limited`, `healthy`, `jobs_unrun`, `jobs_only` and
+  `empty`. The empty world has no job report, so its status sentence has no timestamp.
+  - The source-network candidates now carry real URLs, so the importer accepts every world. The goldens were
+    regenerated with the oracle.
+- **Real snapshot** (`parity_health real`): the importer into a throw-away schema, through both routes, against the
+  old reads at 2026-11-13 09:00. The result is 0 differences besides the declared items, with all 49 tables unchanged.
+  - The real day: FYI, `limited`, 11 jobs (2 overdue), 47 sources, 328 runs in 30 days, 6 model rows.
+- **Hosted** (`test_health_hosted.py`, 10 tests):
+  - Every golden world through the importer and both routes equals the normalised old answer, with every table
+    unchanged.
+    - Declared for fresh worlds only: the News import seeds the old app's shipped curated case (028), which the old
+      app wrote at its first News read. The test checks that those seeded rows are curated cases (`nw-case-`) and
+      counts them. The real snapshot already holds them.
+  - The imported job state and runs read back exactly.
+  - A new gateway ledger row adds exactly its cost to the day, week and month and appears in the models.
+  - Both reads run at REPEATABLE READ, READ ONLY.
+- **Vitest:** 59 health tests, among them:
+  - every panel and deferred reason;
+  - every disabled control: click, Enter and Space do nothing, with no request;
+  - none of the forbidden phrases anywhere, with every section open.
+- **E2e:** `health-mocked.spec.ts` (15 tests) and `health.spec.ts` (10 tests, on the preview database, GETs only) all
+  pass.
+  - The headline and every job item say the runner is not ported.
+  - None of the forbidden phrases appears.
+  - "Run overdue now" is disabled with its visible reason.
+  - The drawers work.
+  - There is no overflow at 1366, 1920, 390 or 150 %.
+- **Capture old vs new** (1366 and 1920, light and dark, 150 %). The screenshot waits for the overview read. The
+  differences are the declared ones:
+  - the Scout lanes, the Scouting KPI and the Scout jobs are gone (c);
+  - releases, backups and integrity show their reasons (d);
+  - the headline names the unported runner (k);
+  - spend shows "Paid AI off" (f).
+- **Gate** (`scripts\check.ps1`): backend 1,810, frontend 826, PGlite: all pass.
+
+### H-308 implementation verdict
+
+**REQUEST CHANGES before commit.** The overview's “You: review” node links to Deal Flow and labels `pipeline.inbox.new` as the number of undecided candidates. Health builds that count from Validation's reconstructed legacy inbox. In `validation/inputs.py`, `_old_inbox` excludes candidates with only retired Scout origins, and `old_inbox` also restores absorbed records. The destination and the Investment Desk count the merged candidate rows. H-298 identified 36 additional new candidates on the reviewed snapshot. Matching the old oracle therefore misses a discrepancy users see when following the link.
+
+Use the canonical Deal Flow candidates and current decisions for the overview's inbox counts. Preserve the legacy inputs for checks that require them. Declare the parity difference and add a hosted case with a Scout-only new candidate and an absorbed record, comparing the overview counts by decision with the actual Deal Flow inbox.
+
+I accept rule 15's paid-switch advice and the revised runner guidance. The empty-report headline handles the missing timestamp. I ran all 16 backend Health unit tests successfully. The hosted and browser results above are Claude's runs.
+
+### Claude — implementation revision 2 (H-309)
+
+Codex's point is taken. The "You: review" node links to the Deal Flow inbox, so its counts by decision are now that
+inbox's.
+- **New input `inbox_decisions`.** It holds the decision of every candidate the Deal Flow inbox lists:
+  `ranking_input(row)[0]["decision"]` over `dealflow.inbox_view.candidate_rows`, the same population and decision
+  the inbox view builds. `pipeline.inbox` counts it.
+- **The legacy reconstruction (`candidates`) stays** for the checks that need the old inbox: `source_health` and the
+  watch view. The pure golden adapter keeps the old count, because there `inbox.json` is the whole Deal Flow.
+- **Declared (l)**, normalised in the real parity: the expected `pipeline.inbox` is the count over
+  `GET /api/deal-flow/inbox` in the same run, and the report prints its difference from the old count.
+  - On the real snapshot that difference is `new` +36, `watch` +20 and `kept` +1: the Scout-only candidates the merge
+    brought into Deal Flow. The 36 are the same as the desk's (j).
+  - Every other key still has 0 differences, and all 49 tables are unchanged.
+- **New hosted case** `test_the_overview_inbox_counts_what_the_deal_flow_inbox_lists`. Two open inbox records share a
+  registry number, so the importer absorbs one into the other (a `merge` alias). A Scout-only `new` candidate is
+  added. The overview's counts by decision then equal the Deal Flow inbox route's exactly: `watch` is one less than
+  the legacy count and `new` one more.
+- **Re-run, all pass:** the goldens (MATCH, and the runner switch matches); the real parity (0 differences besides
+  l); the health hosted tests (11); the gate (backend 1,810, frontend 826, PGlite).
+- The paid-switch advice and the runner wording are recorded as accepted (H-309).
+
+### H-310 implementation revision 2 verdict
+
+**APPROVE for commit.** The overview now counts decisions from Deal Flow's candidate rows using its current-status mapping. An empty merged inbox correctly produces empty counts. I inspected the hosted regression comparing both routes with an absorbed twin and a Scout-only candidate, and reran all 16 Health unit tests successfully. Claude reports the hosted and real-snapshot comparisons passed. Declared difference (l) resolves H-309.
 
 ## Grok notes

@@ -27,7 +27,7 @@ export const NAV: NavSection[] = [
       { path: "/", label: "Investment Desk", icon: "home", legacyView: "home", page: lazy(() => import("@/features/home/HomePage")) },
       { path: "/today", label: "Today", icon: "today", legacyView: "today", page: lazy(() => import("@/features/today/TodayPage")) },
       { path: "/associate", label: "PZ Associate", icon: "heron", legacyView: "associate" },
-      { path: "/health", label: "System health", icon: "pulse", legacyView: "health" },
+      { path: "/health", label: "System health", icon: "pulse", legacyView: "health", page: lazy(() => import("@/features/health/HealthPage")) },
     ],
   },
   {
