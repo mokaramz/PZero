@@ -156,6 +156,23 @@ nominations (one `nomination_deferred` line each) and watch bridge (no trigger),
 028a's (e) / (s) inside the metric cache. Written and read as bytes
 (`python -m projectzero.ops.parity_news refresh-goldens`).
 
+`oracle_news_cards.json` (review 028d): the old News model cards (`_make_cards`) through the old inference gateway
+with the old `FakeProvider` (`paid=True`; `PZ_AI_PAID=on` on the old side only, no key in either environment, every
+real provider path refused), a frozen clock (2026-11-12 10:30), a scratch ledger per case and the events document in
+memory, over the 028c world (the events after `oracle_news_refresh.json`'s last run, referenced by its sha-256: 68
+candidates, so the cut at 12 is exercised). Five cases (invented card texts): valid cards; failures (an invalid card,
+a malformed reply, a 503 retried then accepted, a 400); a 401 (`must_stop`) after the first card; the run cap reached
+(a reported $0.02 per card); an event removed, an event carded by a concurrent writer and a headline changed between
+the call and the write. The old code is given the NEW system message so the requests, shas and estimates compare as
+they are (its old text is recorded and checked). The new `news.cards` phase (`plan_cards` -> `run_cards` with the new
+gateway, `InMemoryBudgetStore` and the new `FakeProvider`, an in-memory writer applying `still_fits` / `with_card`)
+matches per case: the selection order, per call the Result, estimate, waits, provider calls and ledger rows, the
+model cards written by event, the changed events (value and key order) and the outcome. Declared, applied by
+`parity_news.expected_cards`: (b) the untrusted-data sentence (prompt sha and cache key differ), (a) the card spend in
+`run_notes` instead of the run line, 029a's one row per attempt and estimate for a failure after dispatch, the stale
+rule (no card over a concurrent card or changed inputs), and no rewrite of the `rules` card on a failure. Written and
+read as bytes (`python -m projectzero.ops.parity_news cards-goldens`).
+
 `oracle_inference.json` (review 029a): the old inference gateway (`gateway.complete` and `budget.check`) over 18
 cases of scripted steps: 77 calls through the old `FakeProvider` (`paid=True`, a free one too) and 39 direct budget
 decisions, each case in its own scratch data folder with a seeded ledger and a frozen clock (naive Berlin wall time;

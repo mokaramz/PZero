@@ -8,6 +8,8 @@
     python -m projectzero.ops.parity_news writes-check    # the stored writes golden against the new code
     python -m projectzero.ops.parity_news refresh-goldens # (re)generates golden_v1/oracle_news_refresh.json (028c)
     python -m projectzero.ops.parity_news refresh-check   # the stored refresh golden against the new code
+    python -m projectzero.ops.parity_news cards-goldens   # (re)generates golden_v1/oracle_news_cards.json (028d)
+    python -m projectzero.ops.parity_news cards-check     # the stored cards golden against the new code
 
 The oracle (``scripts/oracle/news_oracle.py``) runs the old ``services/news.py`` / ``services/news_sources.py`` over
 a scratch data folder, route by route, each from the FRESH fixture: ``view`` (``GET /api/news``), ``weekly``
@@ -92,6 +94,19 @@ production policy, fails it with its reason and changes nothing else, checked by
 nominations (a ``nomination_deferred`` line per old ``nominate`` call) and the watch bridge (no trigger,
 ``watch_triggers`` 0); (e) no run-state start marker; 028a's (e) / (s) inside the metric cache.
 
+The model cards (review 028d, ``cards-goldens`` / ``cards-check``, ``golden_v1/oracle_news_cards.json``): the oracle
+(``scripts/oracle/news_cards_oracle.py``) runs the old ``_make_cards`` through the old gateway with the old
+``FakeProvider`` (``paid=True``; ``PZ_AI_PAID=on`` on the old side only, no key anywhere, every real provider path
+refused), a frozen clock, a scratch ledger per case and the events document in memory, over the 028c world (the
+events after the refresh golden's last run: 68 candidates, so the cut at 12 is exercised). ``CARD_CASES``: valid
+cards; failures (an invalid card, a malformed reply, a 503 retried then accepted, a 400); ``must_stop`` (a 401) after
+the first card; the run cap reached; an event removed, an event carded by a concurrent writer and a headline changed
+between the call and the write. The new side is ``news.cards.plan_cards`` -> ``run_cards`` with ``call_card`` (the
+new gateway, an ``InMemoryBudgetStore``, the new ``FakeProvider``) and an in-memory writer applying ``still_fits`` /
+``with_card``. Compared per case: the selection order, per call the Result, estimate, waits, provider calls and
+ledger rows (029a's comparison), the model cards written by event, the changed events (value and key order), the
+outcome (made, attempted, stale, stopped, usd). Declared: ``CARDS_DECLARED``.
+
 Exit 1 on any difference.
 """
 
@@ -114,8 +129,13 @@ from pathlib import Path
 from typing import Any
 
 from projectzero.core import net
+from projectzero.core.inference import budget as inference_budget
+from projectzero.core.inference import config as inference_config
+from projectzero.core.inference.providers import FakeProvider, ProviderError
+from projectzero.core.inference.store import InMemoryBudgetStore
 from projectzero.core.paths import REPO_ROOT
 from projectzero.dealflow.ranking.names import norm_company
+from projectzero.news import cards as news_cards
 from projectzero.news import catalog as news_catalog
 from projectzero.news import core as news_core
 from projectzero.news import (
@@ -135,6 +155,7 @@ from projectzero.news.fetching import USER_AGENT as FEED_USER_AGENT
 from projectzero.news.fetching import FeedFetch
 from projectzero.news.inputs_model import CASES_KEY
 from projectzero.news.sources import HEALTH_REASON
+from projectzero.ops import parity_inference as inference_parity
 from projectzero.ops.parity_ranking import GOLDEN_DIR, OLD_REPO, diff, js
 
 ORACLE = REPO_ROOT / "scripts" / "oracle" / "news_oracle.py"
@@ -1452,6 +1473,288 @@ def write_refresh_goldens() -> int:
     return refresh_report(read_golden(REFRESH_GOLDEN))
 
 
+# ------------------------------------------------------------------ review 028d: the model cards (phase 4)
+CARDS_ORACLE = REPO_ROOT / "scripts" / "oracle" / "news_cards_oracle.py"
+CARDS_GOLDEN = GOLDEN_DIR / "oracle_news_cards.json"
+CARDS_CLOCK = "2026-11-12T10:30:00"  # after the refresh golden's second run (10:25)
+CARD_USAGE = {"prompt_tokens": 1000, "completion_tokens": 200}
+CARD_TEMPLATE = {
+    "what_happened": "Invented summary of: {headline}",
+    "why_it_matters": "An invented signal about the market it names.",
+    "the_company": "An invented company.",
+    "vc_lesson": "Invented lesson: check the evidence before the story.",
+    "watch_next": ["the next invented round", "an invented first customer", "a third signal the validator drops"],
+}
+CONCURRENT_CARD = {  # the oracle's own constant (scripts/oracle/news_cards_oracle.py)
+    "what_happened": "Invented concurrent card.",
+    "why_it_matters": "Written by another invented writer.",
+    "the_company": "",
+    "vc_lesson": "",
+    "watch_next": [],
+    "generated_by": "invented-concurrent-model",
+}
+HEADLINE_SUFFIX = " (invented correction)"
+CARD = {"card": True}
+CARD_CASES: list[dict[str, Any]] = [
+    {"name": "valid", "usage": CARD_USAGE, "script": [CARD] * 12, "after": {}},
+    {"name": "failures", "usage": CARD_USAGE, "after": {}, "script": [
+        CARD,
+        {"text": '{"what_happened": "Only one invented field."}'},  # invalid: the old validator refuses it
+        {"text": "No JSON in this invented reply."},  # malformed
+        {"raise": "server", "status": 503, "message": "HTTP 503: invented upstream unavailable"},  # retried ...
+        CARD,  # ... and accepted on the second attempt
+        {"raise": "bad_request", "status": 400, "message": "HTTP 400: invented bad request"},  # not retried, no stop
+    ]},
+    {"name": "must_stop", "usage": CARD_USAGE, "after": {},
+     "script": [CARD, {"raise": "auth", "status": 401, "message": "HTTP 401: invented key refused"}]},
+    {"name": "run_cap", "usage": {**CARD_USAGE, "estimated_cost": 0.02}, "script": [], "after": {}},
+    {"name": "concurrent", "usage": CARD_USAGE, "script": [], "after": {"1": "remove", "2": "carded", "4": "headline"}},
+]  # fmt: skip
+CARDS_DECLARED = (
+    "(b) the prompt: the SYSTEM message gains the untrusted-data sentence (news.cards.UNTRUSTED) after 'no hype, "
+    "short.'; the old prompt_sha and cache key (request_sha) differ from the new ones. The oracle sends the NEW system "
+    "message through the old code, so every request, sha and estimate is compared as is, and the old text is checked "
+    "to equal news.cards.OLD_SYSTEM",
+    "(a) where the spend is recorded: the old run line counted the cards' usd; the new run line is phase 3's (rules "
+    "cards, usd 0) and the model pass is the run_notes line {run_id, cards: {...}} (card_note)",
+    "029a: one ledger row per attempt and a failure after dispatch charged its estimate (parity_inference's "
+    "_attempt_rows applied to each old call)",
+    "the stale rule (Codex H-274): an accepted card is not written over a story that was carded meanwhile or whose "
+    "prompt inputs changed (the old loop wrote it over); it counts as stale, its charge kept",
+    "a failure keeps the rules card without rewriting it (phase 3 wrote it; the old loop rewrote the same value)",
+)
+
+
+def cards_world() -> dict[str, Any]:
+    """The 028c world: the events after the refresh golden's last run (the old output)."""
+    world: dict[str, Any] = read_golden(REFRESH_GOLDEN)["expected"]["runs"][-1]["events"]
+    return world
+
+
+def cards_input() -> dict[str, Any]:
+    return {"clock": CARDS_CLOCK, "system": news_cards.SYSTEM, "card": CARD_TEMPLATE, "cases": CARD_CASES}
+
+
+def _card_responder(script: list[dict[str, Any]]) -> Any:
+    """The oracle's responder, line for line, over the new ``Reply`` / ``ProviderError``."""
+    queue = list(script)
+
+    def fill(v: Any, headline: str) -> Any:
+        if isinstance(v, str):
+            return v.replace("{headline}", headline)
+        if isinstance(v, list):
+            return [fill(x, headline) for x in v]
+        return v
+
+    def responder(messages: Any, model: str) -> str:
+        item: dict[str, Any] = queue.pop(0) if queue else {"card": True}
+        if "raise" in item:
+            raise ProviderError(item["raise"], item.get("message", ""), item.get("status"))
+        if "card" in item:
+            headline = messages[-1]["content"].split("\n", 1)[0][len("HEADLINE: ") :]
+            return json.dumps({k: fill(v, headline) for k, v in CARD_TEMPLATE.items()}, ensure_ascii=False)
+        return str(item["text"])
+
+    return responder
+
+
+def _mutate(events: dict[str, Any], eid: str, what: str | None) -> None:
+    if what == "remove":
+        events.pop(eid, None)
+    elif what == "carded":
+        events[eid]["card"] = dict(CONCURRENT_CARD)
+    elif what == "headline":
+        events[eid]["headline"] += HEADLINE_SUFFIX
+
+
+def new_cards(world: dict[str, Any], case: dict[str, Any]) -> dict[str, Any]:
+    """Phase 4 over the case: ``plan_cards`` -> ``run_cards`` with the new gateway (``call_card``), an
+    ``InMemoryBudgetStore``, the new ``FakeProvider`` and an in-memory writer applying ``still_fits`` /
+    ``with_card``; the concurrent changes applied right after the call, as in the oracle."""
+    doc = copy.deepcopy(world)
+    now = datetime.fromisoformat(CARDS_CLOCK).replace(tzinfo=inference_budget.BERLIN)
+    cfg = inference_config.load()
+    store = InMemoryBudgetStore()
+    fake = FakeProvider(_card_responder(case["script"]), paid=True, usage=case["usage"])
+    counter = [0]
+
+    def new_id() -> str:
+        counter[0] += 1
+        return f"ic-{counter[0]:012d}"
+
+    run_id = news_cards.card_run_id(now)
+    calls: list[dict[str, Any]] = []
+    writes: list[list[Any]] = []
+
+    def call(job: news_cards.CardJob, deadline: float | None) -> Any:
+        before_rows, before_calls = len(store.rows), len(fake.calls)
+        waits: list[float] = []
+        res = news_cards.call_card(job, deadline, run_id=run_id, store=store, clock=lambda: now, env={"PZ_AI_PAID": "on"},
+                                   providers={"deepinfra": fake}, config=cfg, sleep=waits.append, new_id=new_id)  # fmt: skip
+        result = dict(res.__dict__)
+        result["must_stop"] = res.must_stop
+        sent = [{"model": c["model"], "json_mode": c["json_mode"], "max_output_tokens": c["max_output_tokens"],
+                 "extra_body": c["extra_body"]} for c in fake.calls[before_calls:]]  # fmt: skip
+        calls.append({"entity_id": job.entity_id, "run_id": run_id, "purpose": news_cards.PURPOSE,
+                      "run_cap_usd": news_cards.CARD_RUN_CAP_USD, "result": result,
+                      "est": inference_parity._estimate(cfg, news_cards.ROLE, job.messages,
+                                                        {"max_output_tokens": news_cards.MAX_OUTPUT_TOKENS}),
+                      "waits": waits, "calls": sent, "rows": [inference_parity.row_dict(r) for r in store.rows[before_rows:]]})  # fmt: skip
+        _mutate(doc["events"], job.event_id, case["after"].get(str(len(calls) - 1)))
+        return res
+
+    def write(job: news_cards.CardJob, card: dict[str, Any]) -> news_cards.WriteVerdict:
+        current = doc["events"].get(job.event_id)
+        if not news_cards.still_fits(current, job):
+            return "stale"
+        doc["events"][job.event_id] = news_cards.with_card(current, card)
+        writes.append([job.event_id, card])
+        return "written"
+
+    jobs = news_cards.plan_cards(world)
+    out = news_cards.run_cards(jobs, call=call, write=write, deadline=None)
+    end = doc["events"]
+    changed = {k: end.get(k) for k in {**world["events"], **end} if end.get(k) != world["events"].get(k)}
+    return {"jobs": [j.entity_id for j in jobs], "calls": js(calls), "writes": js(writes), "outcome": out,
+            "changed": js(dict(sorted(changed.items()))), "store": store}  # fmt: skip
+
+
+def expected_cards(world: dict[str, Any], case: dict[str, Any], old: dict[str, Any]) -> dict[str, Any]:
+    """The old case with every declared difference applied (the new side must equal it)."""
+    calls, pos, stale, usd, stopped = [], 0, 0, 0.0, None
+    declared: dict[str, str] = {}  # event -> the concurrent change that makes its accepted card stale (not removed)
+    for i, c in enumerate(old["calls"]):
+        n = len(c["calls"])
+        script = [*case["script"], *[{"card": True}] * 20][pos : pos + n]
+        pos += n
+        exp = inference_parity._norm(inference_parity._attempt_rows({"paid": True, "script": script}, c))
+        calls.append(exp)
+        res = exp["result"]
+        usd += res["usd"]
+        what = case["after"].get(str(i))
+        if res["ok"] and what in ("remove", "carded", "headline"):
+            stale += 1
+            if what != "remove":
+                declared[c["entity_id"][len("news:") :]] = what
+        if res["must_stop"]:
+            stopped = "run_cap" if res["error"].startswith(news_cards.RUN_CAP_REASON) else "must_stop"
+    writes = [[eid, card] for s in old["saves"] for eid, card in s.items()
+              if (card or {}).get("generated_by") != "rules" and eid not in declared]  # fmt: skip
+    changed = copy.deepcopy(old["changed"])
+    for eid, what in declared.items():  # the stale rule: the story keeps what the concurrent writer left
+        mutated = copy.deepcopy(world["events"])
+        _mutate(mutated, eid, what)
+        changed[eid]["card"] = mutated[eid]["card"]
+        if changed[eid] == world["events"][eid]:
+            changed.pop(eid)
+    return {"calls": calls, "writes": writes, "changed": changed, "stale": stale, "usd": round(usd, 6),
+            "stopped": stopped, "attempted": len(old["calls"])}  # fmt: skip
+
+
+def compare_cards(golden: dict[str, Any]) -> list[str]:
+    problems: list[str] = []
+    if golden["input"] != js(cards_input()):
+        return ["the cards golden was generated from another input: regenerate it (cards-goldens)"]
+    world = cards_world()
+    if golden["world_sha"] != _sha(world):
+        return ["the 028c world (oracle_news_refresh.json) changed: regenerate the cards golden (cards-goldens)"]
+    exp_old = golden["expected"]
+    if exp_old["old_system"] != news_cards.OLD_SYSTEM:
+        problems.append("/system: the old SYSTEM is not news.cards.OLD_SYSTEM")
+    if exp_old["old_system"].replace("short.\nReturn", f"short.\n{news_cards.UNTRUSTED}\nReturn") != news_cards.SYSTEM:
+        problems.append("/system: SYSTEM is not the old prompt plus the declared (b) sentence")
+    consts = exp_old["meta"]["constants"]
+    if (consts["CARD_RUN_CAP_USD"], consts["MAX_CARDS_PER_RUN"]) != (
+        news_cards.CARD_RUN_CAP_USD,
+        news_refresh.MAX_CARDS_PER_RUN,
+    ):
+        problems.append(f"/constants: old {consts}")
+    candidates = [e for e in world["events"].values() if e["materiality"] in ("HIGH", "MEDIUM") and news_core._relevant(e)
+                  and (not e.get("card") or (e["card"] or {}).get("generated_by") == "rules")]  # fmt: skip
+    if len(candidates) <= news_refresh.MAX_CARDS_PER_RUN:
+        problems.append(f"/world: only {len(candidates)} candidates (the cut at 12 is not exercised)")
+    for case, old in zip(CARD_CASES, exp_old["cases"], strict=True):
+        at = f"/{case['name']}"
+        new = new_cards(world, case)
+        exp = expected_cards(world, case, old)
+        if old["made"] != len(new["jobs"]):  # the run line's count (phase 3's rules cards) is unchanged
+            problems.append(f"{at}/made: old {old['made']}, new selection {len(new['jobs'])}")
+        old_order = [c["entity_id"] for c in old["calls"]]
+        if old_order != new["jobs"][: len(old_order)]:
+            problems.append(f"{at}/selection: old {old_order}, new {new['jobs']}")
+        new_calls = [inference_parity._norm(c) for c in new["calls"]]
+        for i, (e, n) in enumerate(zip(exp["calls"], new_calls, strict=False)):
+            problems.extend(f"{at}/calls[{i}]{d}" for d in inference_parity._diff(e, n))
+        if len(exp["calls"]) != len(new_calls):
+            problems.append(f"{at}/calls: {len(exp['calls'])} expected, {len(new_calls)} new")
+        for k in ("writes", "changed"):
+            problems.extend(f"{at}/{k}{d}" for d in inference_parity._diff(exp[k], new[k]))
+            if not inference_parity._diff(exp[k], new[k]) and _text(exp[k]) != _text(new[k]):
+                problems.append(f"{at}/{k}: equal values, different key order")
+        o = new["outcome"]
+        got = {"stale": o.stale, "usd": o.usd, "stopped": o.stopped, "attempted": o.attempted, "made": o.made}
+        want = {k: exp[k] for k in ("stale", "usd", "stopped", "attempted")} | {"made": len(exp["writes"])}
+        if got != want:
+            problems.append(f"{at}/outcome: expected {want}, new {got}")
+        if round(sum(c["result"]["usd"] for c in old["calls"]), 6) != old["usd"]:
+            problems.append(f"{at}/usd: the old run's usd is not the sum of its calls")
+        if o.late or new["store"].reservations:
+            problems.append(f"{at}: late {o.late}, reservations left {len(new['store'].reservations)}")
+    return problems
+
+
+def cards_summary(golden: dict[str, Any]) -> dict[str, Any]:
+    world = cards_world()
+    out: dict[str, Any] = {}
+    for case, old in zip(CARD_CASES, golden["expected"]["cases"], strict=True):
+        o = new_cards(world, case)["outcome"]
+        out[case["name"]] = {"old": {"made": old["made"], "usd": old["usd"], "calls": len(old["calls"]),
+                                     "model_writes": sum(1 for s in old["saves"] for c in s.values()
+                                                         if (c or {}).get("generated_by") != "rules")},
+                             "note": json.loads(news_cards.card_note("news-run", o))["cards"]}  # fmt: skip
+    old_sha = hashlib.sha256(
+        json.dumps([news_cards.OLD_SYSTEM], sort_keys=True, ensure_ascii=False).encode()
+    ).hexdigest()
+    out["prompt_sha"] = {"old": old_sha[:16], "new": news_cards.PROMPT_SHA}
+    return out
+
+
+def cards_report(golden: dict[str, Any]) -> int:
+    problems = compare_cards(golden)
+    print(json.dumps({"golden": str(CARDS_GOLDEN), "bytes": CARDS_GOLDEN.stat().st_size, "old": golden["provenance"],
+                      "summary": cards_summary(golden), "declared": CARDS_DECLARED}, ensure_ascii=False, indent=1))  # fmt: skip
+    for p in problems[:80]:
+        print("  DIFF", p)
+    print("NEWS CARDS GOLDENS MATCH" if not problems else f"NEWS CARDS GOLDENS DIFFER ({len(problems)})")
+    return 1 if problems else 0
+
+
+def write_cards_goldens() -> int:
+    python = OLD_REPO / "backend" / ".venv" / "Scripts" / "python.exe"
+    if not python.exists():
+        raise SystemExit(f"old interpreter not found: {python} (set PZ_OLD_REPO)")
+    inp = cards_input()
+    world = cards_world()
+    with tempfile.TemporaryDirectory(prefix="pz-news-cards-oracle-") as tmp:
+        data = Path(tmp) / "data"
+        data.mkdir()
+        srcf, dst = Path(tmp) / "in.json", Path(tmp) / "out.json"
+        srcf.write_bytes(json.dumps({**inp, "events": world}, ensure_ascii=False).encode("utf-8"))
+        env = {k: v for k, v in os.environ.items()
+               if k not in inference_config.KEY_ENVS and k != "SUPABASE_DB_URL" and not k.endswith(("_API_KEY", "_TOKEN"))}  # fmt: skip
+        env.update({"PZ_DATA": str(data), "PZ_TESTING": "1", "PYTHONPATH": str(OLD_REPO / "backend" / "src"),
+                    "PZ_AI_PAID": "on"})  # fmt: skip
+        env.pop("PZ_SCOUT00_PAID", None)
+        run = subprocess.run([str(python), str(CARDS_ORACLE), str(srcf), str(dst)], env=env, capture_output=True,
+                             text=True)  # fmt: skip
+        if run.returncode != 0:
+            raise SystemExit(f"oracle failed:\n{run.stderr[-3000:]}")
+        oracle: dict[str, Any] = json.loads(dst.read_bytes().decode("utf-8"))
+    golden = {"provenance": oracle["meta"], "input": js(inp), "world_sha": _sha(world), "expected": oracle}
+    CARDS_GOLDEN.write_bytes((json.dumps(golden, ensure_ascii=False, indent=None) + "\n").encode("utf-8"))
+    return cards_report(read_golden(CARDS_GOLDEN))
+
+
 # ------------------------------------------------------------------ the real snapshot, through the API routes
 REAL_CLOCK = "2026-11-12T09:00:00"
 _REAL_PATHS = {"view": ("/api/news", None), "weekly": ("/api/news/weekly", None),
@@ -1577,6 +1880,10 @@ def main(argv: list[str]) -> int:
         return write_refresh_goldens()
     if mode == "refresh-check":  # the stored refresh golden against the new code (no oracle)
         return refresh_report(read_golden(REFRESH_GOLDEN))
+    if mode == "cards-goldens":
+        return write_cards_goldens()
+    if mode == "cards-check":  # the stored cards golden against the new code (no oracle)
+        return cards_report(read_golden(CARDS_GOLDEN))
     print(__doc__)
     return 2
 
