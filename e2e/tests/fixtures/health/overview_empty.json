@@ -1,0 +1,30 @@
+{
+  "at": "2026-11-13T09:30:00",
+  "jobs": {
+    "days": 30,
+    "runs": [],
+    "outcomes_recorded_since": null
+  },
+  "models": {
+    "rows": [],
+    "spend_by_day": {}
+  },
+  "pipeline": {
+    "inbox": {},
+    "routing": {
+      "counts": {},
+      "at": null
+    },
+    "conviction": {},
+    "manager_sent": 0
+  },
+  "backups": {
+    "deferred": "Backups arrive with the hardening port."
+  },
+  "integrity": {
+    "deferred": "The integrity check arrives with the hardening port."
+  },
+  "releases": {
+    "deferred": "Releases arrive with the hardening port."
+  }
+}

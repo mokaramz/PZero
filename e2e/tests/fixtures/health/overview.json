@@ -1,0 +1,80 @@
+{
+  "at": "2026-11-13T09:30:00",
+  "jobs": {
+    "days": 30,
+    "runs": [
+      { "at": "2026-10-20T08:00:00", "job": "news_source_review", "label": "News source comparison (monthly)", "state": "completed", "seconds": 40, "note": "8 feeds compared", "source": "background" },
+      { "at": "2026-10-21T07:00:00", "job": "watch_checks", "label": "WATCH checks", "state": "completed", "seconds": 11, "note": "3 pages checked", "source": "background" },
+      { "at": "2026-10-28T07:00:05", "job": "watch_checks", "label": "WATCH checks", "state": "no_findings", "seconds": 10, "note": "", "source": "background" },
+      { "at": "2026-10-31T06:00:00", "job": "event_scan", "label": "Event source scan", "state": "completed", "seconds": 28, "note": "12 listings read", "source": "background" },
+      { "at": "2026-11-01T19:00:00", "job": "deal_flow_scan", "label": "Deal Flow scan", "state": "completed", "seconds": 198, "note": "130 fetched, 4 new", "source": "app" },
+      { "at": "2026-11-02T08:00:00", "job": "news_weekly_review", "label": "Weekly learning review", "state": "waiting_external", "seconds": 5, "note": "waiting: benchmark feed not published yet", "source": "background" },
+      { "at": "2026-11-03T06:00:00", "job": "event_scan", "label": "Event source scan", "state": "completed", "seconds": 30, "note": "11 listings read", "source": "background" },
+      { "at": "2026-11-06T06:01:00", "job": "event_scan", "label": "Event source scan", "state": "failed", "seconds": 31, "note": "HTTP Error 503 from the event listing", "source": "background" },
+      { "at": "2026-11-08T19:09:14", "job": "deal_flow_scan", "label": "Deal Flow scan", "state": "completed", "seconds": 214, "note": "142 fetched, 9 new", "source": "app" },
+      { "at": "2026-11-08T20:00:00", "job": "case_refresh", "label": "Case preparation freshness (stale / new Conviction cases)", "state": "budget_blocked", "seconds": 9, "note": "budget cap reached: 2 cases kept", "source": "background" },
+      { "at": "2026-11-08T21:40:00", "job": "news_refresh", "label": "News refresh", "state": "completed", "seconds": 66, "note": "7 of 7 feeds", "source": "background" },
+      { "at": "2026-11-09T05:00:00", "job": "source_network", "label": "New-source discovery & probation", "state": "completed", "seconds": 48, "note": "2 candidates validated", "source": "background" },
+      { "at": "2026-11-09T06:02:00", "job": "event_scan", "label": "Event source scan", "state": "failed", "seconds": 30, "note": "HTTP Error 503 from the event listing", "source": "background" },
+      { "at": "2026-11-09T06:30:00", "job": "validation_snapshot", "label": "Validation snapshot", "state": "completed", "seconds": 3, "note": "snapshot 12 written", "source": "background" },
+      { "at": "2026-11-09T07:00:00", "job": "watch_checks", "label": "WATCH checks", "state": "completed", "seconds": 12, "note": "3 pages checked", "source": "background" },
+      { "at": "2026-11-09T16:00:00", "job": "triage_compression", "label": "Triage queue compression (human attention budget)", "state": "interrupted", "seconds": null, "note": "", "source": "background" },
+      { "at": "2026-11-09T21:45:58", "job": "news_refresh", "label": "News refresh", "state": "partial", "seconds": 72, "note": "PARTIAL: 6 of 7 feeds", "source": "background" },
+      { "at": "2026-11-09T22:04:30", "job": "triage_retry", "label": "Machine triage retry (after a provider outage)", "state": "skipped", "seconds": 0, "note": "another run was in progress", "source": "app" },
+      { "at": "2026-11-09T22:05:00", "job": "triage_retry", "label": "Machine triage retry (after a provider outage)", "state": "no_findings", "seconds": 2, "note": "3 still pending", "source": "background" }
+    ],
+    "outcomes_recorded_since": "2026-10-20T08:00:00"
+  },
+  "models": {
+    "rows": [
+      {
+        "model": "inventa/brisk-flash-1",
+        "provider": "inventa",
+        "roles": ["CHEAP"],
+        "calls": 412,
+        "ok": 398,
+        "errors": 9,
+        "cache_hits": 31,
+        "blocked": 5,
+        "usd": 1.2345,
+        "last_ok": "2026-11-09T21:47:00",
+        "last_error": "2026-11-07T10:12:00",
+        "error_kinds": { "invalid": 6, "rate_limited": 3 },
+        "calls_7d": 58,
+        "ok_7d": 55,
+        "p50_ms_7d": 1840
+      },
+      {
+        "model": "inventa/steady-pro-2",
+        "provider": "inventa",
+        "roles": ["STANDARD"],
+        "calls": 37,
+        "ok": 37,
+        "errors": 0,
+        "cache_hits": 2,
+        "blocked": 0,
+        "usd": 0.6371,
+        "last_ok": "2026-11-05T14:20:00",
+        "last_error": "",
+        "error_kinds": {},
+        "calls_7d": 4,
+        "ok_7d": 4,
+        "p50_ms_7d": 5200
+      }
+    ],
+    "spend_by_day": {
+      "2026-11-02": { "inventa/brisk-flash-1": 0.081 },
+      "2026-11-05": { "inventa/brisk-flash-1": 0.12, "inventa/steady-pro-2": 0.31 },
+      "2026-11-09": { "inventa/brisk-flash-1": 0.044 }
+    }
+  },
+  "pipeline": {
+    "inbox": { "new": 37, "kept": 12, "dropped": 85 },
+    "routing": { "counts": { "NEEDS_MOHAMED": 2, "BACKGROUND_RESEARCH": 18, "ARCHIVE": 40 }, "at": "2026-11-09T10:00:00" },
+    "conviction": { "new": 4, "contacted": 2, "dropped": 1 },
+    "manager_sent": 1
+  },
+  "backups": { "deferred": "Backups arrive with the hardening port." },
+  "integrity": { "deferred": "The integrity check arrives with the hardening port." },
+  "releases": { "deferred": "Releases arrive with the hardening port." }
+}

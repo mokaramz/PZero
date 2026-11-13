@@ -225,3 +225,34 @@ including the excluded `p-omar-hedeya`; legacy records read as neutral (`data_wa
 `unclear`), records without a company, and no document at all. The pure `home.inputs_from_docs` -> `home.view`
 matches value by value and as serialized text, with no declared difference. Written and read as bytes
 (`python -m projectzero.ops.parity_home goldens` / `check`).
+
+`oracle_health.json` (review 032a): the old System health reads (`services/health.system()`, `GET
+/api/system_health`, and `services/health_overview.overview()`, `GET /api/system_health_overview`) over seven worlds of
+invented names, each in its own scratch data folder holding every file a real legacy folder has (the importer's
+required files), with a frozen clock (naive Berlin wall time, Friday 2026-11-13 09:00: every loaded old module's
+`date` / `datetime` is frozen), the world's paid switch and key presence in the environment (presence only), and every
+write blocked (the folders are checked unchanged; the Founder Radar defaults the old coverage read saved when missing
+are dropped and recorded as `held`; the coverage cache thread is disabled). Stubbed to fixed values: the retired Scout
+services (no notice; the four Scout jobs removed from the old `JOBS`), the absent subsystems (self-check, build info,
+source-network health, backups, integrity) and `pid_alive` (no runner is alive). Covered: every source state and every
+`diagnose` cause (each repair rule, an unknown error and none), a source matched by name, the noise and early shares;
+the last scan either side of 10 days and none; triage pending with a proposed candidate left out; research questions;
+WATCH companies and open triggers; every job state and outcome (ok, failed twice, failed once, an imported `running`
+read as interrupted, budget-blocked, partial, waiting for an external dependency, nothing new, never run), overdue jobs,
+an interval override and an unreadable one, the scan / Events / News readers of `last`; the month's spend above, at and
+below 80 %, a provider without a key, the paid switch off and on; Validation data warnings; News feed failures, the
+metric cache, the source state and the source-network candidates; the verdicts UNHEALTHY, NEEDS ATTENTION, FYI and
+HEALTHY and the statuses action (with and without a stale report), limited, ok and unknown (with the snapshot's last
+report, and with none); a 30-day run history across its edge with skipped `*` runs, a run without a job and a note
+cut to 400; models across the 30- and 7-day edges with every outcome and a call without a model; the pipeline counts;
+an empty folder. Revision 2's `jobs_unrun` (the imported jobs plus one failing source: "Action required", "1 item needs
+you") and `jobs_only` (the same jobs: `unknown` with the runner sentence and timestamp). Declared differences, all
+normalised in `parity_health.normalise`: (c) the repair research job, rules 16 / 17, the Scout jobs and the overview's
+Scout keys and `pipeline.intake` dropped; (d) the absent subsystems sent as `{"deferred": reason}`, rules 5, 12 and
+19-22 omitted (never triggered, refused if they fire); (e) an imported `running` is `interrupted`; (f) the paid switch's
+new semantics and no RESEARCH provider row; (g) needs nothing here (the ledger lines carry their role); (k) without a
+runner, rules 3, 4 and 6-11 take revision 2's advice and the `info` group, and the verdict and status are re-derived by
+the old rules (restated in the parity and checked against every old answer) with the two job-report sentences
+reworded. The pure `health.inputs_from_docs` -> `system_view` / `overview_view` matches value by value and as
+serialized text; with a stub runner the old texts and groups come back exactly. Written and read as bytes
+(`python -m projectzero.ops.parity_health goldens` / `check`).

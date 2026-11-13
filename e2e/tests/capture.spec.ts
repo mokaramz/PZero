@@ -46,6 +46,8 @@ const VIEWS = [
   { key: "news", path: "/news", ready: (p: Page) => p.getByTestId("news-concept"), detail: "" },
   // the missions come from Today, which loads after the inbox: the screenshot waits for its answer (settle)
   { key: "desk", path: "/", ready: (p: Page) => p.getByTestId("desk-activity"), detail: "", settle: "/api/today" },
+  // the overview read (job history, models) answers after the verdict: the screenshot waits for it (settle)
+  { key: "health", path: "/health", ready: (p: Page) => p.getByTestId("health-verdict"), detail: "", settle: "/api/system_health_overview" },
   { key: "today", path: "/today", ready: (p: Page) => p.getByRole("list", { name: "Orientation" }), detail: "" },
   { key: "events", path: "/events", ready: (p: Page) => p.getByRole("button", { name: "source health" }), detail: "event-calendar" }, // health loads after the list
 ] as const;
