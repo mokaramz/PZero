@@ -1,0 +1,79 @@
+{
+  "idle": { "running": false, "done": 0, "total": 0, "rows": [], "result": null, "error": "", "started": "" },
+  "running": {
+    "running": true,
+    "done": 2,
+    "total": 7,
+    "rows": [
+      { "source": "Isarwerk Venture Lab", "tier": "watcher", "status": "ok", "note": "2 new lines", "geo": ["DACH"], "raw": 12, "count": 2, "baseline": 0 },
+      { "source": "Halden Feed", "tier": "feed", "status": "failed", "note": "HTTP Error 503: Service Unavailable", "geo": ["UK"] }
+    ],
+    "result": null,
+    "error": "",
+    "started": "09:30:00"
+  },
+  "running_more": {
+    "running": true,
+    "done": 5,
+    "total": 7,
+    "rows": [
+      { "source": "Isarwerk Venture Lab", "tier": "watcher", "status": "ok", "note": "2 new lines", "geo": ["DACH"], "raw": 12, "count": 2, "baseline": 0 },
+      { "source": "Halden Feed", "tier": "feed", "status": "failed", "note": "HTTP Error 503: Service Unavailable", "geo": ["UK"] },
+      { "source": "Lindqvist Grants", "tier": "structured", "status": "ok", "note": "3 awards", "geo": ["EU"], "raw": 17, "count": 3 },
+      { "source": "Maplewood Accelerator", "tier": "feed", "status": "off", "note": "disabled", "geo": ["CA"] },
+      { "source": "Brightwater Registry", "tier": "structured", "status": "ok", "note": "1 item(s) refused by the intake: the name is not a company name", "geo": ["DACH"], "raw": 4, "count": 3, "refused": 1 }
+    ],
+    "result": null,
+    "error": "",
+    "started": "09:30:00"
+  },
+  "done": {
+    "running": false,
+    "done": 7,
+    "total": 7,
+    "rows": [
+      { "source": "Isarwerk Venture Lab", "tier": "watcher", "status": "ok", "note": "2 new lines", "geo": ["DACH"], "source_id": "isarwerk", "raw": 12, "count": 2, "baseline": 0 },
+      { "source": "Halden Feed", "tier": "feed", "status": "failed", "note": "HTTP Error 503: Service Unavailable", "geo": ["UK"], "source_id": "halden", "raw": null, "count": null, "baseline": null },
+      { "source": "Lindqvist Grants", "tier": "structured", "status": "ok", "note": "3 awards", "geo": ["EU"], "source_id": "lindqvist", "raw": 17, "count": 3, "baseline": null },
+      { "source": "Maplewood Accelerator", "tier": "feed", "status": "off", "note": "disabled", "geo": ["CA"], "source_id": "maplewood" },
+      { "source": "Brightwater Registry", "tier": "structured", "status": "ok", "note": "1 item(s) refused by the intake: the name is not a company name", "geo": ["DACH"], "source_id": "brightwater", "raw": 4, "count": 3, "baseline": null, "refused": 1 },
+      { "source": "Global Deep Tech Wire", "tier": "feed", "status": "ok", "note": "5 items", "geo": ["ALL"], "source_id": "gdtw", "raw": 5, "count": 5, "baseline": null },
+      { "source": "Prairie SBIR awards", "tier": "structured", "status": "ok", "note": "2 awards", "geo": ["US"], "source_id": "prairie", "raw": 9, "count": 2, "baseline": null }
+    ],
+    "result": {
+      "new": 2,
+      "baseline": 4,
+      "noise": 1,
+      "pre_company_new": 1,
+      "run_id": "2026-11-13 09:30",
+      "scan_started": "2026-11-13 09:30:00",
+      "scan_finished": "2026-11-13 09:32:41",
+      "sources_attempted": 6,
+      "sources_ok": 5,
+      "sources_failed": 1,
+      "sources_off": 1,
+      "raw_records": 47,
+      "merged_cross_source": 0,
+      "merged_into_existing": 1,
+      "known_skipped": 9,
+      "known_pipeline": 1,
+      "known_pipeline_names": ["Varnholt Systems"],
+      "new_companies": [
+        { "id": "s-0201", "name": "Wrenfield Thermal", "source": "Isarwerk Venture Lab", "source_url": "https://isarwerk.example.org/teams", "source_date": "2026-11-12", "first_seen": "2026-11-13 09:31" },
+        { "id": "s-0202", "name": "Corvane Analytics", "source": "Lindqvist Grants", "source_url": "https://grants.example.org/corvane", "first_seen": "2026-11-13 09:31" }
+      ],
+      "refused": 1
+    },
+    "error": "",
+    "started": "09:30:00"
+  },
+  "stopped": {
+    "running": false,
+    "done": 3,
+    "total": 7,
+    "rows": [],
+    "result": null,
+    "error": "RuntimeError: the source registry could not be read",
+    "started": "09:30:00"
+  }
+}

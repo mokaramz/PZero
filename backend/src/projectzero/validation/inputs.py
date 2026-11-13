@@ -40,6 +40,7 @@ from projectzero.conviction.store import record_of as conviction_record
 from projectzero.core.db import schema_ident
 from projectzero.dealflow import inbox_records
 from projectzero.dealflow.inbox_view import candidate_rows
+from projectzero.dealflow.scan import history as scan_history
 from projectzero.dealflow.sources.store import SourcesStore
 from projectzero.dealflow.triage.view import proposal_record, route_record
 from projectzero.founder_calls.store import FounderCallsStore
@@ -135,6 +136,8 @@ def load_docs(conn: psycopg.Connection[Any], schema: str, now: datetime) -> dict
             docs[path] = stored[path]
     for path in TEXT_ARCHIVES:
         docs[path] = archived_text(archived[path]) if path in archived else ""
+    if runs := scan_history.runs(conn, schema):  # review 034a: the imported history overlaid by the new runs
+        docs["scan_history.json"] = scan_history.overlay(docs.get("scan_history.json"), runs)
     docs.update(store.texts(conn, schema))  # the four Validation logs (027b), in seq order
     events = news_store.events_doc(conn, schema)  # the News tables (028b)
     if events is not None:

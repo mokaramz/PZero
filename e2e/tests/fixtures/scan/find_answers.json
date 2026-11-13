@@ -1,0 +1,4 @@
+{
+  "started": { "started": true },
+  "running": { "running": true, "done": 2, "total": 7, "note": "A scan is already running" }
+}

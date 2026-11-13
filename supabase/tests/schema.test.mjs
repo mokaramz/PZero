@@ -1334,3 +1334,60 @@ describe("migration 0023 — the jobs runner: one fencing lease, runner records 
     assert.deepEqual(grants.rows, []);
   });
 });
+
+describe("migration 0024 — the Deal Flow scan: append-only runs in key order, watch baselines by the old file stem", () => {
+  let db;
+
+  before(async () => {
+    db = await freshDb();
+  });
+
+  test("a run keeps the old key order (json) and is never edited or deleted", async () => {
+    const summary = '{"new": 1, "baseline": 0, "noise": 0, "run_id": "2026-11-13 09:00:00", "refused": 0}';
+    const report = '[{"source": "Invented Feed", "tier": "rss", "status": "ok", "note": "1 item(s) in feed"}]';
+    const sources = '[{"source": "Invented Feed", "source_id": "fx-feed", "status": "ok", "raw": 1}]';
+    await db.query(
+      `insert into pz.scan_runs (run_id, started_at, finished_at, days, summary, report, sources) values ($1, '2026-11-13T08:00:00Z', '2026-11-13T08:00:04Z', 7, $2::json, $3::json, $4::json)`,
+      ["2026-11-13 09:00:00", summary, report, sources],
+    );
+    const row = (await db.query(`select summary::text as s, report::text as r, sources::text as so, trigger from pz.scan_runs`)).rows[0];
+    assert.deepEqual(row, { s: summary, r: report, so: sources, trigger: "app" });
+    await rejects(db.query(`update pz.scan_runs set days = 3`), /append-only/);
+    await rejects(db.query(`delete from pz.scan_runs`), /append-only/);
+    await rejects(
+      db.query(`insert into pz.scan_runs (run_id, started_at, finished_at, summary, report, sources) values ('2026-11-13 09:00:00', now(), now(), '{}', '[]', '[]')`),
+      /duplicate|unique/,
+    );
+    await rejects(
+      db.query(`insert into pz.scan_runs (run_id, started_at, finished_at, summary, report, sources) values ('x', '2026-11-13T09:00:05Z', '2026-11-13T09:00:00Z', '{}', '[]', '[]')`),
+      /scan_runs_finished_check/,
+    );
+    await rejects(
+      db.query(`insert into pz.scan_runs (run_id, started_at, finished_at, summary, report, sources) values ('y', now(), now(), '[]', '[]', '[]')`),
+      /check/,
+    );
+    await rejects(
+      db.query(`insert into pz.scan_runs (run_id, started_at, finished_at, summary, report, sources, trigger) values ('z', now(), now(), '{}', '[]', '[]', 'Bad Trigger')`),
+      /check/,
+    );
+  });
+
+  test("a watch baseline is keyed by the old file stem and holds a line array", async () => {
+    await db.query(
+      `insert into pz.scan_watch_snapshots (uid, url, source_id, lines, seeded_from) values ('0123456789ab', 'https://invented.example.com/team', 'fx-page', '["Line A"]', '.watch/0123456789ab.json')`,
+    );
+    await db.query(`update pz.scan_watch_snapshots set lines = '["Line A", "Line B"]', updated_at = now() where uid = '0123456789ab'`);
+    assert.deepEqual((await db.query(`select lines from pz.scan_watch_snapshots`)).rows[0].lines, ["Line A", "Line B"]);
+    await rejects(db.query(`insert into pz.scan_watch_snapshots (uid, url, lines) values ('NOT-A-UID', 'https://x.example.com/', '[]')`), /check/);
+    await rejects(db.query(`insert into pz.scan_watch_snapshots (uid, url, lines) values ('0123456789ac', 'https://x.example.com/', '{}')`), /check/);
+  });
+
+  test("both new tables have row level security and no API grants", async () => {
+    const rls = await db.query(`select relname, relrowsecurity from pg_class where relname in ('scan_runs', 'scan_watch_snapshots') order by relname`);
+    assert.deepEqual(rls.rows, [{ relname: "scan_runs", relrowsecurity: true }, { relname: "scan_watch_snapshots", relrowsecurity: true }]);
+    const grants = await db.query(
+      `select table_name from information_schema.role_table_grants where table_name in ('scan_runs', 'scan_watch_snapshots') and grantee in ('anon', 'authenticated', 'PUBLIC')`,
+    );
+    assert.deepEqual(grants.rows, []);
+  });
+});

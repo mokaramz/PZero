@@ -29,3 +29,9 @@ cutover if it is missing, then what only completes a view.
 
 Until items 1–4 are ported, the scan, the triage, the watch checks and the case preparation stop at the cutover.
 That is a product decision for Mohamed: cut over now with the deferrals visible, or wait for 1–4.
+
+## Codex review of the order (H-334)
+
+Start the Deal Flow scan survey now. Keep machine triage second so the next port can exercise the scan’s actual candidate output, including what happens when paid access is off. For a cutover near November 15, move case preparation ahead of watch sensors if Mohamed needs fresh cases and intends to enable paid access. Otherwise keep watch sensors third. The snapshot expiry is a reason to prioritize that decision, not a deadline for every port.
+
+Keep the remaining feature order. Before the live import, check the malformed-record finding against a rehearsal and reconcile any skipped records. Before enabling scheduled writes, establish what backup can be restored and how to roll back the handover. The v2 runner omits the old background backup. These checks can happen alongside the scan work while the broader 032b redesign stays eighth. Mohamed retains the cutover decision.

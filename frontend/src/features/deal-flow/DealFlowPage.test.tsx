@@ -328,13 +328,16 @@ describe("Deal Flow — entry points that are not ported yet", () => {
     const server = serve();
     renderPage();
     await loaded();
-    // the Attention view, the review-queue chip, the Find bar and the scan history (Keep is live since review 011)
+    // the Attention view, the review-queue chip and Analyze Top N (Keep is live since review 011, the scan since 034a)
     openMore();
     let off = checkInert(server);
-    expect(off.map((e) => e.textContent)).toEqual(expect.arrayContaining(["Find New Candidates", "Analyze Top Candidates", "Agent Review Queue", "Scan history"]));
+    expect(off.map((e) => e.textContent)).toEqual(expect.arrayContaining(["Analyze Top Candidates", "Agent Review Queue"]));
+    expect(off.map((e) => e.textContent)).not.toEqual(expect.arrayContaining(["Find New Candidates"]));
+    expect(off.map((e) => e.textContent)).not.toEqual(expect.arrayContaining(["Scan history"]));
     expect(screen.getByRole("button", { name: "Keep — score it" })).not.toHaveAttribute("aria-disabled");
-    expect((screen.getByTestId("scan-history") as HTMLDetailsElement).open).toBe(false);
-    expect(screen.getByLabelText("Feed window")).toBeDisabled();
+    expect(screen.getByTestId("find-btn")).not.toHaveAttribute("aria-disabled");
+    expect(screen.getByTestId("scan-history")).not.toHaveAttribute("data-deferred");
+    expect(screen.getByLabelText("Feed window")).toBeEnabled();
     expect(screen.getByLabelText("Number of candidates to analyze")).toBeDisabled();
 
     // the triage view's batch actions and the selected candidate's triage panel + analyst
@@ -410,12 +413,11 @@ describe("Deal Flow — deep links", () => {
     expect(server.posts()).toEqual([]);
   });
 
-  it("?find=1 focuses the (disabled) Find control and never scans", async () => {
+  it("?find=1 focuses the Find control and never scans by itself", async () => {
     const server = serve();
     renderPage("/deal-flow?find=1");
     await waitFor(() => expect(document.activeElement).toBe(screen.getByTestId("find-btn")));
-    fireEvent.keyDown(document.activeElement!, { key: "Enter" });
-    fireEvent.click(document.activeElement!, { detail: 0 });
+    expect(screen.getByTestId("find-btn")).not.toHaveAttribute("aria-disabled");
     expect(server.posts()).toEqual([]);
   });
 

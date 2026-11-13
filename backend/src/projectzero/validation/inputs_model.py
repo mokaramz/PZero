@@ -30,6 +30,7 @@ from datetime import datetime
 from typing import Any
 
 from projectzero.dealflow.ranking.service import is_legacy_inbox_record, ranking_input
+from projectzero.dealflow.scan.records import is_scan_record
 from projectzero.network.view import berlin_now
 
 DECISION_LOG = "triage_decisions.jsonl"
@@ -179,8 +180,8 @@ def candidate_record(row: Mapping[str, Any]) -> dict[str, Any]:
       ``quality_source_id`` / ``also_seen``; a partial record only ``source_id``).
     """
     c, _kind = ranking_input(row)
-    if is_legacy_inbox_record(row.get("legacy")):
-        return c
+    if is_legacy_inbox_record(row.get("legacy")) or is_scan_record((row.get("attrs") or {}).get("scan_record")):
+        return c  # imported, or made by the Deal Flow scan (review 034a): the old record's own first_seen / tier
     seen = row.get("first_seen_at")
     c["first_seen"] = berlin_now(seen).date().isoformat() if isinstance(seen, datetime) else ""
     return c

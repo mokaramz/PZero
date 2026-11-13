@@ -115,7 +115,7 @@
   font-weight: 600;
 }
 
-/* ---------------- find bar + scan status */
+/* ---------------- find bar + scan report */
 .findbar {
   margin-bottom: 14px;
 }
@@ -139,6 +139,24 @@
 .days {
   padding: 7px 10px;
 }
+/* scan in progress: a plain progress spinner (it exists only while a scan runs) — never a pulsing "AI" ring */
+.radar {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid var(--hair-2);
+  border-top-color: var(--blue);
+  animation: scanSpin 0.9s linear infinite;
+}
+@keyframes scanSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.scanning {
+  border-color: rgba(47, 111, 211, 0.35);
+}
 .findSt {
   margin-top: 10px;
   font-size: 12px;
@@ -147,6 +165,32 @@
 .findSt b {
   color: var(--ink-2);
 }
+.report {
+  margin-top: 12px;
+  font-size: 12.5px;
+}
+.repSum {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: baseline;
+  margin-bottom: 6px;
+}
+.ledger {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  line-height: 1.65;
+  color: var(--ink-2);
+  overflow-wrap: anywhere;
+}
+.ledgerNew {
+  margin-top: 4px;
+}
+.repDetails {
+  margin-top: 10px;
+}
+.repDetails > summary,
+.repMore > summary,
 .history > summary {
   cursor: pointer;
   color: var(--blue);
@@ -154,6 +198,32 @@
   font-weight: 500;
   width: max-content;
   max-width: 100%;
+}
+.repMore {
+  margin-top: 6px;
+}
+.repGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 4px 16px;
+  margin-top: 8px;
+  font-size: 12px;
+}
+.repRow {
+  padding: 3px 0 3px 8px;
+  border-left: 2px solid var(--hair-2);
+  overflow-wrap: anywhere;
+}
+.rep_ok {
+  border-left-color: var(--green);
+}
+.rep_failed,
+.rep_error,
+.rep_fail {
+  border-left-color: var(--red);
+}
+.rep_off {
+  color: var(--faint);
 }
 
 /* ---------------- candidates panel */
@@ -472,6 +542,15 @@
     max-height: none;
     border-top: 1px solid var(--hair-2);
   }
+}
+
+.repOutcome {
+  margin: 6px 0;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: var(--amber-soft);
+  border: 1px solid var(--hair-2);
+  font-size: 12.5px;
 }
 
 /* Operator Focus: one-line company description under the name */
@@ -955,10 +1034,6 @@
   cursor: not-allowed;
   transform: none;
   filter: none;
-}
-.history > summary[aria-disabled="true"] {
-  cursor: not-allowed;
-  opacity: 0.55;
 }
 
 /* ---------------- Revisit (review 018): the filter chip's count and the detail's callout */

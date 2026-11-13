@@ -4,7 +4,9 @@
  *
  * Kept: workspaces, counts, filters, candidate detail, the IM / theme lenses, Reject → Rejected → Undo, the deep links,
  * and no horizontal overflow at 1366x768 and 150 % zoom. Changed on purpose: the decision body is the new
- * `{status, expected_status}`; scan / analysis / Keep are not ported, so the test asserts they are disabled and silent.
+ * `{status, expected_status}`; analysis is not ported, so the test asserts its controls are disabled and silent. Keep is
+ * live since review 011 and the scan since review 034a (its page is covered on fixtures by `scan-mocked.spec.ts`); the
+ * deep link `?find=1` still only focuses Find.
  */
 import { expect, test } from "@playwright/test";
 
@@ -90,11 +92,12 @@ test.describe("Deal Flow — new app, preview database", () => {
     const posted = recordPosts(page);
     await openDealFlow(page, "/deal-flow?find=1");
     await expect(page.getByTestId("find-btn")).toBeFocused();
+    await expect(page.getByTestId("find-btn")).not.toHaveAttribute("aria-disabled"); // the scan is live (034a); never clicked here
     await expect(page.getByTestId("cand-detail").first()).toBeVisible();
     await page.waitForLoadState("networkidle"); // count only once the detail and its triage panel have loaded
     const deferred = page.locator('[aria-disabled="true"]');
     const n = await deferred.count();
-    expect(n).toBeGreaterThan(3);
+    expect(n).toBeGreaterThanOrEqual(3); // the analysis controls; Find left this set in 034a
     for (let i = 0; i < n; i++) {
       const el = deferred.nth(i);
       if (!(await el.isVisible())) continue;

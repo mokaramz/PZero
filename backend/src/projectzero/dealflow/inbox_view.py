@@ -8,7 +8,8 @@ candidate ORDER is the old file order: ties then break exactly as before.
      feedback_min_reviewed, feedback_cap, pipeline_label, ws_geos}
 
 * ``inbox_rest`` is the imported ``inbox.json`` without its candidates (``documents['inbox.json#rest']``):
-  ``last_run``, ``report``, ``last_summary``, ...
+  ``last_run``, ``report``, ``last_summary``, ...; the latest Deal Flow scan's ``run_id``, ``report`` and summary
+  replace the first three once a scan ran (``dealflow.scan.history``, review 034a).
 * every candidate of the merged Deal Flow (legacy Deal Flow, Scout Intake / Native survivors, live leads) is the
   ranking input the rules read (``ranking.service.ranking_input``) with today's status and notes, plus the four
   computed blocks. Its ``id`` is the candidate id (imported Deal Flow candidates kept their old ids).
@@ -35,6 +36,7 @@ from projectzero.dealflow import revisit as revisit_rule
 from projectzero.dealflow import workspaces
 from projectzero.dealflow.ranking import attention, feedback, themes
 from projectzero.dealflow.ranking.service import RankingContext, ranking_input
+from projectzero.dealflow.scan import history as scan_history
 
 PIPELINE_EXISTING_LABEL = "Existing pipeline — not discovered in this scan"
 BASE_GEOS = ["DACH", "CH", "NORD", "BNL", "FR", "UK", "SEU", "EU", "US", "CA"]  # old connectors.GEOS
@@ -110,7 +112,7 @@ def inbox_view(conn: psycopg.Connection[Any], schema: str) -> dict[str, Any]:
             for r in cur.fetchall()
         }  # fmt: skip
 
-    rest = docs.get("inbox.json#rest") or {}
+    rest = scan_history.overlay_rest(docs.get("inbox.json#rest") or {}, scan_history.latest(conn, schema))
     out: dict[str, Any] = {"report": [], **{k: v for k, v in rest.items() if k != "candidates"}}
     out["last_run"] = ctx.last_run
     candidates = []

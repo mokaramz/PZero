@@ -22,12 +22,14 @@ type RowProps = {
   c: Candidate;
   tri?: TriageSummary;
   selected: boolean;
+  /** a row of the scan that just finished (review 034a): briefly highlighted */
+  fresh: boolean;
   im: boolean;
   themes: Record<string, string>;
   onSelect: (id: string) => void;
 };
 
-const Row = memo(function Row({ c, tri, selected, im, themes, onSelect }: RowProps) {
+const Row = memo(function Row({ c, tri, selected, fresh, im, themes, onSelect }: RowProps) {
   const th = (c.themes || []).map((t) => themes[t] || t);
   const decided = useChanged(c.decision || "new");
   const [ref, size] = useBoxSize<HTMLButtonElement>();
@@ -35,7 +37,7 @@ const Row = memo(function Row({ c, tri, selected, im, themes, onSelect }: RowPro
     <button
       ref={ref}
       type="button"
-      className={cx(styles.cand, selected && styles.candSel, c.decision !== "new" && styles.candDecided)}
+      className={cx(styles.cand, selected && styles.candSel, fresh && styles.candFresh, c.decision !== "new" && styles.candDecided)}
       onClick={() => onSelect(c.id)}
       aria-pressed={selected}
       data-testid="cand-row"
@@ -86,6 +88,8 @@ type ListProps = {
   list: Candidate[];
   tri?: Record<string, TriageSummary>;
   selId: string | null;
+  /** the run id of the scan that just finished, while its rows are highlighted */
+  freshRun?: string | null;
   im: boolean;
   themes: Record<string, string>;
   onSelect: (id: string) => void;
@@ -96,11 +100,11 @@ type ListProps = {
 };
 
 /** Paginated candidate list: the inbox can hold ~1,000 rows, so only `limit` are mounted at once. */
-export function CandidateList({ list, tri, selId, im, themes, onSelect, limit, onMore, hidden }: ListProps) {
+export function CandidateList({ list, tri, selId, freshRun, im, themes, onSelect, limit, onMore, hidden }: ListProps) {
   return (
     <div className={styles.list} role="list" aria-label="Candidates">
       {list.slice(0, limit).map((c) => (
-        <Row key={c.id} c={c} selected={c.id === selId} im={im} themes={themes} onSelect={onSelect} tri={tri?.[c.id]} />
+        <Row key={c.id} c={c} selected={c.id === selId} fresh={!!freshRun && c.run_id === freshRun} im={im} themes={themes} onSelect={onSelect} tri={tri?.[c.id]} />
       ))}
       {list.length > limit && (
         <div className={styles.more}>

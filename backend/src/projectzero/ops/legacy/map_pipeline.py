@@ -7,7 +7,7 @@ from typing import Any
 
 from projectzero.dealflow.identity import company_domain
 from projectzero.dealflow.ranking.names import slug as company_slug
-from projectzero.dealflow.sources.registry import country_code, registry_value
+from projectzero.dealflow.sources.registry import country_code, registry_namespace, registry_value
 from projectzero.ops.legacy.companies import StrongKey
 from projectzero.ops.legacy.convert import (
     DEALFLOW_STATUS,
@@ -165,12 +165,7 @@ class PipelineMapper(BuilderState):
             for kind, value in (c.get("entity_ids") or {}).items():
                 if (v := registry_value(value)) is None:
                     continue
-                namespace = (
-                    "gtr_org"
-                    if kind == "org_id" and c.get("source_id") == "uk-gtr"
-                    else (kind if kind == "duns" else f"{kind}:{c.get('source_id')}")
-                )
-                keys.append(("registry", namespace, v))
+                keys.append(("registry", registry_namespace(kind, c.get("source_id")), v))
             company_id = self.book.resolve(
                 seed=f"inbox:{c['id']}",
                 name=c.get("name"),

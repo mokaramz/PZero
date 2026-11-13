@@ -1,0 +1,108 @@
+{
+  "candidates": [
+    {
+      "id": "s-0101",
+      "name": "Quillon Robotics",
+      "decision": "new",
+      "pz_status": "new",
+      "source": "Isarwerk Venture Lab",
+      "discovery_tier": "pre_company",
+      "location": "Munich, Germany",
+      "description": "Gripper arms for small-batch food packaging.",
+      "source_date": "2026-11-10",
+      "run_id": "2026-11-12 22:15",
+      "first_seen": "2026-11-12 22:16"
+    },
+    {
+      "id": "s-0102",
+      "name": "Fennmoor Grid",
+      "decision": "new",
+      "pz_status": "new",
+      "source": "Lindqvist Grants",
+      "discovery_tier": "announcement",
+      "location": "Utrecht, Netherlands",
+      "description": "Battery scheduling for rural cooperatives.",
+      "source_date": "2026-11-08",
+      "run_id": "2026-11-12 22:15",
+      "first_seen": "2026-11-12 22:16"
+    },
+    {
+      "id": "s-0103",
+      "name": "Ostravel Bio",
+      "decision": "research",
+      "pz_status": "reviewing",
+      "source": "Brightwater Registry",
+      "discovery_tier": "announcement",
+      "location": "Vienna, Austria",
+      "description": "Enzyme screening on a chip.",
+      "source_date": "2026-10-30",
+      "run_id": "2026-11-05 22:10",
+      "first_seen": "2026-11-05 22:11"
+    },
+    {
+      "id": "s-0104",
+      "name": "Tamberlane Optics",
+      "decision": "new",
+      "pz_status": "new",
+      "source": "Prairie SBIR awards",
+      "discovery_tier": "announcement",
+      "location": "Boulder, CO",
+      "description": "Low-cost lidar for farm robots.",
+      "source_date": "2026-11-09",
+      "run_id": "2026-11-12 22:15",
+      "first_seen": "2026-11-12 22:16"
+    },
+    {
+      "id": "s-0105",
+      "name": "Kelderhof Labs",
+      "decision": "baseline",
+      "pz_status": "baseline",
+      "source": "Isarwerk Venture Lab",
+      "discovery_tier": "pre_company",
+      "location": "Munich, Germany",
+      "description": "Listed on the lab's page before the first scan.",
+      "run_id": "2026-10-01 22:00",
+      "first_seen": "2026-10-01 22:01"
+    }
+  ],
+  "last_run": "2026-11-12 22:15",
+  "report": [
+    { "source": "Isarwerk Venture Lab", "tier": "watcher", "status": "ok", "note": "3 new lines", "geo": ["DACH"], "source_id": "isarwerk", "raw": 12, "count": 3, "baseline": 0 },
+    { "source": "Lindqvist Grants", "tier": "structured", "status": "ok", "note": "4 awards", "geo": ["EU"], "source_id": "lindqvist", "raw": 18, "count": 4, "baseline": null },
+    { "source": "Halden Feed", "tier": "feed", "status": "failed", "note": "HTTP Error 503: Service Unavailable", "geo": ["UK"], "source_id": "halden", "raw": null, "count": null, "baseline": null },
+    { "source": "Global Deep Tech Wire", "tier": "feed", "status": "ok", "note": "6 items", "geo": ["ALL"], "source_id": "gdtw", "raw": 6, "count": 6, "baseline": null },
+    { "source": "Brightwater Registry", "tier": "structured", "status": "ok", "note": "1 item(s) refused by the intake: the name is not a company name", "geo": ["DACH"], "source_id": "brightwater", "raw": 5, "count": 4, "baseline": null, "refused": 1 },
+    { "source": "Prairie SBIR awards", "tier": "structured", "status": "ok", "note": "4 awards", "geo": ["US"], "source_id": "prairie", "raw": 20, "count": 4, "baseline": null },
+    { "source": "Maplewood Accelerator", "tier": "feed", "status": "off", "note": "disabled", "geo": ["CA"], "source_id": "maplewood" }
+  ],
+  "last_summary": {
+    "new": 3,
+    "baseline": 0,
+    "noise": 1,
+    "pre_company_new": 1,
+    "run_id": "2026-11-12 22:15",
+    "scan_started": "2026-11-12 22:15:02",
+    "scan_finished": "2026-11-12 22:18:40",
+    "sources_attempted": 6,
+    "sources_ok": 5,
+    "sources_failed": 1,
+    "sources_off": 1,
+    "raw_records": 61,
+    "merged_cross_source": 1,
+    "merged_into_existing": 2,
+    "known_skipped": 11,
+    "known_pipeline": 2,
+    "known_pipeline_names": ["Varnholt Systems", "Ellery Foods"],
+    "new_companies": [
+      { "id": "s-0101", "name": "Quillon Robotics", "source": "Isarwerk Venture Lab", "source_url": "https://isarwerk.example.org/teams", "source_date": "2026-11-10", "first_seen": "2026-11-12 22:16" },
+      { "id": "s-0102", "name": "Fennmoor Grid", "source": "Lindqvist Grants", "source_url": "https://grants.example.org/fennmoor", "source_date": "2026-11-08", "first_seen": "2026-11-12 22:16" },
+      { "id": "s-0104", "name": "Tamberlane Optics", "source": "Prairie SBIR awards", "source_url": "https://awards.example.org/tamberlane", "first_seen": "2026-11-12 22:16" }
+    ],
+    "refused": 1
+  },
+  "themes": { "robotics": "Robotics & automation", "climate": "Climate & energy" },
+  "feedback_cap": 3,
+  "feedback_min_reviewed": 5,
+  "pipeline_label": "Existing pipeline — not discovered in this scan",
+  "ws_geos": { "eu": ["DACH", "EU", "UK"], "na": ["US", "CA"], "un": [] }
+}

@@ -22,6 +22,7 @@ from projectzero.core.db import schema_ident
 from projectzero.dealflow import workspaces
 from projectzero.dealflow.intake.postgres import ensure_intake_open
 from projectzero.dealflow.ranking.service import RankingContext
+from projectzero.dealflow.scan import history as scan_history
 from projectzero.dealflow.sources import counters
 from projectzero.dealflow.sources.normalize import load_registry
 from projectzero.dealflow.sources.registry import country_code
@@ -77,7 +78,9 @@ class SourcesStore:
             ledger=RankingContext.load(self.conn, self._schema).ledger,
             deltas=counters.deltas(self.conn, self._schema),
             override=workspaces.parse_override(docs.get("workspace_geos.json") or {}),
-            inbox_rest=rest if isinstance(rest, dict) else {},
+            inbox_rest=scan_history.overlay_rest(
+                rest if isinstance(rest, dict) else {}, scan_history.latest(self.conn, self._schema)
+            ),  # review 034a
         )
 
     # ── write ───────────────────────────────────────────────────────────────────────────────────────────────────

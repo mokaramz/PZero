@@ -4,13 +4,14 @@ runner's ``still_due`` check (plan revision 3).
 
 | job | entry point | occurrence |
 |---|---|---|
+| deal_flow_scan | ``dealflow.scan.run.scan`` (its scan lock, review 034a) | the newest ``scan_runs`` row |
 | event_scan | ``events.scan.scan`` (its scan lock) | ``event_health.json``'s ``scan_time`` and ``updated_at`` |
 | validation_snapshot | ``writers.record_snapshot`` | the newest ``snapshots`` line (``validation_log.seq``) |
 | news_refresh | ``news.runs.refresh_run(trigger="scheduled")`` | the newest ``runs`` News log line |
 | news_weekly_review | ``writers.record_weekly`` + ``news.runs.evaluation`` | the newest ``weekly`` News log line |
 | news_source_review | ``news.runs.evaluation(record_history=True)`` | the newest monthly-review mark (``run_notes``) |
 
-The other six active jobs are not ported (decision b): ``REAL`` holds no entry for them, so they never run.
+The other five active jobs are not ported (decision b): ``REAL`` holds no entry for them, so they never run.
 """
 
 from __future__ import annotations
@@ -24,10 +25,11 @@ import psycopg
 from psycopg import sql
 
 from projectzero.core import occurrence
-from projectzero.core.db import schema_ident
+from projectzero.core.db import schema_ident, transaction
+from projectzero.dealflow.scan import run as dealflow_scan
 from projectzero.events import scan
 from projectzero.health.catalog import JOBS as JOB_ROWS
-from projectzero.jobs import writers
+from projectzero.jobs import store, writers
 from projectzero.jobs.ported import PORTED
 from projectzero.network.view import berlin_today
 from projectzero.news import refresh, runs
@@ -44,6 +46,9 @@ class JobDeps:
     events_transport: Any = None
     events_resolver: Any = None
     events_deadline_s: float = scan.SCAN_DEADLINE_S
+    dealflow_transport: Any = None
+    dealflow_resolver: Any = None
+    dealflow_options: Mapping[str, Any] = field(default_factory=dict)  # budgets / worker count (tests)
     news_transport: Any = None
     news_resolver: Any = None
     new_hex: Callable[[], str] | None = None
@@ -86,6 +91,10 @@ def event_scan_occurrence(conn: psycopg.Connection[Any], schema: str) -> Any:
     )
 
 
+def deal_flow_scan_occurrence(conn: psycopg.Connection[Any], schema: str) -> Any:
+    return _one(conn, schema, "select max(id) from {s}.scan_runs")
+
+
 def news_log_occurrence(log: str) -> Callable[[psycopg.Connection[Any], str], Any]:
     def read(conn: psycopg.Connection[Any], schema: str) -> Any:
         return _one(conn, schema, "select max(seq) from {s}.news_logs where log = %s", (log,))
@@ -105,6 +114,23 @@ def snapshot_occurrence(conn: psycopg.Connection[Any], schema: str) -> Any:
 
 
 # ------------------------------------------------------------------------------------------------ the old _run_*
+def _run_scan(ctx: JobContext) -> str:
+    """The old ``_run_scan``: the scan (the config's ``catch_up_scan_days``, else 7) and its old note. Decision d
+    (review 034a): no machine triage runs after it; the note says so."""
+    d = ctx.deps
+    with transaction(ctx.db_url) as conn:
+        cfg = store.config(conn, ctx.schema)
+    days = int((cfg if isinstance(cfg, dict) else {}).get("catch_up_scan_days") or dealflow_scan.DEFAULT_DAYS)
+    try:
+        res = dealflow_scan.scan(ctx.db_url, ctx.schema, days=days, clock=lambda: ctx.now,
+                                 transport=d.dealflow_transport, resolver=d.dealflow_resolver,
+                                 still_due=ctx.still_due, trigger=ctx.source,
+                                 **dict(d.dealflow_options))  # fmt: skip
+    except dealflow_scan.ScanBusy:
+        return dealflow_scan.ALREADY_RUNNING_JOB
+    return f"{res.get('new', 0)} genuinely new · {res.get('baseline', 0)} baseline · {res.get('triage')}"
+
+
 def _run_events(ctx: JobContext) -> str:
     d = ctx.deps
     health = scan.scan(ctx.db_url, ctx.schema, ctx.now, d.events_fetcher, deadline_s=d.events_deadline_s,
@@ -153,6 +179,7 @@ def _run_news_sources_monthly(ctx: JobContext) -> str:
 
 
 _ENTRY: dict[str, tuple[Callable[[JobContext], str], Callable[[psycopg.Connection[Any], str], Any]]] = {
+    "deal_flow_scan": (_run_scan, deal_flow_scan_occurrence),
     "event_scan": (_run_events, event_scan_occurrence),
     "validation_snapshot": (_run_snapshot, snapshot_occurrence),
     "news_refresh": (_run_news, news_log_occurrence("runs")),

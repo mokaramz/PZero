@@ -5,6 +5,17 @@
                                                      ``cursor``
 * ``GET  /api/deal-flow/candidates/{id}``            detail; ``?ns=scout_intake|native_scout`` resolves an old id
 * ``POST /api/deal-flow/candidates/{id}/decision``   ``{status, reason?, notes?, expected_status?}``
+* ``POST /api/deal-flow/find``                       ``{days}``: the old ``/api/find`` (review 034a):
+                                                     ``{started: true}``
+                                                     (the scan runs in a background thread), or the old busy body
+                                                     ``{running: true, done, total, note}`` while a scan runs here or
+                                                     in another session; 409 ``{ok: false, error}`` before the import
+* ``GET  /api/deal-flow/find_status``                the old ``/api/find_status``: ``{running, done, total, rows,
+                                                     result, error, started}``
+* ``GET  /api/deal-flow/scan_history?n=``            the old ``/api/scan_history``: ``{scans, total, pipeline_label}``
+
+``app.state.clock``, ``app.state.dealflow_transport`` / ``dealflow_resolver`` (fixtures), ``dealflow_scan_options``
+(budgets, workers) and ``dealflow_scan_wait`` (join the scan thread) are the test seams.
 
 Errors use ``{ok: false, error, ...}`` with 400 / 404 / 409, like the rest of the API.
 """
@@ -19,9 +30,13 @@ from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
 
+from projectzero.api.routers.conviction import Body
 from projectzero.core.db import transaction
 from projectzero.dealflow.candidates import DealFlowStore, DecisionError, ListQuery, validate_operator_status
 from projectzero.dealflow.inbox_view import inbox_view
+from projectzero.dealflow.intake.postgres import IntakeClosedError
+from projectzero.dealflow.scan import history as scan_history
+from projectzero.dealflow.scan import run as scan_run
 
 router = APIRouter(prefix="/api/deal-flow", tags=["deal-flow"])
 
@@ -106,3 +121,48 @@ def decide(request: Request, candidate_id: str, body: DecisionBody) -> JSONRespo
             status_code=409,
         )
     return _ok(result)
+
+
+# ------------------------------------------------------------------------------------------------ the scan (034a)
+@router.post("/find")
+def find(request: Request, body: Body) -> JSONResponse:
+    """Start the background scan (the old ``start_scan(int(body.get("days", 7)))``). Never blocks on the network."""
+    if isinstance(body, JSONResponse):
+        return body
+    try:
+        days = int(body.get("days", scan_run.DEFAULT_DAYS))
+    except (TypeError, ValueError):
+        return JSONResponse({"ok": False, "error": "days must be a whole number"}, status_code=400)
+    settings = request.app.state.settings
+    state = request.app.state
+    try:
+        out = scan_run.start_scan(
+            settings.db_url,
+            settings.schema,
+            days,
+            clock=getattr(state, "clock", None),
+            transport=getattr(state, "dealflow_transport", None),
+            resolver=getattr(state, "dealflow_resolver", None),
+            options=getattr(state, "dealflow_scan_options", None),
+            wait_for=bool(getattr(state, "dealflow_scan_wait", False)),
+        )
+    except IntakeClosedError as exc:
+        return JSONResponse({"ok": False, "error": str(exc)}, status_code=409)
+    return JSONResponse(jsonable_encoder(out))
+
+
+@router.get("/find_status")
+def find_status(request: Request) -> JSONResponse:
+    settings = request.app.state.settings
+    return JSONResponse(jsonable_encoder(scan_run.scan_status(settings.db_url, settings.schema)))
+
+
+@router.get("/scan_history")
+def get_scan_history(request: Request, n: str = "20") -> JSONResponse:
+    try:
+        count = int(n)
+    except ValueError:
+        return JSONResponse({"ok": False, "error": "n must be a whole number"}, status_code=400)
+    settings = request.app.state.settings
+    with transaction(settings.db_url) as conn:
+        return JSONResponse(jsonable_encoder(scan_history.scan_history_view(conn, settings.schema, count)))
