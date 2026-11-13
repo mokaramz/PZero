@@ -21,6 +21,8 @@ cutover if it is missing, then what only completes a view.
 - Conviction's request clock: its naive `datetime.now` fallback, read and write timestamps together (032a H-301).
 - The importer skipping and reporting malformed legacy records (031a finding).
 - `bounded_transaction` moved into `core/db`.
+- Strict boolean `confirm` on the Evaluator (evidence, IMQ trigger), Founder Radar (identity) and Validation
+  (benchmark import) write routes: only JSON `true` confirms, each with a string-false regression (035a H-351).
 
 **The cutover** (Mohamed's steps, in this order, documented in 032c):
 1. pause the old task "Project Zero - background jobs";

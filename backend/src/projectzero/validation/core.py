@@ -32,7 +32,7 @@ from projectzero.conviction.radar import compose_radar
 from projectzero.conviction.records import readable, records
 from projectzero.dealflow.ranking.names import norm_company
 from projectzero.dealflow.triage.view import decisions as read_jsonl
-from projectzero.dealflow.triage.view import edge
+from projectzero.dealflow.triage.view import edge, latest_verdicts
 from projectzero.network.view import berlin_now
 from projectzero.validation import routing
 from projectzero.validation.catalog import (
@@ -197,10 +197,8 @@ def entities(inputs: ValidationInputs, today: date) -> dict[str, dict[str, Any]]
 def build(inputs: ValidationInputs, today: date) -> tuple[dict[str, dict[str, Any]], list[str]]:
     """Entities plus the data-quality issues found while joining (e.g. future dates that were ignored)."""
     props = inputs.proposals
-    verdicts = {}
-    for d in read_jsonl(inputs.decisions_log):
-        if d.get("candidate_id"):
-            verdicts[d["candidate_id"]] = d
+    aliases = inputs.candidate_aliases
+    verdicts = latest_verdicts(read_jsonl(inputs.decisions_log), aliases)  # per survivor (review 035a, decision e)
     ents: dict[str, dict[str, Any]] = {}
     issues: list[str] = []
 
@@ -259,7 +257,7 @@ def build(inputs: ValidationInputs, today: date) -> tuple[dict[str, dict[str, An
             e["themes"] = p.get("themes") or []
             if p["proposal"] in ("KEEP", "RESEARCH"):
                 e["stages"].add("machine_keep_research")
-        v = verdicts.get(c["id"])
+        v = verdicts.get(aliases.get(c["id"], c["id"]))
         if v:
             e["mohamed"] = {
                 "verdict": v.get("verdict"),
@@ -385,7 +383,7 @@ def build(inputs: ValidationInputs, today: date) -> tuple[dict[str, dict[str, An
     try:
         for k, ob in observations(inputs.news).items():
             e = ents.get(k)  # type: ignore[assignment]
-            d = _valid(ob["date"], today)  # type: ignore[assignment]
+            d = _valid(ob["date"], today)
             if not e or not e["first_seen"] or not d:
                 continue  # News never creates an entity; it only dates a later public event for one PZ already knows
             if not e["observed_news"] or d < e["observed_news"]["date"]:
@@ -515,9 +513,15 @@ def lifecycle_map(network_doc: Any) -> dict[str, str]:
 
 def source_alpha(ents: dict[str, dict[str, Any]], inputs: ValidationInputs) -> list[dict[str, Any]]:
     names = _sources(inputs.sources)
+    aliases = inputs.candidate_aliases
     decisions_by_cand = defaultdict(list)
     for d in read_jsonl(inputs.decisions_log):
-        decisions_by_cand[d.get("candidate_id")].append(d)
+        cid = d.get("candidate_id")
+        decisions_by_cand[aliases.get(cid, cid) if isinstance(cid, str) else cid].append(d)  # per survivor (035a)
+
+    def survivors(cids: list[str]) -> list[str]:  # an entity's ids, once per survivor (no aliases: as recorded)
+        return list(dict.fromkeys(aliases.get(c, c) for c in cids)) if aliases else cids
+
     rows: dict[str, dict[str, Any]] = {}
     for e in ents.values():
         if not e["source_ids"] and not e["source_id"]:
@@ -559,7 +563,7 @@ def source_alpha(ents: dict[str, dict[str, Any]], inputs: ValidationInputs) -> l
             elif first and e["lead"] and e["lead"]["days"] is not None:
                 r["leads"].append(e["lead"]["days"])
             r["review_min"] += _review_minutes(
-                [d for cid in e["candidate_ids"] for d in decisions_by_cand.get(cid, [])]
+                [d for cid in survivors(e["candidate_ids"]) for d in decisions_by_cand.get(cid, [])]
             )
     out = []
     for r in rows.values():
@@ -619,13 +623,14 @@ def conversion(ents: dict[str, dict[str, Any]], dim: str, sources: Any) -> list[
     return rows
 
 
-def calibration(ents: dict[str, dict[str, Any]], decisions_log: str) -> dict[str, Any]:
-    """Machine vs Mohamed on REAL operating decisions only (dev / holdout labels are never read)."""
-    latest = {}
-    for d in read_jsonl(decisions_log):
-        if d.get("candidate_id"):
-            latest[d["candidate_id"]] = d
-    by_cand = {cid: e for e in ents.values() for cid in e["candidate_ids"]}
+def calibration(
+    ents: dict[str, dict[str, Any]], decisions_log: str, aliases: dict[str, str] | None = None
+) -> dict[str, Any]:
+    """Machine vs Mohamed on REAL operating decisions only (dev / holdout labels are never read). The latest line is
+    chosen per SURVIVOR (``aliases``: old candidate id -> survivor, review 035a decision e)."""
+    aliases = aliases or {}
+    latest = latest_verdicts(read_jsonl(decisions_log), aliases)
+    by_cand = {aliases.get(cid, cid): e for e in ents.values() for cid in e["candidate_ids"]}
     n = len(latest)
     agreed = sum(1 for d in latest.values() if d.get("agreed"))
     matrix: dict[str, Counter[str]] = defaultdict(Counter)
@@ -838,7 +843,10 @@ def _routing(ents: dict[str, dict[str, Any]], inputs: ValidationInputs) -> dict[
     """Triage Queue Compressor outcomes (human attention per serious opportunity, calibration, false negatives)."""
     try:
         return routing.metrics(
-            {k: {"stages": e["stages"]} for k, e in ents.items()}, inputs.queue_routing, inputs.decisions_log
+            {k: {"stages": e["stages"]} for k, e in ents.items()},
+            inputs.queue_routing,
+            inputs.decisions_log,
+            inputs.candidate_aliases,
         )
     except Exception:  # a routing store problem never hides Validation
         return None
@@ -975,7 +983,7 @@ def view(inputs: ValidationInputs, today: date, now: datetime) -> dict[str, Any]
     ``now`` (the router passes ``berlin_today(now)``). Reads only (decision a)."""
     ents, issues = build(inputs, today)
     head = _headline(ents, today, inputs.audits_log)
-    cal = calibration(ents, inputs.decisions_log)
+    cal = calibration(ents, inputs.decisions_log, inputs.candidate_aliases)
     series = snapshot_series(inputs.snapshots_log, head, cal, today, now)
     audits = _live(read_jsonl(inputs.audits_log))
     outcomes = [o for o in _live(read_jsonl(inputs.outcomes_log)) if o.get("kind")]

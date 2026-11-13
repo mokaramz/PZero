@@ -20,7 +20,10 @@ Where each old input comes from:
   ``news_events_rest`` / ``news_actions`` (review 028b); the run's logs (``news/{runs,disagreements,source_log,
   source_history,weekly}.jsonl``) from ``news_logs`` and its documents (``news/{source_metrics,source_state,
   feeds_extra,run_state,feed_cooldown}.json``) from ``news_documents`` (review 028c). No News archive is read.
-* ``triage_decisions.jsonl``, ``verification_decisions.jsonl``, ``scout_intake.json``, ``sources/network.json`` and
+* ``triage_decisions.jsonl``: the archived lines, then the ``triage_decisions`` rows by ``seq`` (review 035a,
+  ``triage.log``), with the ``candidate`` merge aliases (``candidate_aliases``): the latest line is chosen per
+  survivor.
+* ``verification_decisions.jsonl``, ``scout_intake.json``, ``sources/network.json`` and
   ``scan_history.json``: the byte-exact archive (``utf-8-sig``) in line / key order, else (the JSON files) the
   imported ``documents`` row; a missing file reads as its old default.
 """
@@ -42,13 +45,14 @@ from projectzero.dealflow import inbox_records
 from projectzero.dealflow.inbox_view import candidate_rows
 from projectzero.dealflow.scan import history as scan_history
 from projectzero.dealflow.sources.store import SourcesStore
+from projectzero.dealflow.triage import log as triage_log
 from projectzero.dealflow.triage.view import proposal_record, route_record
 from projectzero.founder_calls.store import FounderCallsStore
 from projectzero.map.inputs import RETIRED_ORIGINS
 from projectzero.network.view import berlin_now, berlin_today
 from projectzero.news import store as news_store
 from projectzero.validation import store
-from projectzero.validation.inputs_model import ValidationInputs, candidate_record, inputs_from_docs
+from projectzero.validation.inputs_model import DECISION_LOG, ValidationInputs, candidate_record, inputs_from_docs
 
 JSON_ARCHIVES = (
     "scout_intake.json",
@@ -86,7 +90,17 @@ def parse_archived(raw: Any) -> Any:
 
 
 def load(conn: psycopg.Connection[Any], schema: str, now: datetime) -> ValidationInputs:
-    return inputs_from_docs(load_docs(conn, schema, now), berlin_today(now))
+    return inputs_from_docs(load_docs(conn, schema, now), berlin_today(now), candidate_aliases(conn, schema))
+
+
+def candidate_aliases(conn: psycopg.Connection[Any], schema: str) -> dict[str, str]:
+    """Old candidate id -> survivor (the ``candidate`` merge aliases)."""
+    rows = conn.execute(
+        sql.SQL("select alias_id, candidate_id from {}.candidate_aliases where namespace = 'candidate'").format(
+            schema_ident(schema)
+        )
+    ).fetchall()
+    return {str(a): str(c) for a, c in rows}
 
 
 def load_docs(conn: psycopg.Connection[Any], schema: str, now: datetime) -> dict[str, Any]:
@@ -136,6 +150,7 @@ def load_docs(conn: psycopg.Connection[Any], schema: str, now: datetime) -> dict
             docs[path] = stored[path]
     for path in TEXT_ARCHIVES:
         docs[path] = archived_text(archived[path]) if path in archived else ""
+    docs[DECISION_LOG] = triage_log.log_text(conn, schema, docs[DECISION_LOG])  # the archive, then the rows (035a)
     if runs := scan_history.runs(conn, schema):  # review 034a: the imported history overlaid by the new runs
         docs["scan_history.json"] = scan_history.overlay(docs.get("scan_history.json"), runs)
     docs.update(store.texts(conn, schema))  # the four Validation logs (027b), in seq order

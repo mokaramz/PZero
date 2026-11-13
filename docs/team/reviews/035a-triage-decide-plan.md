@@ -1,6 +1,6 @@
 # 035a — Plan: machine triage, part 1 (accept / override, batch reject, the decision log)
 
-Author: Claude · Date: 2026-11-13 · Status: plan APPROVED (H-349) — implementation next
+Author: Claude · Date: 2026-11-13 · Status: plan APPROVED (H-349) · implementation APPROVED (H-353)
 
 ## Why
 Machine triage is item 2 of [REMAINING_PORTS.md](../REMAINING_PORTS.md). The survey found four old layers, about
@@ -201,5 +201,204 @@ stand as approved.
 **APPROVE revision 2 for implementation.** The batch locks distinct companies before candidates and checks ownership and eligibility after locking. KEEP now checks the locked status and returns `open_keep` only after the log row commits. These changes resolve H-347.
 
 Correct the concurrency fixture when implementing it. The two listed batches share companies but have disjoint candidate IDs, so neither batch can report that the other rejected its open candidate. Also, the literal IDs shown sort both batches A-first. Choose IDs that actually produce opposite company orders when sorted by candidate ID, and assert that order in the fixture. For this case expect one applied open candidate and one skipped pre-rejected sibling per batch. Use the separately planned concurrent confirms on the same open candidate to verify exactly one log row and an “already decided” skip by the second writer.
+
+### Claude — implementation
+
+**Storage** (migration 0025)
+- **`triage_decisions`:** `seq` (an identity column, the order), `candidate_id` (the survivor), `recorded_at`, and
+  `entry json`.
+  - `entry` must be an object: the old line with its keys sorted, kept byte for byte.
+  - The `forbid_mutation` triggers refuse UPDATE and DELETE. RLS is on, with no grants. No lock or setting name
+    mentions the schema.
+
+**The writes** (`dealflow/triage/decide.py`, `dealflow/triage/log.py`, `dealflow/candidates.py`)
+- **`decide`:**
+  - the old validation, in the old order, before any connection opens;
+  - then `DealFlowStore.lock_for_triage`: `_lock_candidate` (the company, then the candidate, with the moved-company
+    409), then `expected_status` checked under both locks;
+  - then the current proposal is read and checked under those locks.
+  - REJECT, WATCH and RESEARCH go through `DealFlowStore.decide` in the same transaction. KEEP appends the line only.
+    The line is appended last, and `open_keep` returns only after the commit.
+- **`batch_reject`:**
+  - **The preview** is one read-only snapshot.
+  - **The confirm:**
+    - ids resolved to survivors and deduped (`resolve_many`);
+    - `lock_for_triage_batch`: a peek, then the DISTINCT companies locked `order by id for update`, then the
+      candidates in id order, then ownership re-checked (409, nothing written);
+    - eligibility re-derived from the view build over the locked rows, with a latest log-only KEEP counted as
+      "already decided";
+    - each candidate decided, its line appended. One transaction.
+  - The batch calls `decide(..., feedback_answer=False)`, which skips re-reading the ranking context for an answer
+    nobody reads. The event it writes is the same.
+- **`log.joined`:** the archived text, then the rows by `seq`. It adds a missing final newline to the archive; the old
+  `append_line` would have glued the two lines together.
+- **The event's `reason`:** `machine triage: accept`, `override` or `batch_accept`.
+
+**The readers**
+- The triage view (`latest_verdicts(log, aliases)`, calibration, `load` through `log_text`) and Validation (`inputs`,
+  `core.build` verdicts, `source_alpha`, `calibration`, `routing.metrics`) resolve the `candidate` aliases BEFORE
+  choosing the latest line.
+- With no aliases, they behave exactly as before. The stored line keeps the id as recorded.
+- Today reads the view, so it gets the new lines too. `jobs/writers.py` passes the aliases to `calibration`.
+
+**Routes** (`api/routers/dealflow_triage.py`)
+- `POST /api/deal-flow/triage/decide` `{id, verdict, mode?=accept, note?, expected_status?}`:
+  - the answer: `{ok, verdict, agreed, inbox_decision: rejected|watch|research|null, open_keep}`;
+  - 400 with the old texts;
+  - 409 with the decision route's bodies (changed meanwhile, moved company, reopen, intake closed).
+- `POST /api/deal-flow/triage/batch_reject` `{ids, confirm?}`:
+  - the preview answers `{ok, preview: true, eligible, skipped}`, the confirm `{ok, applied, skipped}`;
+  - the skip keys: "no proposal", "already decided", "not an obvious reject (stale, flagged or single-model)", and the
+    new "same candidate as another id".
+- `ensure_intake_open` is checked on decide and on confirm. The preview is a read, so it also answers before the
+  import.
+
+**Page** (`features/deal-flow/`)
+- **TriagePanel:** the old live Accept and Override. It is keyed per candidate, so an override picked for one never
+  carries over to the next.
+- **"Accept obvious REJECTs…":**
+  - it collects the undecided obvious REJECTs in the current queue scope, as the old page did, and previews them;
+  - then the old dialog ("Batch-accept obvious REJECTs", "Reject N" from the preview's `eligible`), the confirm, and
+    the toast "Rejected N · skipped M";
+  - the dialog adds "Left out: …" when the preview skipped any;
+  - the cached rows are patched only when nothing was skipped, since the server answers counts, not ids. Otherwise
+    the refetch shows exactly what was applied.
+- **The other actions:**
+  - KEEP opens the existing Keep form, with no toast;
+  - a 409 is the error toast, followed by a re-read;
+  - the old success toasts ("Accepted X" / "Overrode to X"). The old stray "✓ Working — done" was a label-lookup
+    miss and is gone.
+- **Invalidations:** the triage, inbox, sources, home, today and validation queries. Validation is new, because it
+  reads the log now. The old `feedback` key has no separate endpoint here.
+- `NOT_PORTED.triage` is removed. The analysis and red-team controls stay deferred.
+
+**Declared differences** (all in `parity_triage_decide.normalise`)
+- **(a)** RESEARCH becomes `reviewing`. It is compared in the old vocabulary, and the event's `reason` is additive.
+- **(b) and (d)** atomicity: not visible on the scripted path, and forced in the hosted tests.
+- **(c)** no case preparation: the oracle records the old `case_prep.request` calls, and the expected new side has
+  none.
+- **(e)** the latest verdict and calibration per survivor: the expected values are the OLD code over the
+  alias-mapped lines.
+- **(f)** `expected_status` is additive.
+- **Revision 2:** the "same candidate as another id" skip, and a log-only KEEP counted as decided.
+- **Review 009:** an absorbed record is no candidate of its own. A proposal the view carries to a survivor is
+  normalised in the same place.
+- **Errors:** the old `ApiError` 400, with each answer's status code.
+
+**Verification (all pass)**
+- **Goldens and hosted** (`parity_triage_decide goldens` / `check` / `hosted`), 13 steps:
+  - the script: accept, override, KEEP, RESEARCH with a note, five refusals, an override with a note, an empty batch,
+    the preview, the confirm;
+  - the old side: the preview found 5 eligible, skipping 2 not obvious, 4 already decided and 2 with no proposal;
+    the confirm applied 5; 2 case-preparation calls were recorded; nothing was written outside the scratch folder;
+  - the new side, after `normalise`: 4 eligible and applied, plus 1 "same candidate as another id" (the merged pair);
+  - 0 differences. `model_ledger` is unchanged, and the importer's aliases are asserted.
+- **Real snapshot** (`parity_triage_decide real`; the old code over a scratch copy of the same bytes):
+
+  | Step | What | Answer | New lines / total | Calibration decisions | Differences |
+  |---|---|---|---|---|---|
+  | 0 | read-back: the imported view against the old `view()` (proposals, counts, calibration, pending, queue overlay) | — | 0 / 4 | 4 | 0 |
+  | 1 | accept (RESEARCH) | 200, `research`, agreed | 1 / 5 | 5 | 0 |
+  | 2 | override to WATCH | 200, `watch`, not agreed | 1 / 6 | 6 | 0 |
+
+  - 1,005 proposals.
+  - **(e) confirmed:** the 4 archived lines name 4 distinct survivors and no absorbed id, so the imported calibration
+    stays at 4.
+  - Only `candidates`, `candidate_events` and `triage_decisions` changed. `model_ledger` is unchanged.
+  - The one old case-preparation call is the declared (c).
+- **Unchanged real parities:** `parity_triage real`, `parity_validation real` and `parity_today real` all pass.
+- **Hosted** (`test_triage_decide_hosted.py`, 16 tests, run twice):
+  - decide is atomic;
+  - KEEP writes only the log, and the RESEARCH line is byte-exact (`research`);
+  - an absorbed id decides its survivor;
+  - a stale `expected_status` gives a 409;
+  - KEEP racing a decide that commits first (the KEEP really blocks on the lock): a 409, no row, no `open_keep`;
+  - a KEEP line, then a confirm: "already decided";
+  - a duplicate alias is decided once;
+  - a candidate decided between the preview and the confirm is skipped;
+  - a moved company gives a 409, with nothing written;
+  - a failure at the third of five lines rolls back the whole batch;
+  - **H-348's crossing batches:** the id order crossing the company order is asserted in the fixture. Each batch
+    applies 1 and skips 1, with no deadlock;
+  - the same candidate confirmed twice: one line, and "already decided" for the second writer;
+  - nothing is written on `pz` before the import;
+  - no route changes `model_ledger`;
+  - the view and Validation read the archive, then the rows, and a re-decided survivor counts once;
+  - a pure refusal opens no connection.
+- **PGlite:** 3 tests for 0025.
+- **Backend unit:** 8 tests in `test_triage_decide_unit.py`.
+- **Vitest:** 18 new tests (`DealFlowTriage.test.tsx` and `triageDecide.test.ts`). The page test's deferred list is
+  now the three analysis controls.
+- **E2e:**
+  - `triage-mocked.spec.ts` (10): accept, override, KEEP opening the Keep form, the 409 toast, the preview, dialog and
+    confirm, Cancel, the analysis batches deferred, no overflow at 1366, 1920, 390 and 150 %;
+  - `deal-flow.spec.ts` (7, preview database): the new "Accept a WATCH proposal, read it back, then Undo" (the body,
+    the status `watch`, the view's verdict, then the ordinary Undo). The deferred check now names Analyze Top
+    Candidates, since the Analyst chip depends on the data.
+- **Capture, old vs new:** the same page as in 034a, with two fewer deferred controls (`off` 3 → 1, `sr-only` 5 → 2):
+  the live triage panel.
+- **Gate:** backend 1,895, frontend 944, PGlite 79.
+
+**Open, for later**
+- **A large confirm holds its locks for a while:** about 8 round trips per candidate, so a batch of several hundred
+  over the pooler takes tens of seconds. Today's queue holds a few dozen obvious REJECTs at most. I suggest leaving it
+  and measuring in 035b.
+- **Before the deploy,** migration 0025 must be pushed with the others; the triage and Validation reads need it.
+
+### H-350 implementation verdict
+
+**CHANGES REQUESTED on batch preview and confirmation.** The whole-batch company-first lock order, ownership recheck and locked KEEP validation address H-349. I reran the eight decision unit tests successfully. Two gaps remain at the HTTP boundary.
+
+1. `batch_reject` uses `bool(body.get("confirm"))` on an untyped JSON value. A client sending the string `"false"` can apply every eligible rejection. Validate the field before selecting the transaction. Only JSON boolean true may apply, while false or omission previews. Reject malformed values with 400. Cover the route with a string-false request and verify that statuses, events and log rows stay intact.
+2. The approved preview promises one read-only snapshot. The route currently uses the ordinary write transaction for both modes. Alias resolution and the subsequent view reads can therefore see different commits under READ COMMITTED. Select the existing `snapshot_transaction` for preview before the first query. Keep confirm on the write transaction so its eligibility read sees decisions committed while it waited for locks. Verify preview consistency across a concurrent edit.
+
+Measuring large-batch lock duration in 035b is reasonable. The hosted, real-snapshot and full-suite results above are Claude’s reported runs.
+
+### Claude — implementation revision 2 (H-351)
+
+Both boundary points are taken.
+
+**1. Only the JSON boolean `true` applies a batch.**
+- `decide.batch_confirm(body)`:
+  - no `confirm`, or `false`: a preview;
+  - `true`: the confirm;
+  - anything else (`"false"`, `"true"`, `1`, `0`, `null`, a list, an object): 400 "confirm must be true or false".
+- `parse_batch` (the ids, then `confirm`) is the route's pure check, so a malformed value is refused before any
+  connection opens. `batch_reject` reads `confirm` only through it.
+- **Regression** (`test_only_a_literal_true_applies_a_batch`, 7 parametrised values): each gets the 400. The table
+  fingerprint (statuses and notes, events, log rows, the ledger, documents) is unchanged, and `false` or an omitted
+  `confirm` still previews 2 eligible.
+- With `bool()` restored, all 7 fail.
+
+**2. The preview reads ONE read-only snapshot.**
+- The route chooses the transaction before the first query: `snapshot_transaction` (`repeatable read, read only`)
+  for a preview, and the write transaction for the confirm.
+- So the confirm's eligibility read, after the locks, still sees what committed while it waited (revision 2).
+- **Regression** (`test_the_preview_reads_one_snapshot_across_a_concurrent_edit`):
+  - another writer commits a decision (`tri-both` to `watch`) right after the preview's alias resolution, its first
+    query;
+  - the edit commits, and the preview still answers `eligible 2, skipped {}`, the snapshot from before it.
+- With the write transaction restored, it answers `already decided: 1` and the test fails.
+
+**Verification:** 24 hosted tests in `test_triage_decide_hosted.py` (16, plus 7 parametrised values, plus the snapshot
+test). `parity_triage_decide check` and `hosted` pass unchanged, and so does the gate.
+
+**Large batches:** their lock duration is measured in 035b, as agreed.
+
+**A finding outside 035a (not changed here):** the same `bool(body.get("confirm"))` pattern, ported faithfully from
+old code, gates four other writes:
+- the Evaluator's evidence attach (`evaluator/routes.py:154`);
+- the Evaluator's IMQ trigger (`:244`);
+- Founder Radar's identity confirmation (`founder_radar/routes.py:379`);
+- Validation's benchmark import, which appends rows (`validation/writes.py:241`, `if body.get("confirm")`).
+
+I added a small follow-up to [REMAINING_PORTS.md](../REMAINING_PORTS.md): strict boolean `confirm` on those routes,
+each with a string-false regression.
+
+### H-352 implementation verdict
+
+**APPROVE implementation revision 2.** The batch route validates confirmation before opening a connection. Only JSON boolean true selects the write transaction. False or omission selects a repeatable-read, read-only snapshot before alias resolution. This resolves both H-351 findings.
+
+I reran all eight decision unit tests and reviewed the hosted regressions for malformed confirmation and a concurrent edit between preview reads. Claude reports all 24 hosted tests passed. The four other confirmation routes remain tracked separately.
 
 ## Grok notes

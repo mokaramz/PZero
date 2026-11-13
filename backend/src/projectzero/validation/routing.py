@@ -14,6 +14,7 @@ from typing import Any
 
 from projectzero.dealflow.ranking.names import norm_company
 from projectzero.dealflow.triage.view import decisions as read_jsonl
+from projectzero.dealflow.triage.view import latest_verdicts
 from projectzero.validation.catalog import STATES
 
 
@@ -28,12 +29,19 @@ def load(doc: Any) -> dict[str, Any]:
     return d
 
 
-def metrics(ents: dict[str, dict[str, Any]] | None, queue_routing: Any, decisions_log: str) -> dict[str, Any]:
+def metrics(
+    ents: dict[str, dict[str, Any]] | None,
+    queue_routing: Any,
+    decisions_log: str,
+    aliases: dict[str, str] | None = None,
+) -> dict[str, Any]:
     """Validation: is the routing saving Mohamed's attention without making it blind? No accuracy vanity score —
     counts that later outcomes can be checked against. ``ents`` are Validation's entities (stages per company)."""
     d = load(queue_routing)
     every = {**d.get("left_queue", {}), **d["routes"]}
-    decisions = {e["candidate_id"]: e for e in read_jsonl(decisions_log) if e.get("candidate_id")}
+    if aliases:  # review 035a (decision e): the latest line per SURVIVOR, the routes keyed the same way
+        every = {aliases.get(k, k): v for k, v in every.items()}
+    decisions = latest_verdicts(read_jsonl(decisions_log), aliases)
     reviewed = [(cid, every[cid], decisions[cid]) for cid in decisions if cid in every]
 
     def was(r: dict[str, Any]) -> str:

@@ -1,23 +1,26 @@
-import { Badge } from "@/components/ui";
-import { NOT_PORTED } from "../model/deferred";
+import { useState } from "react";
+
+import { Badge, Button } from "@/components/ui";
 import { EDGE_LABEL, PROPOSAL_LABEL, ROUTE_LABEL, proposalTone, type TriageSummary, type Verdict } from "../model/triage";
-import { useDeferred } from "./Deferred";
-import { DeferredButton } from "./DeferredButton";
+import type { TriageMode } from "../model/triageDecide";
 import styles from "../DealFlow.module.css";
 
 const VERDICTS: Verdict[] = ["KEEP", "RESEARCH", "WATCH", "REJECT"];
 
-/** Accept / override: the machine proposal becomes Mohamed's decision — the triage write side is not ported yet. */
-function TriageDecision({ t }: { t: TriageSummary }) {
-  const over = useDeferred(NOT_PORTED.triage);
+export type TriageDecide = (verdict: Verdict, mode: TriageMode) => void;
+
+/** Accept / override (review 035a): the machine proposal becomes Mohamed's decision. Accepting a KEEP opens the Keep
+ *  form ("— score it"); an override takes the verdict picked in the select. */
+function TriageDecision({ t, busy, onDecide }: { t: TriageSummary; busy: boolean; onDecide: TriageDecide }) {
+  const [over, setOver] = useState<Verdict | "">("");
   return (
     <div className={styles.dec}>
       <span className={styles.decLab}>Machine proposal</span>
-      <DeferredButton variant={t.proposal === "REJECT" ? "danger" : "success"} reason={NOT_PORTED.triage} data-testid="triage-accept">
+      <Button variant={t.proposal === "REJECT" ? "danger" : "success"} onClick={() => onDecide(t.proposal, "accept")} disabled={busy} data-testid="triage-accept">
         Accept {t.proposal}
         {t.proposal === "KEEP" ? " — score it" : ""}
-      </DeferredButton>
-      <select value="" disabled aria-label="Override verdict" title={over.props.title} aria-describedby={over.props["aria-describedby"]} data-deferred="">
+      </Button>
+      <select value={over} onChange={(e) => setOver(e.target.value as Verdict | "")} aria-label="Override verdict">
         <option value="">Override…</option>
         {VERDICTS.filter((v) => v !== t.proposal).map((v) => (
           <option key={v} value={v}>
@@ -25,16 +28,27 @@ function TriageDecision({ t }: { t: TriageSummary }) {
           </option>
         ))}
       </select>
-      {over.note}
-      <DeferredButton size="sm" reason={NOT_PORTED.triage} data-testid="triage-override">
+      <Button size="sm" onClick={() => over && onDecide(over, "override")} disabled={busy || !over} data-testid="triage-override">
         Override
-      </DeferredButton>
+      </Button>
     </div>
   );
 }
 
-/** Machine triage section of the candidate detail: the proposal and why (read-only); accepting it is not ported yet. */
-export function TriagePanel({ t, themes, decided }: { t: TriageSummary; themes: Record<string, string>; decided: boolean }) {
+/** Machine triage section of the candidate detail: the proposal, why, and Mohamed's accept / override (until decided). */
+export function TriagePanel({
+  t,
+  themes,
+  decided,
+  busy,
+  onDecide,
+}: {
+  t: TriageSummary;
+  themes: Record<string, string>;
+  decided: boolean;
+  busy: boolean;
+  onDecide: TriageDecide;
+}) {
   const pf = t.portfolio;
   const flagged = t.display_proposal === "KNOWN_PORTFOLIO" || t.display_proposal === "ASK_OMAR_CONFLICT";
   return (
@@ -117,7 +131,7 @@ export function TriagePanel({ t, themes, decided }: { t: TriageSummary; themes: 
           Your verdict: <b>{t.mohamed.verdict}</b> ({t.mohamed.mode}, {t.mohamed.agreed ? "agreed with machine" : "overrode machine"}) · {t.mohamed.at}
         </div>
       ) : null}
-      {!decided && <TriageDecision t={t} />}
+      {!decided && <TriageDecision key={t.candidate_id} t={t} busy={busy} onDecide={onDecide} />}
     </section>
   );
 }

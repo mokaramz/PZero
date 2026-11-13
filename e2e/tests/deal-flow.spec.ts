@@ -5,8 +5,9 @@
  * Kept: workspaces, counts, filters, candidate detail, the IM / theme lenses, Reject → Rejected → Undo, the deep links,
  * and no horizontal overflow at 1366x768 and 150 % zoom. Changed on purpose: the decision body is the new
  * `{status, expected_status}`; analysis is not ported, so the test asserts its controls are disabled and silent. Keep is
- * live since review 011 and the scan since review 034a (its page is covered on fixtures by `scan-mocked.spec.ts`); the
- * deep link `?find=1` still only focuses Find.
+ * live since review 011, the scan since review 034a (its page is covered on fixtures by `scan-mocked.spec.ts`) and the
+ * machine-triage accept / override and batch reject since review 035a (covered on fixtures by `triage-mocked.spec.ts`;
+ * never clicked here); the deep link `?find=1` still only focuses Find.
  */
 import { expect, test } from "@playwright/test";
 
@@ -87,6 +88,36 @@ test.describe("Deal Flow — new app, preview database", () => {
     w.expectClean();
   });
 
+  test("machine triage: Accept a WATCH proposal, read it back, then Undo (review 035a)", async ({ page }) => {
+    const w = watch(page);
+    const posted = recordPosts(page);
+    const [tri, ib] = await Promise.all([
+      page.request.get("/api/deal-flow/triage").then((r) => r.json()),
+      page.request.get("/api/deal-flow/inbox").then((r) => r.json()),
+    ]);
+    const open = new Set(ib.candidates.filter((c: { pz_status: string }) => c.pz_status === "new").map((c: { id: string }) => c.id));
+    type Summary = { candidate_id: string; proposal: string; stale?: boolean; mohamed?: unknown };
+    const pick = (Object.values(tri.proposals) as Summary[])
+      .filter((s) => s.proposal === "WATCH" && !s.stale && !s.mohamed && open.has(s.candidate_id))
+      .sort((a, b) => a.candidate_id.localeCompare(b.candidate_id))[0];
+    expect(pick, "an undecided candidate with a current WATCH proposal").toBeTruthy();
+    const id = pick.candidate_id;
+    await openDealFlow(page, `/deal-flow?candidate=${id}`);
+    const panel = page.getByTestId("cand-detail").getByTestId("triage-panel");
+    await panel.getByTestId("triage-accept").click();
+    const triage = () => posted.filter((p) => p.path === "/api/deal-flow/triage/decide");
+    await expect.poll(() => triage()[0]?.body).toEqual({ id, verdict: "WATCH", mode: "accept", expected_status: "new" });
+    await expect
+      .poll(async () => (await page.request.get("/api/deal-flow/inbox").then((r) => r.json())).candidates.find((c: { id: string }) => c.id === id)?.pz_status)
+      .toBe("watch");
+    const after = await page.request.get("/api/deal-flow/triage").then((r) => r.json());
+    expect(after.proposals[id]?.mohamed).toMatchObject({ verdict: "WATCH", mode: "accept", agreed: true });
+    // put the preview back: the ordinary decision route (the log line stays: it is append-only)
+    const undo = await page.request.post(`/api/deal-flow/candidates/${id}/decision`, { data: { status: "new", expected_status: "watch" } });
+    expect(undo.ok()).toBeTruthy();
+    w.expectClean();
+  });
+
   test("deferred controls are disabled, explain why, and send nothing", async ({ page }) => {
     const w = watch(page);
     const posted = recordPosts(page);
@@ -97,7 +128,10 @@ test.describe("Deal Flow — new app, preview database", () => {
     await page.waitForLoadState("networkidle"); // count only once the detail and its triage panel have loaded
     const deferred = page.locator('[aria-disabled="true"]');
     const n = await deferred.count();
-    expect(n).toBeGreaterThanOrEqual(3); // the analysis controls; Find left this set in 034a
+    // the analysis controls: Analyze Top Candidates always, the Analyst chip only on an analysed candidate (data-
+    // dependent); Find left this set in 034a, the triage panel in 035a
+    expect(n).toBeGreaterThanOrEqual(1);
+    await expect(page.getByRole("button", { name: "Analyze Top Candidates" })).toHaveAttribute("aria-disabled", "true");
     for (let i = 0; i < n; i++) {
       const el = deferred.nth(i);
       if (!(await el.isVisible())) continue;
@@ -105,6 +139,16 @@ test.describe("Deal Flow — new app, preview database", () => {
       await el.click({ force: true });
       await el.press("Enter").catch(() => undefined);
     }
+    // the Machine triage view: its analysis batches stay deferred; the triage writes are live (035a) and never clicked here
+    await filterChip(page, "Machine triage").click();
+    await expect(page.getByTestId("triage-bar")).toBeVisible();
+    for (const id of ["triage-analyst", "triage-redteam"]) {
+      const el = page.getByTestId(id);
+      await expect(el).toHaveAttribute("aria-disabled", "true");
+      await expect(el).toHaveAttribute("title", /arrives with the analysis port/);
+      await el.click({ force: true });
+    }
+    await expect(page.getByTestId("triage-batch")).not.toHaveAttribute("aria-disabled");
     await page.waitForTimeout(500);
     expect(posted).toEqual([]);
     w.expectClean();

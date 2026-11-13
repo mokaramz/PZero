@@ -52,8 +52,12 @@ class ValidationInputs:
     # keyed by the OLD candidate ids (lookup only; order irrelevant)
     proposals: Any = field(default_factory=dict)
     # old ``triage_review.decisions()``: the raw text of ``triage_decisions.jsonl`` (line order; the last line per
-    # ``candidate_id`` wins; read by ``build``, ``calibration``, ``source_alpha`` and ``compressor.metrics``)
+    # ``candidate_id`` wins; read by ``build``, ``calibration``, ``source_alpha`` and ``compressor.metrics``). The
+    # database adapter: the archived lines, then the ``triage_decisions`` rows by ``seq`` (review 035a)
     decisions_log: str = ""
+    # review 035a (decision e): old candidate id -> survivor (the ``candidate`` merge aliases). The latest decision
+    # line is chosen per survivor; a line keeps its recorded id. Empty (the old files): every id is its own survivor
+    candidate_aliases: dict[str, str] = field(default_factory=dict)
     # old ``storage.load_json("real_data.json", {"signals": []}, tolerant=True).get("signals")`` (``_pipeline_rows``):
     # the Conviction records in FILE order, dropped ones included, with the STORED ``imq`` snapshot
     signals: Any = None
@@ -137,7 +141,9 @@ def json_values(raw: str) -> list[Any]:
     return out
 
 
-def inputs_from_docs(docs: Mapping[str, Any], today: Any = None) -> ValidationInputs:
+def inputs_from_docs(
+    docs: Mapping[str, Any], today: Any = None, aliases: Mapping[str, str] | None = None
+) -> ValidationInputs:
     """``ValidationInputs`` from old-format documents ``{path: parsed JSON}`` (the JSONL logs: their raw text, ``str``
     or ``bytes``), read as the old loaders read them, tolerance included. ``today`` is accepted for symmetry with the
     other ports (the inputs do not depend on the clock). Pure: ``docs`` is never modified."""
@@ -163,6 +169,7 @@ def inputs_from_docs(docs: Mapping[str, Any], today: Any = None) -> ValidationIn
         verification_log=text(docs.get(VERIFICATION_LOG)),
         inference_ledger=json_values(text(docs.get(INFERENCE_LEDGER))),
         news_inputs=base_from_docs(docs),
+        candidate_aliases=dict(aliases or {}),
     )
 
 

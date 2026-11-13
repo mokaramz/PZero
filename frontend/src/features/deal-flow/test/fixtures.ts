@@ -5,6 +5,9 @@ import findAnswersJson from "./scan/find_answers.json";
 import findStatusJson from "./scan/find_status.json";
 import scanInboxJson from "./scan/inbox.json";
 import scanHistoryJson from "./scan/scan_history.json";
+import triageAnswersJson from "./triage/answers.json";
+import triageInboxJson from "./triage/inbox.json";
+import triagePayloadJson from "./triage/triage.json";
 
 const DAY = 864e5;
 const iso = (daysAgo: number) => new Date(Date.now() - daysAgo * DAY).toISOString().slice(0, 10);
@@ -128,3 +131,17 @@ export function afterScan(ib: InboxPayload = scanInbox()): InboxPayload {
   );
   return { ...ib, candidates: [...fresh, ...ib.candidates], last_run: r.run_id ?? null, last_summary: r, report: done.rows };
 }
+
+/* ------------------------------------------------------------------ machine triage writes (review 035a)
+ * Kept as JSON in `triage/` (invented names only), byte-identical copies in `e2e/tests/fixtures/triage/` for the mocked
+ * Playwright spec:
+ * - `inbox.json`: eight European and one US candidate — a KEEP, a RESEARCH, a WATCH, two obvious REJECTs (both models,
+ *   Stage 0), a single-model REJECT, an obvious REJECT outside the operating queue and an obvious REJECT already decided;
+ * - `triage.json`: their proposals (`obvious_reject` as the server derives it) and a calibration of 4 decisions;
+ * - `answers.json`: `POST triage/decide` answers (accept REJECT / KEEP / RESEARCH, override WATCH, the 409 and the 400) and
+ *   `POST triage/batch_reject` answers (the previews, the applied batches, the moved-company 409). */
+
+export type TriageAnswer = keyof typeof triageAnswersJson;
+export const triageInbox = (): InboxPayload => structuredClone(triageInboxJson) as unknown as InboxPayload;
+export const triageWorld = (): TriagePayload => structuredClone(triagePayloadJson) as unknown as TriagePayload;
+export const triageAnswer = <T = Record<string, unknown>>(name: TriageAnswer): T => structuredClone(triageAnswersJson[name]) as unknown as T;

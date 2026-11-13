@@ -17,18 +17,21 @@ import { WorkspaceBar } from "./components/WorkspaceBar";
 import { useInbox, useTriage } from "./hooks/useDealFlowData";
 import { useDecision } from "./hooks/useDecision";
 import { useDeepLinks } from "./hooks/useDeepLinks";
+import { useBatchReject, useTriageDecide } from "./hooks/useTriageDecide";
 import { useViewControls } from "./hooks/useViewControls";
 import { wsCounts } from "./model/geo";
 import type { BuiltList } from "./model/list";
 import { routeCounts, triageCounts } from "./model/triage";
+import { obviousRejectIds } from "./model/triageDecide";
 import { revisitCount } from "./model/revisit";
 import { candidateView } from "./model/view";
 import styles from "./DealFlow.module.css";
 
 /**
  * Deal Flow (review 009): the whole inbox ranked on the client by the protected rules, the selected candidate's
- * inspector, and the operator's decision (Keep opens the Conviction scoring form). Panels whose backend is not ported
- * yet keep their place, disabled.
+ * inspector, and the operator's decision (Keep opens the Conviction scoring form). Machine triage is accepted or
+ * overridden here (review 035a; a KEEP opens the same Keep form). Panels whose backend is not ported yet keep their
+ * place, disabled.
  */
 export default function DealFlowPage() {
   const q = useInbox();
@@ -62,6 +65,11 @@ export default function DealFlowPage() {
   const detail = useDecision(selected);
   const research = useDecision(researchC);
   const toast = useToast();
+  const triageDecide = useTriageDecide(setKeepId);
+  const batch = useBatchReject();
+  const batchReject = () => {
+    if (ib && tri) void batch.batchReject(obviousRejectIds(ib.candidates, tri, tScope));
+  };
 
   // After a scan (review 034a), briefly highlight the rows of the new run once the fresh inbox arrives (the old page).
   const lastRun = ib?.last_run ?? null;
@@ -105,6 +113,8 @@ export default function DealFlowPage() {
                   rCounts={rCounts}
                   tCounts={tCounts}
                   payload={triage.data}
+                  onBatchReject={batchReject}
+                  batchBusy={batch.busy}
                 />
               )}
               {!view || !view.list.length ? (
@@ -136,6 +146,8 @@ export default function DealFlowPage() {
                         research: () => selected && setResearchId(selected.id),
                         keep: () => selected && setKeepId(selected.id),
                         busy: detail.busy || research.busy,
+                        triage: (verdict, mode) => selected && triageDecide.decide(selected, verdict, mode),
+                        triageBusy: triageDecide.busy,
                       }}
                       tri={selId && tri ? tri[selId] : undefined}
                       triPending={selId ? triage.data?.pending?.[selId] : undefined}
@@ -170,6 +182,7 @@ export default function DealFlowPage() {
       {keepC && (
         <EditCompanyDrawer key={keepC.id} open candidate={keepC} onClose={() => setKeepId(null)} onSaved={(slug) => navigate(companyLink(slug))} />
       )}
+      {batch.dialog}
     </>
   );
 }
