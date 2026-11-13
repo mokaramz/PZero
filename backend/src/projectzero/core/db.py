@@ -58,3 +58,17 @@ def read_only_transaction(db_url: str) -> Iterator[psycopg.Connection[Any]]:
             yield conn
     finally:
         conn.close()
+
+
+@contextmanager
+def snapshot_transaction(db_url: str) -> Iterator[psycopg.Connection[Any]]:
+    """A read-only transaction over ONE database snapshot (review 030a, Codex H-288): ``repeatable read, read only``,
+    set before the first data query, so a view that combines several readers on this connection never mixes two
+    committed versions (an operator edit committed between two of its reads stays invisible to it)."""
+    conn = connect(db_url)
+    try:
+        with conn.transaction():
+            conn.execute("set transaction isolation level repeatable read, read only")
+            yield conn
+    finally:
+        conn.close()

@@ -1,0 +1,774 @@
+/* TODAY — the Smooth Operator's daily operating brief, matched to the approved mockup (Today-specific styling; no
+   shared component is changed — the Investment Desk is frozen). Compact editorial rhythm: the day + its flow graphic →
+   a divided briefing strip → four tiles → Missions (header on the canvas, ONE paper surface of rows with tone edges)
+   → Manager decisions | Events (tinted headers) → a pale machine strip. Warm neutral + soft tints + selective navy.
+   No purple, no glow, no glass. */
+
+/* ---------------- 1 · hero: date · Today · purpose | Today's flow */
+.hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px 32px;
+  margin: 0 0 12px;
+}
+.heroText {
+  min-width: 0;
+}
+.heroDate {
+  font-size: 13px;
+  color: var(--ink-2);
+}
+.heroTitle {
+  margin: 2px 0 2px;
+  font: 600 36px/1.08 var(--font-display);
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+.heroSub {
+  margin: 0;
+  font-size: 14.5px;
+  color: var(--ink-2);
+}
+
+/* Today's flow: signals converge → review (filter) → decision; drawn once, then still */
+.flow {
+  margin: 0;
+  flex: 0 1 380px;
+  min-width: 0;
+  padding-left: 22px;
+  border-left: 1px solid var(--hair);
+}
+.flowSvg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.flowLine {
+  fill: none;
+  stroke: var(--blue-ink);
+  stroke-width: 1.3;
+  stroke-linecap: round;
+  opacity: 0.75;
+}
+.flowLineFaint {
+  stroke: var(--stone);
+  opacity: 1;
+}
+.flowLineStrong {
+  stroke: var(--navy);
+  stroke-width: 1.6;
+  opacity: 1;
+}
+.flowArrow {
+  fill: none;
+  stroke: var(--navy);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.flowDot {
+  animation: flowIn var(--dur) var(--ease-out) backwards;
+}
+.flowDot[data-tone="sand"] {
+  fill: var(--dot-sand);
+}
+.flowDot[data-tone="sage"] {
+  fill: var(--dot-sage);
+}
+.flowDot[data-tone="steel"] {
+  fill: var(--blue-line);
+}
+.flowNode {
+  fill: var(--paper);
+  stroke: var(--blue-ink);
+  stroke-width: 1.4;
+  animation: flowIn var(--dur) var(--ease-out) backwards;
+}
+.flowNode[data-tone="sage"] {
+  fill: var(--green);
+  stroke: var(--green);
+}
+.flowReview {
+  fill: var(--amber-soft);
+  stroke: var(--amber);
+  stroke-width: 1.4;
+}
+.flowFunnel {
+  fill: none;
+  stroke: var(--navy);
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+}
+.flowTarget {
+  fill: var(--green-soft);
+  stroke: var(--green);
+  stroke-width: 1.6;
+}
+.flowTargetCore {
+  fill: var(--green);
+}
+.flowStage {
+  animation: flowIn var(--dur-slow) var(--ease-out) backwards;
+}
+.flowCount {
+  font: 500 10.5px var(--font-ui);
+  fill: var(--mut);
+}
+.flowCount[data-step="decisions"] {
+  fill: var(--green);
+}
+@keyframes flowIn {
+  from {
+    opacity: 0;
+  }
+}
+
+/* ---------------- 2 · briefing: a label cell, a divider, a strong summary and a quiet line */
+.brief {
+  display: flex;
+  align-items: stretch;
+  margin-bottom: 12px;
+  background: var(--paper);
+  border: 1px solid var(--hair-2);
+  border-radius: var(--r-lg);
+  box-shadow: var(--sh-card);
+  overflow: hidden;
+}
+.briefLabel {
+  display: flex;
+  align-items: center;
+  flex: none;
+  padding: 0 26px;
+  font: 600 11.5px var(--font-ui);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  background: var(--bone);
+  border-right: 1px solid var(--hair);
+  white-space: nowrap;
+}
+.briefMain {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 9px 22px 10px;
+}
+.briefLine {
+  margin: 0;
+  font: 600 15.5px/1.35 var(--font-ui);
+  color: var(--ink);
+}
+.briefSignal {
+  margin: 1px 0 0;
+  font-size: 12.5px;
+  color: var(--mut);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ---------------- 3 · tiles: round semantic icon well, strong serif number, short label */
+.tiles {
+  list-style: none;
+  margin: 0 0 14px;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+.tile a {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 16px;
+  background: var(--paper);
+  border: 1px solid var(--hair-2);
+  border-radius: var(--r-lg);
+  box-shadow: var(--sh-card);
+  color: var(--ink);
+  text-decoration: none;
+  transition: border-color var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
+}
+.tile a:hover {
+  border-color: var(--stone);
+  transform: translateY(-1px);
+  text-decoration: none;
+}
+.tile[data-tone="missions"] a {
+  background: var(--tint-steel);
+  border-color: var(--blue-line);
+}
+.tileIcon {
+  display: inline-grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  flex: none;
+}
+.tile[data-tone="conviction"] .tileIcon {
+  background: var(--amber-soft);
+  color: var(--navy);
+}
+.tile[data-tone="verified"] .tileIcon {
+  background: var(--green-soft);
+  color: var(--green);
+}
+.tile[data-tone="missions"] .tileIcon {
+  background: var(--blue-soft);
+  color: var(--navy);
+  box-shadow: inset 0 0 0 1px var(--blue-line);
+}
+.tile[data-tone="manager"] .tileIcon {
+  background: var(--amber-soft);
+  color: var(--amber);
+}
+.tileN {
+  font: 400 30px/1 var(--font-display);
+  letter-spacing: -0.01em;
+}
+.tileLabel {
+  font-size: 13px;
+  color: var(--ink-2);
+  line-height: 1.25;
+}
+
+/* ---------------- 4 · Missions: header on the canvas, ONE paper surface of rows */
+.workspace {
+  scroll-margin-top: 80px;
+}
+.workHead {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 10px;
+  margin: 0 0 8px;
+}
+.workTitle {
+  margin: 0;
+  font: 600 22px/1.2 var(--font-display);
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+.workCount {
+  font: 600 11.5px var(--font-ui);
+  color: var(--amber);
+  background: var(--amber-soft);
+  border-radius: var(--r-sm);
+  padding: 2px 7px;
+}
+/* All · Companies · Signals: compact chips; the selection carries navy (outline + navy text on navy-soft, never a
+   second filled action next to the one navy Open) */
+.segmented {
+  display: inline-flex;
+  gap: 6px;
+}
+.seg {
+  font: 600 12px var(--font-ui);
+  color: var(--ink-2);
+  background: var(--paper);
+  border: 1px solid var(--hair-2);
+  border-radius: var(--r-md);
+  padding: 5px 12px;
+  cursor: pointer;
+  transition: color var(--dur-fast) var(--ease-out), background var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out);
+}
+.seg:hover {
+  border-color: var(--stone);
+}
+.seg[aria-pressed="true"] {
+  color: var(--navy);
+  background: var(--navy-soft);
+  border-color: var(--navy);
+}
+.segN {
+  margin-left: 6px;
+  font-weight: 500;
+  opacity: 0.8;
+}
+.workCard {
+  background: var(--paper);
+  border: 1px solid var(--hair-2);
+  border-radius: var(--r-xl);
+  box-shadow: var(--sh-raise);
+  overflow: hidden;
+}
+.missions {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.missions > li + li {
+  border-top: 1px solid var(--hair);
+}
+/* a row: subject | why now | biggest unknown | state | next move — a slim tone edge per kind */
+.mission {
+  display: grid;
+  grid-template-columns: minmax(200px, 1.45fr) minmax(0, 1.05fr) minmax(0, 0.85fr) minmax(0, 0.75fr) minmax(170px, 0.85fr);
+  gap: 2px 16px;
+  align-items: start;
+  padding: 11px 18px 9px 26px;
+  background: var(--paper);
+  box-shadow: inset 4px 0 0 var(--blue-line);
+  transition: background var(--dur-fast) var(--ease-out);
+}
+.mission:hover {
+  background: var(--paper-2);
+}
+.mission[data-group="company"] {
+  box-shadow: inset 4px 0 0 var(--green);
+}
+.mission[data-group="signal"] {
+  box-shadow: inset 4px 0 0 var(--slate);
+}
+/* the current mission: the navy edge, a barely navy surface, the one navy action */
+.mission[data-featured] {
+  background: var(--tint-navy); /* neutral, barely navy */
+  box-shadow: inset 4px 0 0 var(--navy);
+}
+.mSubject,
+.mCol,
+.mMove {
+  min-width: 0;
+}
+.mCol + .mCol,
+.mSubject + .mCol,
+.mCol + .mMove {
+  padding-left: 16px;
+  border-left: 1px solid var(--hair);
+}
+.mTitle {
+  margin: 0;
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  font: 600 18px/1.2 var(--font-display);
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+.mScore {
+  font: 600 11px var(--font-mono);
+  color: var(--green);
+  background: var(--green-soft);
+  border-radius: var(--r-sm);
+  padding: 1px 6px;
+}
+.mLine {
+  margin: 3px 0 0;
+  font-size: 12.5px;
+  line-height: 1.4;
+  color: var(--ink-2);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.mLabel {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font: 600 10.5px var(--font-ui);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--mut);
+  margin-bottom: 3px;
+}
+.mLabel svg {
+  color: var(--faint);
+}
+.mCol p {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.4;
+  color: var(--ink-2);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+/* the state word: a sand chip (Today-only override of the shared chip's look) */
+.mCol > span[class*="status"] {
+  max-width: 100%;
+  white-space: normal;
+  background: var(--amber-soft);
+  color: var(--ink-2);
+  font-weight: 600;
+}
+.mMove {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.mMoveText {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.mOpen {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 2px;
+  font: 600 13px var(--font-ui);
+  padding: 5px 14px;
+  border-radius: var(--r-md);
+  background: var(--paper);
+  border: 1px solid var(--ink-2);
+  color: var(--ink);
+  text-decoration: none;
+  transition: background var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
+}
+.mOpen:hover {
+  background: var(--bone);
+  text-decoration: none;
+}
+.mOpen:active {
+  transform: translateY(1px);
+}
+.mOpen[data-primary] {
+  background: var(--navy);
+  border-color: var(--navy);
+  color: var(--navy-ink);
+}
+.mOpen[data-primary]:hover {
+  background: var(--navy-deep);
+}
+
+/* ---------------- 5 · Manager decisions | Events: sibling panels with tinted headers */
+.context {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(360px, 100%), 1fr));
+  gap: 22px;
+  margin: 18px 0 0;
+}
+.panel {
+  min-width: 0;
+  background: var(--paper);
+  border: 1px solid var(--hair-2);
+  border-radius: var(--r-xl);
+  box-shadow: var(--sh-card);
+  overflow: hidden;
+}
+.panelHead {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  padding: 9px 16px;
+  border-bottom: 1px solid var(--hair);
+}
+.panel[data-tone="manager"] .panelHead {
+  background: var(--amber-soft);
+}
+.panel[data-tone="events"] .panelHead {
+  background: var(--blue-soft);
+}
+.panelIcon {
+  flex: none;
+  color: var(--ink-2);
+}
+.panelTitle {
+  margin: 0;
+  font: 600 19px/1.2 var(--font-display);
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+.panelCount {
+  font-size: 12.5px;
+  color: var(--ink-2);
+}
+.viewAll {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--ink);
+  text-decoration: none;
+}
+.viewAll:hover {
+  color: var(--blue-ink);
+}
+.panelList {
+  list-style: none;
+  margin: 0;
+  padding: 0 16px;
+}
+.panelList > li + li {
+  border-top: 1px solid var(--hair);
+}
+.panel[data-tone="manager"] .panelList > li + li {
+  border-top-color: rgba(134, 102, 79, 0.2); /* --amber at 20 % */
+}
+.item {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 2px 14px;
+  align-items: start;
+  padding: 10px 0 6px;
+}
+.item.itemNoLead {
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  padding-left: 12px;
+}
+.dateTile {
+  display: inline-grid;
+  place-items: center;
+  width: 40px;
+  height: 42px;
+  border-radius: var(--r-md);
+  background: var(--bone);
+  border: 1px solid var(--hair-2);
+  text-align: center;
+  line-height: 1.05;
+}
+.dateTile span {
+  font: 600 9.5px var(--font-ui);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--blue-ink);
+}
+.dateTile b {
+  font: 400 17px var(--font-display);
+  color: var(--navy);
+}
+.itemMain {
+  min-width: 0;
+}
+.itemTitle {
+  margin: 0;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.itemLine {
+  margin: 2px 0 0;
+  font-size: 12px;
+  color: var(--ink-2);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* the blocked state: a cocoa word on sand — serious, never alarming */
+.due {
+  align-self: start;
+  margin-top: 2px;
+  font: 600 10.5px var(--font-ui);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--amber);
+  background: var(--amber-soft);
+  border-radius: var(--r-sm);
+  padding: 4px 8px;
+  white-space: nowrap;
+}
+.itemOpen {
+  align-self: start;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-width: max-content;
+  white-space: nowrap;
+  font: 600 12.5px var(--font-ui);
+  padding: 5px 12px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--stone);
+  background: var(--paper);
+  color: var(--ink);
+  text-decoration: none;
+  transition: background var(--dur-fast) var(--ease-out);
+}
+.itemOpen:hover {
+  background: var(--bone);
+  text-decoration: none;
+}
+.itemOpenNavy {
+  border-color: var(--navy);
+  color: var(--navy);
+}
+.quiet {
+  font-size: 13px;
+  color: var(--mut);
+  margin: 10px 16px;
+}
+.empty {
+  padding: 24px 20px;
+  font-size: 14px;
+  color: var(--mut);
+}
+
+/* ---------------- folded details (level 2) */
+.details {
+  font-size: 12.5px;
+  color: var(--ink-2);
+}
+.details summary {
+  display: inline-block;
+  cursor: pointer;
+  font-size: 12px;
+  color: var(--ink-2);
+  padding: 3px 0 0;
+  list-style: none;
+}
+.details summary::-webkit-details-marker {
+  display: none;
+}
+.details summary::before {
+  content: "▸ ";
+  font-size: 10px;
+}
+.details[open] summary::before {
+  content: "▾ ";
+}
+.details summary:hover {
+  color: var(--ink);
+}
+.details p,
+.details ul {
+  margin: 4px 0;
+}
+.details ul {
+  padding-left: 18px;
+}
+
+/* ---------------- 6 · machine work: a quiet tinted strip, folded */
+.machineZone {
+  margin-top: 18px;
+}
+.machine {
+  background: var(--tint-sage); /* a pale sage strip */
+  border: 1px solid var(--hair);
+  border-radius: var(--r-xl);
+  font-size: 13px;
+  color: var(--ink-2);
+}
+.machine > summary {
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  align-items: center;
+  padding: 10px 18px;
+}
+.machine > summary::-webkit-details-marker {
+  display: none;
+}
+.machineIcon {
+  color: var(--ink-2);
+  flex: none;
+}
+.machineTitle {
+  font: 600 19px/1.2 var(--font-display);
+  color: var(--ink);
+}
+.machineKicker {
+  font: 600 10.5px var(--font-ui);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--mut);
+}
+.machineMore {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.machineBody {
+  padding: 0 18px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.triageStats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  font-size: 13px;
+  color: var(--ink-2);
+}
+
+/* ---------------- responsive */
+@media (max-width: 1180px) {
+  .mission {
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1fr);
+  }
+  .mCol:nth-of-type(4),
+  .mMove {
+    padding-left: 0 !important;
+    border-left: 0 !important;
+  }
+  .tiles {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 760px) {
+  .hero {
+    align-items: flex-start;
+  }
+  .flow {
+    flex-basis: 100%;
+    padding-left: 0;
+    border-left: 0;
+    max-width: 380px;
+  }
+  .brief {
+    flex-direction: column;
+  }
+  .briefLabel {
+    padding: 8px 16px;
+    border-right: 0;
+    border-bottom: 1px solid var(--hair);
+  }
+  .briefMain {
+    padding: 9px 16px 10px;
+  }
+  .mission {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+    padding: 12px 16px 10px 20px;
+  }
+  .mCol,
+  .mMove {
+    padding-left: 0 !important;
+    border-left: 0 !important;
+  }
+  .mCol:empty {
+    display: none;
+  }
+}
+@media (max-width: 560px) {
+  .item.itemNoLead {
+    grid-template-columns: minmax(0, 1fr) auto;
+    padding-left: 0;
+  }
+  .item.itemNoLead > .due {
+    display: none;
+  }
+  .heroTitle {
+    font-size: 30px;
+  }
+  .tileN {
+    font-size: 24px;
+  }
+  .tile a {
+    gap: 10px;
+    padding: 9px 12px;
+  }
+  .tileIcon {
+    width: 32px;
+    height: 32px;
+  }
+  .machineMore {
+    margin-left: 0;
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "date": "2026-11-16",
+  "actions": [],
+  "more": 0,
+  "considered": { "pipeline": 0, "calls": 0, "events": 0, "triage": 0, "watch": 0, "cases": 0 },
+  "exceptions": [],
+  "machine_working": "",
+  "triage": null,
+  "rules": "Deterministic ranking over existing state; nothing is sent, registered, scored or forwarded.",
+  "snapshot": {
+    "note": "Triage routes and prepared cases are the imported snapshot until their runs are ported.",
+    "triage_at": null,
+    "cases_prepared_at": "2026-11-01T19:36:42"
+  }
+}
