@@ -20,7 +20,7 @@ from __future__ import annotations
 
 import base64
 import json
-from collections.abc import Mapping
+from collections.abc import Iterable, Mapping
 from dataclasses import dataclass
 from datetime import datetime
 from typing import Any, Literal
@@ -107,6 +107,24 @@ def decision_sources(c: Mapping[str, Any]) -> dict[str, Any]:
         else None
     )
     return {"source_id": sid, "quality_source_id": qsid or sid}
+
+
+def decision_detail(row: Mapping[str, Any], status: str, alias_ids: Iterable[str]) -> dict[str, Any]:
+    """The decision snapshot a status event carries (review 008 / 021, one source of truth since review 035d): the old
+    ``record_decision`` (the ranking input as the row is now, the ledger keys = the candidate's own id, then the old
+    ids merged into it) and the sources credited AT decision time (H-161). Pure: ``row`` is the candidate row,
+    ``alias_ids`` its ``candidate`` aliases (its own id may be among them)."""
+    c, _ = ranking_input(row)
+    keys = ledger.ordered_keys(str(row["id"]), [str(a) for a in alias_ids])
+    return {"feedback": ledger.decision_record(c, STATUS_TO_DECISION[status], keys), "sources": decision_sources(c)}
+
+
+# review 035d: the batch confirm's audit rows, ONE statement each, in the eligible list's (request) order
+_BATCH_EVENTS = (
+    "insert into {s}.candidate_events (candidate_id, actor, action, from_status, to_status, reason, detail) "
+    "select e.value->>'id', 'operator', 'status', %s, %s, %s, e.value->'detail' "
+    "from jsonb_array_elements(%s::jsonb) with ordinality as e(value, ord) order by e.ord"
+)
 
 
 class DealFlowStore:
@@ -352,16 +370,15 @@ class DealFlowStore:
                 (notes, candidate_id),
             )
         # the old record_decision, captured at decision time (review 008): the ranking input as it is now
-        c, _ = ranking_input(self._rows("select * from {s}.candidates where id = %s", (candidate_id,))[0])
+        row = self._rows("select * from {s}.candidates where id = %s", (candidate_id,))[0]
+        c, _ = ranking_input(row)
         detail: dict[str, Any] = {"notes": notes} if notes is not None else {}
         if changed:
             aliases = self._rows(
                 "select alias_id from {s}.candidate_aliases where namespace = 'candidate' and candidate_id = %s",
                 (candidate_id,),
             )
-            keys = ledger.ordered_keys(candidate_id, [str(r["alias_id"]) for r in aliases])
-            detail["feedback"] = ledger.decision_record(c, STATUS_TO_DECISION[status], keys)
-            detail["sources"] = decision_sources(c)  # the sources credited AT decision time (review 021, H-161)
+            detail.update(decision_detail(row, status, [str(r["alias_id"]) for r in aliases]))
         if changed or notes is not None:
             self._rows(
                 "insert into {s}.candidate_events "
@@ -419,6 +436,38 @@ class DealFlowStore:
                 raise DecisionError(409, "the candidate moved to another company meanwhile; reload and decide again")
         return {cid: {"status": r["status"], "company_id": r["company_id"]} for cid, r in locked.items()}
 
+    def reject_new_batch(self, candidate_ids: list[str], *, reason: str) -> None:
+        """Review 035d: ``new -> rejected`` for the batch confirm's eligible ids, with a FIXED number of statements
+        whatever their number. The caller holds every lock (``lock_for_triage_batch``) and read eligibility under them,
+        so every id is ``new``: no reopen guard applies (the decision only closes). One update, which must return
+        exactly ``candidate_ids`` as a set with the same cardinality (anything else raises: the caller's transaction
+        rolls back); one read of the updated rows and one of their aliases (the snapshot is built in memory by
+        ``decision_detail``, as ``decide`` builds it); one insert of the status events in ``candidate_ids`` order (the
+        request order: never sorted), each the event ``decide(id, "rejected", reason=reason)`` writes."""
+        ids = list(candidate_ids)
+        if not ids:
+            return
+        if len(set(ids)) != len(ids):
+            raise RuntimeError("the batch holds the same candidate twice")
+        updated = self._rows(
+            "update {s}.candidates set status = 'rejected', decided_at = now() "
+            "where id = any(%s) and status = 'new' returning id",
+            (ids,),
+        )
+        got = [str(r["id"]) for r in updated]
+        if len(got) != len(ids) or set(got) != set(ids):
+            raise RuntimeError(f"the batch update changed {len(got)} of {len(ids)} locked candidates")
+        rows = {str(r["id"]): r for r in self._rows("select * from {s}.candidates where id = any(%s)", (ids,))}
+        aliases: dict[str, list[str]] = {}
+        for r in self._rows(
+            "select candidate_id, alias_id from {s}.candidate_aliases where namespace = 'candidate' "
+            "and candidate_id = any(%s)",
+            (ids,),
+        ):
+            aliases.setdefault(str(r["candidate_id"]), []).append(str(r["alias_id"]))
+        events = [{"id": cid, "detail": decision_detail(rows[cid], "rejected", aliases.get(cid, []))} for cid in ids]
+        self.conn.execute(sql.SQL(_BATCH_EVENTS).format(s=self.s), ("new", "rejected", reason, Jsonb(events)))
+
     # ── Keep (review 011) ───────────────────────────────────────────────────────────────────────────────────────
     def lock_for_keep(self, candidate_id: str) -> dict[str, Any]:
         """The first half of a scored Keep: company row, then candidate row (the one lock order), and the reopen
@@ -442,18 +491,14 @@ class DealFlowStore:
                 "update {s}.candidates set status = 'kept', decided_at = now() where id = %s returning id",
                 (candidate_id,),
             )
-        c, _ = ranking_input(self._rows("select * from {s}.candidates where id = %s", (candidate_id,))[0])
+        row = self._rows("select * from {s}.candidates where id = %s", (candidate_id,))[0]
+        c, _ = ranking_input(row)
         if changed:
             aliases = self._rows(
                 "select alias_id from {s}.candidate_aliases where namespace = 'candidate' and candidate_id = %s",
                 (candidate_id,),
             )
-            keys = ledger.ordered_keys(candidate_id, [str(r["alias_id"]) for r in aliases])
-            event = {
-                **detail,
-                "feedback": ledger.decision_record(c, STATUS_TO_DECISION["kept"], keys),
-                "sources": decision_sources(c),
-            }  # the sources credited AT decision time (review 021, H-161)
+            event = {**detail, **decision_detail(row, "kept", [str(r["alias_id"]) for r in aliases])}
             self._rows(
                 "insert into {s}.candidate_events "
                 "(candidate_id, actor, action, from_status, to_status, reason, detail) "
