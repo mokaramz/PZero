@@ -48,6 +48,7 @@ const VIEWS = [
   { key: "desk", path: "/", ready: (p: Page) => p.getByTestId("desk-activity"), detail: "", settle: "/api/today" },
   // the overview read (job history, models) answers after the verdict: the screenshot waits for it (settle)
   { key: "health", path: "/health", ready: (p: Page) => p.getByTestId("health-verdict"), detail: "", settle: "/api/system_health_overview" },
+  { key: "associate", path: "/associate", ready: (p: Page) => p.getByTestId("associate-welcome"), detail: "", settle: ["/api/associate/status", "/api/associate_status"] }, // new path, old path
   { key: "today", path: "/today", ready: (p: Page) => p.getByRole("list", { name: "Orientation" }), detail: "" },
   { key: "events", path: "/events", ready: (p: Page) => p.getByRole("button", { name: "source health" }), detail: "event-calendar" }, // health loads after the list
 ] as const;
@@ -62,8 +63,8 @@ for (const width of [1366, 1920])
         const ctx = await browser.newContext({ viewport: { width, height: 1000 }, colorScheme: theme, reducedMotion: "reduce" });
         await ctx.addInitScript((t) => localStorage.setItem("pz.theme", t), theme);
         const page = await ctx.newPage();
-        const settle = "settle" in view ? view.settle : "";
-        const settled = settle ? page.waitForResponse((r) => new URL(r.url()).pathname === settle, { timeout: 120_000 }) : null;
+        const settle: readonly string[] = "settle" in view ? [view.settle].flat() : [];
+        const settled = settle.length ? page.waitForResponse((r) => settle.includes(new URL(r.url()).pathname), { timeout: 120_000 }) : null;
         await page.goto(`${base}${view.path}`);
         await expect(view.ready(page)).toBeVisible({ timeout: 90_000 });
         if (settled) await settled;

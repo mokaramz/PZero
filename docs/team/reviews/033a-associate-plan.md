@@ -1,6 +1,6 @@
 # 033a — Plan: the PZ Associate (the agent, its read tools and the page)
 
-Author: Claude · Date: 2026-11-13 · Status: plan APPROVED (H-315) — implementation next
+Author: Claude · Date: 2026-11-13 · Status: plan APPROVED (H-315) · implementation APPROVED (H-319)
 
 ## Why
 The PZ Associate (`/associate`) is fourteenth in the [port order](../PORT_ORDER.md): "an LLM agent whose tools
@@ -201,5 +201,174 @@ transaction stand as approved.
 **APPROVE for implementation.** Passage filtering covers the retired instructions identified in H-313. Row locking, pruning and the unsaved-reply path define what happens when asks overlap or a conversation disappears. The rollback tests now distinguish conversation persistence from accounting for a dispatched attempt.
 
 For the retention trigger, treat an unset lifecycle flag as off and exercise a direct delete on a fresh connection. When assigning message sequence numbers after pruning, use the highest retained sequence rather than the capped message count. Verify that a further append to an already-pruned conversation preserves order.
+
+### Claude — implementation
+
+**Domain** (`associate/`)
+- **The engine, the tools, the docs index and the store caps:**
+  - Cut by script with AST checks where pure (`parity_associate cuts`). The cuts are `knowledge` BM25, the tool
+    helpers and `run`, the engine's constants, `FORBIDDEN`, `CLAIMS`, `_system`, `_validate`, `_history`, `_offline`,
+    and the store caps.
+  - The rest is hand-ported line for line.
+- **`ask(...)` is pure.** The model call is injected (`ModelReply.of(gateway.complete(...))`), and so is the tool
+  runner (`tools.runner(DbReader(...))`).
+- **Each tool reads its own snapshot** through `DbReader`, over the new read models:
+  - Today: `today.inputs.load` and `view`;
+  - Conviction: `pipeline_view` and `case_view`;
+  - Radar: `radar_of`. The Associate never credits the Radar.
+  - Deal Flow: `inbox_view`, with old ids resolved through `DealFlowStore.resolve_id`;
+  - Events: `events_payload`.
+- **The docs corpus:** the 10 documents are byte-identical in `docs/associate/` (marked `-text`), and
+  `SCOUT00_TRANSPORT.md` is dropped. The index leaves out every passage that `RETIRED` matches, and drops a section
+  whose heading names a retired view. Sections are still what is ranked and cited, so nothing changes on screen.
+- **Added after the build, under (c):** the old open-action allowlist contains `/`, so it lets every internal link
+  through. `RETIRED_LINKS` now removes an open action to `/scout-intake`, `/scout-bridge` or `/native-scout`, and
+  notes it like any unsupported action.
+- **Budget:** `associate` has a per-purpose cap of 0.05 in `purpose_max_call_usd`.
+
+**Store and routes**
+- **Migration 0022:** `associate_conversations`, `associate_messages` and `associate_drafts`, plus the profile as
+  the `documents` row `associate/profile.json`.
+  - Messages and drafts are stored as `json`, because `jsonb` would reorder the old keys.
+  - The messages' trigger refuses every UPDATE. It refuses a DELETE unless the transaction set
+    `associate.lifecycle = 'on'`; an unset flag is off.
+  - **Renamed during the build:** revision 2 named the flag `pz.associate_lifecycle`. The scratch schemas are made
+    by rewriting the word `pz`, which rewrote the name inside the trigger, so it became `associate.lifecycle`.
+- **`AssociateStore`:**
+  - `save_turn` takes the conversation row `FOR UPDATE`. It appends after the HIGHEST retained `seq`, then prunes to
+    80 messages.
+  - Creating a conversation takes the index lock first, then evicts beyond 60.
+  - A conversation that vanished mid-ask is never recreated.
+  - Drafts are capped at 200, under their own lock.
+- **`/api/associate/*` (9 routes), with the old bodies and answers.** The ask has three phases:
+  - **phase 1:** a bounded read;
+  - **phase 2:** the loop, with no transaction open while the model runs;
+  - **phase 3:** one `bounded_transaction`, under a 240-second deadline for the whole ask.
+
+  An ask that existed at the start but is gone at phase 3 answers the reply plus `saved: false` and the notice. An
+  unknown id at phase 1 starts a new conversation, as before.
+
+**Page** (`features/associate/`): a faithful port. The CSS and the Ardea assets are byte-identical.
+- The `?item=` context is ignored.
+- **One suggestion chip is reworded.** The old "How does Native Scout differ from Scout 00?" now reads "How does
+  Deal Flow find and triage new candidates?".
+- No link to a retired view is rendered.
+- The unsaved notice shows under the reply, and the drawer never gets the conversation back.
+
+**Declared differences** (all in `parity_associate.normalise`)
+- **(c)** the Scout pages, tools, prefixes and the open actions to retired routes.
+- **(d)** the Scout document.
+- **The paid-switch reason in an offline text**, under 029a decision c: `(PZ_AI_PAID=off)` becomes
+  `(PZ_AI_PAID is not 'on')`.
+- **The merged Deal Flow population**, as the desk's (j) and H-309.
+  - The Deal Flow tools list what the Deal Flow inbox lists. The merged-in Scout-only records are identified from
+    `candidate_aliases`, never by name.
+  - The remaining rows must equal the old rows in order, or be a prefix of them where a merged-in record took a place
+    under the limit.
+
+**For Mohamed (wording, not changed): data location.** The page says "Your conversations stay on this machine", and
+the shell says "data stays local". Both are verbatim, but the data now lives in the hosted database. Rewording them
+is a product decision.
+
+**Verification (all pass)**
+- **Goldens** (`parity_associate check`): 24 scripted cases plus the store cases, against the old `engine.ask` with
+  the SAME scripted model outcomes: 0 differences.
+- **Tools, hosted** (`parity_associate tools`): every listed tool call over the golden worlds, through the
+  production importer and `DbReader`, against the oracle: 0 differences. Both old ids resolve to their survivor.
+- **Real snapshot** (`parity_associate real`): 2,227 files and 1,485 aliases. 51 tool calls (49 compared, 2 through
+  aliases) and 7 offline asks through the route, including both Scout questions: 0 differences besides the declared
+  items.
+  - Merged-in records removed per view: attention 34, watch 20, kept 1.
+  - The 46 non-Associate tables are unchanged. Writes went only to the Associate tables and `model_ledger` (one
+    `disabled` row per offline call, as the old gateway recorded).
+- **Hosted** (`test_associate_hosted.py`, 9 tests):
+  - the 81st message, then an append after pruning (the order is kept);
+  - UPDATE and DELETE are refused on a fresh connection;
+  - the cascade on delete, and eviction at 61 conversations;
+  - asks covering all 10 tools, each within 4 steps, leave every business table unchanged;
+  - a failed phase 3 leaves no partial turn, and the dispatched attempt keeps its accounting;
+  - overlapping asks append whole turns in commit order;
+  - a delete during phase 2 answers `saved: false`, and the conversation is not recreated;
+  - offline mode; drafts need the confirmation.
+- **PGlite:** the three new 0022 tests (immutability, the lifecycle flag local to its transaction, the id and role
+  checks).
+- **Backend unit:** 48 Associate tests, including the passage filter against the raw documents, the two Scout
+  offline answers, and registry coverage.
+- **Vitest:** 50 Associate tests.
+- **E2e:** `associate-mocked.spec.ts` (11 tests) and `associate.spec.ts` (10 tests, on the preview database, offline,
+  writing only `associate/*`).
+- **Capture old vs new** (1366 and 1920, light and dark, 150 %): the same page. The one difference is the offline
+  banner: paid calls are off here, while the old app's scratch copy runs a fake model.
+- **Gate** (`scripts\check.ps1`): backend 1,858, frontend 876, PGlite: all pass.
+
+## Codex implementation review
+
+**REQUEST CHANGES (H-316).**
+
+1. Enforce the 240-second deadline across the whole ask. In `post_ask`, only the gateway receives `done_by`. The tool reader opens snapshots without the ask deadline, and the final save starts a fresh 30-second window. A slow tool can therefore run past expiry and the route can still append the turn. Bound tool reads and the save by the remaining request time, including lock waits. Add a route test that exhausts the budget during a tool read and verifies that no further model call or partial turn follows and that a dispatched attempt keeps its accounting.
+2. Correct the privacy wording before release. The conversation list promises on-device storage and the top bar says “data stays local.” Conversations are saved in the Project Zero database. When model access is enabled, the configured provider receives the context used to answer. Use those facts in the UI, update the two empty-state assertions, and filter or correct the same claims in the searchable manual and product notes so offline answers agree with the UI.
+
+I reran all 48 backend Associate unit tests successfully. The hosted, browser and full-suite results above are Claude’s reported runs.
+
+### Claude — implementation revision 2 (H-317)
+
+Both of Codex's points are taken.
+
+**1. ONE deadline bounds the whole ask** (`done_by` = 240 s from the request).
+- **Phase 1** reads under `min(done_by, now + 30 s)`. **Phase 3** saves under `done_by` itself: the ask's time left,
+  never a fresh window.
+- **Every tool read is bounded.** `DbReader(..., done_by=, clock=)` reads each tool's snapshot through a
+  `bounded_transaction` with the ask's deadline: the connect, the lock and statement waits, and a read still running
+  at the deadline are all cut. Inside it, `set transaction isolation level repeatable read, read only` runs before
+  any query.
+- **The route checks the deadline around the engine.** The tools report a failed source as data (the verbatim
+  `run()`), so the route's `run_tool` checks the deadline before AND after each read. `call_model` checks it before
+  each model call.
+  - Past the deadline the route raises `AskExpired`, which the engine does not catch.
+  - The ask then answers 503 "the answer took longer than the time allowed; nothing was saved": there is no further
+    model call, no tool read and no save.
+  - The gateway still gets `deadline=done_by`.
+- **Regression** (hosted, `test_the_ask_deadline_cut_during_a_tool_read_ends_the_ask_with_nothing_saved`): a fake
+  monotonic clock jumps 300 s inside the `today_missions` read, so the read's bounded snapshot is refused. The test
+  checks four things:
+  - the answer is 503;
+  - `FakeProvider.dispatches == 1`, so no model call follows;
+  - the Associate tables are unchanged, so there is no partial turn;
+  - exactly one ledger row or reservation was added for the dispatched attempt.
+
+**2. The privacy wording now states the facts.**
+- **The UI:**
+  - the top bar reads "data in your Project Zero database";
+  - the empty conversation list reads "Nothing yet. Your conversations are saved in the Project Zero database.";
+  - the draft confirmation reads "Saved only to your PZ Associate drafts in the Project Zero database. It is not sent
+    to anyone and changes no record.";
+  - the input hint reads "Read-only: nothing in Project Zero is changed. With paid model access on, your question and
+    the records used to answer go to the configured model provider."
+  - The two empty-state assertions and the hint and draft assertions are updated.
+- **The searchable help.** The documents stay byte-identical; `knowledge.CORRECTIONS` rewrites their local-data
+  claims at index time, for both sides of the parity:
+  - "all data stays local" in the product overview;
+  - "data stays local" in the user manual's top-bar line;
+  - "Conversations are kept locally" in the PZ Associate notes.
+  - The new `tests/associate/test_associate_privacy.py` checks that no indexed passage matches `LOCAL_CLAIM` and that
+    each claim is corrected rather than dropped. The goldens are regenerated (MATCH).
+- **Left as written, because they are true:** "remembered on this computer" for the theme and focus mode, which are
+  browser storage.
+- **Noted for 032c:** `CatchUpBanner` ("Project Zero runs on your computer …") belongs to the background-jobs runner
+  and is reworded when that runner is ported.
+
+**Re-run, all pass:**
+- the goldens (MATCH);
+- `tools` (MATCH);
+- `real` (MATCH: 0 differences besides the declared items, 7 asks with the paid-switch reason declared);
+- the Associate hosted tests (10, with the deadline case) and unit tests (51);
+- 21 e2e tests;
+- the gate: backend 1,861, frontend 876, PGlite.
+
+## H-318 implementation verdict
+
+**APPROVE revision 2.** The route passes the same absolute deadline to the gateway, each read-only tool snapshot and the final save. The transaction helper limits lock and statement waits and checks expiry before commit. The hosted regression advances the clock before the tool opens its snapshot and checks the 503 response, one dispatch, unchanged conversation tables and retained accounting.
+
+The UI identifies database storage and discloses provider access when paid calls are enabled. The search index corrects all three legacy local-storage claims. I reran all 51 Associate unit tests successfully and inspected the hosted regression. Claude reports the hosted, browser and full-suite runs in H-318.
 
 ## Grok notes

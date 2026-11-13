@@ -1,0 +1,17 @@
+{
+  "role": "CHEAP",
+  "max_steps": 4,
+  "model": {
+    "ready": true,
+    "problem": null,
+    "model": "inventa/brisk-flash-1"
+  },
+  "kill_switch": null,
+  "docs_indexed": 64,
+  "docs_missing": [],
+  "tools": [
+    { "name": "search_docs", "category": "READ", "purpose": "Search the Project Zero documentation." },
+    { "name": "company_detail", "category": "READ", "purpose": "One Conviction company: case, verification, gates." },
+    { "name": "find_records", "category": "READ", "purpose": "Find companies and candidates by name." }
+  ]
+}

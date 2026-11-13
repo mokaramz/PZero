@@ -256,3 +256,23 @@ the old rules (restated in the parity and checked against every old answer) with
 reworded. The pure `health.inputs_from_docs` -> `system_view` / `overview_view` matches value by value and as
 serialized text; with a stub runner the old texts and groups come back exactly. Written and read as bytes
 (`python -m projectzero.ops.parity_health goldens` / `check`).
+
+`oracle_associate.json` (review 033a): the old PZ Associate (`services/associate`: the knowledge index, `engine.ask`,
+`tools.run`, the read handlers the tools call, the store and the draft route) over three worlds of invented names (a
+`main` folder of 21 Conviction records with three prepared cases, 11 Deal Flow records carrying `decision`,
+`discovery_tier` and `source_id` among them an absorbed pair and an analysed candidate, one Scout-only Scout Intake
+item, six events and an operating profile; an `empty` folder; a `store` folder), each in its own scratch data folder,
+with a frozen clock (2026-11-13 09:00), deterministic ids, and the old gateway replaced by a SCRIPTED model that plays
+each case's outputs and records every call. Recorded: the knowledge tables, the whole index and 31 searches and 7
+offline answers over the ten documents as `knowledge.retire` leaves them (revision 2's index "restricted to the same
+passages"); every read handler's payload; 50 listed tool calls (every tool, every argument rejection, the retired
+tools); 24 scripted cases (tool-then-answer, a follow-up from history, the tool budget, malformed and refused replies,
+a prompt-injection record, the Manager refused, a claim corrected, a nonexistent company, an unavailable source,
+offline answers, the context selection, a draft offered, the registry over four asks, a truncated result, the history
+window); the draft confirmation, the caps and the eviction. Writes outside `associate/` are blocked (none happened);
+the Radar milestone credit is held (the Associate writes no PZ record). Declared differences, all normalised in
+`parity_associate.normalise`: (c) the Scout pages, tools, `/scout-intake` and Scout Intake hits dropped, and, with the
+import's merge (`tools`), an absorbed record's or a Scout-only record's old id resolved to its surviving candidate;
+(d) `SCOUT00_TRANSPORT.md` dropped. The pure port matches value by value and as serialized text, and every tool
+through `DbReader` over each imported world matches too (`python -m projectzero.ops.parity_associate goldens` /
+`check` / `tools`).

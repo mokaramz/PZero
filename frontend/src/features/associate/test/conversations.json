@@ -1,0 +1,16 @@
+{
+  "conversations": [
+    {
+      "id": "c-0a1b2c3d4e5f",
+      "title": "Which Conviction companies are waiting on a Manager",
+      "updated": "2026-11-12T15:20:00Z",
+      "turns": 2
+    },
+    {
+      "id": "c-1f2e3d4c5b6a",
+      "title": "Explain how a company reaches Radar.",
+      "updated": "2026-11-10T08:05:00Z",
+      "turns": 2
+    }
+  ]
+}

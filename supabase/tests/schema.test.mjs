@@ -1236,3 +1236,52 @@ describe("migration 0021 — the gateway's ledger fields, reservations and cache
     await db.query(`insert into pz.model_cache (key, provider, model, text) values ($1, 'fake', 'm', '{}')`, ["a".repeat(64)]);
   });
 });
+
+describe("migration 0022 — the Associate's store: immutable messages, deleted only by its lifecycle operations", () => {
+  let db;
+  const conv = (id, at) => db.query(`insert into pz.associate_conversations (id, title, created_at, updated_at) values ($1, 'Invented', $2, $2)`, [id, at]);
+  const msg = (cid, seq, role = "user") =>
+    db.query(`insert into pz.associate_messages (conversation_id, seq, at, role, body) values ($1, $2, now(), $3, $4)`, [cid, seq, role, JSON.stringify({ role, text: `m${seq}` })]);
+  const seqs = async (cid) => (await db.query(`select seq from pz.associate_messages where conversation_id = $1 order by seq`, [cid])).rows.map((r) => r.seq);
+
+  before(async () => {
+    db = await freshDb();
+    await conv("c-0000000000a1", "2026-11-13T08:00:00Z");
+    for (let s = 1; s <= 3; s += 1) await msg("c-0000000000a1", s);
+  });
+
+  test("a message is never edited, and an unset or off lifecycle flag refuses a delete", async () => {
+    await rejects(db.query(`update pz.associate_messages set body = '{}' where conversation_id = 'c-0000000000a1'`), /immutable/);
+    await rejects(db.query(`delete from pz.associate_messages where conversation_id = 'c-0000000000a1' and seq = 1`), /pruning/);
+    await rejects(db.query(`delete from pz.associate_conversations where id = 'c-0000000000a1'`), /pruning/); // the cascade too
+    await db.exec(`begin; select set_config('associate.lifecycle', 'off', true);`);
+    await rejects(db.query(`delete from pz.associate_messages where conversation_id = 'c-0000000000a1' and seq = 1`), /pruning/);
+    await db.exec(`rollback;`);
+    assert.deepEqual(await seqs("c-0000000000a1"), [1, 2, 3]);
+  });
+
+  test("pruning and deleting a conversation run inside the lifecycle flag, local to their transaction", async () => {
+    await db.exec(`begin; select set_config('associate.lifecycle', 'on', true);
+      delete from pz.associate_messages where conversation_id = 'c-0000000000a1' and seq = 1; commit;`);
+    assert.deepEqual(await seqs("c-0000000000a1"), [2, 3]);
+    await msg("c-0000000000a1", 4); // the next seq follows the highest kept, never the count
+    assert.deepEqual(await seqs("c-0000000000a1"), [2, 3, 4]);
+    await rejects(db.query(`delete from pz.associate_messages where conversation_id = 'c-0000000000a1'`), /pruning/); // the flag did not outlive its transaction
+    await db.exec(`begin; select set_config('associate.lifecycle', 'on', true);
+      delete from pz.associate_conversations where id = 'c-0000000000a1'; commit;`);
+    assert.equal((await db.query(`select count(*)::int as n from pz.associate_messages`)).rows[0].n, 0);
+  });
+
+  test("ids, roles and the sequence are checked; drafts and conversations carry the old id shapes", async () => {
+    await rejects(conv("conv-1", "2026-11-13T08:00:00Z"), /check/);
+    await conv("c-0000000000b2", "2026-11-13T08:00:00Z");
+    await rejects(msg("c-0000000000b2", 0), /check/);
+    await rejects(msg("c-0000000000b2", 1, "system"), /check/);
+    await msg("c-0000000000b2", 1);
+    await rejects(msg("c-0000000000b2", 1), /duplicate|unique/);
+    await rejects(msg("c-0000000000ff", 1), /foreign key/);
+    await rejects(db.query(`insert into pz.associate_drafts (id, title, body, created_at, record) values ('draft-1', 't', 'b', now(), '{}')`), /check/);
+    await db.query(`insert into pz.associate_drafts (id, title, body, created_at, record) values ('d-00000000aa', 't', 'b', now(), '{}')`);
+    await db.query(`delete from pz.associate_drafts where id = 'd-00000000aa'`); // drafts are the user's to delete
+  });
+});

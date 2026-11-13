@@ -76,6 +76,7 @@ DEFAULTS: dict[str, Any] = {
             "triage_second_pass": 0.02,
             "native_scout": 0.06,
             "native_planner": 0.01,
+            "associate": 0.05,  # review 033a: the PZ Associate, at the default per-call cap
         },
     },
     "retries": {"max_retries": 2, "backoff_s": [2.0, 6.0]},
