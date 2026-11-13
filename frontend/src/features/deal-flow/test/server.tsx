@@ -6,6 +6,7 @@ import { vi } from "vitest";
 
 import { ScoutIntakeRedirect } from "@/app/redirects";
 import { ToastProvider } from "@/components/Toast";
+import { fakeWatch, type WatchRoutes } from "@/features/watchlist/test/fakeWatch";
 import DealFlowPage from "../DealFlowPage";
 import type { TriagePayload } from "../model/triage";
 import type { AutoStatus } from "../model/triageAuto";
@@ -33,6 +34,8 @@ export type Routes = {
   /** machine triage after a scan (review 035b): each `triage_auto` read (n counts them), and Retry now */
   triageAuto?: (n: number) => AutoStatus | Answer;
   triageRetry?: (body: Record<string, unknown>) => Answer;
+  /** the WATCH view and writes (review 037a); without it `GET /api/watch` is a 404 */
+  watch?: WatchRoutes;
 };
 
 const isAnswer = (x: unknown): x is { status: number; body: unknown } => !!x && typeof x === "object" && "status" in x && "body" in x;
@@ -42,12 +45,15 @@ export function fakeServer(routes: Routes) {
   let inboxReads = 0;
   let statusReads = 0;
   let autoReads = 0;
+  const watch = routes.watch ? fakeWatch(routes.watch) : undefined;
   const json = (status: number, body: unknown) => new Response(JSON.stringify(body), { status, headers: { "Content-Type": "application/json" } });
   const fetchMock = vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
     const method = (init?.method ?? "GET").toUpperCase();
     const path = String(input);
     const body = init?.body ? JSON.parse(String(init.body)) : undefined;
     calls.push({ method, path, body });
+    const w = watch?.handle(method, path, body);
+    if (w) return json(w.status, w.body);
     if (method === "GET" && path === "/api/deal-flow/inbox") return json(200, await routes.inbox(++inboxReads));
     if (method === "GET" && path === "/api/deal-flow/triage") {
       const t = routes.triage?.();

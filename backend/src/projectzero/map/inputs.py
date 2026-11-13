@@ -9,7 +9,8 @@ The Map writes nothing (decision a). Every store is read once, in the old ORDER:
 * the CURRENT triage proposals, re-keyed by the inbox records' ids (the old ``triage_proposals.json`` was keyed by the
   inbox id);
 * the frozen, byte-exact archives in their KEY order (decision b): ``scout_intake.json`` (merged into Deal Flow),
-  ``news/events.json`` and ``sources/network.json`` (until their own ports), ``watch/triggers.jsonl``;
+  ``news/events.json`` and ``sources/network.json`` (until their own ports);
+* ``watch/triggers.jsonl`` through the ONE WATCH trigger reader (review 037a: the archived lines, then the rows);
 * ``config.json`` as Conviction reads it (the byte-exact archive first: the ``home_base`` key order) and
   ``ecosystems.json`` from ``documents``.
 
@@ -37,6 +38,7 @@ from projectzero.ecosystems.store import EcosystemsStore
 from projectzero.map.inputs_model import MapInputs, coverage_of, inputs_from_docs
 from projectzero.network import view as people_view
 from projectzero.network.view import berlin_today
+from projectzero.watch import log as watch_log
 
 ARCHIVES = ("scout_intake.json", "news/events.json", "sources/network.json")
 WATCH = "watch/triggers.jsonl"
@@ -86,7 +88,7 @@ def load(conn: psycopg.Connection[Any], schema: str, now: datetime, *, for_pins:
     with conn.cursor(row_factory=dict_row) as cur:
         cur.execute(sql.SQL("select key, body from {}.documents where key = any(%s)").format(s), (list(DOCUMENTS),))
         documents = {r["key"]: r["body"] for r in cur.fetchall()}
-        paths = [CONFIG] if for_pins else [CONFIG, *ARCHIVES, WATCH]
+        paths = [CONFIG] if for_pins else [CONFIG, *ARCHIVES]
         cur.execute(sql.SQL("select path, raw from {}.legacy_documents where path = any(%s)").format(s), (paths,))
         archived: dict[str, Any] = {r["path"]: r["raw"] for r in cur.fetchall()}
         proposal_rows: dict[str, dict[str, Any]] = {}
@@ -112,7 +114,7 @@ def load(conn: psycopg.Connection[Any], schema: str, now: datetime, *, for_pins:
         "sources.json": {"sources": snap.stored_sources},
         "real_data.json": {"signals": snap.inputs.signals},
         "people.json": {"people": snap.inputs.people},
-        WATCH: _text(archived[WATCH]) if WATCH in archived else "",
+        WATCH: watch_log.load_events(conn, schema),  # the overlaid dict lines (review 037a)
     }
     for path in ARCHIVES:
         if path in archived:

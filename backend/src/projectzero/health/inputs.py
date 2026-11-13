@@ -33,6 +33,7 @@ from projectzero.network.view import berlin_now
 from projectzero.validation import inputs as validation_inputs
 from projectzero.validation.inputs import parse_archived
 from projectzero.validation.inputs_model import inputs_from_docs as validation_from_docs
+from projectzero.watch import targets as watch_targets
 
 logger = logging.getLogger(__name__)
 LEDGER_TS = "%Y-%m-%dT%H:%M:%S"
@@ -95,8 +96,9 @@ def load(conn: psycopg.Connection[Any], schema: str, now: datetime) -> HealthInp
             _archived_first(conn, s, "research_questions.json", "research_questions.json", {}) or {}
         ).get("questions")
         or {},
-        watch_targets=_document(conn, s, "watch/targets.json", {}),
-        watch_events=list(operator.watch_events),
+        watch_targets={"targets": watch_targets.effective_targets(conn, schema)},  # review 037a: the Watchlist's
+        watch_candidates=watch_targets.watch_candidates(conn, schema)[0],  # targets and watched set (revision 2)
+        watch_events=list(operator.watch_events),  # the ONE trigger reader, through Conviction's loader
         job_state={str(r["job"]): r["detail"] for r in _rows(conn, s, "select job, detail from {s}.job_state")},
         config=operator.config,
         event_health=_document(conn, s, "event_health.json", {}),

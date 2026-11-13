@@ -10,10 +10,11 @@ Where each input comes from (what the legacy import stored):
 | ``founder_calls.json`` (calls, contact state) | ``legacy_documents`` byte-exact, else ``documents`` | not modelled; call ties keep file order |
 | ``case_prep/cases.json`` (prepared case, next action) | ``legacy_documents`` byte-exact, else ``documents`` | case preparation is not ported (decision b) |
 | ``config.json`` (outreach policy) | ``legacy_documents`` byte-exact, else ``documents`` | not modelled |
-| ``watch/triggers.jsonl`` (re-open evidence) | ``legacy_documents`` | ``documents`` holds only ``.json`` files |
+| ``watch/triggers.jsonl`` (re-open evidence) | ``watch.log.load_events``: the archived ``legacy_documents`` lines, then the ``watch_events`` rows (review 037a) | the ONE trigger reader |
 | ``case_prep/actions.jsonl`` (case audit, ``GET /case``) | ``legacy_documents`` | the same |
 
-None of these files has a writer in the new system yet. When its context is ported, this loader switches to its tables.
+The WATCH log has a writer since review 037a (read through its ONE reader); none of the other files has one yet.
+When its context is ported, this loader switches to its tables.
 Failure semantics are the old ones: radar companies / evaluations unreadable -> both read as empty (the old pipeline's
 ``try``); founder calls, cases and config are tolerant (unreadable -> empty); a missing file is its old default.
 """
@@ -31,6 +32,7 @@ from projectzero.conviction.operator import OperatorInputs
 from projectzero.conviction.pipeline import ImqInputs, Inputs
 from projectzero.core.db import schema_ident
 from projectzero.network.store import load_people  # the ONE people reader (review 013)
+from projectzero.watch import log as watch_log  # the ONE WATCH trigger reader (review 037a)
 
 DOCS = ("radar_companies.json", "evaluations.json", "founder_calls.json", "case_prep/cases.json", "config.json")
 TRIGGERS = "watch/triggers.jsonl"
@@ -62,10 +64,11 @@ def load_documents(conn: psycopg.Connection[Any], schema: str) -> dict[str, Any]
         for r in cur.fetchall():
             out[r["key"]] = r["body"]
         cur.execute(
-            sql.SQL("select path, raw from {}.legacy_documents where path = any(%s)").format(s), ([*DOCS, *JSONL],)
+            sql.SQL("select path, raw from {}.legacy_documents where path = any(%s)").format(s), ([*DOCS, ACTIONS],)
         )
         for r in cur.fetchall():
             out[r["path"]] = r["raw"] if r["path"] in JSONL else _parse(r["raw"])
+    out[TRIGGERS] = watch_log.load_events(conn, schema)  # review 037a: the archived lines, then the rows
     # review 023: founder calls are modelled; the current records (written by the Founder Calls page) are read through
     # the ONE shared reader, which keeps the archived order. A broken archive with no rows stays UNREADABLE.
     from projectzero.founder_calls.store import FounderCallsStore
@@ -128,7 +131,7 @@ def inputs_from(docs: dict[str, Any], people: list[dict[str, Any]]) -> Inputs:
         cases=cases if isinstance(cases, dict) else {},
         founder_calls=_tolerant(docs.get("founder_calls.json", _MISSING), {}) or {},
         evaluations=_tolerant(evals, {}) or {},
-        watch_events=_jsonl(docs.get(TRIGGERS, _MISSING)),
+        watch_events=watch_log.events_of(docs.get(TRIGGERS)),  # the overlaid lines, or an archive's raw bytes
         config=_tolerant(docs.get("config.json", _MISSING), {}) or {},
         case_actions=_jsonl(docs.get(ACTIONS, _MISSING)),
     )

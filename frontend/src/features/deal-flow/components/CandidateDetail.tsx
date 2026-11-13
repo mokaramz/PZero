@@ -13,6 +13,7 @@ import type { TriageSummary } from "../model/triage";
 import type { Candidate, InboxPayload, Revisit } from "../model/types";
 import { AnalystChip } from "./AnalystChip";
 import { TriagePanel, type TriageDecide } from "./TriagePanel";
+import { WatchSection } from "./WatchSection";
 import styles from "../DealFlow.module.css";
 
 export type DetailActions = {
@@ -243,7 +244,7 @@ export function CandidateDetail({ c, ib, im, actions, tri, triPending }: Props) 
         variant="editorial"
       />
 
-      {c.decision === "watch" && <NotPortedSection title="On WATCH — sensors" reason={NOT_PORTED.watch} testId="watch-section" />}
+      {c.decision === "watch" && <WatchSection candidateId={c.id} />}
       {!tri && triPending && (
         <section className={styles.dsec} data-testid="triage-pending">
           <h4 className={styles.hd}>Machine triage</h4>

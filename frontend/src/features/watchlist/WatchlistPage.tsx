@@ -1,7 +1,7 @@
 /**
  * Signal watchlist (v1 view `watch`, review 013). Manual-first and ToS-safe: the operator opens public links and logs
- * what changed via POST network/watch_log {id, note} (an empty note just marks the person checked). The watched
- * companies panel arrives with the WATCH sensors port.
+ * what changed via POST network/watch_log {id, note} (an empty note just marks the person checked). Above the people,
+ * the watched companies panel (review 037a): pages are saved and triggers acknowledged; the page checks are 037b.
  */
 import { useState } from "react";
 import { Link } from "react-router-dom";

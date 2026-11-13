@@ -31,6 +31,7 @@ from projectzero.api.routers import (
     system_health,
     today,
     validation,
+    watch,
 )
 from projectzero.api.security import security_middleware
 from projectzero.core.config import Settings
@@ -71,6 +72,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.include_router(system_health.router)
     app.include_router(associate.router)
     app.include_router(jobs.router)
+    app.include_router(watch.router)
 
     @app.exception_handler(RequestValidationError)
     async def invalid_request(_: Request, exc: RequestValidationError) -> JSONResponse:

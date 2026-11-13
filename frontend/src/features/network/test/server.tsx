@@ -1,4 +1,4 @@
-/** A fake backend for the Network and Watchlist page tests: answers the reads, keeps the writes it accepts, records every call. */
+/** A fake backend for the Network and Watchlist page tests (with the WATCH routes of review 037a): answers the reads, keeps the writes it accepts, records every call. */
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render } from "@testing-library/react";
 import type { ReactNode } from "react";
@@ -6,6 +6,7 @@ import { createMemoryRouter, RouterProvider } from "react-router-dom";
 import { vi } from "vitest";
 
 import { ToastProvider } from "@/components/Toast";
+import { fakeWatch, type WatchRoutes } from "@/features/watchlist/test/fakeWatch";
 import WatchlistPage from "@/features/watchlist/WatchlistPage";
 import NetworkPage from "../NetworkPage";
 import type { GraphPayload, PeoplePayload, Person, PersonSaveBody, TalentedBody } from "../model/types";
@@ -22,6 +23,8 @@ export type Routes = {
   /** replaces the talent forest */
   graph?: GraphPayload;
   watchLog?: (body: { id: string; note: string }) => Answer | undefined;
+  /** the watched companies panel (review 037a): the invented WATCH world, unless replaced */
+  watch?: WatchRoutes;
 };
 
 const slugOf = (name: string) =>
@@ -50,6 +53,7 @@ function defaultSave(body: PersonSaveBody, db: PeoplePayload): Answer {
 export function fakeServer(routes: Routes = {}) {
   const db = peoplePayload();
   if (routes.people) db.people = routes.people;
+  const watch = fakeWatch(routes.watch);
   const calls: Call[] = [];
   const json = (status: number, body: unknown) => new Response(JSON.stringify(body), { status, headers: { "Content-Type": "application/json" } });
   const fetchMock = vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
@@ -57,6 +61,8 @@ export function fakeServer(routes: Routes = {}) {
     const url = new URL(String(input), "http://x");
     const body = init?.body ? (JSON.parse(String(init.body)) as Record<string, unknown>) : undefined;
     calls.push({ method, path: url.pathname + url.search, body });
+    const w = watch.handle(method, url.pathname, body);
+    if (w) return json(w.status, w.body);
     if (method === "GET" && url.pathname === "/api/network/people") return json(200, structuredClone(db));
     if (method === "GET" && url.pathname === "/api/network/graph") return json(200, routes.graph ?? graph());
     if (method === "GET" && url.pathname === "/api/network/watchlist") return json(200, { people: structuredClone(db.people.filter((p) => p.watch)) });
@@ -84,8 +90,11 @@ export function fakeServer(routes: Routes = {}) {
   vi.stubGlobal("fetch", fetchMock);
   return {
     db,
+    watch: watch.db,
     calls,
     posts: (path?: string) => calls.filter((c) => c.method === "POST" && (!path || c.path === `/api/network/${path}`)),
+    /** the WATCH writes (`watch_target`, `watch_ack`) */
+    watchPosts: (path?: string) => calls.filter((c) => c.method === "POST" && (path ? c.path === `/api/${path}` : /^\/api\/watch_/.test(c.path))),
     reads: (path: string) => calls.filter((c) => c.method === "GET" && c.path === path).length,
   };
 }

@@ -1,0 +1,145 @@
+{
+  "companies": [
+    {
+      "key": "halvard optics",
+      "name": "Halvard Optics",
+      "candidate_id": "c-wt-01",
+      "urls": ["https://halvard-optics.example/news", "https://halvard-optics.example/careers"],
+      "checks": {
+        "https://halvard-optics.example/news": { "last_checked": "2026-11-12T08:00:00", "last_state": "changed", "last_ok": "2026-11-12T08:00:00", "failures_in_row": 0 },
+        "https://halvard-optics.example/careers": { "last_checked": "2026-11-12T08:00:05", "last_state": "failed", "failures_in_row": 2, "last_error": "HTTP 503" }
+      },
+      "triggers": [
+        {
+          "id": "wt-a1b2c3d4e5f6",
+          "kind": "trigger",
+          "entity_key": "halvard optics",
+          "name": "Halvard Optics",
+          "candidate_id": "c-wt-01",
+          "predicate": "funding",
+          "label": "Funding round",
+          "high_value": true,
+          "source": "halvard-optics.example",
+          "source_kind": "page_check",
+          "url": "https://halvard-optics.example/news",
+          "source_date": "2026-11-10",
+          "first_observed": "2026-11-12T08:00:00",
+          "evidence": "Halvard Optics closes a seed round led by an invented fund to scale its adaptive-lens line for industrial inspection cameras; the round also brings two new board observers and a hiring plan for the Tampere lab.",
+          "dedupe_key": "a1b2c3d4e5f6a7b8c9d0",
+          "status": "new",
+          "status_at": ""
+        },
+        {
+          "id": "wt-b2c3d4e5f6a7",
+          "kind": "trigger",
+          "entity_key": "halvard optics",
+          "name": "Halvard Optics",
+          "candidate_id": "c-wt-01",
+          "predicate": "pilot",
+          "label": "Pilot",
+          "high_value": false,
+          "source": "Nordlicht Grants",
+          "source_kind": "scan_rehit",
+          "url": "https://grants.nordlicht.example/halvard-pilot",
+          "source_date": "",
+          "first_observed": "2026-11-11T22:16:00",
+          "evidence": "Pilot with a regional rail operator listed in a later scan.",
+          "dedupe_key": "b2c3d4e5f6a7b8c9d0e1",
+          "status": "new",
+          "status_at": ""
+        },
+        {
+          "id": "wt-c3d4e5f6a7b8",
+          "kind": "trigger",
+          "entity_key": "halvard optics",
+          "name": "Halvard Optics",
+          "candidate_id": "c-wt-01",
+          "predicate": "customer",
+          "label": "Customer",
+          "high_value": false,
+          "source": "Kestrel Wire",
+          "source_kind": "news",
+          "url": "",
+          "source_date": "2026-11-02",
+          "first_observed": "2026-11-03T09:30:00",
+          "evidence": "Named as a supplier by an invented logistics group.",
+          "dedupe_key": "c3d4e5f6a7b8c9d0e1f2",
+          "status": "dismissed",
+          "status_at": "2026-11-04T10:00:00"
+        },
+        {
+          "id": "wt-d4e5f6a7b8c9",
+          "kind": "trigger",
+          "entity_key": "halvard optics",
+          "name": "Halvard Optics",
+          "candidate_id": "c-wt-01",
+          "predicate": "key_hire",
+          "label": "Key hire",
+          "high_value": false,
+          "source": "halvard-optics.example",
+          "source_kind": "page_check",
+          "url": "https://halvard-optics.example/careers",
+          "source_date": "",
+          "first_observed": "2026-10-28T08:00:00",
+          "evidence": "Head of manufacturing joins from an invented optics maker.",
+          "dedupe_key": "d4e5f6a7b8c9d0e1f2a3",
+          "status": "reviewed",
+          "status_at": "2026-10-29T12:00:00"
+        }
+      ],
+      "open": 2,
+      "triage_predates_evidence": true,
+      "machine_proposal": "WATCH"
+    },
+    {
+      "key": "brisa hydrogen",
+      "name": "Brisa Hydrogen",
+      "candidate_id": "",
+      "urls": [],
+      "checks": {},
+      "triggers": [],
+      "open": 0,
+      "triage_predates_evidence": false,
+      "machine_proposal": null
+    },
+    {
+      "key": "quellbrook labs",
+      "name": "Quellbrook Labs",
+      "candidate_id": "c-wt-03",
+      "urls": [],
+      "checks": {},
+      "triggers": [
+        {
+          "id": "wt-e5f6a7b8c9d0",
+          "kind": "trigger",
+          "entity_key": "quellbrook labs",
+          "name": "Quellbrook Labs",
+          "candidate_id": "c-wt-03",
+          "predicate": "source_rehit",
+          "label": "New independent source mention",
+          "high_value": false,
+          "source": "Brightwater Register",
+          "source_kind": "scan_rehit",
+          "url": "https://register.brightwater.example/quellbrook",
+          "source_date": "2026-10-20",
+          "first_observed": "2026-10-21T22:15:00",
+          "evidence": "Listed again in a later register extract.",
+          "dedupe_key": "e5f6a7b8c9d0e1f2a3b4",
+          "status": "reviewed",
+          "status_at": "2026-10-22T09:00:00"
+        }
+      ],
+      "open": 0,
+      "triage_predates_evidence": false,
+      "machine_proposal": "WATCH"
+    }
+  ],
+  "labels": {
+    "funding": "Funding round",
+    "pilot": "Pilot",
+    "customer": "Customer",
+    "key_hire": "Key hire",
+    "source_rehit": "New independent source mention"
+  },
+  "note": "Deterministic sensors only. Nothing here changes a decision or a score."
+}

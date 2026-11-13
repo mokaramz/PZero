@@ -48,6 +48,11 @@ Declared differences, ALL applied by ``normalise`` (old payload -> the expected 
   after it (rule 6: an unported job is not overdue, so it is not listed). The items are rebuilt from the old jobs
   rows, each rebuild checked first against the old item; then the verdict and the status are re-derived.
 
+* **037a (m), the real snapshot only (``real``):** the ``watch`` counts (``companies``, ``open_triggers``) are the
+  Watchlist's own (``GET /api/watch``: the same watched set, review 037a decision a / revision 2: every candidate on
+  WATCH, the Scout planner leads the merge brought in included); the delta is reported. The worlds' old-format
+  documents read the old inbox's WATCH candidates, so the goldens are unchanged.
+
 The worlds hold INVENTED names only (see ``WORLDS``). Exit 1 on any difference.
 """
 
@@ -992,6 +997,7 @@ def real() -> int:  # pragma: no cover - for the main session: needs the hosted 
     schema = f"pz_rehearse_{_secrets.token_hex(4)}"
     report_: dict[str, Any] = {}
     inbox_delta: dict[str, int] = {}
+    watch_delta: dict[str, int] = {}
     admin = connect(settings.db_url, autocommit=True)
     try:
         admin.execute(_scratch_sql(schema).encode())
@@ -1013,6 +1019,7 @@ def real() -> int:  # pragma: no cover - for the main session: needs the hosted 
             listed = Counter(
                 str(c.get("decision") or "") for c in client.get("/api/deal-flow/inbox").json()["candidates"]
             )
+            watchlist = client.get("/api/watch").json()["companies"]
         with transaction(settings.db_url) as c:
             after = _fingerprint(c, schema)
         try:
@@ -1022,6 +1029,12 @@ def real() -> int:  # pragma: no cover - for the main session: needs the hosted 
             old_inbox = want["overview"]["ok"]["pipeline"]["inbox"]
             want["overview"]["ok"]["pipeline"]["inbox"] = dict(listed)
             inbox_delta = {k: listed.get(k, 0) - old_inbox.get(k, 0) for k in sorted({*listed, *old_inbox})}
+            # declared (m), review 037a decision (a) / revision 2: the WATCH counts are the Watchlist's (its own
+            # route, the same watched set: every candidate on WATCH, the Scout planner leads included)
+            old_watch = want["system"]["ok"]["watch"]
+            want["system"]["ok"]["watch"] = {**old_watch, "companies": len(watchlist),
+                                             "open_triggers": sum(int(c["open"]) for c in watchlist)}  # fmt: skip
+            watch_delta = {k: want["system"]["ok"]["watch"][k] - old_watch[k] for k in ("companies", "open_triggers")}
         except (ValueError, AssertionError) as exc:
             want = {}
             problems.append(f"/normalise: {exc}")
@@ -1040,7 +1053,8 @@ def real() -> int:  # pragma: no cover - for the main session: needs the hosted 
                    "sources": len((body.get("sources") or {}).get("sources") or []),
                    "runs_30d": len((ov.get("jobs") or {}).get("runs") or []),
                    "model_rows": len((ov.get("models") or {}).get("rows") or []),
-                   "tables_checked": len(before), "declared_inbox_delta": inbox_delta}  # fmt: skip
+                   "tables_checked": len(before), "declared_inbox_delta": inbox_delta,
+                   "declared_watch_delta": watch_delta}  # fmt: skip
     finally:
         admin.execute(_sql.SQL("drop schema if exists {} cascade").format(_sql.Identifier(schema)))
         admin.close()

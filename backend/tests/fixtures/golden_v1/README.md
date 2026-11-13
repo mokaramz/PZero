@@ -350,3 +350,21 @@ compared. `check` runs the hand-ported validator, the cut prompt, the new `casca
 and the cut `summary` / `plain`; `hosted` runs the script through the real gateway, a paid `FakeProvider` and the
 Postgres budget store in a scratch schema (`python -m projectzero.ops.parity_triage_cascade goldens` / `check` /
 `hosted`).
+
+`oracle_watch_store.json` (review 037a): the old WATCH store, `watch.set_target` and `acknowledge`, then `view()`, at
+a frozen clock (2026-11-13 10:00, one minute per step) over a scratch data folder holding an INVENTED world: inbox
+`watch` candidates (one with `also_seen` sources and a triage proposal older than its newest trigger, one whose
+proposal is newer), a `new` candidate with a manual target and a proposal, two Scout planner leads on MONITORING (one
+with a manual target) and two signals that are not imported as WATCH candidates, active and inactive targets with check
+records, and a `watch/triggers.jsonl` with status lines, a re-acknowledgement, a status line without a trigger, a
+legacy trigger missing fields, malformed lines, a CRLF line and twelve triggers for one company. The script: the view,
+an imported target saved twice, a manual company created / deactivated / reactivated, every refusal, eight URLs (six
+kept), `active: "false"`, acknowledgements (again, twice, unknown, a bad status, an empty id, a 400-character note, an
+unwatched company's trigger), a watched candidate's first pages, the view. Recorded after each step: the answer, the
+whole log, the targets document, the old `_events()` / `triggers()`, the view, and (declared a) `view_a`: the old
+`view()` with the old watched set extended by `input.extra_watch` (the Scout planner leads the merged Deal Flow holds
+on WATCH); writes outside the scratch folder are refused (none happened). Declared differences, all normalised in
+`parity_watch_store.normalise`: (a) the watched set; the 400 status of the old `ApiError`. `check` runs the new pure
+answer, line, merge and view build over the old state of each step; `hosted` imports the world with the production
+importer into a scratch schema, runs the script through the routes and compares the log as Conviction, Today, Health,
+Home and the Map read it (`python -m projectzero.ops.parity_watch_store goldens` / `check` / `hosted` / `real`).

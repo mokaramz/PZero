@@ -35,7 +35,8 @@ const VIEWS = [
   { key: "deal-flow", path: "/deal-flow", ready: (p: Page) => rows(p).first(), detail: "cand-detail", settle: ["/api/deal-flow/triage_auto", "/api/triage_auto"] },
   { key: "conviction", path: "/conviction?company=kyrok", ready: (p: Page) => p.locator("[data-slug=kyrok]"), detail: "operator-view" },
   { key: "network", path: "/network", ready: (p: Page) => p.getByTestId("person-row").first(), detail: "person-profile" },
-  { key: "watchlist", path: "/watchlist", ready: (p: Page) => p.locator("main table, main [class*=empty]").first(), detail: "" },
+  // the Watched companies panel loads on its own read (037a): the screenshot waits for it (settle; the same path on both)
+  { key: "watchlist", path: "/watchlist", ready: (p: Page) => p.locator("main table, main [class*=empty]").first(), detail: "", settle: "/api/watch" },
   { key: "founder-calls", path: "/founder-calls", ready: (p: Page) => p.getByTestId("calls-tree").or(p.locator("[class*=tree]")).first(), detail: "" },
   { key: "ecosystems", path: "/ecosystems", ready: (p: Page) => p.locator("main table tbody tr").first(), detail: "" },
   { key: "sources", path: "/sources", ready: (p: Page) => p.locator("main table tbody tr").first(), detail: "" },
