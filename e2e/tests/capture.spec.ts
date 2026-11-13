@@ -44,6 +44,8 @@ const VIEWS = [
   { key: "founder-radar-research", path: "/founder-radar?view=research", ready: (p: Page) => p.getByTestId("fr-research"), detail: "" },
   { key: "validation", path: "/validation", ready: (p: Page) => p.getByTestId("val-questions"), detail: "" },
   { key: "news", path: "/news", ready: (p: Page) => p.getByTestId("news-concept"), detail: "" },
+  // the missions come from Today, which loads after the inbox: the screenshot waits for its answer (settle)
+  { key: "desk", path: "/", ready: (p: Page) => p.getByTestId("desk-activity"), detail: "", settle: "/api/today" },
   { key: "today", path: "/today", ready: (p: Page) => p.getByRole("list", { name: "Orientation" }), detail: "" },
   { key: "events", path: "/events", ready: (p: Page) => p.getByRole("button", { name: "source health" }), detail: "event-calendar" }, // health loads after the list
 ] as const;
@@ -58,8 +60,11 @@ for (const width of [1366, 1920])
         const ctx = await browser.newContext({ viewport: { width, height: 1000 }, colorScheme: theme, reducedMotion: "reduce" });
         await ctx.addInitScript((t) => localStorage.setItem("pz.theme", t), theme);
         const page = await ctx.newPage();
+        const settle = "settle" in view ? view.settle : "";
+        const settled = settle ? page.waitForResponse((r) => new URL(r.url()).pathname === settle, { timeout: 120_000 }) : null;
         await page.goto(`${base}${view.path}`);
         await expect(view.ready(page)).toBeVisible({ timeout: 90_000 });
+        if (settled) await settled;
         if (view.detail) await expect(page.getByTestId(view.detail).first()).toBeVisible({ timeout: 30_000 });
         await page.waitForTimeout(1500);
         expect(await page.evaluate(() => document.documentElement.dataset.theme ?? "light")).toBe(theme === "dark" ? "dark" : "light");

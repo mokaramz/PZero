@@ -29,10 +29,10 @@ export const END = "evaluator/end";
 /** What every evaluator write makes stale: the strip, the open session and Today (it reads the sessions for the
  *  human-outcome hold and the founder-call follow-ups, review 030a). */
 export const EVAL_KEYS = [SESSIONS, SESSION, "today"];
-/** Ending a session also writes a founder call and the linked Conviction fields. */
-export const END_KEYS = [...EVAL_KEYS, CALLS, PIPELINE];
-/** A why-now trigger changes the Conviction record, and the session's IMQ panel reads it. */
-export const TRIGGER_KEYS = [...EVAL_KEYS, PIPELINE];
+/** Ending a session also writes a founder call and the linked Conviction fields (the Investment Desk reads both). */
+export const END_KEYS = [...EVAL_KEYS, CALLS, PIPELINE, "home"];
+/** A why-now trigger changes the Conviction record, and the session's IMQ panel and the Investment Desk read it. */
+export const TRIGGER_KEYS = [...EVAL_KEYS, PIPELINE, "home"];
 
 /** The old action labels (Background activity and the "✓ … — done" / "✕ … failed" toasts): only start had its own. */
 export const LABEL = { start: "Starting the evaluator", action: "Working" } as const;

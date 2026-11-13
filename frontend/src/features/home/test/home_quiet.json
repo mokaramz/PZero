@@ -1,0 +1,19 @@
+{
+  "priority": null,
+  "best_event": null,
+  "due": [],
+  "new_signals": 0,
+  "latest_signals": [],
+  "omar": [],
+  "progress": {
+    "found": 0,
+    "contacted": 0,
+    "sent_omar": 0,
+    "people_added": 0,
+    "events_planned": 0,
+    "verified": 0
+  },
+  "watch": [],
+  "weekday": "Friday",
+  "date": "2026-11-13"
+}

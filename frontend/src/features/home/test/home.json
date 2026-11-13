@@ -1,0 +1,93 @@
+{
+  "priority": {
+    "slug": "halvorsen-robotics",
+    "company": "Halvorsen Robotics",
+    "score": 78,
+    "verified": true,
+    "verdict": "INVESTIGATE",
+    "op": {
+      "status": "READY FOR OUTREACH",
+      "action": "Contact the founder",
+      "why": "Fully verified on Radar",
+      "tone": "neutral",
+      "source": "score band",
+      "score_band": "INVESTIGATE"
+    },
+    "next": "Ask Omar whether the plant pilots overlap the portfolio",
+    "timing": "timing unknown"
+  },
+  "best_event": {
+    "name": "Alpine Deep Tech Summit",
+    "start": "2026-11-14",
+    "city": "Zurich",
+    "rank": 1,
+    "weekend": true,
+    "reason": "Three Conviction founders speak on the robotics track. Registration closes on Friday.",
+    "url": "https://example.org/alpine-deep-tech-summit",
+    "deadline": "2026-11-13",
+    "event_score": 8
+  },
+  "due": [
+    {
+      "id": "p-ilse-marquardt",
+      "name": "Ilse Marquardt",
+      "action": "Send the pilot data you promised",
+      "date": "2026-11-12"
+    },
+    {
+      "id": "p-jonas-feld",
+      "name": "Jonas Feld",
+      "action": "Introduce him to the lab founders",
+      "date": ""
+    }
+  ],
+  "new_signals": 8,
+  "latest_signals": [
+    {
+      "name": "Quillon Robotics",
+      "source": "Isarwerk Venture Lab (official)"
+    },
+    {
+      "name": "Marlowe Grid",
+      "source": "Copper Valley Awards"
+    },
+    {
+      "name": "Tarnhelm Bio",
+      "source": "Northfield Startup Press"
+    }
+  ],
+  "omar": [
+    {
+      "company": "Lumora Health",
+      "sent": "2026-11-11",
+      "feedback": true
+    },
+    {
+      "company": "Brightwell Analytics",
+      "sent": "2026-11-09",
+      "feedback": false
+    },
+    {
+      "company": "Corvane Systems",
+      "sent": "2026-11-02",
+      "feedback": false
+    }
+  ],
+  "progress": {
+    "found": 6,
+    "contacted": 2,
+    "sent_omar": 2,
+    "people_added": 1,
+    "events_planned": 1,
+    "verified": 1
+  },
+  "watch": [
+    {
+      "id": "p-jonas-feld",
+      "name": "Jonas Feld",
+      "last": "2026-11-01"
+    }
+  ],
+  "weekday": "Friday",
+  "date": "2026-11-13"
+}

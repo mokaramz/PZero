@@ -16,6 +16,7 @@ from projectzero.api.routers import (
     events,
     founder_calls,
     founder_radar,
+    home,
     intake,
     map,
     network,
@@ -48,6 +49,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.include_router(validation.router)
     app.include_router(news.router)
     app.include_router(today.router)
+    app.include_router(home.router)
 
     @app.exception_handler(RequestValidationError)
     async def invalid_request(_: Request, exc: RequestValidationError) -> JSONResponse:

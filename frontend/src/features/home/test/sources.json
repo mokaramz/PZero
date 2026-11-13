@@ -1,0 +1,53 @@
+{
+  "sources": [
+    {
+      "id": "isarwerk",
+      "name": "Isarwerk Venture Lab (official)",
+      "enabled": true,
+      "last_ok": "2026-11-12 22:15",
+      "failures_in_row": 0
+    },
+    {
+      "id": "copper-valley",
+      "name": "Copper Valley Awards",
+      "enabled": true,
+      "last_ok": "2026-11-10 07:00",
+      "failures_in_row": 2
+    },
+    {
+      "id": "northfield",
+      "name": "Northfield Startup Press",
+      "enabled": true,
+      "last_ok": null,
+      "failures_in_row": 0
+    },
+    {
+      "id": "harbour-grants",
+      "name": "Harbour Grants Register",
+      "enabled": false,
+      "last_ok": null,
+      "failures_in_row": 5
+    },
+    {
+      "id": "lakeside",
+      "name": "Lakeside Demo Days",
+      "enabled": true,
+      "last_ok": "2026-11-01 08:00",
+      "failures_in_row": 1
+    }
+  ],
+  "geos": [
+    "de"
+  ],
+  "geo_label": {
+    "de": "Germany"
+  },
+  "sectors": [
+    "robotics"
+  ],
+  "sector_label": {
+    "robotics": "Robotics & automation"
+  },
+  "potential": {},
+  "verified": {}
+}
