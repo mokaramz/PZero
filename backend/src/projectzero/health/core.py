@@ -22,7 +22,8 @@ The ported NEW helpers reused (each the old function, checked in ``tests/health`
 * ``validation.core.build`` / ``read_jsonl``: the old ``validation.build()`` / ``_read_jsonl``;
 * ``ecosystems.coverage.coverage_view``: the old ``coverage.report()``;
 * ``core.inference.budget.windows`` / ``limits``: the old ``ledger.spend`` windows / ``budget.limits``;
-* ``conviction.operator.watch_triggers``: the old ``watch.triggers()``; ``dealflow.ranking.names.norm_company``;
+* ``conviction.operator.watch_triggers``: the old ``watch.triggers()``; ``watch.targets.watched``: the old
+  ``watch.watched()`` (review 037a);
 * ``news.core`` ``load`` / ``_rows`` / ``_relevant`` and ``news.sources`` ``cached`` / ``_state`` / ``_network``.
 
 Declared differences, all in ``ops/parity_health.normalise``: (c) the retired Scout parts are gone (the
@@ -45,7 +46,6 @@ from projectzero.conviction.operator import watch_triggers
 from projectzero.conviction.records import records
 from projectzero.core.inference import budget
 from projectzero.core.inference import config as icfg
-from projectzero.dealflow.ranking.names import norm_company
 from projectzero.dealflow.triage.view import decisions as read_jsonl  # the old ``validation._read_jsonl``
 from projectzero.dealflow.triage.view import pending_map
 from projectzero.ecosystems.coverage import coverage_view
@@ -72,6 +72,7 @@ from projectzero.news import sources as news_sources
 from projectzero.news.catalog import DEFAULT_WINDOW
 from projectzero.news.inputs_model import NewsInputs
 from projectzero.validation.core import build as validation_build
+from projectzero.watch import targets as watch_targets
 
 
 class Runner(Protocol):
@@ -304,19 +305,13 @@ def providers(inputs: HealthInputs) -> list[dict[str, Any]]:
 # ---------------------------------------------------------------------------------------------------- watch + news
 def watch_counts(inputs: HealthInputs) -> tuple[int, int]:
     """Of the old ``watch.view()``: ``len(companies)`` and the open triggers of the watched companies (``watched()``:
-    the inbox candidates whose decision is ``watch`` plus the active manual targets; ``triggers()`` with their
-    current status). The page checks' failures are the watch sensors' (not ported, decision d)."""
-    d = copy.deepcopy(inputs.watch_targets) or {}
-    d.setdefault("targets", {})
-    targets = d["targets"]
+    the candidates on WATCH plus the active manual targets; ``triggers()`` with their current status), through the
+    Watchlist's own functions (review 037a, revision 2: ``watch.targets.watched`` over the same candidates and
+    effective targets). The page checks' failures are the watch sensors' (not ported, decision d)."""
+    targets = watch_targets.targets_of(copy.deepcopy(inputs.watch_targets))
+    cands = inputs.candidates if inputs.watch_candidates is None else inputs.watch_candidates
+    watched = watch_targets.watched(copy.deepcopy(cands), targets)
     trig = watch_triggers(copy.deepcopy(inputs.watch_events))
-    watched: dict[str, dict[str, Any]] = {}
-    for c in records(copy.deepcopy(inputs.candidates), ("id",)):
-        if c.get("decision") == "watch" and c.get("name"):
-            watched[norm_company(c["name"]) or c["id"]] = {"name": c["name"], "candidate_id": c["id"]}
-    for k, t in targets.items():
-        if t.get("active", True):
-            watched.setdefault(k, {"name": t.get("name") or k, "candidate_id": t.get("candidate_id") or ""})
     opened = [sum(1 for x in trig if x["entity_key"] == key and x["status"] == "new") for key in watched]
     return len(watched), sum(opened)
 

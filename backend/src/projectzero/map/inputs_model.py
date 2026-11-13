@@ -16,19 +16,18 @@ the institutions (ORGS, then ``ecosystems.json``) and the source-network candida
 from __future__ import annotations
 
 import copy
-import json
 from collections.abc import Mapping
 from dataclasses import dataclass, field
 from datetime import date, datetime
 from typing import Any
 
-from projectzero.conviction.operator import watch_triggers
 from projectzero.dealflow.sources.normalize import load_registry
 from projectzero.ecosystems import cities, coverage
 from projectzero.ecosystems.inputs import CoverageInputs
 from projectzero.events import engine
 from projectzero.map.network import check_candidates
 from projectzero.network import view as people_view
+from projectzero.watch import log as watch_log
 
 
 @dataclass(frozen=True)
@@ -161,16 +160,9 @@ def _scout_items(docs: Mapping[str, Any]) -> Any:
 
 
 def _watch_open(docs: Mapping[str, Any]) -> list[dict[str, Any]]:
-    """The old ``watch.open_triggers()`` over ``watch/triggers.jsonl`` (its raw text; one JSON object per line)."""
-    lines: list[dict[str, Any]] = []
-    for line in str(docs.get("watch/triggers.jsonl") or "").splitlines():
-        try:
-            e = json.loads(line)
-        except ValueError:
-            continue
-        if isinstance(e, dict):
-            lines.append(e)
-    return [t for t in watch_triggers(lines) if t["status"] == "new"]
+    """The old ``watch.open_triggers()`` over ``watch/triggers.jsonl``: its text (one JSON object per line), or the
+    dict lines the ONE trigger reader overlaid (``watch.log.load_events``, review 037a)."""
+    return watch_log.open_triggers(watch_log.events_of(docs.get("watch/triggers.jsonl")))
 
 
 Coverage = tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]]]

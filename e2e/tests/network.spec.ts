@@ -111,6 +111,25 @@ test.describe("Network — new app, preview database", () => {
     w.expectClean();
   });
 
+  test("Watchlist: Save pages for a watched company, read back (review 037a)", async ({ page }) => {
+    const w = watch(page);
+    const before = await page.request.get("/api/watch").then((r) => r.json());
+    expect(before.companies.length).toBeGreaterThan(0);
+    const first = before.companies[0];
+    await page.goto("/watchlist");
+    const row = page.locator(`[data-testid="watched-company"][data-key="${first.key}"]`);
+    await expect(row).toBeVisible({ timeout: 60_000 });
+    await expect(row.getByTestId("watch-check")).toHaveAttribute("aria-disabled", "true"); // Check now: 037b
+    await row.getByText(/Official pages to watch/).click();
+    const url = "https://news.invented.example/e2e-watch";
+    await row.getByRole("textbox", { name: `Pages to watch for ${first.name}` }).fill(url);
+    await row.getByRole("button", { name: "Save pages" }).click();
+    await expect(page.getByText("Pages saved — first check records a baseline")).toBeVisible();
+    const after = await page.request.get("/api/watch").then((r) => r.json());
+    expect(after.companies.find((c: { key: string }) => c.key === first.key)?.urls).toEqual([url]);
+    w.expectClean();
+  });
+
   test("1366x768, 150% zoom and 1920: no horizontal overflow", async ({ page }) => {
     await page.setViewportSize({ width: 1366, height: 768 });
     await page.goto("/network");

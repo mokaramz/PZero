@@ -27,3 +27,29 @@
 .logBtn {
   margin-top: 4px;
 }
+
+/* Watched companies (review 037a) — the old WATCH panel's rows and trigger list. */
+.company {
+  border-top: 1px solid var(--hair);
+  padding: 10px 0;
+}
+.companyName {
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+.triggers {
+  margin: 4px 0;
+  padding-left: 18px;
+}
+.trigger {
+  overflow-wrap: anywhere;
+}
+.pages {
+  margin-top: 4px;
+}
+.pagesBox {
+  width: 100%;
+}
+.check {
+  overflow-wrap: anywhere;
+}

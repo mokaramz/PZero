@@ -1500,3 +1500,61 @@ describe("migration 0026 — machine triage: runner runs and dispositions append
     assert.ok(!/advisory|set_config|current_setting/i.test(sql));
   });
 });
+
+describe("migration 0027 — WATCH: one target row per company key, an append-only trigger log with unique dedupe keys", () => {
+  let db;
+
+  before(async () => {
+    db = await freshDb();
+  });
+
+  test("a target keeps its record's key order (json), is saved again in place, and is never deleted", async () => {
+    const first = '{"name": "Invented Robotics", "added_at": "2026-10-02T09:00:00", "checks": {}, "urls": [], "candidate_id": "", "active": true, "updated_at": "2026-10-02T09:00:00"}';
+    const second = '{"name": "Invented Optics", "added_at": "2026-10-03T09:00:00", "checks": {}, "urls": ["https://optics.invented.example/"], "candidate_id": "", "active": false, "updated_at": "2026-11-13T10:00:00"}';
+    await db.query(`insert into pz.watch_targets (key, record) values ('invented robotics', $1::json)`, [first]);
+    await db.query(`insert into pz.watch_targets (key, record) values ('invented optics', '{}')`);
+    await db.query(
+      `insert into pz.watch_targets (key, record) values ('invented optics', $1::json)
+       on conflict (key) do update set record = excluded.record, updated_at = now()`,
+      [second],
+    );
+    const rows = (await db.query(`select key, record::text as r from pz.watch_targets order by ord`)).rows;
+    assert.deepEqual(rows, [{ key: "invented robotics", r: first }, { key: "invented optics", r: second }]);
+    await rejects(db.query(`insert into pz.watch_targets (key, record) values ('invented robotics', '{}')`), /unique|duplicate/);
+    await rejects(db.query(`insert into pz.watch_targets (key, record) values ('', '{}')`), /check/);
+    await rejects(db.query(`insert into pz.watch_targets (key, record) values ('x', '[]')`), /check/);
+    await rejects(db.query(`delete from pz.watch_targets`), /append-only/);
+  });
+
+  test("the log reads back by seq, byte-kept; a trigger's dedupe key is unique; a status line has none", async () => {
+    const trig = '{"dedupe_key": "abc", "first_observed": "2026-11-13T10:00:00", "id": "wt-000000000001", "kind": "trigger", "name": "Invented Robotics"}';
+    const status = '{"at": "2026-11-13T10:01:00", "kind": "status", "note": "ünïcode", "status": "reviewed", "trigger_id": "wt-000000000001"}';
+    await db.query(`insert into pz.watch_events (kind, trigger_id, dedupe_key, line) values ('trigger', 'wt-000000000001', 'abc', $1::json)`, [trig]);
+    await db.query(`insert into pz.watch_events (kind, trigger_id, line) values ('status', 'wt-000000000001', $1::json)`, [status]);
+    await db.query(`insert into pz.watch_events (kind, trigger_id, line) values ('status', 'wt-000000000001', $1::json)`, [status]);
+    const rows = (await db.query(`select kind, line::text as l from pz.watch_events order by seq`)).rows;
+    assert.deepEqual(rows.map((r) => r.l), [trig, status, status]);
+    await rejects(db.query(`insert into pz.watch_events (kind, trigger_id, dedupe_key, line) values ('trigger', 'wt-000000000002', 'abc', '{}')`), /unique|duplicate/);
+    await rejects(db.query(`insert into pz.watch_events (kind, trigger_id, line) values ('trigger', 'wt-000000000003', '{}')`), /dedupe_check|check/);
+    await rejects(db.query(`insert into pz.watch_events (kind, trigger_id, dedupe_key, line) values ('status', 'wt-000000000001', 'x', '{}')`), /dedupe_check|check/);
+    await rejects(db.query(`insert into pz.watch_events (kind, trigger_id, line) values ('closed', 'wt-000000000001', '{}')`), /check/);
+    await rejects(db.query(`insert into pz.watch_events (kind, trigger_id, line) values ('status', '', '{}')`), /check/);
+    await rejects(db.query(`insert into pz.watch_events (kind, trigger_id, line) values ('status', 'wt-1', '[]')`), /check/);
+    await rejects(db.query(`insert into pz.watch_events (seq, kind, trigger_id, line) values (99, 'status', 'wt-1', '{}')`), /generated|cannot insert|non-DEFAULT/i);
+    await rejects(db.query(`update pz.watch_events set trigger_id = 'wt-x'`), /append-only/);
+    await rejects(db.query(`delete from pz.watch_events`), /append-only/);
+  });
+
+  test("both new tables have row level security and no API grants; no lock or setting names the schema", async () => {
+    const names = ["watch_targets", "watch_events"];
+    const rls = await db.query(`select relname, relrowsecurity from pg_class where relname = any($1) and relkind = 'r' order by relname`, [names]);
+    assert.deepEqual(rls.rows, [{ relname: "watch_events", relrowsecurity: true }, { relname: "watch_targets", relrowsecurity: true }]);
+    const grants = await db.query(
+      `select table_name from information_schema.role_table_grants where table_name = any($1) and grantee in ('anon', 'authenticated', 'PUBLIC')`,
+      [names],
+    );
+    assert.deepEqual(grants.rows, []);
+    const sql = readFileSync(join(MIGRATIONS, "20261113000027_watch.sql"), "utf8");
+    assert.ok(!/advisory|set_config|current_setting/i.test(sql));
+  });
+});

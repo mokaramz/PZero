@@ -85,18 +85,14 @@ describe("Watchlist — the people table", () => {
   });
 });
 
-describe("Watchlist — not ported yet", () => {
-  it("the watched companies panel keeps its place and says why; nothing reads or writes the WATCH sensors", async () => {
+describe("Watchlist — the watched companies panel (review 037a)", () => {
+  it("sits above the people table and reads the WATCH view (its controls are covered by WatchedCompanies.test.tsx)", async () => {
     const server = fakeServer();
     renderWatchlist();
     await waitFor(() => expect(rows()).toHaveLength(2));
     const panel = screen.getByTestId("watched-companies");
-    expect(panel).toHaveAttribute("data-deferred", "");
-    expect(panel).toHaveTextContent("Watched companies — WATCH is active, not a graveyard");
-    expect(panel).toHaveTextContent("Deterministic sensors · no model · nothing changes a decision");
-    expect(within(panel).getByTestId("watched-companies-deferred")).toHaveTextContent("Watched companies and their sensors arrive with the WATCH sensors port.");
-    expect(within(panel).queryAllByRole("button")).toHaveLength(0);
-    expect(within(panel).queryAllByRole("textbox")).toHaveLength(0);
-    expect(server.calls.map((c) => c.path)).toEqual(["/api/network/watchlist"]);
+    await waitFor(() => expect(within(panel).getAllByTestId("watched-company")).toHaveLength(3));
+    expect(panel.compareDocumentPosition(screen.getByRole("table")) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(server.calls.map((c) => c.path).sort()).toEqual(["/api/network/watchlist", "/api/watch"]);
   });
 });

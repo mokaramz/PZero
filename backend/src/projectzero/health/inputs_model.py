@@ -91,8 +91,13 @@ class HealthInputs:
     # or {}``. NEW reader: ``documents['research_questions.json']['questions']``
     research_questions: Any = field(default_factory=dict)
     # old ``watch.load_targets()["targets"]``: ``storage.load_json("watch/targets.json", {}, tolerant=True) or {}``
-    # (``setdefault("targets", {})``). NEW reader: ``documents['watch/targets.json']`` (the whole document)
+    # (``setdefault("targets", {})``). NEW reader (review 037a): ``{"targets": watch.targets.effective_targets(conn,
+    # schema)}`` (the imported targets overlaid by the ``watch_targets`` rows: the Watchlist's own answer)
     watch_targets: Any = field(default_factory=dict)
+    # old ``watch.watched()``'s candidates (``inbox.json``'s, decision ``watch``). NEW reader (review 037a, decision
+    # a): ``watch.targets.watch_candidates(conn, schema)[0]`` (every candidate on WATCH, Scout planner leads
+    # included, as old inbox records: the Watchlist's own set). ``None`` (the old-format documents): ``candidates``
+    watch_candidates: Any = None
     # old ``watch._events()``: the dict lines of ``watch/triggers.jsonl`` in line order. NEW reader:
     # ``conviction.inputs.inputs_from(load_documents(conn, schema), people).operator.watch_events`` (the archived
     # ``legacy_documents['watch/triggers.jsonl']``, one dict per line)

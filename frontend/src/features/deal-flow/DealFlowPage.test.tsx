@@ -368,7 +368,8 @@ describe("Deal Flow — deep links", () => {
     await waitFor(() => expect(rowIds()).toEqual(["w1"]));
     expect(detailName()).toBe("Company w1");
     expect(screen.getByTestId("more-filters")).toHaveTextContent("Watch");
-    expect(screen.getByTestId("watch-section")).toHaveTextContent("Watch sensors arrive with the Watchlist port");
+    // the WATCH section is live since review 037a (covered by DealFlowWatch.test.tsx); w1 is not in this server's view
+    expect(screen.getByTestId("watch-section")).toHaveTextContent("On WATCH — sensorsLoading watch state…");
     await waitFor(() => expect(router.state.location.search).toBe(""));
     expect(server.posts()).toEqual([]);
   });

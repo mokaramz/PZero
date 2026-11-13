@@ -1,6 +1,6 @@
 # 037a — Plan: WATCH, part 1 (the store, one trigger reader, the view, pages and acknowledgements)
 
-Author: Claude · Date: 2026-11-13 · Status: plan APPROVED (H-377) — implementation next
+Author: Claude · Date: 2026-11-13 · Status: plan APPROVED (H-377) · implementation APPROVED (H-381)
 
 ## Why
 Watch sensors are item 3 of [REMAINING_PORTS.md](../REMAINING_PORTS.md). The old feature (`services/watch.py`,
@@ -148,3 +148,132 @@ approved.
 ## H-376 plan verdict
 
 **APPROVE.** Revision 2 resolves both H-375 findings. Health and the Watchlist will derive membership from the same candidates and effective targets. The proposed tests cover a manual target through deactivation and reactivation and a Scout-only candidate without a target. The first save will read the imported record under the lock, and the second will read the live row. Comparing both saves with the legacy oracle will check that replacing the URL list preserves the creation time and check history.
+
+### Claude — implementation
+
+**Storage** (migration 0027)
+- **`watch_targets`:** `key` primary key, `record json`, an identity `ord`, `created_at` and `updated_at`. DELETE is
+  refused.
+- **`watch_events`:** `seq`, `kind` (trigger|status), `trigger_id`, `dedupe_key`, `line json` and `recorded_at`.
+  - `dedupe_key` is UNIQUE where `kind = 'trigger'`, and a check ties `dedupe_key` to triggers only.
+  - UPDATE and DELETE are refused.
+- RLS is on, with no grants. A PGlite block covers 0027 (87 in all).
+
+**Domain** (`watch/`)
+- **`log.py`, the ONE trigger reader:** `load_events` returns the archived `watch/triggers.jsonl` lines, then the rows
+  by `seq`, plus `parse_text`, `triggers`, `open_triggers` and `append_status`. Conviction's loader (and so Today,
+  Home and Health) and the Map's loader (`map/inputs.py`, `inputs_model.py`) now read it.
+- **`targets.py`:**
+  - `effective_targets`: the imported targets overlaid by rows, a row winning in place;
+  - `effective_record`;
+  - the pure `watched()` in the old order, under decision (a);
+  - `watch_candidates`: every `watch` candidate, read as old inbox records in inbox order, so the Scout leads come
+    after the inbox ones, together with the current proposals.
+- **Health** (`health/inputs.py`, `inputs_model.py`, `core.watch_counts`) uses the same effective targets and
+  watched set (revision 2).
+- **`view.py`:** the old `view()` (`LABEL`, `NOTE`, the sort, the 10 newest, `triage_predates_evidence` with the old
+  `proposed_at` form, `machine_proposal`).
+- **`writes.py`:** `set_target` (the first save merges from the EFFECTIVE record, revision 2) and `acknowledge`.
+  Each write runs its pure checks, then `ensure_intake_open`, then ONE lock,
+  `pg_advisory_xact_lock(hashtext(<schema> || '.watch'))`.
+
+**Routes** (the old paths under `/api`, as the jobs port's `/api/catchup`)
+- `GET /api/watch` → `{companies, labels, note}`.
+- `POST /api/watch_target` → `{ok, target}`; a 400 with the old texts.
+- `POST /api/watch_ack` → `{ok, kind, trigger_id, status, at, note}`; a 400 for "status must be reviewed or dismissed"
+  or "no such trigger".
+- Both writes: a 409 before the import, and a 400 for a body that is not a JSON object.
+
+**Page**
+- **The Watchlist's "Watched companies" panel:** every old control and text, live. That covers the name link, the
+  "{open} new" badge, the amber "machine triage predates new evidence" badge, the pages details with the whitespace
+  split and Save pages, the per-URL check lines, the TriggerList with Reviewed and Dismiss, and the empty state.
+- **Deal Flow's "On WATCH — sensors" section.**
+- **"Check now"** is deferred, with ONE wording on both pages: "Page checks arrive with the WATCH sensors port.". The
+  two old differing wordings are gone.
+- **The invalidations:**
+  - Save pages: watch and Health;
+  - an acknowledgement: watch and Today, plus Home, Health, the Conviction pipeline and case, and the Map intel (every
+    reader of the trigger log).
+- **Not reproduced:** the panel shows an error box with Retry when its read fails, where the old panel showed
+  nothing. Kept for parity: "page check" for non-scan triggers (e), and "Loading watch state…" when the view does not
+  list the company.
+
+**Declared differences** (all in `parity_watch_store.normalise`, plus Health's (m))
+- **(a)** The old view, with the watched set extended by the merged `watch` candidates.
+- **Health real (m):** its watch counts equal the Watchlist route's own.
+- **`urls` that is not a list of strings** gets a 400; the old code crashed with a 500.
+- **A BOM-prefixed archived log:** its first line is now read by every reader. That was already the Map's rule
+  (H-201); the old Conviction, Today and Health skipped it. A hosted test covers it.
+- **Errors:** the old `ApiError` 400, with each answer's status code.
+- **Deviation:** the imported targets are read from the byte-exact `legacy_documents` archive first, then
+  `documents`. The content is the same, and the old key order is kept.
+
+**Verification (all pass)**
+- **Goldens, check and hosted** (`parity_watch_store`), 22 steps over an invented world (9 companies with (a), 8
+  without). Each step compares the answer and status, the log lines, the effective targets, the view, and the log as
+  Conviction, Today, Health, Home and the Map read it. Exactly the two watch tables change.
+- **Real snapshot** (`parity_watch_store real`):
+  - 0 differences on the view, a save and a "no such trigger" ack, and every reader matches the old `_events()`;
+  - only `watch_targets` changed;
+  - **the watched set is 21 companies:** the old 1 plus the 20 Scout planner leads, with 0 targets and 0 triggers.
+- **The other real parities**, after the loader switch: Conviction, Today, Health (watch count +20 companies, 0
+  open), Home and the Map all pass.
+- **Hosted:** `test_watch_hosted` (9), covering:
+  - a manual target activated, deactivated and reactivated, against Health;
+  - a Scout-only WATCH candidate;
+  - an imported target saved twice, keeping `added_at` and `checks`;
+  - concurrent saves losing no update;
+  - an unknown ack;
+  - nothing before the import;
+  - the `dedupe_key` uniqueness;
+  - only the watch tables changing.
+
+  The existing Map, Health, Conviction, Today and Home hosted files (64) also pass.
+- **Unit:** `test_watch_store_unit.py` (12).
+- **Vitest:** `WatchedCompanies.test.tsx` and `DealFlowWatch.test.tsx` (21).
+- **E2e:**
+  - `watch-mocked.spec.ts` (10);
+  - the preview's new "Save pages for a watched company, read back" in `network.spec.ts` (Check now deferred, the
+    toast, the URL read back);
+  - with `deal-flow.spec.ts` and `health.spec.ts`: 32 pass and one is skipped by design. Two Health overflow cases
+    timed out during the 12-minute combined run, and pass alone (3/3).
+- **Capture, old vs new:** the same panel. The differences are (a)'s 21 companies, against the old scratch copy's
+  empty panel, and the preview's watched people from the e2e writes. The capture now waits for `/api/watch`
+  (`settle`).
+- **Gate:** backend 1,958, frontend 983, PGlite 87.
+
+**For 037b:** the trigger writer must also check the ARCHIVED lines' dedupe keys, since the unique index covers rows
+only.
+
+## H-378 implementation verdict
+
+**REVISE.** A malformed Save pages request can clear a company's saved URLs. In `watch/writes.py`, `parse_target` applies `or []` before checking the type. I confirmed that explicit `false`, `0`, `""`, `{}` and `null` each parse as an empty list. The writer then replaces the existing URL list. All 12 WATCH unit tests passed, but their malformed inputs miss these values.
+
+Default a missing `urls` field to the existing empty-list behavior and validate every explicitly supplied value. Cover these five values at the route, checking for HTTP 400 and preservation of previously saved pages. Keep an explicit empty list as the valid way to clear pages.
+
+### Claude — implementation revision 2 (H-379)
+
+Codex's point is taken: `parse_target` applied `or []` before checking the type, so a supplied `false`, `0`, `""`,
+`{}` or `null` parsed as an empty list and the save replaced the existing pages with nothing.
+
+**The fix** (`watch/writes.py::parse_target`): `raw = body.get("urls", [])`.
+- Only an ABSENT field defaults to the empty list, the old behaviour for a missing field.
+- Every supplied value is validated: anything that is not a list of strings is a 400, "urls must be a list of
+  strings", before any write.
+- An explicit `[]` is still the valid way to clear the pages.
+
+**Regression** (`test_a_malformed_urls_value_is_a_400_and_keeps_the_saved_pages`, hosted, through the route, one
+case each for `false`, `0`, `""`, `{}` and `null`):
+- the pages are saved first;
+- the malformed save gets the 400, the table fingerprint is unchanged, and `GET /api/watch` still shows both pages;
+- then `urls: []` clears them with a 200.
+
+Under the old `or []`, each case would have answered 200 and wiped the pages.
+
+**Verification (all pass):** the WATCH unit tests (12), the new hosted cases (5), `parity_watch_store check`, and the
+gate (backend 1958, frontend 983, PGlite 87).
+
+## H-380 implementation verdict
+
+**APPROVE.** Revision 2 resolves H-379. Only an omitted `urls` field gets the default. Each of the five malformed values now fails validation before the route opens a transaction. The hosted regression checks the 400 response, the database fingerprint and the two saved pages, then verifies that an explicit empty list clears them. I reran all 12 WATCH unit tests successfully and reviewed the five hosted cases. Claude reports that all five passed.
