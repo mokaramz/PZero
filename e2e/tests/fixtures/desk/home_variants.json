@@ -1,0 +1,90 @@
+{
+  "priority": {
+    "slug": "tessaro-grid",
+    "company": "Tessaro Grid",
+    "score": 66,
+    "verified": false,
+    "verdict": "INVESTIGATE",
+    "op": {
+      "status": "CASE PREPARED",
+      "action": "Prepare a founder call",
+      "why": "Traction can only be answered by the founders",
+      "tone": "neutral",
+      "source": "prepared case",
+      "score_band": "INVESTIGATE"
+    },
+    "next": "",
+    "timing": "timing unknown"
+  },
+  "best_event": {
+    "name": "Copper Valley Founders Night",
+    "start": "TBA",
+    "city": "",
+    "rank": "2",
+    "weekend": false,
+    "event_score": null
+  },
+  "due": [
+    {
+      "id": "p-ilse-marquardt",
+      "name": "Ilse Marquardt",
+      "action": "Send the pilot data you promised",
+      "date": "2026-11-12"
+    },
+    {
+      "id": "p-jonas-feld",
+      "name": "Jonas Feld",
+      "action": "Introduce him to the lab founders",
+      "date": ""
+    }
+  ],
+  "new_signals": 8,
+  "latest_signals": [
+    {
+      "name": "Quillon Robotics",
+      "source": "Isarwerk Venture Lab (official)"
+    },
+    {
+      "name": "Marlowe Grid",
+      "source": "Copper Valley Awards"
+    },
+    {
+      "name": "Tarnhelm Bio",
+      "source": "Northfield Startup Press"
+    }
+  ],
+  "omar": [
+    {
+      "company": "Lumora Health",
+      "sent": "2026-11-11",
+      "feedback": true
+    },
+    {
+      "company": "Brightwell Analytics",
+      "sent": "2026-11-09",
+      "feedback": false
+    },
+    {
+      "company": "Corvane Systems",
+      "sent": "2026-11-02",
+      "feedback": false
+    }
+  ],
+  "progress": {
+    "found": 6,
+    "contacted": 2,
+    "sent_omar": 2,
+    "people_added": 1,
+    "events_planned": 1,
+    "verified": 1
+  },
+  "watch": [
+    {
+      "id": "p-jonas-feld",
+      "name": "Jonas Feld",
+      "last": "2026-11-01"
+    }
+  ],
+  "weekday": "Friday",
+  "date": "2026-11-13"
+}

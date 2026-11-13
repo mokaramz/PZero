@@ -39,8 +39,8 @@ export const IMQ_TRIGGER = "conviction/imq_trigger";
 
 /** What a Conviction write makes stale: the records and everything derived from them — the memo, the outreach email
  *  and the Radar (the old `PIPE_KEYS`; Codex H-141) — the Deal Flow inbox (a save can decide or link a candidate) and
- *  Today (its missions read the records). */
-export const CONVICTION_KEYS = [PIPELINE, CASE, MEMO, EMAIL, RADAR, "deal-flow/inbox", "today"];
+ *  Today (its missions read the records) and the Investment Desk (its best opportunity and what was sent to the Manager, review 031a). */
+export const CONVICTION_KEYS = [PIPELINE, CASE, MEMO, EMAIL, RADAR, "deal-flow/inbox", "today", "home"];
 
 export type SaveResult = { ok: boolean; slug: string };
 

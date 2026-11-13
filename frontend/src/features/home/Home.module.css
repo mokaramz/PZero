@@ -1,0 +1,926 @@
+/* Investment Desk — the bridge of Project Zero (approved mockup): brief · four orientation tiles · missions / Manager /
+   best opportunity · signals / event / activity · machine work folded. Warm paper surfaces, one filled action. */
+.desk {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* ---------------- executive brief: greeting, context, one situational sentence, the signal horizon */
+.brief {
+  display: flex;
+  align-items: center;
+  gap: 16px 32px;
+  flex-wrap: wrap;
+  padding: 4px 4px 2px;
+}
+.briefText {
+  flex: 1 1 420px;
+  min-width: 0;
+}
+.eyebrow {
+  font-size: 12.5px;
+  color: var(--mut);
+}
+.hello {
+  margin: 4px 0 6px;
+  font: 400 38px/1.12 var(--font-display);
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+.lead {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--ink-2);
+  max-width: 68ch;
+}
+/* SIGNAL → DECISION: a four-stage journey (signals · review · Manager · decision) — navy is the destination */
+.flow {
+  flex: 0 1 340px;
+  margin: 0;
+  padding-left: 22px;
+  border-left: 1px solid var(--hair);
+}
+.flowSvg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.flowPath {
+  fill: none;
+  stroke: var(--stone);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+}
+.flowNode {
+  fill: var(--paper);
+  stroke-width: 1.6;
+}
+.flowDot {
+  stroke: none;
+}
+/* each stage in its quiet semantic tone; the decision is the one navy point */
+[data-stage="signals"] .flowNode {
+  stroke: var(--green);
+}
+[data-stage="signals"] .flowDot {
+  fill: var(--green);
+}
+[data-stage="review"] .flowNode {
+  stroke: var(--blue);
+}
+[data-stage="review"] .flowDot {
+  fill: var(--blue);
+}
+[data-stage="manager"] .flowNode {
+  stroke: var(--amber);
+}
+[data-stage="manager"] .flowDot {
+  fill: var(--amber);
+}
+[data-stage="decision"] .flowNode {
+  fill: var(--navy);
+  stroke: var(--navy);
+}
+.flowStages {
+  list-style: none;
+  margin: 2px 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  text-align: center;
+}
+.flowStages li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 0;
+  line-height: 1.2;
+}
+.flowStages b {
+  font: 400 20px/1.1 var(--font-display);
+  color: var(--ink);
+}
+.flowStages li[data-stage="decision"] b {
+  color: var(--navy);
+}
+.flowStages span {
+  font: 500 10.5px var(--font-ui);
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+.flowStages em {
+  font-style: normal;
+  font-size: 11px;
+  color: var(--faint);
+  white-space: nowrap;
+}
+.flow figcaption {
+  font-size: 11px;
+  color: var(--faint);
+  margin-top: 8px;
+}
+/* stages appear once, in sequence (inline delays 80 → 410 ms), then stay still */
+@keyframes stageIn {
+  from {
+    opacity: 0;
+  }
+}
+.flowStage {
+  animation: stageIn var(--dur) var(--ease-out) backwards;
+}
+
+/* ---------------- orientation tiles: status indicators, not KPIs */
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+.tile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: var(--paper);
+  border: 1px solid var(--hair);
+  border-radius: var(--r-lg);
+  box-shadow: var(--sh-card);
+  color: var(--ink);
+  text-decoration: none;
+  transition: border-color var(--dur) var(--ease-out), transform var(--dur) var(--ease-out);
+}
+.tile:hover {
+  border-color: var(--hair-2);
+  transform: translateY(-1px);
+  text-decoration: none;
+}
+.tileIcon {
+  display: inline-grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--r-md);
+  flex: none;
+}
+.tile[data-tone="blue"] .tileIcon {
+  background: var(--blue-soft);
+  color: var(--blue-ink);
+}
+.tile[data-tone="cocoa"] .tileIcon {
+  background: var(--amber-soft);
+  color: var(--amber);
+}
+.tile[data-tone="slate"] .tileIcon {
+  background: var(--slate-soft);
+  color: var(--slate);
+}
+.tile[data-tone="forest"] .tileIcon {
+  background: var(--green-soft);
+  color: var(--green);
+}
+.tileN {
+  font: 400 26px/1 var(--font-display);
+  letter-spacing: -0.01em;
+}
+.tileLabel {
+  font-size: 13px;
+  color: var(--ink-2);
+  line-height: 1.25;
+}
+
+/* ---------------- cards */
+.row1 {
+  display: grid;
+  grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr) minmax(0, 1fr);
+  gap: 14px;
+  align-items: stretch;
+}
+.row2 {
+  display: grid;
+  grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr) minmax(0, 1fr);
+  gap: 14px;
+  align-items: stretch;
+}
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 16px 18px;
+  background: var(--paper);
+  border: 1px solid var(--hair);
+  border-radius: var(--r-lg);
+  box-shadow: var(--sh-card);
+  overflow: hidden;
+}
+.cardHead {
+  display: flex;
+  align-items: center;
+  gap: 8px 10px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+.cardHead h2 {
+  margin: 0;
+  font: 400 20px/1.2 var(--font-display);
+  letter-spacing: -0.01em;
+}
+.headIcon {
+  color: var(--mut);
+  flex: none;
+}
+.cardSub {
+  font-size: 12.5px;
+  color: var(--faint);
+}
+.headLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--ink-2);
+  text-decoration: none;
+}
+.headLink:hover {
+  color: var(--blue-ink);
+}
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.none {
+  margin: 4px 0;
+  font-size: 13px;
+  color: var(--mut);
+}
+.more {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  align-self: flex-start;
+  margin-top: 10px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--ink-2);
+  text-decoration: none;
+}
+.more:hover {
+  color: var(--blue-ink);
+}
+.rowBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  justify-self: end;
+  font: 500 12px var(--font-ui);
+  padding: 6px 11px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--stone);
+  background: var(--paper);
+  color: var(--ink);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background-color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out);
+}
+.rowBtn:hover {
+  background: var(--bone);
+  text-decoration: none;
+}
+
+/* priority missions: name + reason | top unknown | state | one action */
+.mRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr) auto auto;
+  gap: 4px 14px;
+  align-items: center;
+  padding: 10px 0;
+  border-top: 1px solid var(--hair);
+}
+.mRow:first-child {
+  border-top: 0;
+  padding-top: 2px;
+}
+.mName {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.mName b {
+  font: 400 16.5px/1.25 var(--font-display);
+  color: var(--ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.mName span,
+.mUnknown span {
+  font-size: 12.5px;
+  line-height: 1.35;
+  color: var(--mut);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.mUnknown {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding-left: 14px;
+  border-left: 1px solid var(--hair);
+}
+/* one state word: never allowed to squeeze the company name */
+.mRow > span[class*="status"] {
+  max-width: 132px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+}
+.mUnknown em {
+  font: italic 400 11.5px var(--font-display);
+  color: var(--faint);
+}
+.mUnknown span {
+  color: var(--ink-2);
+}
+
+/* Manager decisions */
+.dRow {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 0;
+  border-top: 1px solid var(--hair);
+}
+.dRow:first-child {
+  border-top: 0;
+  padding-top: 2px;
+}
+.dFoot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+/* best opportunity: the one restrained, distinctive card — forest-soft surface, the one filled action */
+.best {
+  background: var(--green-soft);
+  border-color: rgba(58, 106, 80, 0.18);
+}
+.bestTop {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.bestName {
+  font: italic 400 28px/1.1 var(--font-display);
+  letter-spacing: -0.015em;
+  color: var(--ink);
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+}
+.bestName:hover {
+  color: var(--blue-ink);
+}
+.bestThesis {
+  margin: 8px 0 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--ink-2);
+}
+.bestFacts {
+  display: grid;
+  gap: 6px;
+  margin: 10px 0 0;
+  font-size: 12.5px;
+}
+.bestFacts div {
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr);
+  gap: 8px;
+}
+.bestFacts dt {
+  color: var(--faint);
+}
+.bestFacts dd {
+  margin: 0;
+  color: var(--ink-2);
+}
+.bestNext {
+  margin: 10px 0 0;
+  font-size: 12.5px;
+  color: var(--ink-2);
+}
+.primary {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: auto;
+  padding: 10px 14px;
+  border-radius: var(--r-md);
+  background: var(--navy);
+  color: var(--navy-ink);
+  font: 500 13px var(--font-ui);
+  text-decoration: none;
+  transition: background-color var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
+}
+.bestNext + .primary,
+.bestFacts + .primary {
+  margin-top: 14px;
+}
+.primary:hover {
+  background: var(--navy-deep);
+  text-decoration: none;
+}
+.primary:active {
+  transform: translateY(1px);
+}
+.contours {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 62%;
+  height: auto;
+  pointer-events: none;
+}
+.contours path {
+  fill: none;
+  stroke: var(--green);
+  stroke-width: 1;
+  opacity: 0.16;
+}
+
+/* promising signals: type · name · theme · quiet score */
+.sRow {
+  display: grid;
+  grid-template-columns: 104px minmax(0, 1fr) minmax(0, 1.2fr) auto;
+  gap: 10px;
+  align-items: center;
+  width: 100%;
+  padding: 7px 4px;
+  font: inherit;
+  text-align: left;
+  color: inherit;
+  background: none;
+  border: 0;
+  border-top: 1px solid var(--hair);
+  cursor: pointer;
+  transition: background-color var(--dur-fast) var(--ease-out);
+}
+.list li:first-child .sRow {
+  border-top: 0;
+}
+.sRow:hover {
+  background: var(--bone);
+}
+.sRow > span:first-child {
+  justify-self: start;
+}
+.sName {
+  font-weight: 500;
+  font-size: 13.5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.sTheme {
+  font-size: 12px;
+  color: var(--mut);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.sScore {
+  font: 500 11.5px var(--font-mono);
+  color: var(--slate);
+}
+
+/* upcoming event */
+.event {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+.dateTile {
+  display: inline-grid;
+  justify-items: center;
+  flex: none;
+  width: 64px;
+  padding: 8px 0;
+  border-radius: var(--r-md);
+  background: var(--bone);
+  border: 1px solid var(--hair);
+  line-height: 1.1;
+}
+.dateTile span {
+  font: 500 10px var(--font-ui);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--mut);
+}
+.dateTile b {
+  font: 400 26px var(--font-display);
+  color: var(--ink);
+}
+.eventBody {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+  font-size: 12.5px;
+  color: var(--mut);
+}
+.eventName {
+  font: 400 16px/1.25 var(--font-display);
+  color: var(--ink);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.eventWhy {
+  color: var(--ink-2);
+}
+.eventActions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: auto;
+  padding-top: 14px;
+}
+
+/* recent activity: a restrained vertical timeline */
+.timeline {
+  list-style: none;
+  margin: 0;
+  padding: 0 0 0 4px;
+  position: relative;
+}
+.timeline::before {
+  content: "";
+  position: absolute;
+  left: 49px;
+  top: 6px;
+  bottom: 6px;
+  width: 1px;
+  background: var(--hair-2);
+}
+.tRow {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr);
+  gap: 18px;
+  width: 100%;
+  padding: 6px 0;
+  font: inherit;
+  text-align: left;
+  color: inherit;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  position: relative;
+}
+.tRow::after {
+  content: "";
+  position: absolute;
+  left: 42px;
+  top: 11px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--paper);
+  border: 1.4px solid var(--navy);
+}
+.tTime {
+  font: 500 11.5px var(--font-mono);
+  color: var(--mut);
+  padding-top: 2px;
+}
+.tBody {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  font-size: 12.5px;
+}
+.tBody b {
+  font-weight: 500;
+  color: var(--ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.tBody span {
+  color: var(--mut);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.tRow:hover b {
+  color: var(--blue-ink);
+}
+
+/* ---------------- machine work: last, folded, one line */
+.machine {
+  background: var(--bone);
+  border: 1px solid var(--hair);
+  border-radius: var(--r-lg);
+}
+.machine > summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 12px 18px;
+  cursor: pointer;
+  list-style: none;
+}
+.machine > summary::-webkit-details-marker {
+  display: none;
+}
+.machineTitle {
+  font: 400 16px var(--font-display);
+}
+.machineLine {
+  font-size: 12.5px;
+  color: var(--mut);
+}
+.machineChevron {
+  margin-left: auto;
+  color: var(--faint);
+  transition: transform var(--dur) var(--ease-out);
+}
+.machine[open] .machineChevron {
+  transform: rotate(90deg);
+}
+.machineBody {
+  padding: 0 18px 16px;
+}
+.pulse {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  font-size: 12.5px;
+  color: var(--mut);
+}
+.pulse b {
+  color: var(--ink);
+  font-weight: 500;
+}
+.small {
+  font-size: 12.5px;
+  color: var(--mut);
+  margin: 10px 0 0;
+}
+.machineActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+/* ---------------- responsive */
+@media (max-width: 1180px) {
+  .row1,
+  .row2 {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+  .missionsCard,
+  .row2 > :first-child {
+    grid-column: 1 / -1;
+  }
+  .tiles {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 720px) {
+  .row1,
+  .row2 {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .hello {
+    font-size: 30px;
+  }
+  .flow {
+    padding-left: 0;
+    border-left: 0;
+    flex-basis: 100%;
+    max-width: 360px;
+  }
+  .tile {
+    gap: 8px;
+    padding: 10px 12px;
+  }
+  .tileN {
+    font-size: 21px;
+  }
+  .tileLabel {
+    font-size: 12px;
+  }
+  .mRow {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+  .mUnknown {
+    grid-column: 1 / -1;
+    padding-left: 0;
+    border-left: 0;
+  }
+  .sRow {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+  }
+  .sTheme {
+    display: none;
+  }
+}
+
+section[aria-label="Manager decisions"] .rowBtn {
+  border-color: var(--navy);
+  color: var(--navy);
+}
+
+
+/* ================================================================== visual refinement (Nov 2026)
+   Fewer, better cards — each concept one container, its meaning carried by a SOFT HEADER BAND, the body stays paper.
+   About 80 % warm neutral · 15 % soft semantic tint · 5 % strong navy / forest. All tints are existing tokens.
+     focus (Priority missions)   steel   --blue-soft   + a 2px navy top edge: where to look first
+     decision (Manager)          sand    --amber-soft  + cocoa accents: important, blocked, never alarming
+     Best opportunity            the ONE navy surface: the strongest object on the page
+     positive (Promising)        sage    --green-soft  + forest accents (never mint)
+     event (Upcoming)            linen   + a navy date block: an editorial calendar card
+     activity (Recent)           slate   --slate-soft: quieter than the work above
+   No gradients, no glow, no new colour. */
+.desk {
+  gap: 18px;
+}
+.row1,
+.row2 {
+  gap: 16px;
+}
+.card {
+  padding: 0 18px 16px;
+  border-radius: var(--r-xl);
+  border-color: var(--hair);
+  box-shadow: var(--sh-card);
+  transition: box-shadow var(--dur) var(--ease-out), transform var(--dur) var(--ease-out);
+}
+.card[data-tone]:hover {
+  box-shadow: var(--sh-raise);
+}
+/* the header band: tinted, hairline below, full card width */
+.cardHead {
+  margin: 0 -18px 12px;
+  padding: 12px 18px 11px;
+  border-bottom: 1px solid var(--hair);
+  background: var(--paper-2);
+}
+.cardHead h2 {
+  font-size: 19px;
+}
+.cardSub {
+  color: var(--mut);
+}
+.card[data-tone="focus"] {
+  border-top: 2px solid var(--navy);
+}
+.card[data-tone="focus"] .cardHead {
+  background: var(--blue-soft);
+}
+.card[data-tone="focus"] .headIcon {
+  color: var(--navy);
+}
+.card[data-tone="decision"] .cardHead {
+  background: var(--amber-soft);
+}
+.card[data-tone="decision"] .headIcon {
+  color: var(--amber);
+}
+.card[data-tone="decision"] .dRow + .dRow {
+  border-top-color: color-mix(in srgb, var(--amber) 22%, transparent);
+}
+.card[data-tone="positive"] .cardHead {
+  background: var(--green-soft);
+}
+.card[data-tone="positive"] .headIcon {
+  color: var(--green);
+}
+.card[data-tone="positive"] .sScore {
+  color: var(--green);
+}
+.card[data-tone="event"] {
+  background: var(--bone);
+}
+.card[data-tone="event"] .cardHead {
+  background: var(--linen);
+}
+.card[data-tone="event"] .headIcon {
+  color: var(--amber);
+}
+.card[data-tone="event"] .dateTile {
+  background: var(--navy);
+  border-color: var(--navy);
+}
+.card[data-tone="event"] .dateTile span {
+  color: var(--navy-mut);
+}
+.card[data-tone="event"] .dateTile b {
+  color: var(--navy-ink);
+}
+.card[data-tone="activity"] .cardHead {
+  background: var(--slate-soft);
+}
+.card[data-tone="activity"] .headIcon {
+  color: var(--slate);
+}
+.card[data-tone="activity"] .tRow::after {
+  border-color: var(--slate);
+}
+
+/* ---------------- Best opportunity: the ONE strong navy object (paper text, excellent contrast, no glow) */
+.best {
+  padding: 16px 20px 20px;
+  background: var(--navy);
+  border-color: var(--navy);
+  color: var(--navy-ink);
+  box-shadow: var(--sh-raise);
+}
+.best .cardHead {
+  margin: 0 0 10px;
+  padding: 0 0 10px;
+  background: transparent;
+  border-bottom-color: color-mix(in srgb, var(--navy-ink) 16%, transparent);
+}
+.best .cardHead h2 {
+  color: var(--navy-ink);
+}
+.best .headIcon {
+  color: var(--navy-mut);
+}
+.best .bestName {
+  color: var(--navy-ink);
+}
+.best .bestName:hover {
+  color: var(--paper);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.best .bestThesis,
+.best .bestNext,
+.best .bestFacts dd {
+  color: var(--navy-ink);
+}
+.best .bestFacts dt {
+  color: var(--navy-mut);
+}
+.best .none {
+  color: var(--navy-mut);
+}
+/* the state chip on navy: a quiet outlined word */
+.best [class*="status"] {
+  background: transparent;
+  color: var(--navy-ink);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--navy-ink) 35%, transparent);
+}
+/* its one action: a paper button on the navy surface */
+.best .primary {
+  background: var(--paper);
+  color: var(--navy);
+}
+.best .primary:hover {
+  background: var(--bone);
+}
+.best .contours path {
+  stroke: var(--navy-ink);
+  opacity: 0.1;
+}
+
+/* ---------------- orientation tiles: crisp, compact, clearly one group */
+.tiles {
+  gap: 10px;
+}
+.tile {
+  padding: 10px 14px;
+  border-radius: var(--r-xl);
+}
+.tileIcon {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+}
+.tileN {
+  font-size: 24px;
+}
+.tileLabel {
+  font-size: 12.5px;
+  color: var(--mut);
+}

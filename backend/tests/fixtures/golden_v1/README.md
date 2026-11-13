@@ -211,3 +211,17 @@ after the last prepared case expired (no CASE_READY; the snapshot note keeps the
 normalisation in `parity_today`: (c) the old `considered.native` / `scout00` (0) dropped, (f) the new last key
 `snapshot` checked against the documents and dropped. Written and read as bytes
 (`python -m projectzero.ops.parity_today goldens` / `check`).
+
+`oracle_home.json` (review 031a): the old Investment Desk (`domain/ecosys.home()`, `GET /api/home`) over five worlds
+of invented names (`p-omar-hedeya` is the code constant's id; its person is invented), each in its own scratch data
+folder with a frozen clock (naive Berlin wall time, Friday 2026-11-13 09:00: every loaded old module's `date` /
+`datetime` is frozen) and every write blocked (the folders are checked unchanged). Covered: the best opportunity by
+provisional and by verified score, the prepared case's action versus the stored `next_action` (score band), a tie
+(`max` keeps the first), the `potential_conflict`, CONFLICT GATED (unclear, a case asking Omar) and WATCHING (an
+Omar-negative hold, a case with no active work) exclusions, a dropped company, and none at all; the weekend-first
+event, the best upcoming one, and none; `due` and `watch` cut to 6; the new signals in inbox order (a later id first)
+cut to 3; the Omar list sorted (a tie in stored order) and cut to 5; every `progress` count across the 7-day boundary,
+including the excluded `p-omar-hedeya`; legacy records read as neutral (`data_warning`, a list `conflict` read as
+`unclear`), records without a company, and no document at all. The pure `home.inputs_from_docs` -> `home.view`
+matches value by value and as serialized text, with no declared difference. Written and read as bytes
+(`python -m projectzero.ops.parity_home goldens` / `check`).

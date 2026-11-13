@@ -30,6 +30,7 @@ export function useDecision(c: Candidate | undefined) {
             qc.setQueryData<InboxPayload>(INBOX_KEY, (old) => old && patchDecided(old, c.id, decision, notes, r));
             void qc.invalidateQueries({ queryKey: [INBOX] });
             void qc.invalidateQueries({ queryKey: ["today"] }); // Today's triage and live candidates (030a)
+            void qc.invalidateQueries({ queryKey: ["home"] }); // the Investment Desk's new signals (031a)
             resolve(true);
           },
           onError: (e) => {

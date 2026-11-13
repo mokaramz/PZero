@@ -16,11 +16,8 @@ from __future__ import annotations
 
 import copy
 import json
-import secrets
-import tempfile
 from collections.abc import Callable, Iterator
 from datetime import UTC, datetime
-from pathlib import Path
 from typing import Any
 
 import pytest
@@ -32,25 +29,16 @@ from projectzero.api.routers import today as today_route
 from projectzero.conviction.store import ConvictionStore
 from projectzero.core.config import Settings
 from projectzero.core.db import connect, read_only_transaction, snapshot_transaction, transaction
-from projectzero.ops.db_check import _scratch_sql
-from projectzero.ops.legacy.apply import apply_plan
-from projectzero.ops.legacy.plan import build_plan
-from projectzero.ops.legacy.source import LegacySnapshot
 from projectzero.ops.parity_founder_calls import utc_instant
 from projectzero.ops.parity_ranking import diff, js
-from projectzero.ops.parity_today import UNCUT, files_of, normalise_new, normalise_old, read_golden
+from projectzero.ops.parity_today import UNCUT, normalise_new, normalise_old, read_golden
 from projectzero.ops.parity_validation import _fingerprint
+from projectzero.ops.scratch_import import import_world
 from projectzero.today import core as today_core
 from projectzero.today import inputs as today_inputs
 
 pytestmark = pytest.mark.hosted
 IMPORTABLE = ("main", "expired", "quiet")  # the other worlds hold no people / events file, or a broken pipeline
-# the files the importer requires that Today never reads (empty collections, as a fresh install had them)
-FILLER: dict[str, Any] = {
-    "sources.json": {"sources": []}, "scout_intake.json": {"items": {}}, "native_scout.json": {"signals": {}},
-    "committee.json": {"second_pass": {}}, "bridge_jobs.json": {"jobs": {}}, "schedule/jobs.json": {},
-    "inference_ledger.jsonl": "", "schedule/runs.jsonl": "",
-}  # fmt: skip
 DROPPED = "Invented Bramble Robotics"  # the first CONTACT_FOUNDER card of ``main``
 REJECTED = "c-205"  # "Invented Rookwood": first in the inbox, first on the triage portfolio card of ``main``
 
@@ -68,32 +56,12 @@ def golden() -> dict[str, Any]:
     return read_golden()
 
 
-def _import(settings: Settings, docs: dict[str, Any]) -> str:
-    """The world's documents as a legacy data folder, through the production importer, into a new scratch schema."""
-    name = f"pz_itest_{secrets.token_hex(4)}"
-    with tempfile.TemporaryDirectory(prefix="pz-today-world-") as tmp:
-        for rel, raw in files_of({**{k: v for k, v in FILLER.items() if k not in docs}, **docs}).items():
-            target = Path(tmp) / rel
-            target.parent.mkdir(parents=True, exist_ok=True)
-            target.write_bytes(raw)
-        snapshot = LegacySnapshot.capture(Path(tmp))
-    with connect(settings.db_url, autocommit=True) as admin:
-        admin.execute(_scratch_sql(name).encode())
-    conn = connect(settings.db_url)
-    try:
-        applied = apply_plan(build_plan(snapshot), schema=name, conn=conn)
-    finally:
-        conn.close()
-    assert applied.get("applied"), applied
-    return name
-
-
 @pytest.fixture
 def world(settings: Settings, golden: dict[str, Any]) -> Iterator[Callable[[str], str]]:
     made: list[str] = []
 
     def make(name: str) -> str:
-        made.append(_import(settings, golden["worlds"][name]["docs"]))
+        made.append(import_world(settings.db_url, golden["worlds"][name]["docs"]))
         return made[-1]
 
     yield make

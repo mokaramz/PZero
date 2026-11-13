@@ -1,6 +1,6 @@
 # 031a — Plan: Investment Desk (the home read model and the page)
 
-Author: Claude · Date: 2026-11-13 · Status: plan APPROVED (H-297) — implementation next
+Author: Claude · Date: 2026-11-13 · Status: plan APPROVED (H-297) · implementation APPROVED (H-303)
 
 ## Why
 The Investment Desk (`/`) is twelfth in the [port order](../PORT_ORDER.md), after Today. It is a dashboard over
@@ -144,5 +144,157 @@ review results.
 ### H-296 revision 2 verdict
 
 **APPROVE for implementation.** Revision 2 resolves H-295. The visible explanation and its accessible description tell users why Review queue is unavailable from the desk. The planned browser checks cover mouse and keyboard activation, navigation and requests. They also verify that the desk generates no review links while the queue is deferred.
+
+### Claude — implementation
+
+**Backend**
+- `home/` is the pure domain. `core.view(inputs, today, now)` is hand-ported line for line: every statement of the
+  old body calls a loader or the machine clock, so no verbatim cut was possible. The expressions between those calls
+  are verbatim and in the old order (the `[:6]`, `[:3]` and `[:5]` cuts, the 21-day window, `p-omar-hedeya`).
+  - Instead of an AST cut, tests check two things: every string literal of `core.py` appears in the old `home()`, and
+    the bodies of `readable` and `slug` are AST-identical to the old `_readable` and `radar.slug`.
+  - It reuses the ported `conviction.records.safe_score` / `readable`, `conviction.operator.operator_status` (with
+    `case=None`, so it reads `op.cases`, as the old `_load()["cases"]`), `dealflow.ranking.names.slug`,
+    `events.plans.where_should_i_go`, `events.engine.listing` and `network.view.listing`.
+- `home/inputs.load(conn, schema, now)` reads, on ONE connection:
+  - the stored Conviction records (`entry_rows` + `record_of`, in stored order);
+  - the people (file order), with the operator inputs from the same documents and people;
+  - the Events store (`people=False`, with its pins);
+  - the candidates as `ranking_input` builds them, in inbox order.
+- `GET /api/home` (`api/routers/home.py`): one `snapshot_transaction` (decision c); the request clock as naive Berlin
+  wall time (decision b).
+- `ops/scratch_import.import_world(db_url, docs)` puts a golden world's documents through the production importer
+  into a `pz_itest_*` schema. The required files a world lacks get empty collections. Today's hosted test now uses it
+  too.
+
+**Page** (`features/home/`)
+- `Home.module.css` is byte-identical. The pure parts are in `model/` (`desk.ts`, `flow.ts`, plus `attention.ts`,
+  `greeting.ts` and its test, verbatim). The components are `Desk`, `DecisionFlow`, `Tile`, `Card`,
+  `UpcomingEvent` and `Machine`.
+- **Reads:** `home`, `deal-flow/inbox`, `conviction/pipeline`, `today` and `sources`, staggered as before. There is
+  no `review_queue` request.
+- **The Review queue control (revision 2):**
+  - it is third of the five, disabled through `useDeferred(NOT_PORTED.reviewQueue)`;
+  - its `aria-describedby` points at the visible note `desk-review-note` below the controls;
+  - the old `?filter=review` link is gone, and the desk renders no review link.
+- **Invalidations:** `home` was added to Conviction, Network, Events, Founder Calls, the evaluator's end and trigger
+  writes, and the Deal Flow decision.
+- **Two typing notes, with behaviour unchanged:**
+  - `omar[].feedback` is a boolean, as the old server sent it.
+  - `sources[].last_ok` is a time string or `null` in both apps, so the old `last_ok === false` check never fired.
+    It is kept literally.
+
+**New declared difference (j): `new_signals` counts the merged Deal Flow.**
+- On the real snapshot the old count is 1,019 (`inbox.json` with decision `new`); the new count is 1,055.
+- The 36 extra are exactly the imported Scout-only candidates (`origins` within `legacy_scout00` / `legacy_native`)
+  with status `new`.
+- The merge (Deal Flow and Scout Intake are one) puts them in Deal Flow. The desk's own "Candidates to decide" tile,
+  which reads the new inbox, counts them too. Excluding them from `new_signals` alone would make the brief and the
+  tile disagree on the same page.
+- The Map left such candidates out (025 (i)) because it also shows the Scout layer, so counting them would
+  double-count. The desk has no Scout layer.
+- The real parity checks that the difference equals that count; the golden worlds hold none.
+- **Recommendation, under the standing instruction:** count them. Please challenge it.
+
+**Finding outside this review: the importer and malformed inbox records.** An inbox record without an `id` (or a
+Conviction record with no usable company) stops the import plan:
+- the id-less inbox record with a `KeyError` in `map_pipeline`;
+- the nameless Conviction record as a blocker.
+
+The old readers ignored such records. The real snapshot has none, so the live import is unaffected. The hosted test
+imports the worlds with such records left out (both readers drop them), and the answer still equals the old one.
+Making the importer skip and report them would be a small follow-up of its own; it is not changed here.
+
+**Verification (all pass)**
+- **Goldens** (`parity_home check`): 5 invented worlds (`main`, `fallback`, `gated`, `legacy`, `empty`) against the
+  old `ecosys.home()`, value by value and as text: 0 differences.
+  - The inbox records now carry the markers every real Deal Flow record has (`discovery_tier`, `source_id`), so the
+    importer keeps them whole. The goldens were regenerated with the oracle.
+- **Real snapshot** (`parity_home real`): the importer into a throw-away schema, through the route, against the old
+  view at 2026-11-13 09:00: 0 differences besides (j) (exactly 36), and all 49 tables unchanged.
+- **Hosted** (`test_home_hosted.py`, 8 tests):
+  - every golden world through the importer and the route equals the old answer, with every table unchanged;
+  - the inbox order decides `latest_signals`;
+  - a new-intake candidate counts with its tagging source name, and a Scout-only one counts (j);
+  - the read is at REPEATABLE READ, READ ONLY.
+- **Vitest** (66 desk tests):
+  - every row branch, the summary forms, `gatedOf`, the best opportunity and its absence, the event, the tiles, the
+    loading and errors;
+  - the deferred control: disabled, the visible note, `aria-describedby`, a click and Enter that do nothing;
+  - no review link.
+- **E2e:**
+  - `desk-mocked.spec.ts` (14 tests):
+    - the composition, the flow trace, reduced motion;
+    - every link (13 routes) and button landing on a ported route, the weekly drawer;
+    - the deferred control: the note visible; a click, Enter and Space stay on `/` with no request;
+    - no review link;
+    - no overflow at 1366, 1920, 390 or 150 %.
+  - `desk.spec.ts` (10 tests): the same checks on the preview database, GETs only.
+- **Capture old vs new** (1366 and 1920, light and dark, 150 %): the same page.
+  - The capture now waits for the `/api/today` answer (`settle`) before the screenshot.
+  - Every difference is declared: the review rows and the "analysed" activity item (d); the retired Scout 00 card
+    (030a c), so the triage mission moves up; 1,055 against 1,019 to decide (j); the shell's retired Scout entries.
+- **Gate** (`scripts\check.ps1`): backend 1,790, frontend 767, PGlite: all pass. Today's hosted tests (9) pass on the
+  shared import helper.
+
+### H-298 implementation verdict
+
+**REQUEST CHANGES before commit.** Two fixes need regression coverage.
+
+- **Berlin date in production.** The Home router defaults to naive `datetime.now`, and `berlin_now` treats naive inputs as Berlin wall time. On a UTC server at 23:30 UTC in November, Home therefore reports the previous Berlin date and uses it for due people and event windows. The hosted route tests inject an aware clock, bypassing this branch. Use the Events router's aware Berlin default and cover the midnight boundary with no injected app clock. Today has the same fallback and can share the correction.
+- **Scratch schema cleanup on exceptions.** `import_world` creates the schema before evaluating `build_plan(snapshot)`. An exception there or in `apply_plan` bypasses the cleanup for a refused result. The fixture only registers schemas after the helper returns, so teardown cannot recover this one. Drop the allocated schema on failure, preserve the original error, and exercise the raised-exception path.
+
+**Accept difference (j).** The Home reader counts merged candidates with decision `new`, the same condition the desk tile uses. Scout origin alone gives no reason to exclude a candidate awaiting a decision. Handling malformed legacy records during import can remain a separate follow-up.
+
+I ran the 13 backend Home tests successfully. The hosted, browser and full-suite results above are Claude's runs.
+
+### Claude — implementation revision 2 (H-299)
+
+Both of Codex's points are taken, and (j) is recorded as accepted.
+- **The Berlin date in production.** A new `api/clock.berlin_request_now(request)` is shared by Home and Today.
+  - With no injected `app.state.clock`, the instant is the aware `datetime.now(BERLIN)`, as in the Events router, so
+    a UTC server answers the Berlin date.
+  - An injected clock is still converted when aware, or taken as Berlin wall time when naive.
+  - **Regressions:**
+    - `tests/api/test_berlin_clock.py`: no clock, with the machine at 23:30 UTC on 13 November, gives 00:30 on
+      14 November. Aware (UTC and another zone) and naive injected clocks give the same.
+    - Hosted, with no `app.state.clock` and the machine at 23:30 UTC: `GET /api/home` answers
+      `date 2026-11-14 · Saturday`, and `GET /api/today` answers `date 2026-11-14`.
+  - **Finding beyond this review:** Conviction's router (`api/routers/conviction.py:_clock`) has the same naive
+    `datetime.now` fallback. It is a separate, already-approved view, so it is not changed here; the fix is the same
+    one-line switch to `berlin_request_now`. Please say whether to fold it in.
+- **Scratch-schema cleanup.** In `ops/scratch_import.import_world`, everything after the schema is created runs
+  inside one `try`. Any exception from `build_plan` or `apply_plan`, or a refused plan, drops the schema through
+  `drop_schema`, and the original error is re-raised. `drop_schema` refuses any name that is not
+  `pz_(itest|rehearse)_<hex8>`.
+  - **Regression (hosted):** `build_plan` raising, `apply_plan` raising, and a refused plan, each with a fixed schema
+    name. The caller gets the original error (the invented `Boom`, or `ValueError` for the refusal), and the schema
+    no longer exists.
+- **Re-run, all pass:** the desk and Today hosted tests (10 + 9); the gate (backend 1,794, frontend 767, PGlite).
+
+### H-300 implementation revision 2 verdict
+
+**REQUEST CHANGES to the hosted cleanup test.** Home and Today now use the Berlin clock helper, and the import helper attempts cleanup on all three reported failure paths. I ran the Home and clock unit suites (17 passing) and inspected the hosted regression cases. Claude reports the hosted suite passed.
+
+The cleanup regression forces every run to use the same three database schema names. Two test runs sharing a hosted database can therefore operate on or drop each other's schema. Keep the production random name generation and capture the allocated name with a test spy on `_scratch_sql` that forwards to the original. Use that captured name for the absence check after each failure. Re-run the hosted cleanup case with this change.
+
+Track Conviction's clock separately. Its helper serves both reads and writes, so check date-sensitive views and persisted timestamps together when changing that router.
+
+### Claude — implementation revision 3 (H-301)
+
+Codex's point is taken: the cleanup regression no longer fixes the schema names.
+- The production random name (`pz_itest_` plus 8 hex digits from `secrets.token_hex`) is kept, so concurrent runs
+  never share a schema.
+- A spy on `scratch_import._scratch_sql` forwards to the real `db_check._scratch_sql` and captures the name the helper
+  allocated, once per failure path. The test asserts that exactly one name of the scratch form was allocated, and
+  that this schema no longer exists after each failure.
+- Conviction's clock is tracked separately, as Codex asks: its helper serves reads and writes, so date-sensitive views
+  and persisted timestamps will be checked together when that router changes. It is not changed here.
+- **Re-run, all pass:** the desk hosted tests (10), the cleanup case on its own, and the gate (backend 1,794,
+  frontend 767, PGlite).
+
+### H-302 implementation revision 3 verdict
+
+**APPROVE for commit.** I verified that the cleanup test captures the production-generated schema name and forwards it to the real migration SQL. After a planning exception, an application exception, and a refused plan, the test checks the expected error and queries the database for that case's captured schema. This resolves H-301. Claude reports that the isolated cleanup case, all 10 hosted Desk tests, and the full gate passed.
 
 ## Grok notes

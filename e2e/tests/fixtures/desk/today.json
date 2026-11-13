@@ -1,0 +1,132 @@
+{
+  "date": "2026-11-13",
+  "actions": [
+    {
+      "type": "CONTACT_FOUNDER",
+      "title": "Reach out to Halvorsen Robotics",
+      "why": "On Radar (high, verified 78), conflict none, founders resolved.",
+      "next_step": "Write to the founder yourself — nothing is sent by Project Zero.",
+      "link": "/conviction?company=halvorsen-robotics",
+      "urgency": "high",
+      "evidence": ["IMQ state: IMQ QUALIFIED", "why-now trigger older than 90 days"],
+      "subject": "Halvorsen Robotics",
+      "conflict": "none",
+      "contact_appropriate": true
+    },
+    {
+      "type": "ASK_OMAR_CONFLICT",
+      "title": "Ask Omar about 3 possible portfolio conflict(s)",
+      "why": "These companies cannot move until Omar / Project A confirms whether they are investable (some are, or are linked to, Project A portfolio companies).",
+      "next_step": "One message to Omar listing them; record his answer on each company (Conviction → conflict).",
+      "link": "/conviction",
+      "urgency": "high",
+      "evidence": ["Brightwell Analytics: conflict = potential_conflict", "Corvane Systems: conflict = unclear", "Lumora Health: known portfolio"],
+      "subject": "Brightwell Analytics, Corvane Systems, Lumora Health",
+      "conflict": "potential_conflict / unclear",
+      "contact_appropriate": false
+    },
+    {
+      "type": "PREPARE_FOUNDER_CALL",
+      "title": "Follow up: Ilse Marquardt",
+      "why": "Founder-call next action is overdue: Send the pilot pricing sheet and ask for the second site visit",
+      "next_step": "Do the follow-up you committed to (owner: you).",
+      "link": "/founder-calls",
+      "urgency": "high",
+      "evidence": ["due 2026-11-10"],
+      "subject": "Ilse Marquardt",
+      "conflict": "unknown",
+      "contact_appropriate": false
+    },
+    {
+      "type": "CASE_READY",
+      "title": "Tessaro Grid — case prepared. 2 human decisions remain.",
+      "why": "Recommended next action: Prepare a founder call — Traction can only be answered by the founders.",
+      "next_step": "Prepare a founder call (the evidence, unknowns and contradictions are on the case).",
+      "link": "/conviction?company=tessaro-grid",
+      "urgency": "high",
+      "evidence": ["Is the traction evidence convincing?", "Is this worth a founder conversation?"],
+      "subject": "Tessaro Grid",
+      "conflict": "unknown",
+      "contact_appropriate": false
+    },
+    {
+      "type": "REVIEW_VERIFICATION",
+      "title": "Verify Nordvik Materials (founders, traction)",
+      "why": "Provisional 71 ≥ 65 — it enters Radar only once verified (frozen rule).",
+      "next_step": "Open Verification: accept or reject each proposal with its evidence; traction stays your judgment.",
+      "link": "/conviction?company=nordvik-materials",
+      "urgency": "medium",
+      "evidence": ["missing: founders, traction"],
+      "subject": "Nordvik Materials",
+      "conflict": "none",
+      "contact_appropriate": false
+    },
+    {
+      "type": "EVENT_ACTION",
+      "title": "Decide on Alpine Deep Tech Summit (2026-11-15, Zurich)",
+      "why": "High-signal event in 2 day(s). Spin-out founders from three technical universities pitch to a small investor room.",
+      "next_step": "Decide whether to attend; registration is yours — Project Zero never registers.",
+      "link": "/events",
+      "urgency": "high",
+      "evidence": [],
+      "subject": "Alpine Deep Tech Summit",
+      "conflict": "unknown",
+      "contact_appropriate": false
+    },
+    {
+      "type": "TRIAGE_REVIEW",
+      "title": "Triage: review 10 — 14 need your judgment, 5 calibration samples",
+      "why": "487 machine proposals handled: 3 queued for case preparation, 129 in the machine research queue (waiting for more evidence), 331 watched / deferred, 5 conflict-gated. 4 more wait beyond today's budget of 10.",
+      "next_step": "Open the list and decide KEEP / RESEARCH / WATCH / DROP for each — your decision, through the usual path. Calibration samples are companies the machine set aside: your verdict tells it whether that was right.",
+      "link": "/deal-flow?filter=triage&route=NEEDS_MOHAMED",
+      "urgency": "medium",
+      "evidence": ["Orrin Dynamics: robotics spin-out, two founders verified, no round yet", "Velda Bio: enzyme platform, pilot with a regional brewer", "Kestrun Labs: calibration sample (deferred low priority)"],
+      "subject": "Orrin Dynamics, Velda Bio, Kestrun Labs, Pallas Freight",
+      "conflict": "unknown",
+      "contact_appropriate": false
+    }
+  ],
+  "more": 3,
+  "considered": { "pipeline": 4, "calls": 1, "events": 2, "triage": 2, "watch": 1, "cases": 1 },
+  "exceptions": [
+    { "key": "judgment", "n": 1, "text": "1 company needs your judgment" },
+    { "key": "founder_call", "n": 2, "text": "2 founder calls worth preparing" },
+    { "key": "omar", "n": 5, "text": "5 possible portfolio conflicts for Omar" },
+    { "key": "event", "n": 2, "text": "2 events worth deciding on" },
+    { "key": "triage", "n": 10, "text": "10 machine proposals need your judgment" }
+  ],
+  "machine_working": "",
+  "triage": {
+    "at": "2026-11-12T23:05:10",
+    "total": 487,
+    "counts": {
+      "NEEDS_MOHAMED": 14,
+      "CASE_PREPARING": 3,
+      "BACKGROUND_RESEARCH": 129,
+      "MACHINE_WATCH": 86,
+      "DEFERRED_LOW_PRIORITY": 245,
+      "CONFLICT_GATED": 5,
+      "CALIBRATION_SAMPLE": 5
+    },
+    "needs_mohamed": 14,
+    "calibration": 5,
+    "limit": 10,
+    "queued_beyond_budget": 4,
+    "resurfaced": 20,
+    "labels": {
+      "NEEDS_MOHAMED": "Needs Mohamed",
+      "CASE_PREPARING": "Case preparing",
+      "BACKGROUND_RESEARCH": "Background research",
+      "MACHINE_WATCH": "Machine watch",
+      "DEFERRED_LOW_PRIORITY": "Deferred (low priority)",
+      "CONFLICT_GATED": "Conflict-gated (Omar)",
+      "CALIBRATION_SAMPLE": "Calibration sample"
+    }
+  },
+  "rules": "Deterministic ranking over existing state; nothing is sent, registered, scored or forwarded.",
+  "snapshot": {
+    "note": "Triage routes and prepared cases are the imported snapshot until their runs are ported.",
+    "triage_at": "2026-11-12T23:05:10",
+    "cases_prepared_at": "2026-11-01T19:36:42"
+  }
+}
