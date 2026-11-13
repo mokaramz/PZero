@@ -1,6 +1,6 @@
 # 029a — Plan: the inference gateway core (no live call)
 
-Author: Claude · Date: 2026-11-12 · Status: plan APPROVED (H-269) — implementation next
+Author: Claude · Date: 2026-11-12 · Status: plan APPROVED (H-269) — implementation APPROVED
 
 ## Why
 Every remaining model caller goes through one gateway in the old app (`inference/gateway.complete`): the News cards
@@ -201,5 +201,143 @@ Both points are taken.
 ### H-268 revision 3 verdict
 
 **APPROVE for implementation.** Both settlement and reconciliation now specify the conflict predicate that matches the partial unique index. The planned database tests cover repeat settlement, late settlement after recovery and imported rows without a call ID. The fake-provider test covers the other H-267 finding: a valid reply without billing metadata returns its data after one dispatch and records one estimated debit. These are acceptance criteria for the implementation review.
+
+## Implementation (Claude, 2026-11-12)
+
+**What landed**
+- **`core/inference/`.**
+  - `config` holds CHEAP, STANDARD, and ESCALATION (disabled); RESEARCH/xAI is dropped. `paid_enabled(env)` is true
+    only when `PZ_AI_PAID` is exactly `on`. It also holds the prices, the caps and the retries.
+  - `budget` has the pure rule order per attempt, the Berlin windows, the estimate and the cost classification.
+  - `store`: the `BudgetStore` Protocol (`admit`, `settle`, `cache_get`, `cache_put`, `totals`), the dataclasses, and
+    `InMemoryBudgetStore` as the reference.
+  - `providers`:
+    - `FakeProvider`;
+    - `OpenAICompatibleProvider` on `core.net`: the provider's https origin only, no redirect (any second hop is
+      refused), the key added only by `headers_for` and read at call time, the key redacted from any echoed error
+      body, `raise_for_status=False` with the old status mapping, and before/after-dispatch reporting. It refuses
+      under pytest unless a transport and a resolver are injected.
+  - `gateway`:
+    - `complete(...) -> Result` never raises for an expected failure;
+    - the order is: role, provider, key and price, then the paid switch, then the cache;
+    - each attempt is admitted before it is sent, with at most 3 attempts (2 s / 6 s, `Retry-After` ≤ 30 s,
+      "overloaded" doubles the wait), and each attempt is settled as its own row;
+    - `status()` never shows a key value.
+  - `errors` is the plain-language layer.
+- **`pg_store.PostgresBudgetStore`.** Every method runs in one transaction under `<schema>.model_budget`:
+  - `admit`: reconcile the expired reservations into `abandoned` rows charged their estimate, sum the `Spend` in SQL
+    (the same sets as the in-memory `spend_of`), run `budget.check`, then reserve;
+  - `settle`: the exact `on conflict (call_id, attempt) where call_id is not null do nothing`, then the delete;
+  - the cache (first answer kept) and `totals`.
+- **Migration 0021:**
+  - `model_ledger.usd` becomes `numeric(14,8)`;
+  - stored generated columns `role`, `run_id`, `call_id`, `attempt`, `error_kind`;
+  - the unique (`call_id`, `attempt`) partial index, and indexes for role/month, entity and run (`at` was already
+    indexed);
+  - `model_reservations`, keyed by (`call_id`, `attempt`), with `detail` for what an abandoned row keeps, and
+    `expires_at`;
+  - `model_cache`, with a sha256 key, starting empty.
+- **`backend/tests/conftest.py`.** Every provider key variable is set to `""` (so `load_dotenv` cannot bring one back)
+  and `PZ_AI_PAID=off`, for EVERY test.
+- **`.env.example`** now reads `DEEPINFRA_API_KEY=` and `PZ_AI_PAID=off`, with a note that turning it on is
+  Mohamed's decision. The real `.env` is untouched: it has no model key and no `PZ_AI_PAID`.
+
+**No paid call is possible yet.** Nothing in this review adds a key or turns paid calls on.
+
+**Verification**
+- **Oracle** (`parity_inference goldens` / `check`): the old `complete` and `budget.check` with the old
+  `FakeProvider`, a frozen clock and a scratch ledger: 18 cases, 77 calls and 39 decisions, with 0 undeclared
+  differences. Declared:
+  - (c) the default off and its refusal text;
+  - (d) the cache after the switch;
+  - (h) RESEARCH unknown;
+  - one row per attempt;
+  - a failure after dispatch charged the estimate (every HTTP error counts as possibly billed);
+  - a retry that no longer fits is not sent.
+
+  A valid answer without usage was already charged the estimate by the old app, so it is not a difference.
+- **Safety tests** (fake transport, fixture and refuse-all resolvers):
+  - the key reaches only the provider host;
+  - no 301/302/307/308 redirect is followed;
+  - http, another port, another host and userinfo URLs are refused;
+  - no key appears in any Result, ledger row, log or error;
+  - nothing is sent with no key, with paid off, or with a refuse-all resolver;
+  - the status mapping holds, and each failure reports its side of dispatch.
+- **In memory:** the settlement race at the cap, 10 threads that never overshoot, the restart followed by a late
+  settlement, a repeated settlement, a gateway-level stall.
+- **PGlite** (4 new, 66 in total): existing rows keep their values and the generated fields are derived; a repeated
+  settlement is one debit; a reconciliation then a late settlement leaves one `abandoned` row; NULL `call_id` rows are
+  accepted; the CHECKs.
+- **Hosted** (4, `test_inference_hosted.py`):
+  - **The race at the cap, on two connections.** B waits while A's settlement holds the lock, then sees A's committed
+    charge and is blocked; a smaller caller is admitted exactly up to the cap.
+  - **The restart.** The reconciled `abandoned` row is charged the estimate; the late settlement returns False; the
+    day total is one debit.
+  - **A repeated settlement** gives one debit, with 8 decimals kept.
+  - **The gateway over the Postgres store.** A reported cost is ledgered. A valid answer without usage is `ok`, with
+    one dispatch and one estimated debit. `status` has no key value and `paid_enabled` false.
+- **The whole backend suite** passes with the conftest guard.
+
+**Not done here:** every caller. 028d (the News cards) is next. **Turning on paid calls** (`PZ_AI_PAID=on` and
+`DEEPINFRA_API_KEY` in `.env`) is Mohamed's decision; until then every caller keeps its no-model path.
+
+### H-270 implementation verdict
+
+**REQUEST CHANGES.** All 72 focused inference tests passed locally. Two accounting paths still need coverage.
+
+1. In `gateway.complete`, admission prices the request using `max_out`. In `OpenAICompatibleProvider.complete`, the later merge of `extra_body` can replace the outgoing `max_tokens` or add a completion count (`n`) that the estimate never priced. Make admission and dispatch use the same effective token limit and completion count. Reject unsupported billing-affecting options before dispatch or include them in pricing. Cover both caller and role extras with a fake transport and assert the sent request fits the reservation.
+2. `budget.reply_cost` accepts a negative reported cost, and `actual_usd` accepts negative token counts. A valid answer can therefore post a negative debit and increase the next caller's available budget. Treat negative or nonfinite costs and invalid token counts as unusable metadata throughout settlement, including token columns. Fall back from reported cost to valid usage, then to the estimate. Test a valid answer with invalid billing metadata and verify one successful dispatch, one nonnegative debit and the resulting headroom.
+
+
+### Claude — implementation revision 2 (2026-11-13 00:13 CET)
+
+Both points of H-271 are taken.
+
+1. **Admission and dispatch use the same limit and the same completion count.**
+   - The gateway refuses, before admission and dispatch, any caller or role `extra_body` option that changes what a call
+     can bill: `max_tokens`, `max_completion_tokens`, `n` or `best_of` (`gateway.BILLING_OPTIONS`). The refusal is
+     `bad_request` with a reason that says to use `max_output_tokens`.
+   - As a second guard, `OpenAICompatibleProvider` never lets an extra override those keys. Its body always carries
+     `max_tokens` = the priced `max_out` and one completion.
+   - **Tests:**
+     - `test_a_billing_option_is_refused_before_admission_and_dispatch` (8 cases: each option, from the caller and from
+       the role): nothing is reserved, nothing is sent, and there is no debit;
+     - `test_the_sent_request_fits_the_reservation`: over the real client with a fake transport, the sent body has
+       `max_tokens` = 321 and no `n` / `best_of`, and other provider options still pass.
+2. **Invalid billing metadata is unusable throughout settlement.**
+   - `budget.usable_usd` (a finite, non-negative number, not a bool) gates the reported cost, and `budget._count`
+     gates every token count in `actual_usd`, including the cached tokens.
+   - The gateway's `_tokens` keeps only non-negative ints (not bools) for the token columns.
+   - The fallback is: a usable reported cost, then valid usage, then the estimate.
+   - **Test** `test_invalid_billing_metadata_never_makes_a_negative_debit`, with a negative reported cost, a NaN cost,
+     a negative token count and a bool count:
+     - one successful dispatch, a valid answer, and one non-negative debit;
+     - the token column is NULL or non-negative;
+     - the source is `priced` when the counts are valid, else `estimated`;
+     - the day's spend grew by exactly that debit.
+- **Results.** The inference tests pass (85); `parity_inference check` shows 0 differences beyond the declared ones;
+  the backend suite passes (1,715).
+
+### H-273 implementation revision 2 verdict
+
+**REQUEST CHANGES.** The billing-option guards resolve the reservation mismatch, and all 85 inference tests passed locally. One provider parsing path still loses the type needed by the cost validator. In `providers.reported_cost`, JSON `false` and `true` pass the numeric type check and become 0.0 and 1.0. Both then pass `budget.usable_usd`. A paid reply can therefore record zero or a dollar even when token usage yields a different charge. Validate the original value before converting it. Exercise both booleans through the OpenAI-compatible response parser with a fake transport, checking priced fallback with usable counts and estimated fallback without them.
+
+
+### Claude — implementation revision 3 (2026-11-13 00:20 CET)
+
+H-275 is taken. `providers.reported_cost` now validates the ORIGINAL value with `budget.usable_usd` before converting
+it, so a JSON `true` / `false` (or a negative or non-finite number) is no reported cost.
+- **Tests.** `test_invalid_billing_metadata_never_makes_a_negative_debit` gains four cases through the
+  OpenAI-compatible response parser with a fake transport:
+  - `estimated_cost` `true` and `false` with usable counts: `priced` from the counts;
+  - `true` and `false` without counts: `estimated`.
+
+  Each case has one dispatch, one non-negative debit and the matching headroom. Before the fix the `true` cases would
+  have recorded $1.
+- **Results.** The inference tests pass (89); the parity check shows 0 differences beyond the declared ones.
+
+### H-277 implementation revision 3 verdict
+
+**APPROVE.** The response parser now validates the original reported cost before numeric conversion. Both JSON booleans fall through to token pricing when counts are available and to the reservation estimate otherwise. All 89 focused inference tests passed locally, including the four parser regressions.
 
 ## Grok notes
