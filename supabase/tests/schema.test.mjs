@@ -1285,3 +1285,52 @@ describe("migration 0022 — the Associate's store: immutable messages, deleted 
     await db.query(`delete from pz.associate_drafts where id = 'd-00000000aa'`); // drafts are the user's to delete
   });
 });
+
+describe("migration 0023 — the jobs runner: one fencing lease, runner records in key order, immutable history", () => {
+  let db;
+
+  before(async () => {
+    db = await freshDb();
+  });
+
+  test("the lease is one row whose generation only grows; it is never deleted", async () => {
+    assert.deepEqual((await db.query(`select id, generation::int as g, holder from pz.job_lease`)).rows, [{ id: 1, g: 0, holder: null }]);
+    const taken = await db.query(
+      `update pz.job_lease set generation = generation + 1, holder = $1::json, taken_at = now() where id = 1 returning generation::int as g`,
+      [JSON.stringify({ source: "app", pid: 7, since: "2026-11-13T09:00:00" })],
+    );
+    assert.equal(taken.rows[0].g, 1);
+    await rejects(db.query(`update pz.job_lease set generation = 0`), /never decreases/);
+    await rejects(db.query(`delete from pz.job_lease`), /never deleted/);
+    await rejects(db.query(`insert into pz.job_lease (id) values (2)`), /check/);
+    await rejects(db.query(`insert into pz.job_lease (id) values (1)`), /duplicate|unique/);
+    const holder = (await db.query(`select holder::text as h from pz.job_lease`)).rows[0].h;
+    assert.equal(holder, '{"source":"app","pid":7,"since":"2026-11-13T09:00:00"}'); // json keeps the key order
+  });
+
+  test("a runner record keeps its key order (json) and its source is a plain name", async () => {
+    const rec = '{"at": "2026-11-13T09:00:00", "started": "2026-11-13T09:00:00", "finished": null, "outcome": "running", "pid": 7, "due": [], "note": ""}';
+    await db.query(`insert into pz.job_runner (source, record) values ('background', $1::json)`, [rec]);
+    assert.equal((await db.query(`select record::text as r from pz.job_runner`)).rows[0].r, rec);
+    await rejects(db.query(`insert into pz.job_runner (source, record) values ('Bad Source', '{}')`), /check/);
+    await rejects(db.query(`insert into pz.job_runner (source, record) values ('background', '{}')`), /duplicate|unique/);
+  });
+
+  test("a NEW history row has its real start and finish; history rows are never edited or deleted", async () => {
+    await db.query(`insert into pz.job_runs (job, started_at, outcome, detail) values ('event_scan', '2026-11-01T07:00:00Z', 'ok', '{"job": "event_scan"}')`); // imported: no finish
+    await db.query(`insert into pz.job_runs (job, started_at, finished_at, outcome, detail) values ('event_scan', '2026-11-13T08:00:00Z', '2026-11-13T08:00:05Z', 'ok', '{}')`);
+    await rejects(db.query(`insert into pz.job_runs (job, started_at, finished_at, outcome) values ('x', '2026-11-13T08:00:05Z', '2026-11-13T08:00:00Z', 'ok')`), /job_runs_finished_check/);
+    await rejects(db.query(`update pz.job_runs set outcome = 'failed'`), /append-only/);
+    await rejects(db.query(`delete from pz.job_runs`), /append-only/);
+    assert.equal((await db.query(`select count(*)::int as n from pz.job_runs`)).rows[0].n, 2);
+  });
+
+  test("both new tables have row level security and no API grants", async () => {
+    const rls = await db.query(`select relname, relrowsecurity from pg_class where relname in ('job_lease', 'job_runner') order by relname`);
+    assert.deepEqual(rls.rows, [{ relname: "job_lease", relrowsecurity: true }, { relname: "job_runner", relrowsecurity: true }]);
+    const grants = await db.query(
+      `select table_name from information_schema.role_table_grants where table_name in ('job_lease', 'job_runner') and grantee in ('anon', 'authenticated', 'PUBLIC')`,
+    );
+    assert.deepEqual(grants.rows, []);
+  });
+});

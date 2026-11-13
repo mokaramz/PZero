@@ -7,7 +7,9 @@
 
 Read models with no writes (decision a). Each runs on ONE connection whose transaction is REPEATABLE READ, READ ONLY
 from before its first query, at one clock: the request instant as Berlin wall time (decision b,
-``api.clock.berlin_request_now``). The background-job runner is not ported (decision e / k: ``RUNNER`` is ``None``).
+``api.clock.berlin_request_now``). The background-job runner (032c) is ``jobs.ported.RUNNER``, seen with the
+generation that holds the scheduler lock now (a ``running`` job is alive only if that runner claimed it); the old
+texts come back for the jobs it can run, revision 2's stay for the others (032c decision c).
 """
 
 from __future__ import annotations
@@ -23,6 +25,8 @@ from projectzero.api.clock import berlin_request_now
 from projectzero.core.db import snapshot_transaction
 from projectzero.health import core
 from projectzero.health import inputs as health_inputs
+from projectzero.jobs import store as jobs_store
+from projectzero.jobs.ported import RUNNER
 
 router = APIRouter(prefix="/api", tags=["system health"])
 
@@ -30,7 +34,8 @@ router = APIRouter(prefix="/api", tags=["system health"])
 def system_view(db_url: str, schema: str, now: datetime) -> dict[str, Any]:
     with snapshot_transaction(db_url) as conn:
         inputs = health_inputs.load(conn, schema, now)
-    return core.system_view(inputs, now, core.RUNNER)
+        runner = RUNNER.holding(jobs_store.held_generation(conn, schema))
+    return core.system_view(inputs, now, runner)
 
 
 def overview_view(db_url: str, schema: str, now: datetime) -> dict[str, Any]:

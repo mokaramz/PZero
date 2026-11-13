@@ -73,9 +73,11 @@ class IntakeClosedError(RuntimeError):
     """Live intake into ``pz`` opens only after the one-time legacy import (else the import would collide)."""
 
 
-def ensure_intake_open(conn: psycopg.Connection[Any], schema: str) -> None:
-    """Refuse live deliveries into the production schema until the legacy import has written its marker."""
-    if schema != "pz":
+def ensure_intake_open(conn: psycopg.Connection[Any], schema: str, *, live: str = "pz") -> None:
+    """Refuse live deliveries into the production schema until the legacy import has written its marker. ``live``:
+    the schema the marker guards (only ever ``pz`` in the app; a hosted test points it at a scratch name to see the
+    refusal on a schema with no marker, review 032c)."""
+    if schema != live:
         return  # scratch / test schemas are always open
     row = conn.execute(
         sql.SQL("select 1 from {}.documents where key = %s").format(schema_ident(schema)), (IMPORT_MARKER,)

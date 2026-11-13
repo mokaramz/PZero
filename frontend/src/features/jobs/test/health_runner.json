@@ -1,0 +1,531 @@
+{
+  "at": "2026-11-13T09:30:00",
+  "verdict": "NEEDS ATTENTION",
+  "status": {
+    "key": "action",
+    "label": "Action required",
+    "sentence": "2 items need you — see Needs your action.",
+    "groups": {
+      "need": 2,
+      "auto": 2,
+      "ext": 2,
+      "info": 5
+    },
+    "last_job_report": "2026-11-13T09:00:40",
+    "report_age_h": 0.5
+  },
+  "issues": [
+    {
+      "level": "warn",
+      "what": "1 source(s) failing for a reason Project Zero can fix (parser / address)",
+      "do": "Open Sources health below: each has a diagnosis.",
+      "group": "need"
+    },
+    {
+      "level": "info",
+      "what": "1 source(s) unavailable for external reasons (Kestrel Wire) — handled safely, not bypassed",
+      "do": "Nothing to do; the other sources keep working. Sources health below shows each cause.",
+      "group": "ext"
+    },
+    {
+      "level": "info",
+      "what": "3 candidate(s) waiting for machine triage — preserved, nothing was lost",
+      "do": "Preserved, nothing was lost. The machine-triage retry arrives with the background-job runner.",
+      "group": "info"
+    },
+    {
+      "level": "info",
+      "what": "4 background job(s) overdue: Event source scan, Validation snapshot, News refresh, Weekly learning review",
+      "do": "They run at the next background trigger (hourly, at logon or unlock); “Run overdue now” starts them immediately.",
+      "group": "auto"
+    },
+    {
+      "level": "warn",
+      "what": "background job keeps failing: Event source scan (2 runs in a row — HTTP Error 503 from the event listing)",
+      "do": "Open Background jobs below for the error; the job retries automatically when due.",
+      "group": "need"
+    },
+    {
+      "level": "info",
+      "what": "background job(s) failed or were interrupted: Triage queue compression (human attention budget)",
+      "do": "Recorded in the imported job history; nothing runs it again until the runner is ported.",
+      "group": "info"
+    },
+    {
+      "level": "info",
+      "what": "background job blocked by a budget limit: Case preparation freshness (stale / new Conviction cases)",
+      "do": "Recorded in the imported job history; caps are never overridden, and nothing retries it until the runner is ported. Review spend under Models and budget.",
+      "group": "info"
+    },
+    {
+      "level": "info",
+      "what": "background job(s) only partially completed: News refresh",
+      "do": "The rest is kept for retry; see the job note under Background jobs.",
+      "group": "auto"
+    },
+    {
+      "level": "info",
+      "what": "waiting for an external dependency: Weekly learning review (waiting: benchmark feed not published yet)",
+      "do": "Nothing to do in Project Zero unless it persists.",
+      "group": "ext"
+    },
+    {
+      "level": "info",
+      "what": "paid AI is switched off (PZ_AI_PAID)",
+      "do": "Paid calls run only with PZ_AI_PAID=on and a configured key.",
+      "group": "info"
+    },
+    {
+      "level": "info",
+      "what": "2 data warning(s) in Validation",
+      "do": "See Validation → Data warnings.",
+      "group": "info"
+    }
+  ],
+  "sources": {
+    "sources": [
+      {
+        "id": "halden-patent-bulletin",
+        "name": "Halden Patent Bulletin (weekly grants)",
+        "url": "https://halden-patents.example/bulletin",
+        "state": "FAILING",
+        "last_ok": "2026-10-28",
+        "failures_in_row": 3,
+        "last_useful_discovery": "2026-10-21",
+        "candidates": 14,
+        "noise_rate": 0.21,
+        "early_share": 0.14,
+        "last_error": "fetched but no items: 0 records parsed",
+        "repair": {
+          "cause": "the page layout or feed format changed",
+          "suggestion": "The parser no longer finds entries: check the page manually and adjust the parser / selector.",
+          "external": false
+        }
+      },
+      {
+        "id": "kestrel-wire",
+        "name": "Kestrel Wire",
+        "url": "https://kestrel-wire.example/startups",
+        "state": "FAILING",
+        "last_ok": "2026-10-22",
+        "failures_in_row": 4,
+        "last_useful_discovery": "2026-10-19",
+        "candidates": 92,
+        "noise_rate": 0.35,
+        "early_share": 0.08,
+        "last_error": "HTTPError: HTTP Error 403: Forbidden",
+        "repair": {
+          "cause": "the site refuses automated access (HTTP 403)",
+          "suggestion": "Do not try to get around it. Look for an official feed / API / RSS, or keep this source manual.",
+          "external": true
+        }
+      },
+      {
+        "id": "brightwater-demo-days",
+        "name": "Brightwater Accelerator Demo Days",
+        "url": "https://brightwater-accel.example/demo-days",
+        "state": "HEALTHY",
+        "last_ok": "2026-11-08",
+        "failures_in_row": 0,
+        "last_useful_discovery": "2026-11-08",
+        "candidates": 31,
+        "noise_rate": 0.1,
+        "early_share": 0.29,
+        "last_error": ""
+      },
+      {
+        "id": "orsolya-grants",
+        "name": "Orsolya Grants Register",
+        "url": "https://orsolya-grants.example/register",
+        "state": "HEALTHY",
+        "last_ok": "2026-11-08",
+        "failures_in_row": 0,
+        "last_useful_discovery": "2026-11-01",
+        "candidates": 8,
+        "noise_rate": null,
+        "early_share": null,
+        "last_error": ""
+      },
+      {
+        "id": "fenmoor-seed-notes",
+        "name": "Fenmoor Seed Notes",
+        "url": "https://fenmoor.example/notes",
+        "state": "DISABLED",
+        "last_ok": null,
+        "failures_in_row": 0,
+        "last_useful_discovery": "",
+        "candidates": 0,
+        "noise_rate": null,
+        "early_share": null,
+        "last_error": ""
+      }
+    ],
+    "counts": {
+      "FAILING": 2,
+      "HEALTHY": 2,
+      "DISABLED": 1
+    },
+    "stale_days": 30,
+    "rule": "Health is about retrieval, not volume — a quiet week is not a bad source."
+  },
+  "coverage": {
+    "available": true,
+    "counts": {
+      "HEALTHY": 3,
+      "PARTIAL": 2,
+      "GAP": 1
+    },
+    "priority": [
+      {
+        "city": "Valdmark",
+        "overall": "PARTIAL",
+        "families": {
+          "talent": "HEALTHY",
+          "capital": "PARTIAL",
+          "events": "GAP"
+        }
+      },
+      {
+        "city": "Port Elsin",
+        "overall": "HEALTHY",
+        "families": {
+          "talent": "HEALTHY",
+          "capital": "HEALTHY",
+          "events": null
+        }
+      }
+    ],
+    "family_labels": {
+      "talent": "Talent / universities",
+      "capital": "Capital / investors",
+      "events": "Events / meetups"
+    }
+  },
+  "triage_pending": 3,
+  "research": {
+    "open": 4,
+    "answered": 2
+  },
+  "watch": {
+    "companies": 3,
+    "open_triggers": 1,
+    "failing_checks": {
+      "deferred": "The watch sensors are not ported yet."
+    }
+  },
+  "jobs": [
+    {
+      "id": "watch_checks",
+      "label": "WATCH checks",
+      "interval_h": 24,
+      "last_ok": "2026-11-09T07:00:00",
+      "next_due": "2026-11-10T07:00:00",
+      "overdue": true,
+      "state": "ok",
+      "last_note": "3 pages checked",
+      "outcome": "completed",
+      "outcome_label": "completed",
+      "source": "background",
+      "seconds": 12,
+      "fails_in_row": 0,
+      "error": "",
+      "ported": false,
+      "note": "not ported yet"
+    },
+    {
+      "id": "deal_flow_scan",
+      "label": "Deal Flow scan",
+      "interval_h": 168,
+      "last_ok": "2026-11-08T19:09:14",
+      "next_due": "2026-11-15T19:09:14",
+      "overdue": false,
+      "state": "ok",
+      "last_note": "142 fetched, 9 new",
+      "outcome": "completed",
+      "outcome_label": "completed",
+      "source": "app",
+      "seconds": 214,
+      "fails_in_row": 0,
+      "error": "",
+      "ported": false,
+      "note": "not ported yet"
+    },
+    {
+      "id": "event_scan",
+      "label": "Event source scan",
+      "interval_h": 72,
+      "last_ok": "2026-11-03T06:00:00",
+      "next_due": "2026-11-06T06:00:00",
+      "overdue": true,
+      "state": "failed",
+      "last_note": "",
+      "outcome": "failed",
+      "outcome_label": "failed",
+      "source": "background",
+      "seconds": 31,
+      "fails_in_row": 2,
+      "error": "HTTP Error 503 from the event listing"
+    },
+    {
+      "id": "validation_snapshot",
+      "label": "Validation snapshot",
+      "interval_h": 24,
+      "last_ok": "2026-11-09T06:30:00",
+      "next_due": "2026-11-10T06:30:00",
+      "overdue": true,
+      "state": "ok",
+      "last_note": "snapshot 12 written",
+      "outcome": "completed",
+      "outcome_label": "completed",
+      "source": "background",
+      "seconds": 3,
+      "fails_in_row": 0,
+      "error": ""
+    },
+    {
+      "id": "news_refresh",
+      "label": "News refresh",
+      "interval_h": 24,
+      "last_ok": "2026-11-09T21:45:58",
+      "next_due": "2026-11-10T21:45:58",
+      "overdue": true,
+      "state": "ok",
+      "last_note": "PARTIAL: 6 of 7 feeds",
+      "outcome": "partial",
+      "outcome_label": "partially completed",
+      "source": "background",
+      "seconds": 72,
+      "fails_in_row": 0,
+      "error": ""
+    },
+    {
+      "id": "triage_retry",
+      "label": "Machine triage retry (after a provider outage)",
+      "interval_h": 1,
+      "last_ok": "2026-11-09T22:05:00",
+      "next_due": "2026-11-09T23:05:00",
+      "overdue": true,
+      "state": "ok",
+      "last_note": "3 still pending",
+      "outcome": "no_findings",
+      "outcome_label": "completed — nothing new",
+      "source": "background",
+      "seconds": 2,
+      "fails_in_row": 0,
+      "error": "",
+      "ported": false,
+      "note": "not ported yet"
+    },
+    {
+      "id": "news_weekly_review",
+      "label": "Weekly learning review",
+      "interval_h": 168,
+      "last_ok": "2026-11-02T08:00:00",
+      "next_due": "2026-11-09T08:00:00",
+      "overdue": true,
+      "state": "ok",
+      "last_note": "waiting: benchmark feed not published yet",
+      "outcome": "waiting_external",
+      "outcome_label": "waiting for an external dependency",
+      "source": "background",
+      "seconds": 5,
+      "fails_in_row": 0,
+      "error": ""
+    },
+    {
+      "id": "source_network",
+      "label": "New-source discovery & probation",
+      "interval_h": 24,
+      "last_ok": "2026-11-09T05:00:00",
+      "next_due": "2026-11-10T05:00:00",
+      "overdue": true,
+      "state": "ok",
+      "last_note": "2 candidates validated",
+      "outcome": "completed",
+      "outcome_label": "completed",
+      "source": "background",
+      "seconds": 48,
+      "fails_in_row": 0,
+      "error": "",
+      "ported": false,
+      "note": "not ported yet"
+    },
+    {
+      "id": "triage_compression",
+      "label": "Triage queue compression (human attention budget)",
+      "interval_h": 6,
+      "last_ok": "2026-11-09T10:00:00",
+      "next_due": "2026-11-09T16:00:00",
+      "overdue": true,
+      "state": "interrupted",
+      "last_note": "",
+      "outcome": null,
+      "outcome_label": "",
+      "source": "background",
+      "seconds": null,
+      "fails_in_row": 0,
+      "error": "",
+      "ported": false,
+      "note": "not ported yet"
+    },
+    {
+      "id": "case_refresh",
+      "label": "Case preparation freshness (stale / new Conviction cases)",
+      "interval_h": 24,
+      "last_ok": "2026-11-08T20:00:00",
+      "next_due": "2026-11-09T20:00:00",
+      "overdue": true,
+      "state": "ok",
+      "last_note": "budget cap reached: 2 cases kept",
+      "outcome": "budget_blocked",
+      "outcome_label": "blocked by a budget limit",
+      "source": "background",
+      "seconds": 9,
+      "fails_in_row": 0,
+      "error": "",
+      "ported": false,
+      "note": "not ported yet"
+    },
+    {
+      "id": "news_source_review",
+      "label": "News source comparison (monthly)",
+      "interval_h": 720,
+      "last_ok": "2026-10-20T08:00:00",
+      "next_due": "2026-11-19T08:00:00",
+      "overdue": false,
+      "state": "ok",
+      "last_note": "8 feeds compared",
+      "outcome": "completed",
+      "outcome_label": "completed",
+      "source": "background",
+      "seconds": 40,
+      "fails_in_row": 0,
+      "error": ""
+    }
+  ],
+  "overdue": 4,
+  "job_runner": {
+    "lock": {
+      "held": false,
+      "source": "",
+      "pid": null,
+      "since": "",
+      "alive": false,
+      "suspect": false
+    },
+    "runners": {
+      "background": {
+        "at": "2026-11-09T22:04:10",
+        "finished": "2026-11-09T22:05:00",
+        "outcome": "completed",
+        "ran": 2,
+        "failed": 0,
+        "seconds": 50
+      },
+      "app": {
+        "at": "2026-11-13T09:00:04",
+        "finished": "2026-11-13T09:00:40",
+        "outcome": "ok",
+        "ran": 1,
+        "failed": 0,
+        "seconds": 36.2
+      },
+      "cli": {
+        "at": "2026-11-06T10:00:00",
+        "finished": "2026-11-06T10:03:00",
+        "outcome": "partial",
+        "ran": 3,
+        "failed": 1,
+        "seconds": 180
+      }
+    },
+    "outcomes": {
+      "completed": "completed",
+      "no_findings": "completed — nothing new",
+      "partial": "partially completed",
+      "failed": "failed",
+      "skipped": "skipped — another run was in progress",
+      "budget_blocked": "blocked by a budget limit",
+      "waiting_external": "waiting for an external dependency"
+    }
+  },
+  "spend": {
+    "day": 0.0123,
+    "week": 0.214,
+    "month": 1.87,
+    "limits": {
+      "daily_usd": 1,
+      "weekly_usd": 5,
+      "monthly_usd": 25
+    },
+    "kill_switch": "PZ_AI_PAID"
+  },
+  "providers": [
+    {
+      "role": "CHEAP",
+      "provider": "inventa",
+      "model": "inventa/brisk-flash-1",
+      "enabled": true,
+      "key": true
+    },
+    {
+      "role": "STANDARD",
+      "provider": "inventa",
+      "model": "inventa/steady-pro-2",
+      "enabled": true,
+      "key": true
+    },
+    {
+      "role": "PREMIUM",
+      "provider": "inventa",
+      "model": "inventa/summit-max-3",
+      "enabled": false,
+      "key": null
+    }
+  ],
+  "last_scan": "2026-11-08T19:09:14",
+  "news": {
+    "last_run": {
+      "at": "2026-11-09T21:45:58",
+      "status": "partial",
+      "completed_at": "2026-11-09T21:47:10",
+      "sources_ok": 6,
+      "sources_failed": [],
+      "new": 4,
+      "merged": 2,
+      "duplicates_skipped": 3,
+      "usd": 0.0042
+    },
+    "events": 318,
+    "backcasts_pending": 2,
+    "usd_total": 0.3121,
+    "sources": {
+      "evaluated_at": "2026-11-01T08:00:00",
+      "benchmark_events": 41,
+      "feeds_healthy": 6,
+      "feeds_failing": [
+        "Kestrel Wire"
+      ],
+      "degraded": [],
+      "probation": [
+        "Larkfield Daily"
+      ],
+      "candidates": [],
+      "sources": 8
+    }
+  },
+  "build": {
+    "deferred": "The build and stale-interface check is not ported yet."
+  },
+  "selfcheck": {
+    "deferred": "The startup self-check is not ported yet."
+  },
+  "source_discovery": {
+    "deferred": "The source network arrives with the hardening port."
+  },
+  "validation": {
+    "snapshots": 12,
+    "last_snapshot": "2026-11-09",
+    "data_issues": 2
+  }
+}

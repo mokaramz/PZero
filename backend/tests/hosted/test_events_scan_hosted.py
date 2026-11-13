@@ -220,14 +220,16 @@ def test_a_source_the_deadline_cuts_off_mid_read_fails_and_the_scan_lock_is_rele
     try:
         transport = LocalTransport(int(srv.server_address[1]))
         with client_at(settings, schema, NOW) as client:
-            state(client).events_scan_deadline_s = 8.0  # fetching stops after 6 s (a quarter kept for writing)
+            # fetching stops after 12 s (a quarter kept for writing): the write needs at least the 2 s minimum connect
+            # (Codex H-284) plus the hosted pooler's round trips, which an 8 s budget's 2 s window could not hold
+            state(client).events_scan_deadline_s = 16.0
             state(client).events_transport = transport
             state(client).events_resolver = lambda _host: ["93.184.215.14"]
             t0 = time.monotonic()
             r = client.post("/api/events/find", json={})
             elapsed = time.monotonic() - t0
             rows = {x["source"]: x for x in r.json()["report"]}
-            assert r.status_code == 200 and elapsed < 10.0  # the trickle alone would have taken 100 s
+            assert r.status_code == 200 and elapsed < 18.0  # the trickle alone would have taken 100 s
             assert rows["Slow"]["status"] == "failed" and "deadline reached" in rows["Slow"]["note"]
             assert rows["Later"] == {
                 "source": "Later",

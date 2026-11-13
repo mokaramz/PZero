@@ -2,9 +2,9 @@ import { Suspense, useCallback, useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 
 import { Spinner } from "@/components/ui";
+import { CatchUpBanner } from "@/features/jobs/CatchUpBanner";
 import { cx } from "@/lib/format";
 import { ActivityDock } from "../ActivityDock";
-import { CatchUpBanner } from "../CatchUpBanner";
 import { CommandPalette } from "../CommandPalette";
 import { ErrorBoundary } from "../ErrorBoundary";
 import { Rail } from "./Rail";

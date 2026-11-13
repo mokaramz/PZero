@@ -3,7 +3,9 @@
  *
  *  Ported verbatim from the old `features/health/dashboard.ts` (review 032a), except `lanes`: the retired Scout 00 and
  *  Native Scout lanes are removed with their payload keys (decision c), so the pipeline is the Deal Flow lane; and
- *  the machine-triage node no longer says "Retrying" while no runner retries it (revision 2). */
+ *  the machine-triage node no longer says "Retrying" while no runner retries it (revision 2); a step whose job the
+ *  runner cannot run yet (`ported: false`, 032c) says "Not ported yet" in place of "Overdue" or its next run. */
+import { isPortedJob, JOB_NOT_PORTED } from "./jobs";
 import type { Health, Issue, IssueGroup, Overview, Run } from "./types";
 
 export type Tone = "ok" | "lim" | "warn" | "bad" | "unk";
@@ -131,7 +133,8 @@ export function lanes(h: Health, o: Overview): Lane[] {
     const j = job[id];
     if (!j) return ["unk", "No data"];
     if (j.state === "failed" || j.state === "interrupted" || (j.fails_in_row ?? 0) >= 2) return ["bad", "Failing"];
-    if (j.overdue) return ["lim", "Overdue"]; // the imported job state: nothing runs it until the runner is ported (032c)
+    if (!isPortedJob(j)) return ["unk", "Not ported yet"]; // 032c: the runner never runs it; its imported history stays
+    if (j.overdue) return ["lim", "Overdue"];
     if (j.outcome === "budget_blocked") return ["lim", "Budget-blocked"];
     if (j.outcome === "partial") return ["lim", "Partial"];
     if (!j.last_ok) return ["unk", "Not run yet"];
@@ -139,7 +142,7 @@ export function lanes(h: Health, o: Overview): Lane[] {
   };
   const jd = (id: string): Array<[string, string]> => {
     const j = job[id];
-    return j ? [["Job", j.label], ["Last run", fmtT(j.last_ok)], ["Result", j.last_note || "—"], ["Next due", fmtT(j.next_due)]] : [["Job", "not configured"]];
+    return j ? [["Job", j.label], ["Last run", fmtT(j.last_ok)], ["Result", j.last_note || "—"], ["Next due", isPortedJob(j) ? fmtT(j.next_due) : JOB_NOT_PORTED]] : [["Job", "not configured"]];
   };
   const p = o.pipeline;
   const rc = p.routing.counts ?? {};

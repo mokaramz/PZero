@@ -21,23 +21,27 @@ import {
   type Mark,
   type Range,
 } from "../model/dashboard";
-import { JOBS_SNAPSHOT, NOT_PORTED, ported, reasonOf } from "../model/deferred";
+import { JOBS_SNAPSHOT, ported, reasonOf } from "../model/deferred";
 import { detailTitle, type Detail } from "../model/detail";
 import { fmt } from "../model/format";
+import { JOBS_UNPORTED, unportedJobs } from "../model/jobs";
 import type { Health, Overview } from "../model/types";
-import { DeferredAction, Kpi, Meter, Reason, St, StackRow } from "./bits";
+import { Kpi, Meter, Reason, St, StackRow } from "./bits";
 import { JobMatrix, Spark, SpendChart } from "./Charts";
 import { DetailBody } from "./DetailBody";
 import { Diagnostics } from "./Diagnostics";
+import { RunOverdue } from "./RunOverdue";
+import { useRunOverdueNow } from "./useRunOverdueNow";
 import styles from "../Health.module.css";
 
 /**
  * Is Project Zero healthy? One answer first, then the systems, the history, the money — and every detail one click
  * away (ported from the old `HealthPage.tsx`, review 032a). Removed with the retired Scout parts (decision c): the
  * Scouting KPI, the Scout 00 and Native Scout lanes, the Grok search bridge chart, pool and KPI line, and "Prepare
- * repair research". The deferred subsystems show their reason where their data was (decision d); "Run overdue now"
- * keeps both of its places, disabled with its visible reason (decision h); the job panels say the jobs are the
- * imported snapshot (decision e). Refresh is the only control that acts: it re-reads the two GETs.
+ * repair research". The deferred subsystems show their reason where their data was (decision d). The runner (032c),
+ * read from the payload (../model/jobs): while the server sends the deferred lock, "Run overdue now" keeps both of its
+ * places disabled with its visible reason (decision h) and the job panels say the jobs are the imported snapshot
+ * (decision e); with the real lock, "Run overdue now" runs the ported overdue jobs, and the unported ones are labelled.
  */
 export function Dashboard({ d, o, oErr, oLoading, refresh, refreshing }: { d: Health; o?: Overview; oErr: unknown; oLoading: boolean; refresh: () => void; refreshing: boolean }) {
   const now = useMemo(() => (d.at ? new Date(d.at) : new Date()), [d.at]);
@@ -67,6 +71,8 @@ export function Dashboard({ d, o, oErr, oLoading, refresh, refreshing }: { d: He
   const verified = backups?.last_verified;
   const att2 = att.filter((s) => !q || `${s.name} ${s.last_error} ${s.repair?.cause ?? ""}`.toLowerCase().includes(q.toLowerCase()));
   const overdueAction = d.overdue > 0;
+  const runNow = useRunOverdueNow(d);
+  const unported = unportedJobs(d.jobs);
   const go = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
   const integrityMark: Mark = !integrity ? ["unk", "Not ported yet"] : integrity.status === "ok" ? ["ok", "No issues"] : integrity.status === "unknown" ? ["unk", "Not checked"] : ["warn", `${integrity.issues} issue(s)`];
 
@@ -198,19 +204,22 @@ export function Dashboard({ d, o, oErr, oLoading, refresh, refreshing }: { d: He
               </span>
             ))}
           </div>
-          <p className={styles.note} data-testid="health-jobs-snapshot">
-            {JOBS_SNAPSHOT}
-          </p>
+          {!runNow.live ? (
+            <p className={styles.note} data-testid="health-jobs-snapshot">
+              {JOBS_SNAPSHOT}
+            </p>
+          ) : unported.length ? (
+            <p className={styles.note} data-testid="health-jobs-unported">
+              {JOBS_UNPORTED}
+            </p>
+          ) : null}
           <p className={styles.note}>
             {o?.jobs.outcomes_recorded_since ? `Runs before ${fmt(o.jobs.outcomes_recorded_since)} recorded only success or failure; "nothing new" and "partial" are distinguished from then on. ` : ""}A
             completed run is not necessarily new intelligence.
           </p>
           {overdueAction && (
             <p className={styles.note}>
-              <b>{d.overdue} job(s) overdue.</b>{" "}
-              <DeferredAction reason={NOT_PORTED.runner} testId="health-run-overdue" noteTestId="health-run-overdue-note">
-                Run overdue now
-              </DeferredAction>
+              <b>{d.overdue} job(s) overdue.</b> {runNow.visible && <RunOverdue r={runNow} />}
             </p>
           )}
         </section>
@@ -442,7 +451,7 @@ export function Dashboard({ d, o, oErr, oLoading, refresh, refreshing }: { d: He
         <div className={styles.issues}>
           {GROUPS.map(([g, t, desc]) => {
             const list = issues.filter((i) => i.group === g);
-            const runNow = g === "auto" && overdueAction;
+            const runHere = g === "auto" && runNow.visible;
             return (
               <div key={g} className={cx(styles.ig, styles[`ig_${g}`])} data-testid={`issues-${g}`}>
                 <h3>
@@ -456,11 +465,9 @@ export function Dashboard({ d, o, oErr, oLoading, refresh, refreshing }: { d: He
                     <span className={styles.itDo}>{asRole(i.do)}</span>
                   </button>
                 ))}
-                {runNow && (
+                {runHere && (
                   <div className={styles.runNow}>
-                    <DeferredAction reason={NOT_PORTED.runner} testId="health-run-overdue" noteTestId="health-run-overdue-note">
-                      Run overdue now
-                    </DeferredAction>
+                    <RunOverdue r={runNow} />
                   </div>
                 )}
                 {!list.length && (g === "need" ? <div className={styles.clear}>✓ Nothing needs you right now.</div> : <div className={styles.ms}>None.</div>)}

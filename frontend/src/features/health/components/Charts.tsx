@@ -1,7 +1,8 @@
 /** The System health charts, ported verbatim from the old `Charts.tsx` (review 032a) — without the Grok search bridge
- *  chart, retired with the `search_bridge` key (decision c). */
+ *  chart, retired with the `search_bridge` key (decision c); an unported job's row says so (032c). */
 import { cx } from "@/lib/format";
 import { RANGES, STATE_LABEL, jobMatrix, shortModel, spendSeries, usd, worst, type Range } from "../model/dashboard";
+import { isPortedJob, JOB_NOT_PORTED } from "../model/jobs";
 import type { Job, Run } from "../model/types";
 import styles from "../Health.module.css";
 
@@ -40,7 +41,8 @@ export function JobMatrix({ jobs, runs, range, now, onCell }: { jobs: Job[]; run
     const d = new Date(t);
     return range === "24h" ? d.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" }) : d.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
   };
-  const next = (j: Job) => (j.overdue ? "overdue" : j.next_due ? `next ${new Date(j.next_due).toLocaleString("en-GB", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}` : "");
+  // a job the runner cannot run yet (032c) says so in place of "overdue" or its next run
+  const next = (j: Job) => (!isPortedJob(j) ? JOB_NOT_PORTED : j.overdue ? "overdue" : j.next_due ? `next ${new Date(j.next_due).toLocaleString("en-GB", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}` : "");
   return (
     <div className={styles.mx} style={{ ["--c" as string]: R.n }} data-testid="job-matrix">
       {rows.map((row) => {
@@ -69,7 +71,7 @@ export function JobMatrix({ jobs, runs, range, now, onCell }: { jobs: Job[]; run
                 )}
               </div>
             </div>
-            <span className={cx(styles.nx, j.overdue && styles.nxOver)}>{next(j)}</span>
+            <span className={cx(styles.nx, j.overdue && isPortedJob(j) && styles.nxOver)}>{next(j)}</span>
           </div>
         );
       })}

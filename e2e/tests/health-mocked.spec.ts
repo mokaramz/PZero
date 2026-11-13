@@ -11,6 +11,11 @@
  * (the two GETs again) and no horizontal overflow at 1366, 1920, 390 and 150 %. Old checks of a model key's value are
  * not ported.
  *
+ * Review 032c: the page reads the runner from the payload. These fixtures keep the DEFERRED runner lock (the 032a
+ * server), so every check above stands for that shape; the last block runs the same page on the LIVE runner payload
+ * (fixtures/jobs/health_runner.json): "Run overdue now" enabled, the snapshot line gone, the real lock. Its clicks, the
+ * banner and the unported jobs are jobs-mocked.spec.ts.
+ *
  *   cd e2e && PZ_BASE_URL=http://localhost:5173 npx playwright test health-mocked
  */
 import { expect, test, type Locator, type Page } from "@playwright/test";
@@ -158,7 +163,7 @@ test.describe("System health — mocked API", () => {
     w.expectClean();
   });
 
-  test('"Run overdue now" is disabled in both places with its visible reason; a click, Enter and Space do nothing', async ({ page }) => {
+  test('the deferred runner: "Run overdue now" is disabled in both places with its visible reason; a click, Enter and Space do nothing', async ({ page }) => {
     const w = watch(page);
     const api = await mockApi(page);
     await open(page);
@@ -315,5 +320,44 @@ test.describe("System health — mocked API", () => {
     await expectNoHorizontalOverflow(page);
     await expand(page, "health-jobs");
     await expectNoHorizontalOverflow(page);
+  });
+});
+
+test.describe("System health — mocked API, the live runner (032c)", () => {
+  const runner = () => JSON.parse(readFileSync(resolve(FIX, "..", "jobs", "health_runner.json"), "utf8"));
+
+  test('"Run overdue now" is enabled in both places; the snapshot line is gone; the runner line is the real lock', async ({ page }) => {
+    const w = watch(page);
+    const api = await mockApi(page, { health: runner() });
+    await open(page);
+    const buttons = page.getByRole("button", { name: "Run overdue now", exact: true });
+    await expect(buttons).toHaveCount(2);
+    for (const b of await buttons.all()) {
+      await expect(b).toBeEnabled();
+      await expect(b).not.toHaveAttribute("aria-disabled", "true");
+      await expect(b).not.toHaveAttribute("data-deferred", "");
+    }
+    await expect(page.getByTestId("health-run-overdue-note")).toHaveCount(0);
+    await expect(page.getByTestId("health-jobs-snapshot")).toHaveCount(0);
+    expect(await text(page)).not.toContain(SNAPSHOT);
+    expect(await text(page)).not.toContain(RUNNER);
+    await expand(page, "health-jobs");
+    await expect(page.getByTestId("health-job-runner")).toContainText("Job runner: idle");
+    await expect(page.getByTestId("health-job-runner").locator("[data-reason]")).toHaveCount(0);
+    await expect(page.getByTestId("health-job-not-ported")).toHaveCount(6);
+    expect(api.writes()).toEqual([]);
+    w.expectClean();
+  });
+
+  test("the live runner: no horizontal overflow at 390 and 150 %", async ({ page }) => {
+    for (const set of [() => page.setViewportSize({ width: 390, height: 844 }), () => zoom150(page)]) {
+      await mockApi(page, { health: runner() });
+      await set();
+      await open(page);
+      await expectNoHorizontalOverflow(page);
+      await expand(page, "health-jobs");
+      await expectNoHorizontalOverflow(page);
+      await page.unrouteAll({ behavior: "ignoreErrors" });
+    }
   });
 });

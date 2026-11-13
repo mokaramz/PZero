@@ -1,0 +1,202 @@
+{
+  "running": false,
+  "queue": [
+    "Event source scan",
+    "Validation snapshot",
+    "News refresh",
+    "Weekly learning review"
+  ],
+  "current": null,
+  "done": [
+    {
+      "job": "event_scan",
+      "label": "Event source scan",
+      "ok": true,
+      "outcome": "completed",
+      "note": "14 events checked",
+      "seconds": 8.1,
+      "at": "2026-11-13T09:30:12",
+      "source": "app"
+    },
+    {
+      "job": "validation_snapshot",
+      "label": "Validation snapshot",
+      "ok": true,
+      "outcome": "completed",
+      "note": "snapshot 13 written",
+      "seconds": 1.2,
+      "at": "2026-11-13T09:30:14",
+      "source": "app"
+    },
+    {
+      "job": "news_refresh",
+      "label": "News refresh",
+      "ok": true,
+      "outcome": "partial",
+      "note": "PARTIAL: 6 of 7 feeds",
+      "seconds": 40.0,
+      "at": "2026-11-13T09:30:54",
+      "source": "app"
+    },
+    {
+      "job": "news_weekly_review",
+      "label": "Weekly learning review",
+      "ok": true,
+      "outcome": "no_findings",
+      "note": "review recorded for 2026-W46",
+      "seconds": 2.0,
+      "at": "2026-11-13T09:30:56",
+      "source": "app"
+    }
+  ],
+  "started": "2026-11-13T09:30:04",
+  "finished": "2026-11-13T09:30:56",
+  "enabled": true,
+  "plan": [
+    {
+      "id": "watch_checks",
+      "label": "WATCH checks",
+      "interval_h": 24,
+      "last_ok": "2026-11-09T07:00:00",
+      "next_due": "2026-11-10T07:00:00",
+      "overdue": true,
+      "state": "ok",
+      "ported": false,
+      "note": "not ported yet"
+    },
+    {
+      "id": "deal_flow_scan",
+      "label": "Deal Flow scan",
+      "interval_h": 168,
+      "last_ok": "2026-11-08T19:09:14",
+      "next_due": "2026-11-15T19:09:14",
+      "overdue": false,
+      "state": "ok",
+      "ported": false,
+      "note": "not ported yet"
+    },
+    {
+      "id": "event_scan",
+      "label": "Event source scan",
+      "interval_h": 72,
+      "last_ok": "2026-11-03T06:00:00",
+      "next_due": "2026-11-06T06:00:00",
+      "overdue": true,
+      "state": "failed"
+    },
+    {
+      "id": "validation_snapshot",
+      "label": "Validation snapshot",
+      "interval_h": 24,
+      "last_ok": "2026-11-09T06:30:00",
+      "next_due": "2026-11-10T06:30:00",
+      "overdue": true,
+      "state": "ok"
+    },
+    {
+      "id": "news_refresh",
+      "label": "News refresh",
+      "interval_h": 24,
+      "last_ok": "2026-11-09T21:45:58",
+      "next_due": "2026-11-10T21:45:58",
+      "overdue": true,
+      "state": "ok"
+    },
+    {
+      "id": "triage_retry",
+      "label": "Machine triage retry (after a provider outage)",
+      "interval_h": 1,
+      "last_ok": "2026-11-09T22:05:00",
+      "next_due": "2026-11-09T23:05:00",
+      "overdue": true,
+      "state": "ok",
+      "ported": false,
+      "note": "not ported yet"
+    },
+    {
+      "id": "news_weekly_review",
+      "label": "Weekly learning review",
+      "interval_h": 168,
+      "last_ok": "2026-11-02T08:00:00",
+      "next_due": "2026-11-09T08:00:00",
+      "overdue": true,
+      "state": "ok"
+    },
+    {
+      "id": "source_network",
+      "label": "New-source discovery & probation",
+      "interval_h": 24,
+      "last_ok": "2026-11-09T05:00:00",
+      "next_due": "2026-11-10T05:00:00",
+      "overdue": true,
+      "state": "ok",
+      "ported": false,
+      "note": "not ported yet"
+    },
+    {
+      "id": "triage_compression",
+      "label": "Triage queue compression (human attention budget)",
+      "interval_h": 6,
+      "last_ok": "2026-11-09T10:00:00",
+      "next_due": "2026-11-09T16:00:00",
+      "overdue": true,
+      "state": "interrupted",
+      "ported": false,
+      "note": "not ported yet"
+    },
+    {
+      "id": "case_refresh",
+      "label": "Case preparation freshness (stale / new Conviction cases)",
+      "interval_h": 24,
+      "last_ok": "2026-11-08T20:00:00",
+      "next_due": "2026-11-09T20:00:00",
+      "overdue": true,
+      "state": "ok",
+      "ported": false,
+      "note": "not ported yet"
+    },
+    {
+      "id": "news_source_review",
+      "label": "News source comparison (monthly)",
+      "interval_h": 720,
+      "last_ok": "2026-10-20T08:00:00",
+      "next_due": "2026-11-19T08:00:00",
+      "overdue": false,
+      "state": "ok"
+    }
+  ],
+  "lock": {
+    "held": false,
+    "source": "",
+    "pid": null,
+    "since": "",
+    "alive": false,
+    "suspect": false
+  },
+  "runners": {
+    "background": {
+      "at": "2026-11-09T22:04:10",
+      "finished": "2026-11-09T22:05:00",
+      "outcome": "completed",
+      "ran": 2,
+      "failed": 0,
+      "seconds": 50
+    },
+    "app": {
+      "at": "2026-11-13T09:00:04",
+      "finished": "2026-11-13T09:00:40",
+      "outcome": "ok",
+      "ran": 1,
+      "failed": 0,
+      "seconds": 36.2
+    },
+    "cli": {
+      "at": "2026-11-06T10:00:00",
+      "finished": "2026-11-06T10:03:00",
+      "outcome": "partial",
+      "ran": 3,
+      "failed": 1,
+      "seconds": 180
+    }
+  }
+}

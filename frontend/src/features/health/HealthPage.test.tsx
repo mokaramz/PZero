@@ -250,7 +250,7 @@ describe("System health — KPIs and the pipeline", () => {
   });
 });
 
-describe("System health — background jobs (the imported snapshot)", () => {
+describe("System health — background jobs (the deferred runner: the imported snapshot)", () => {
   it("the matrix: one row per job, the range switches, the snapshot line next to the outcomes", async () => {
     await settled();
     const jobs = screen.getByTestId("health-job-history");
@@ -286,7 +286,7 @@ describe("System health — background jobs (the imported snapshot)", () => {
     expect(screen.getByTestId("health-detail")).not.toHaveTextContent("Downstream effect");
   });
 
-  it('"Run overdue now" keeps both places, each disabled with its visible reason; nothing happens', async () => {
+  it('the deferred runner lock: "Run overdue now" keeps both places, each disabled with its visible reason; nothing happens (the live runner: ./HealthRunner.test)', async () => {
     const { server } = await settled();
     const [inPanel, inGroup] = runOverdue();
     expect(runOverdue()).toHaveLength(2);
@@ -534,6 +534,10 @@ describe("System health — diagnostics", () => {
     expect(within(b).getByTestId("health-validation-data")).toHaveTextContent("3 company(ies), 2 failing page check(s).");
     const jobs = await expand("health-jobs");
     expect(within(jobs).getByTestId("health-job-runner")).toHaveTextContent("busy — background (pid 4242) since 2026-11-13T07:00:00 · process gone, recovered on the next run");
+    // a real lock is the live runner (032c): the snapshot line goes, "Run overdue now" is enabled
+    expect(within(jobs).getByTestId("health-jobs-note").textContent).not.toBe(JOBS_SNAPSHOT);
+    expect(screen.queryByTestId("health-jobs-snapshot")).toBeNull();
+    for (const b of runOverdue()) expect(b).not.toHaveAttribute("aria-disabled");
   });
 
   it("data integrity & backups: the three 032b panels show their reason; Back up now and Test latest backup are deferred", async () => {

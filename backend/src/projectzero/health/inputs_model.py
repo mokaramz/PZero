@@ -157,6 +157,11 @@ class HealthInputs:
     # reader: ``[ranking_input(r)[0]["decision"] for r in dealflow.inbox_view.candidate_rows(conn, schema)]`` (the
     # same population and decision the Deal Flow inbox view builds). ``None``: the old count over ``candidates``
     inbox_decisions: list[str] | None = None
+    # ── the runner's lock (032c) ──────────────────────────────────────────────────────────────────────────────
+    # old ``scheduler.lock_status()``: ``{"held": false}`` without a ``schedule/run.lock`` file, else the holder. NEW
+    # reader: ``jobs.store.lock_status(conn, schema, now)`` (``pg_locks`` plus the lease's holder). ``None``: unknown
+    # (shown as the deferred reason). Shown only with a runner (``system_view``)
+    lock: dict[str, Any] | None = None
 
 
 MISSING = object()
@@ -233,4 +238,5 @@ def inputs_from_docs(
         coverage=cov if sources_ok else None,
         queue_routing=_tolerant(docs, "queue_routing.json", {}),
         signals=real.get("signals") if isinstance(real, dict) else None,  # the old ``_load``: not an object -> {}
+        lock={"held": False},  # the old ``lock_status()`` with no ``schedule/run.lock`` (the documents hold none)
     )
