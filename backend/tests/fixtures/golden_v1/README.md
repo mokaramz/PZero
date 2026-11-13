@@ -276,3 +276,20 @@ import's merge (`tools`), an absorbed record's or a Scout-only record's old id r
 (d) `SCOUT00_TRANSPORT.md` dropped. The pure port matches value by value and as serialized text, and every tool
 through `DbReader` over each imported world matches too (`python -m projectzero.ops.parity_associate goldens` /
 `check` / `tools`).
+
+`oracle_jobs.json` (review 032c): the old background-jobs runner (`services/scheduler.py` `run_due`, `plan`,
+`classify`, `recover_on_start`, `dry_run`, `failing_jobs`, and the old CLI `--background [--dry-run]`) over FAKE jobs
+of invented names (the old tests' pattern: each returns its notes in turn, or raises) in eight cases, each in its own
+scratch data folder, with a frozen clock (2026-11-13 09:00, advanced where a case says so) and a frozen duration clock
+(every duration 0.0): the six outcomes and a job failing twice in a row then recovering; a missed schedule run once;
+a busy lock giving the `skipped` runner record; interrupted records recovered (a dead pid, a pid-less one); `only=`;
+the dry run writing nothing; the CLI with an interval override and a failing job (exit codes 0 and 2); the scheduler
+switched off in `config.json`. Recorded after every step: its answer, `jobs.json`, the `runs.jsonl` lines and
+`runner.json` (and the CLI's stdout and `background.log` lines, with the scratch path replaced); plus `classify` over
+16 notes. The backup is stubbed "not made" (e); writes outside `schedule/` are refused (none happened). Declared
+differences, all normalised in `parity_jobs.normalise_step`: (a) the advisory lock with its fencing generation (the
+records' `generation` key dropped, every `pid` the running process's); (e) no backup, and the CLI prints its
+`background.log` line; the dry run's first line names the folder / the schema. `check` compares `classify` and the
+pure initial plans; `hosted` runs the same steps through the new runner in scratch schemas, imported by the production
+importer, and compares every step's answer, the job records, the history lines and the runner records, also as
+serialized text (`python -m projectzero.ops.parity_jobs goldens` / `check` / `hosted`).

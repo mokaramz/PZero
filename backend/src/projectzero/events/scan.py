@@ -35,7 +35,7 @@ from psycopg import sql
 from psycopg.rows import dict_row
 from psycopg.types.json import Jsonb
 
-from projectzero.core import net
+from projectzero.core import net, occurrence
 from projectzero.core.db import connect, schema_ident
 from projectzero.dealflow.intake.postgres import ensure_intake_open
 from projectzero.events import engine, registry
@@ -461,17 +461,22 @@ def scan(
     clock: Callable[[], float] = time.monotonic,
     transport: net.Transport | None = None,
     resolver: net.Resolver | None = None,
+    still_due: occurrence.StillDue | None = None,
 ) -> dict[str, Any]:
     """The whole scan (see the module docstring). Returns the new health document. Every blocking wait is bounded by
     ONE wall-clock budget: fetching stops at ``budget()[0]`` (DNS, connects and reads included, through
     ``core.net``), and the write phase's lock and statement waits are limited to the time left before
-    ``budget()[1]``; a write cut off by the deadline saves nothing (503). The scan lock is released on every path."""
+    ``budget()[1]``; a write cut off by the deadline saves nothing (503). The scan lock is released on every path.
+    ``still_due``: the background-jobs runner's occurrence check (review 032c), run on the lock's connection right
+    after the scan lock is taken and before anything is read or fetched; ``False`` raises ``AlreadyRan`` and the scan
+    does nothing (``None``: no check)."""
     key = f"{schema}.events.scan"
     lock = connect(db_url, autocommit=True)  # a dedicated SESSION for the scan lock
     try:
         if not lock.execute("select pg_try_advisory_lock(hashtext(%s))", (key,)).fetchone()[0]:  # type: ignore[index]
             raise EventsError(409, ALREADY_RUNNING)
         try:
+            occurrence.check(still_due, lock)
             t0 = clock()
             stop_fetching, done_by = budget(t0, deadline_s)
             with bounded_transaction(db_url, done_by, clock) as conn:  # phase 1, closed before any fetch

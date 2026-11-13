@@ -6,6 +6,9 @@
  * phone layout); its backup / restore-test clicks and its check of a model key's value are not (032b; dropped).
  * Revision 2: the headline and every job item's guidance say the runner is not ported, no text promises a retry, a
  * catch-up or an immediate run, and "Run overdue now" is disabled with its visible reason.
+ * Review 032c: each check follows the payload's runner. With the DEFERRED lock (the 032a server) the checks above
+ * stand; with the REAL lock, "Run overdue now" is enabled (never clicked here), the snapshot line is gone, the runner
+ * line shows the lock, every job with `ported: false` says "not ported yet", and no text near those jobs promises a run.
  * This spec only READS: every request it sees must be a GET. health-mocked.spec.ts covers every branch on invented
  * payloads.
  */
@@ -18,7 +21,7 @@ type Health = {
   status?: { key: string; label: string; sentence: string };
   issues: Issue[];
   overdue: number;
-  jobs: Array<{ id: string; label: string }>;
+  jobs: Array<{ id: string; label: string; overdue?: boolean; ported?: boolean; availability?: string }>;
   build?: unknown;
   selfcheck?: unknown;
   watch: { failing_checks: unknown };
@@ -51,6 +54,12 @@ function watch(page: Page) {
 const read = async <T>(page: Page, path: string): Promise<T> => (await (await page.request.get(`/api/${path}`)).json()) as T;
 const deferredReason = (x: unknown): string | null =>
   x && typeof x === "object" && !Array.isArray(x) && Object.keys(x).length === 1 && typeof (x as { deferred?: unknown }).deferred === "string" ? (x as { deferred: string }).deferred : null;
+
+/** The 032c runner is live when its lock is a real object (the page decides the same way). */
+const runnerLive = (h: Health) => !!h.job_runner && h.job_runner.lock != null && !deferredReason(h.job_runner.lock);
+const isPorted = (j: Health["jobs"][number]) => j.ported !== false && j.availability !== "not ported yet";
+const unported = (h: Health) => h.jobs.filter((j) => !isPorted(j));
+const portedOverdue = (h: Health) => h.jobs.filter((j) => j.overdue && isPorted(j)).map((j) => j.id);
 
 async function open(page: Page) {
   const ov = page.waitForResponse((r) => new URL(r.url()).pathname === "/api/system_health_overview" && r.request().method() === "GET", { timeout: 90_000 });
@@ -124,8 +133,16 @@ test.describe("System health — preview database", () => {
     expect((o.pipeline as Record<string, unknown>) ?? {}).not.toHaveProperty("intake");
     const srcs = (h.sources as { sources: Array<{ repair?: Record<string, unknown> }> }).sources;
     for (const s of srcs) expect(s.repair ?? {}).not.toHaveProperty("bridge_job");
-    for (const [k, v] of Object.entries({ selfcheck: h.selfcheck, build: h.build, source_discovery: h.source_discovery, "watch.failing_checks": h.watch.failing_checks, "job_runner.lock": h.job_runner?.lock }))
+    const live = runnerLive(h);
+    for (const [k, v] of Object.entries({
+      selfcheck: h.selfcheck,
+      build: h.build,
+      source_discovery: h.source_discovery,
+      "watch.failing_checks": h.watch.failing_checks,
+      ...(live ? {} : { "job_runner.lock": h.job_runner?.lock }),
+    }))
       expect(deferredReason(v), k).toBeTruthy();
+    if (live) expect(typeof (h.job_runner!.lock as { held?: unknown }).held, "job_runner.lock.held").toBe("boolean");
     for (const k of ["backups", "integrity", "releases"] as const) expect(deferredReason(o[k]), k).toBeTruthy();
     await open(page);
     await expect(page.getByTestId("health-backups-reason")).toHaveText(deferredReason(o.backups)!);
@@ -137,13 +154,17 @@ test.describe("System health — preview database", () => {
     await expect(page.getByTestId("health-selfcheck")).toHaveText(`Startup self-check: ${deferredReason(h.selfcheck)}`);
     await expect(page.getByTestId("health-validation-data")).toContainText(deferredReason(h.watch.failing_checks)!);
     await expand(page, "health-jobs");
-    await expect(page.getByTestId("health-job-runner")).toContainText(deferredReason(h.job_runner?.lock)!);
+    if (live) {
+      await expect(page.getByTestId("health-job-runner")).toContainText(/^Job runner: (idle|busy — )/);
+      await expect(page.getByTestId("health-job-runner").locator("[data-reason]")).toHaveCount(0);
+    } else await expect(page.getByTestId("health-job-runner")).toContainText(deferredReason(h.job_runner?.lock)!);
     w.expectClean();
   });
 
   test("no runner: the headline and every job item's guidance say so; nothing promises a run", async ({ page }) => {
     const w = watch(page);
     const h = await read<Health>(page, "system_health");
+    test.skip(runnerLive(h), "the server runs the 032c runner: see the next test");
     await open(page);
     if (h.status && ["unknown", "action", "degraded"].includes(h.status.key)) await expect(page.getByTestId("health-action")).toContainText(RUNNER_NOT_PORTED);
     const jobItems = page.getByTestId("health-issue").filter({ hasText: /background job|external dependency/ });
@@ -159,13 +180,44 @@ test.describe("System health — preview database", () => {
     w.expectClean();
   });
 
-  test('"Run overdue now" and the 032b controls are disabled with their visible reason; nothing is requested', async ({ page }) => {
+  test("the live runner: the unported jobs are labelled and nothing near them promises a run; the snapshot line is gone", async ({ page }) => {
+    const w = watch(page);
+    const h = await read<Health>(page, "system_health");
+    test.skip(!runnerLive(h), "the server still sends the deferred runner: see the previous test");
+    await open(page);
+    await expect(page.getByTestId("health-jobs-snapshot")).toHaveCount(0);
+    expect(await page.locator("body").innerText()).not.toContain(SNAPSHOT);
+    await expand(page, "health-jobs");
+    await expect(page.getByTestId("health-job-not-ported")).toHaveCount(unported(h).length);
+    for (const r of await page.locator('[data-testid="health-job"][data-ported="false"]').all()) {
+      const t = await r.innerText();
+      for (const p of FORBIDDEN) expect(t, p).not.toContain(p);
+    }
+    for (const j of unported(h)) {
+      for (const item of await page.getByTestId("health-issue").filter({ hasText: j.label.split(" (")[0] }).all()) {
+        const t = await item.innerText();
+        if (h.jobs.some((x) => isPorted(x) && t.includes(x.label.split(" (")[0]))) continue; // a line that also names a ported job
+        for (const p of FORBIDDEN) expect(t, `${j.id}: ${p}`).not.toContain(p);
+      }
+    }
+    w.expectClean();
+  });
+
+  test('"Run overdue now" follows the runner (deferred: disabled with its reason; live: enabled, not clicked); the 032b controls are disabled', async ({ page }) => {
     const w = watch(page);
     const h = await read<Health>(page, "system_health");
     await open(page);
     const run = page.getByRole("button", { name: "Run overdue now", exact: true });
-    await expect(run).toHaveCount(h.overdue > 0 ? 2 : 0);
-    for (const b of await run.all()) await expectDeferred(page, b, RUNNER);
+    if (runnerLive(h)) {
+      await expect(run).toHaveCount(h.overdue > 0 && portedOverdue(h).length > 0 ? 2 : 0);
+      for (const b of await run.all()) {
+        await expect(b).toBeEnabled();
+        await expect(b).not.toHaveAttribute("aria-disabled", "true");
+      }
+    } else {
+      await expect(run).toHaveCount(h.overdue > 0 ? 2 : 0);
+      for (const b of await run.all()) await expectDeferred(page, b, RUNNER);
+    }
     await expand(page, "health-hardening");
     for (const id of ["backup-now", "backup-test"]) await expectDeferred(page, page.getByTestId(id), "Backups, integrity checks and model provenance arrive with the hardening port.");
     await expand(page, "health-sources");
@@ -175,6 +227,7 @@ test.describe("System health — preview database", () => {
 
   test("dashboard: the Deal Flow lane, no Scout part, every chart drills down", async ({ page }) => {
     const w = watch(page);
+    const live = runnerLive(await read<Health>(page, "system_health"));
     await open(page);
     const pipe = page.getByTestId("health-pipeline");
     for (const id of ["df-scan", "df-triage", "df-queue", "df-you", "df-conviction"]) await expect(pipe.locator(`[data-node="${id}"]`)).toBeVisible();
@@ -195,8 +248,10 @@ test.describe("System health — preview database", () => {
     if (await cell.count()) {
       await cell.click();
       await expect(page.getByTestId("health-detail")).toContainText("Runs in this period");
-      await expect(page.getByTestId("health-detail")).toContainText(SNAPSHOT);
-      await expectNoPromise(page);
+      if (!live) {
+        await expect(page.getByTestId("health-detail")).toContainText(SNAPSHOT);
+        await expectNoPromise(page);
+      }
       await page.keyboard.press("Escape");
     } else await expect(jobs).toContainText("History unavailable");
     const problem = page.getByTestId("health-source-problem").first();

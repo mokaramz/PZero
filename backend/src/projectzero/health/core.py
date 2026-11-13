@@ -65,6 +65,8 @@ from projectzero.health.catalog import (
     run_state,
 )
 from projectzero.health.inputs_model import HealthInputs
+from projectzero.jobs.ported import NOT_PORTED
+from projectzero.jobs.ported import RUNNER as JOBS_RUNNER
 from projectzero.news import core as news_core
 from projectzero.news import sources as news_sources
 from projectzero.news.catalog import DEFAULT_WINDOW
@@ -73,13 +75,16 @@ from projectzero.validation.core import build as validation_build
 
 
 class Runner(Protocol):
-    """The background-job runner (032c). Its presence restores the old job guidance (decision k); it decides whether
-    a job recorded as ``running`` is still running (the old ``pid == os.getpid() or pid_alive(pid)``)."""
+    """The background-job runner (032c). Its presence restores the old job guidance (decision k) PER JOB: only for
+    the jobs it can run (``ported``; 032c decision c); it decides whether a job recorded as ``running`` is still
+    running (``alive``: the old ``pid == os.getpid() or pid_alive(pid)``, now the claiming runner's generation)."""
 
-    def pid_alive(self, pid: Any) -> bool: ...
+    def ported(self, job_id: str) -> bool: ...
+
+    def alive(self, record: dict[str, Any]) -> bool: ...
 
 
-RUNNER: Runner | None = None  # decision (k): no runner until 032c
+RUNNER: Runner | None = JOBS_RUNNER  # 032c: the real runner (``jobs.ported``); ``None`` is revision 2's no-runner mode
 
 # decision (c): the retired Scout jobs (their rows stay in the catalog, cut from the old table)
 RETIRED_JOBS = ("scout00_inbox", "native_scout", "native_planner", "native_bridge")
@@ -400,13 +405,17 @@ def _interval(job: dict[str, Any], config: Any) -> float:
         return float(job["interval_h"])
 
 
-def plan(inputs: HealthInputs, now: datetime, runner: Runner | None = RUNNER) -> list[dict[str, Any]]:
-    """The old ``scheduler.plan(now)`` over the imported job state. Decision (e): without a runner nothing is running,
-    so a job recorded as ``running`` is ``interrupted`` (the old ``recover_on_start`` at startup)."""
+def plan(
+    inputs: HealthInputs, now: datetime, runner: Runner | None = RUNNER, jobs: list[dict[str, Any]] | None = None
+) -> list[dict[str, Any]]:
+    """The old ``scheduler.plan(now)`` over the job state. Decision (e): without a runner nothing is running, so a job
+    recorded as ``running`` is ``interrupted`` (the old ``recover_on_start`` at startup). 032c (b): with a runner, a
+    job it cannot run is never overdue and its row says ``availability: "not ported yet"``. ``jobs``: the job rows
+    (default the active ``JOBS``; the runner's parity passes its fake jobs)."""
     st = _jobs_state(inputs)
     config = copy.deepcopy(inputs.config)
     out = []
-    for job in active_jobs():
+    for job in active_jobs() if jobs is None else jobs:
         s = st.get(job["id"]) if isinstance(st.get(job["id"]), dict) else {}  # a malformed record = never run
         last_ok = _ts(s.get("last_ok"))
         if job["last"]:
@@ -417,11 +426,12 @@ def plan(inputs: HealthInputs, now: datetime, runner: Runner | None = RUNNER) ->
             last_ok = max((x for x in (last_ok, ext) if x), default=None)
         if s.get("state") != "running" or runner is None:  # decision (e): no runner is alive
             running = False
-        elif s.get("pid"):  # the owning process decides: alive = running, gone = interrupted
-            running = runner.pid_alive(s["pid"])
+        elif s.get("pid"):  # the owning runner decides: the lock's current generation = running, else interrupted
+            running = runner.alive(s)
         else:  # records written before pids were stored
             running = (_ts(s.get("started")) or now) > now - timedelta(hours=STALE_RUNNING_H)
         due_at = last_ok + timedelta(hours=_interval(job, config)) if last_ok else None
+        unported = runner is not None and not runner.ported(job["id"])
         out.append(
             {
                 "id": job["id"],
@@ -429,7 +439,7 @@ def plan(inputs: HealthInputs, now: datetime, runner: Runner | None = RUNNER) ->
                 "interval_h": _interval(job, config),
                 "last_ok": last_ok.isoformat(timespec="seconds") if last_ok else None,
                 "next_due": due_at.isoformat(timespec="seconds") if due_at else "now",
-                "overdue": not running and (due_at is None or due_at <= now),
+                "overdue": not unported and not running and (due_at is None or due_at <= now),
                 "state": "interrupted"
                 if s.get("state") == "running" and not running
                 else s.get("state") or "never_run",
@@ -441,16 +451,25 @@ def plan(inputs: HealthInputs, now: datetime, runner: Runner | None = RUNNER) ->
                 "seconds": s.get("seconds"),
                 "fails_in_row": int(s.get("fails_in_row") or 0),
                 "error": s.get("error") or "",
+                **({"availability": NOT_PORTED} if unported else {}),
             }
         )
     return out
 
 
-def failing_jobs(inputs: HealthInputs) -> list[dict[str, Any]]:
+def split_by_runner(runner: Runner | None, rows: list[dict[str, Any]]) -> tuple[list[Any], list[Any]]:
+    """032c decision (c): (the rows of jobs the runner can run, the others). Without a runner every row is in the
+    second list (revision 2's wording for all, decision k)."""
+    if runner is None:
+        return [], list(rows)
+    return [r for r in rows if runner.ported(r["id"])], [r for r in rows if not runner.ported(r["id"])]
+
+
+def failing_jobs(inputs: HealthInputs, jobs: list[dict[str, Any]] | None = None) -> list[dict[str, Any]]:
     """Jobs whose last REPEATED_FAILURES or more runs failed — they must not stay quiet."""
     st = _jobs_state(inputs)
     out = []
-    for j in active_jobs():
+    for j in active_jobs() if jobs is None else jobs:
         s = st.get(j["id"]) if isinstance(st.get(j["id"]), dict) else {}
         n = int(s.get("fails_in_row") or 0)
         if n >= REPEATED_FAILURES:
@@ -520,14 +539,14 @@ def system_view(inputs: HealthInputs, now: datetime, runner: Runner | None = RUN
     age = _days(last_scan, now)
     if age is None or age > 10:
         what = "no Deal Flow scan in over 10 days" if age else "no Deal Flow scan yet"
-        if runner is not None:
+        if runner is not None and runner.ported("deal_flow_scan"):  # 032c (c): only when the scan exists
             issue("warn", what, "Run Find New Candidates (or let catch-up run it).")
         else:
             issue("info", what, NO_RUNNER_DO[3], "info")
     pending = pending_map(copy.deepcopy(inputs.auto_runs), copy.deepcopy(inputs.proposals), dict(inputs.aliases))
     if pending:
         what = f"{len(pending)} candidate(s) waiting for machine triage — preserved, nothing was lost"
-        if runner is not None:
+        if runner is not None and runner.ported("triage_retry"):  # 032c (c): only when the retry exists
             nxt = inputs.triage_next_try
             issue(
                 "info",
@@ -542,60 +561,72 @@ def system_view(inputs: HealthInputs, now: datetime, runner: Runner | None = RUN
     rq = copy.deepcopy(inputs.research_questions) or {}
     research_open = Counter(q.get("status") for q in rq.values())
     companies, open_triggers = watch_counts(inputs)  # rule 5 (the page checks) is the watch sensors' (decision d)
+    # 032c (c): rules 6-11 per job: the old text and group for the jobs the runner can run, revision 2's for the
+    # others (each subset its own item, the runnable first; without a runner every job takes revision 2's text)
     jobs = plan(inputs, now, runner)
     overdue = [p for p in jobs if p["overdue"]]
-    if overdue:  # the background task runs them at its next trigger (hourly / logon / unlock): handled automatically
-        what = f"{len(overdue)} background job(s) overdue: " + ", ".join(p["label"].split(" (")[0] for p in overdue[:4])
-        if runner is not None:
-            issue(
-                "info",
-                what,
-                "They run at the next background trigger (hourly, at logon or unlock); “Run overdue now” starts them immediately.",
-                "auto",
-            )
-        else:
-            issue("info", what, NO_RUNNER_DO[6], "info")
+    ported_, unported_ = split_by_runner(runner, overdue)
+    if ported_:  # the background task runs them at its next trigger (hourly / logon / unlock): handled automatically
+        what = f"{len(ported_)} background job(s) overdue: " + ", ".join(p["label"].split(" (")[0] for p in ported_[:4])
+        issue(
+            "info",
+            what,
+            "They run at the next background trigger (hourly, at logon or unlock); “Run overdue now” starts them immediately.",
+            "auto",
+        )
+    if unported_:
+        what = f"{len(unported_)} background job(s) overdue: " + ", ".join(
+            p["label"].split(" (")[0] for p in unported_[:4]
+        )
+        issue("info", what, NO_RUNNER_DO[6], "info")
     keeps = failing_jobs(inputs)
-    if keeps:  # repeated failures are never quiet: a job that failed twice in a row needs a look
-        what = "background job keeps failing: " + "; ".join(
-            f"{k['label']} ({k['fails_in_row']} runs in a row — {str(k['error'])[:120]})" for k in keeps
-        )
-        if runner is not None:
-            issue("warn", what, "Open Background jobs below for the error; the job retries automatically when due.")
-        else:
-            issue("info", what, NO_RUNNER_DO[7], "info")
-    once = [p for p in jobs if p["state"] in ("failed", "interrupted") and p["id"] not in {k["id"] for k in keeps}]
-    if once:
-        what = "background job(s) failed or were interrupted: " + ", ".join(p["label"] for p in once)
-        if runner is not None:
-            issue("warn", what, "See Background jobs below; they run again when due.")
-        else:
-            issue("info", what, NO_RUNNER_DO[8], "info")
-    blocked = [p for p in jobs if p.get("outcome") == "budget_blocked"]
-    if blocked:
-        what = "background job blocked by a budget limit: " + ", ".join(p["label"] for p in blocked)
-        if runner is not None:
-            issue(
-                "warn", what, "Work is kept for retry; caps are never overridden. Review spend under Models and budget."
+    for i, part in enumerate(split_by_runner(runner, keeps)):
+        if part:  # repeated failures are never quiet: a job that failed twice in a row needs a look
+            what = "background job keeps failing: " + "; ".join(
+                f"{k['label']} ({k['fails_in_row']} runs in a row — {str(k['error'])[:120]})" for k in part
             )
-        else:
-            issue("info", what, NO_RUNNER_DO[9], "info")
+            if i == 0:
+                issue("warn", what, "Open Background jobs below for the error; the job retries automatically when due.")
+            else:
+                issue("info", what, NO_RUNNER_DO[7], "info")
+    once = [p for p in jobs if p["state"] in ("failed", "interrupted") and p["id"] not in {k["id"] for k in keeps}]
+    for i, part in enumerate(split_by_runner(runner, once)):
+        if part:
+            what = "background job(s) failed or were interrupted: " + ", ".join(p["label"] for p in part)
+            if i == 0:
+                issue("warn", what, "See Background jobs below; they run again when due.")
+            else:
+                issue("info", what, NO_RUNNER_DO[8], "info")
+    blocked = [p for p in jobs if p.get("outcome") == "budget_blocked"]
+    for i, part in enumerate(split_by_runner(runner, blocked)):
+        if part:
+            what = "background job blocked by a budget limit: " + ", ".join(p["label"] for p in part)
+            if i == 0:
+                issue(
+                    "warn",
+                    what,
+                    "Work is kept for retry; caps are never overridden. Review spend under Models and budget.",
+                )
+            else:
+                issue("info", what, NO_RUNNER_DO[9], "info")
     partial = [p for p in jobs if p.get("outcome") == "partial"]
-    if partial:
-        what = "background job(s) only partially completed: " + ", ".join(p["label"] for p in partial)
-        if runner is not None:
-            issue("info", what, "The rest is kept for retry; see the job note under Background jobs.", "auto")
-        else:
-            issue("info", what, NO_RUNNER_DO[10], "info")
+    for i, part in enumerate(split_by_runner(runner, partial)):
+        if part:
+            what = "background job(s) only partially completed: " + ", ".join(p["label"] for p in part)
+            if i == 0:
+                issue("info", what, "The rest is kept for retry; see the job note under Background jobs.", "auto")
+            else:
+                issue("info", what, NO_RUNNER_DO[10], "info")
     waiting = [p for p in jobs if p.get("outcome") == "waiting_external"]
-    if waiting:
-        what = "waiting for an external dependency: " + ", ".join(
-            f"{p['label']} ({str(p['last_note'])[:60]})" for p in waiting
-        )
-        if runner is not None:
-            issue("info", what, "Nothing to do in Project Zero unless it persists.", "ext")
-        else:
-            issue("info", what, NO_RUNNER_DO[11], "info")
+    for i, part in enumerate(split_by_runner(runner, waiting)):
+        if part:
+            what = "waiting for an external dependency: " + ", ".join(
+                f"{p['label']} ({str(p['last_note'])[:60]})" for p in part
+            )
+            if i == 0:
+                issue("info", what, "Nothing to do in Project Zero unless it persists.", "ext")
+            else:
+                issue("info", what, NO_RUNNER_DO[11], "info")
     # rule 12 (a hung job-runner lock) reads the runner's pid lock (decision d)
     spend = spend_summary(inputs, now)
     lim = spend["limits"]
@@ -672,8 +703,10 @@ def system_view(inputs: HealthInputs, now: datetime, runner: Runner | None = RUN
         },
         "jobs": jobs,
         "overdue": len(overdue),
-        "job_runner": {
-            "lock": deferred(LOCK_DEFERRED),
+        "job_runner": {  # 032c: the runner's lock exists exactly when the runner does
+            "lock": copy.deepcopy(inputs.lock)
+            if runner is not None and inputs.lock is not None
+            else deferred(LOCK_DEFERRED),
             "runners": copy.deepcopy(inputs.runners),
             "outcomes": dict(OUTCOMES),
         },

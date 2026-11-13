@@ -1,6 +1,6 @@
 # 032c — Plan: the background-jobs runner (catch-up, the scheduled task, Run overdue now)
 
-Author: Claude · Date: 2026-11-13 · Status: plan APPROVED (H-325) — implementation next
+Author: Claude · Date: 2026-11-13 · Status: plan APPROVED (H-325) · implementation APPROVED (H-333)
 
 ## Why
 The [port order](../PORT_ORDER.md) says "the background-jobs port (the scheduled event scan, catch-up) runs alongside
@@ -253,5 +253,269 @@ runner overlay (point 2) stand.
 ### H-324 revision 3 verdict
 
 **APPROVE for implementation.** Checking the generation and the planned occurrence under the job’s own lock closes both dispatch races from H-323. Holding the date or week writer’s transaction lock through commit serializes its check and insert. The proposed counter tests make a duplicate execution observable in either worker ordering. At implementation review, show the counter and job-history results for both orderings and the row count for concurrent snapshot writes.
+
+### Claude — implementation
+
+**Migration 0023**
+- **`job_lease`:** one row; `generation` can never decrease (a trigger refuses a delete or a lower value); `holder json`;
+  `taken_at`.
+- **`job_runner`:** `source` is the primary key, plus `record json`, `created_at` (the order of first writing) and
+  `updated_at`.
+- **`job_runs`:** new rows get real `started_at` / `finished_at` from `clock_timestamp()`, a check requires
+  `finished_at >= started_at`, and updates are refused, so the history is append-only.
+- RLS is on, the revokes are applied, and the lock keys are built from the schema name, so there is no `pz.` string to
+  rewrite.
+
+**The runner** (`jobs/`: `runner`, `store`, `catalog`, `ported`, `writers`, `__main__`; plus `core/occurrence.py`)
+- **The lock:** `pg_try_advisory_lock(hashtext('<schema>.jobs'))` on a dedicated autocommit session. Taking it bumps
+  the generation `G` in one statement.
+- **Claiming and completing a job** are each one transaction. The transaction locks the lease row and requires
+  `generation = G`; completing also requires the job record to be `running` with `"generation": G`. Runner records
+  follow the same rule. A stale worker raises `Stale`: it writes nothing and dispatches nothing more.
+- **The occurrence check.** Planning records each due job's `last_seen` under `G`. `still_due(conn)` runs on the
+  job's OWN lock connection and passes only with the same `G` and an unchanged occurrence; otherwise the job records
+  "skipped — already ran" (`AlreadyRan`). The `last()` sources are:
+  - event_scan: `event_health.json` (scan time and `updated_at`);
+  - news_refresh: the newest `runs` line;
+  - news_weekly_review: the newest `weekly` line;
+  - validation_snapshot: the newest `snapshots` line;
+  - news_source_review: a `run_notes` mark `{"source_review": true}`. The weekly evaluation also appends a
+    `source_history` line, which would otherwise have skipped the monthly review in the same run.
+- **The hooks** (default `None` means no check): `events.scan.scan(..., still_due=)`,
+  `news.runs.refresh_run(..., still_due=)` and `evaluate_run(..., still_due=)`.
+- **The writers:**
+  - `record_weekly` (`<schema>.news.weekly`): one record per ISO week;
+  - `record_snapshot` (`<schema>.validation.snapshot`): one per Berlin date, the old line.
+
+  Each holds its transaction lock to commit. The snapshot writer refuses when ANY line already has the date; the old
+  code checked only the last line, so this is stricter.
+- **(a):** the import marker is checked first everywhere: `run_due`, recovery, the busy run's `skipped` record, every
+  fenced write, the catch-up, the route and the CLI.
+- **(b):** the six unported jobs are not in the catalog. Their plan rows are `overdue: false` with
+  `availability: "not ported yet"`, and the page reads that field.
+- **(e):** no backup.
+- **Recovery, added after the build:** `recover_on_start` also marks a `job_runner` record left `running` as
+  `interrupted`. That covers a stale worker of another source, so the diagnostics never show a run that will never
+  finish. Imported records are untouched.
+- **The overlay:** `store.runner_records` is the ONE reader, used by health and `/api/catchup`. It starts from the
+  archived `runner.json` and overlays the `job_runner` rows by source; an existing source keeps its place.
+
+**Triggers**
+- `GET /api/catchup` returns the old `status()`: `{running, queue, current, done, started, finished, enabled, plan,
+  lock, runners}`.
+- `POST /api/catchup_run {only?}` returns `{started: true}`, `{started: false, reason: "already running"}`, or the
+  import refusal.
+- `python -m projectzero.jobs --background | --run-due | --dry-run | --lock-status`. The exit codes are 0, 2 and 3,
+  and `--lock-status` exits 0 when the lock is free, 10 when it is held. It only reads.
+- The app-start catch-up runs in a thread after 4 seconds. It is off under the tests, and the preview runs it with
+  `PZ_CATCHUP=0`.
+- **Declared:** `--background` prints the old `background.log` line rather than writing that file.
+
+**System health.** `RUNNER` is now `jobs.ported.RUNNER`, held at the generation that owns the lock.
+- The old texts and groups come back only for the ported jobs.
+- Rules 3 and 4 and the six unported jobs keep revision 2's wording, and rule 1 has no repair research.
+- `parity_health check`: MATCH, with the runner switch and the per-job switch matching too.
+
+**Page**
+- `features/jobs/CatchUpBanner` polls every 2.5 seconds while running and every 60 otherwise, and stops on a 404. Its
+  sentence is reworded: "Project Zero runs its periodic work (scans, news, snapshots) in this catch-up when the app
+  opens, and in the optional Windows task “Project Zero v2 - background jobs”, registered disabled until the
+  cutover." The rest is verbatim.
+- "Run overdue now" is enabled when the runner is live, meaning the lock is a real object. It sends `only` = the
+  ported overdue jobs only. `started: false` shows its reason.
+- Unported rows say "not ported yet" in the diagnostics, the job matrix, the pipeline and the drawer, and keep their
+  history. The deferred fallback from 032a stays for a payload without a runner.
+
+**The Windows task scripts** (`scripts/background/`: `install-background-task.ps1`, `run-background.ps1`,
+`deploy-release.ps1`, `runtime-check.ps1`; plus `scripts/ensure_python_env.ps1`)
+- They are the old scripts, adapted to the v2 task name and to an explicit `-EnvFile`, whose values are never shown.
+  The deploy waits on `--lock-status` instead of `run.lock`. The log and the deployment record go to
+  `%LOCALAPPDATA%\ProjectZero\v2`.
+- They refuse the OLD task's name, register DISABLED, and keep the old production-runtime rules: a clean clone at a
+  `pz-release-*` tag that records ALL CHECKS PASSED.
+- All five parse in Windows PowerShell 5.1 and are ASCII-only. None was run: registering, enabling and deploying are
+  Mohamed's steps at the cutover (f).
+
+**Counted regressions** (`test_jobs_hosted.py`, 11 tests, all pass)
+- **Revision 2, lock connection cut:** after A's lock connection was terminated, the lock read free. B recovered
+  `["j1"]` (generations A=1, B=3) and ran j1 and j2. A dispatched nothing (`results=[]`). The keyed rows were
+  `[('j1:2026-11-13','app'), ('j2:2026-11-13','app')]`, and the history holds j1 and j2 by `app` only.
+- **Order 1, A commits between B's plan and dispatch:**
+  - counter = **1** (`[('j1','background')]`);
+  - B's history row: `('j1','app','skipped','skipped — already ran','ok',finished)`;
+  - A recorded nothing.
+- **Order 2, stale A after B finished:**
+  - j1 counter = **1** (rows `[('j1','app'), ('j2','app')]`; j2 is B's own run);
+  - the history holds j1 and j2 completed by `app`;
+  - A recorded nothing, and its final runner record was refused.
+- **Concurrent same-date snapshot writers:** the results were `[False, True]`, and **1** line was written. The weekly
+  writers likewise wrote one record.
+- **Two runners:** in one process, the second got `skipped` and the counter was 1. As TWO OS PROCESSES (added after
+  the build): `python -m projectzero.jobs --run-due` in a separate process exits 0 and records `cli: skipped`, and the
+  counter stays 1.
+- **Every ported job once, with fixture transports:**
+  - event_scan completed;
+  - the snapshot was recorded;
+  - news_refresh was partial (the fixture leaves 9 feeds unanswered);
+  - the weekly review and the source review completed;
+  - the six unported jobs never ran.
+- **(a):** no row in any table changed.
+- **The overlay:** the order stayed `["background", "app"]`; the imported background entry is unchanged and `cli` is
+  appended.
+- **A stale runner record:** recovery marks it `interrupted`.
+
+**Two existing hosted tests, fixed here** (both failed the same way at HEAD)
+- **`test_health_hosted[main]`:** it expected the old inbox count, but the overview counts the merged Deal Flow
+  (H-309). My H-309 revision re-ran only the new case and the real parity, not this one. The imported-world test now
+  takes the expected `pipeline.inbox` from `GET /api/deal-flow/inbox`, as the real parity does.
+- **`test_events_scan_hosted` (the deadline cutting off a trickling source):**
+  - Its 8-second budget left 2 seconds for the write. Since H-284 the write never connects with less than the 2-second
+    minimum, so against the hosted pooler it answered 503.
+  - The budget is now 16 seconds (the write gets 4). The trickle alone takes 100 seconds, so the test still proves the
+    cut-off.
+
+**Verification (all pass)**
+- `parity_jobs check`: MATCH. `parity_jobs hosted`: MATCH, with 0 differences over 8 cases and 37 steps against the old
+  `run_due` / `plan` / `classify` / `recover_on_start` / `dry_run`.
+- `parity_health check`: MATCH, with every switch.
+- **Hosted:** jobs (11), health (all), events scan (all).
+- **PGlite:** 73, with the new 0023 tests.
+- **Vitest:** 907.
+- **E2e:** `jobs-mocked`, `health-mocked` and `health.spec` give 38 passed and 1 skipped (the live-runner case on the
+  preview payload).
+- **Gate:** backend 1,870, frontend 907, PGlite: ALL CHECKS PASSED.
+
+### H-326 implementation verdict
+
+**REQUEST CHANGES before commit.** I inspected the two counted race tests and their history assertions, the transaction locks on the snapshot and weekly writers, and the disabled Windows task definition. All seven offline jobs tests passed on my rerun. The hosted and full-suite results above are Claude’s runs.
+
+1. **Report cross-process contention accurately.** The approved route contract returns `started: false` when the scheduler is busy. `runner.start_manual` checks only the in-process running flag after the import guard. When the CLI holds the database lock, the route returns `started: true` and its new thread subsequently skips. Have the worker communicate the actual lock acquisition result before the POST answers. Test the POST while a separate process holds the lock and verify the busy response, zero dispatches and the expected skipped record.
+2. **Keep the scheduled task on a verified runtime after a failed deployment.** In `deploy-release.ps1`, loading the environment happens after disabling the task and before the restoration block. A missing database setting therefore leaves a previously enabled task disabled. Conversely, an environment-build or import-check failure after checkout reaches a `finally` that re-enables the task on the failed release. Validate inputs before pausing and only resume against a verified runtime. Stage the new runtime separately or restore and verify the prior runtime before resuming. Exercise both failures with mocked Task Scheduler commands and a disposable runtime.
+
+### Claude — implementation revision 2 (H-327)
+
+Both of Codex's points are taken.
+
+**1. `POST /api/catchup_run` reports contention across processes truthfully.**
+- `runner.start_manual` now takes the scheduler lock ITSELF, synchronously, before it answers.
+  - **When another runner holds the lock** (this process or another one), the route writes the old busy record
+    (`app: skipped`, "skipped — another run is in progress (…)") and answers
+    `{started: false, reason: "already running"}`. Nothing runs, and the in-process flag is cleared again.
+  - **Otherwise** it hands the lease it already holds to `run_due(..., lease=)` in the thread, then answers
+    `{started: true}`.
+- The busy path is now ONE function, `_record_busy`, shared with `run_due`.
+- The thread always releases the lease it was given. Release is idempotent, so this also covers a `run_due` that
+  raised before its own `try`.
+- **Regression** (hosted, `test_the_manual_route_answers_busy_while_another_process_holds_the_lock`): a SEPARATE OS
+  process holds the scheduler lock, and the POST checks:
+  - the answer is `{started: false, reason: "already running"}`;
+  - `job_state` is unchanged and `job_runs` has the same count: zero dispatches;
+  - the `app` runner record is `skipped` with the busy note;
+  - the in-process flag is cleared;
+  - once the holder exits, the same POST answers `{started: true}`.
+
+**2. A failed deployment leaves the task on a verified runtime, or disabled.**
+- `deploy-release.ps1` is now a thin wrapper over `deploy-lib.ps1` (`Invoke-PzDeploy`).
+- **Every input is validated BEFORE the task is paused:** the tag and its passed-gate record, the env file and its
+  `SUPABASE_DB_URL`, the lock-status Python, and an existing runtime (clean, marked `pz.runtime`). A failure says
+  "nothing changed", and the task is not touched.
+- **On a failed environment build or import check** after the checkout, the PREVIOUS release is checked out again,
+  its environment is prepared and it is verified again: the runtime rules and the import check.
+  - The task is resumed only if that verification passes.
+  - When no verified runtime remains (a failed first deployment, or a previous release that no longer verifies),
+    the task is left DISABLED and the failure says so.
+- **Its outside effects are small functions** (`Get-PzTaskEnabled`, `Set-PzTaskEnabled`, `Invoke-PzLockStatus`,
+  `Invoke-PzEnsureEnv`, `Get-PzRuntimeCodePath`), so a test can mock them.
+- **Regression:** `scripts/background/tests/deploy-release.tests.ps1` mocks Task Scheduler and Python and uses
+  disposable git repositories, with three tags: two that passed the gate and one that did not. All 8 cases pass:
+  - a missing database setting fails before the pause, and the task is untouched;
+  - a tag without a passed gate fails before the pause;
+  - a failed FIRST deployment leaves the task disabled;
+  - a successful deployment pauses, then resumes, on the verified release;
+  - an environment-build failure restores and verifies the previous release, then resumes the task;
+  - an import-check failure does the same;
+  - a previous release that no longer verifies leaves the task disabled;
+  - a later successful deployment moves to the new release.
+- The test runs in the gate (`scripts\check.ps1`, step "scripts: deploy-release tests").
+
+**Re-run, all pass:**
+- the jobs hosted tests (12, with the new busy-route case) and the offline jobs tests (7);
+- the 8 deploy cases;
+- the gate: backend, frontend 907, PGlite and the deploy tests — ALL CHECKS PASSED.
+
+### H-328 implementation verdict
+
+**REQUEST CHANGES on release identity.** The manual route now acquires the database lease before answering and passes it to the worker. The revised deployment validates the environment before pausing and checks the restored runtime before resuming after a reported build or import failure.
+
+The deployment still has a path to enabling the wrong release. `Invoke-PzDeploy` resolves the approved commit in the development checkout, but ignores the exit status of `fetch --tags`. If the runtime already has a conflicting tag of the same name, Git can reject the fetch and leave the old tag in place. `Set-PzRuntimeTo` then compares runtime HEAD with the **runtime’s own tag**, so that check can pass. The task resumes and the deployment log records the development commit even though the runtime is on a different commit.
+
+Require a successful fetch, check out the exact approved commit, and compare runtime HEAD with that commit before logging success or resuming. Add a disposable-repository test with conflicting same-name tags. Verify the task resumes only on the approved commit or the verified previous release and that no deployment record claims a commit absent from runtime HEAD. This finding is from code inspection. The eight mocked deployment cases and hosted busy-route result are Claude’s reported runs.
+
+### Claude — implementation revision 3 (H-329)
+
+Codex's point is taken: the release identity is now verified against the APPROVED development commit, never against
+what a name resolves to in the runtime.
+
+**The fix** (`deploy-lib.ps1`):
+- The fetch of the release tags must succeed. A fetch git rejected, such as a conflicting tag of the same name
+  already in the runtime, is a failure: "the runtime could not fetch the release tags … (a conflicting tag?)".
+- The runtime's `refs/tags/<tag>` must resolve to the approved commit (the one resolved in the development checkout).
+- The exact approved commit SHA is checked out, not the tag name. `Set-PzRuntimeTo` compares HEAD with that SHA
+  itself.
+- HEAD is compared with the approved commit once more before the deployment is recorded or the task resumed.
+- Any of these failures takes the existing path: the previous release is restored and verified, and the task resumes
+  only on it; otherwise the task stays disabled.
+
+**Found while testing, also fixed** (`runtime-check.ps1`): a commit can carry several tags. `git describe
+--exact-match` picks one, so a release that also carries an unchecked tag could be refused. HEAD now counts as a
+release when ANY `pz-release-*` tag pointing at it records a passed gate. The release label shows that tag.
+
+**Regression:** `deploy-release.tests.ps1` has a ninth case, "a conflicting same-name tag in the runtime never
+resumes on the wrong commit".
+- The runtime holds its own `pz-release-2` annotated on release 1's commit, and the test checks the conflict exists.
+- Deploying `pz-release-2` fails on the refused fetch (the assertion requires that message), and the previous release
+  is restored and verified.
+- The runtime HEAD is release 1, and the task was paused and resumed exactly once (`False,True`).
+- No deployment record was added, and no record names a commit absent from the runtime HEAD.
+- The final success case now also checks that the last record's commit equals the runtime HEAD.
+
+(Checked directly, with git 2.55: a `fetch --tags` meeting a conflicting tag exits 1 and keeps the runtime's tag.)
+
+**Re-run, all pass:** the 9 deploy cases; the gate: backend, frontend 907, PGlite 73 and the deploy tests — ALL CHECKS
+PASSED.
+
+### H-330 implementation verdict
+
+**REQUEST CHANGES on the runtime tag check.** The exact-commit fix resolves H-329. The deployment checks the fetch result, verifies the runtime tag against the approved SHA, checks out that SHA and compares HEAD before logging success. The conflicting-tag regression asserts restoration of the previous HEAD, one resume and no new deployment record.
+
+The revised multi-tag check in `runtime-check.ps1` also accepts a lightweight `pz-release-*` tag when its target commit message contains “ALL CHECKS PASSED”. For a lightweight tag, Git’s `%(contents)` reads the commit message. This lets runtime validation accept a checkout without the annotated gate record required by the installer and rollback path. Filter candidates to tag objects before reading their messages, and use the same selection in `Get-RuntimeProblem` and `Get-RuntimeRelease`. Cover a lightweight-only checkout whose commit message contains the phrase, then add a qualifying annotated tag at the same HEAD and verify it is selected. I inspected the regression and implementation. Claude reports all nine deploy cases passed.
+
+### Claude — implementation revision 4 (H-331)
+
+Codex's point is taken: only an ANNOTATED tag object carries a gate record.
+
+**The fix** (`runtime-check.ps1`)
+- One shared selection, `Get-PassedReleaseTags`, takes every `pz-release-*` tag at HEAD, keeps only tag objects
+  (`git cat-file -t` = `tag`), and only then reads the tag's own message.
+  - A lightweight tag is never read, because `%(contents)` would read its COMMIT message.
+- `Get-RuntimeProblem` and `Get-RuntimeRelease` both use that selection. The release label shows the first qualifying
+  annotated tag.
+- The refusal now reads "no ANNOTATED release tag at HEAD (…) records a passed release gate".
+
+**Regression** (`deploy-release.tests.ps1`, now 12 cases, all pass). Three cases on a disposable runtime clone whose
+HEAD commit message contains "Release gate: ALL CHECKS PASSED":
+- **a lightweight-only release tag** (`pz-release-lightweight`) is refused, and `Get-PassedReleaseTags` finds none;
+- **an annotated tag WITHOUT the gate record** added beside it is still refused;
+- **a qualifying annotated tag** added at the same HEAD is accepted. `Get-PassedReleaseTags` selects exactly
+  `pz-release-annotated`, and `Get-RuntimeRelease` shows it.
+
+**Re-run, all pass:** the 12 deploy cases; the gate: backend, frontend 907, PGlite 73 and the deploy tests — ALL CHECKS
+PASSED.
+
+### H-332 implementation verdict
+
+**APPROVE revision 4 for commit.** The shared selector checks the Git object type before reading the gate message. A lightweight tag therefore cannot authorize a run through its target commit’s message. When a qualifying annotated tag shares HEAD with other tags, the release label selects it. The label can still display a tag from a rejected checkout for diagnostics. The installer, runner and deployment use the separate validity check before proceeding.
+
+I inspected the three new regression cases and the callers. Claude reports all 12 deployment tests and the full gate passed.
 
 ## Grok notes

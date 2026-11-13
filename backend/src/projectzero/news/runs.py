@@ -32,7 +32,7 @@ from typing import Any
 
 import psycopg
 
-from projectzero.core import net
+from projectzero.core import net, occurrence
 from projectzero.core.db import connect
 from projectzero.core.inference.pg_store import PostgresBudgetStore
 from projectzero.dealflow.intake.postgres import ensure_intake_open
@@ -58,6 +58,7 @@ PLAN_DEADLINE = (
     "run it again"
 )
 NewHex = Callable[[], str]
+SOURCE_REVIEW_MARK = "source_review"  # the run_notes key of a recorded monthly source review (review 032c)
 
 
 class RunRefused(Exception):
@@ -111,15 +112,19 @@ def refresh_run(
     after_fetch: Callable[[], None] | None = None,
     card_gateway: Mapping[str, Any] | None = None,
     before_card_write: Callable[[cards.CardJob], None] | None = None,
+    still_due: occurrence.StillDue | None = None,
 ) -> dict[str, Any]:
     """One refresh run. Returns the old ``POST /api/news_refresh`` answer (``job.running`` false: the run finished);
     raises ``RunRefused`` (409 already running / before the import, 503 the write was cut off). ``after_fetch``: a test
     seam called between the fetch and the write phase. ``card_gateway``: the gateway's injectables for phase 4 (tests:
-    the fake provider, the env); ``before_card_write``: a test seam called before each card write."""
+    the fake provider, the env); ``before_card_write``: a test seam called before each card write. ``still_due``: the
+    background-jobs runner's occurrence check (review 032c), run on the run lock's session right after the lock is
+    taken, before anything is read or fetched; ``False`` raises ``AlreadyRan`` (``None``: no check)."""
     today, wall = berlin_today(now), berlin_now(now)
     hexes = new_hex or (lambda: secrets.token_hex(2))
     session = _locked_session(db_url, schema)
     try:
+        occurrence.check(still_due, session)
         stop_fetching, done_by = budget(clock(), deadline_s or RUN_DEADLINE_S)
         # ── phase 1: read (closed before any request)
         # bounded too (Codex H-261): a lock held on what the plan reads cannot keep the run (and its lock) past the
@@ -228,17 +233,42 @@ def evaluate_run(
     *,
     clock: Callable[[], float] = time.monotonic,
     deadline_s: float | None = None,
+    record_history: bool = False,
+    still_due: occurrence.StillDue | None = None,
 ) -> dict[str, Any]:
     """The standalone source evaluation ("Re-measure now"): no network; serialized with every refresh run (the run
-    lock) and with every News write (the News write lock). Answers ``{ok: true, evaluated_at}``."""
+    lock) and with every News write (the News write lock). Answers ``{ok: true, evaluated_at}``. ``record_history``
+    and ``still_due``: see ``evaluation``."""
+    result = evaluation(
+        db_url, schema, now, clock=clock, deadline_s=deadline_s, record_history=record_history, still_due=still_due
+    )
+    return {"ok": True, "evaluated_at": result.get("at")}
+
+
+def evaluation(
+    db_url: str,
+    schema: str,
+    now: datetime,
+    *,
+    clock: Callable[[], float] = time.monotonic,
+    deadline_s: float | None = None,
+    record_history: bool = False,
+    still_due: occurrence.StillDue | None = None,
+) -> dict[str, Any]:
+    """``evaluate_run``'s work; returns the old ``news_sources.evaluate()`` result (``at``, ``benchmark_events``,
+    ``new_disagreements``, ``lifecycle_changes``, ``nominated``), which the background jobs' notes read (review 032c).
+    ``record_history``: the old ``evaluate(record_history=True)`` of the monthly source review (the history line is
+    written whatever its age). ``still_due``: the runner's occurrence check, run on the run lock's session right after
+    the lock is taken and before anything is read; ``False`` raises ``AlreadyRan`` (``None``: no check)."""
     today, wall = berlin_today(now), berlin_now(now)
     session = _locked_session(db_url, schema)
     try:
+        occurrence.check(still_due, session)
         _stop, done_by = budget(clock(), deadline_s or RUN_DEADLINE_S)
         with bounded_transaction(db_url, done_by, clock) as conn:
             news_store.lock(conn, schema)  # also the production boundary: 409 before the import
             news_store.ensure_seeded(conn, schema, packaged_cases(), wall)
-            ev = refresh.remeasure(_current(conn, schema, now), today=today, now=wall)
+            ev = refresh.remeasure(_current(conn, schema, now), today=today, now=wall, record_history=record_history)
             for log, line in ev.appends:
                 news_store.append_log(conn, schema, log, line)
             _write_documents(conn, schema, {"news/source_state.json": ev.source_state,
@@ -246,7 +276,10 @@ def evaluate_run(
             if ev.deferred_nominations:
                 note = {"evaluated_at": ev.result.get("at"), "deferred": ["the source network arrives with its port"]}
                 news_store.append_log(conn, schema, "run_notes", json.dumps(note, ensure_ascii=False, sort_keys=True))
-            return {"ok": True, "evaluated_at": ev.result.get("at")}
+            if record_history:  # the monthly source review's own mark (review 032c: its occurrence, read by no view)
+                mark = {"evaluated_at": ev.result.get("at"), SOURCE_REVIEW_MARK: True}
+                news_store.append_log(conn, schema, "run_notes", json.dumps(mark, ensure_ascii=False, sort_keys=True))
+            return dict(ev.result)
     except EventsError as exc:
         raise RunRefused(exc.status, WRITE_DEADLINE) from exc
     finally:

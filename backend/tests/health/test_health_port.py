@@ -18,6 +18,8 @@ import pytest
 
 from projectzero.health import RUNNER, HealthInputs, catalog, core, inputs_from_docs, overview_view, system_view
 from projectzero.health import inputs_model as health_inputs
+from projectzero.jobs.ported import NOT_PORTED, PORTED
+from projectzero.jobs.ported import RUNNER as JOBS_RUNNER
 from projectzero.ops import parity_health as ph
 from projectzero.ops.parity_ranking import OLD_REPO
 
@@ -112,7 +114,8 @@ def test_the_port_carries_the_old_literals_unchanged() -> None:
                core.NO_RUNNER_SUFFIX, core.SELFCHECK_DEFERRED, core.LOCK_DEFERRED, core.BUILD_DEFERRED,
                core.SOURCE_DISCOVERY_DEFERRED, core.WATCH_CHECKS_DEFERRED, core.BACKUPS_DEFERRED,
                core.INTEGRITY_DEFERRED, core.RELEASES_DEFERRED, core.PAID_OFF_DO, *core.LAST, "deferred", "%Y-%m-%d %H:%M",
-               "the Deal Flow registry could not be read"}  # fmt: skip
+               "the Deal Flow registry could not be read",
+               "availability", "deal_flow_scan", "triage_retry"}  # fmt: skip  # 032c (b) / (c)
     tree = ast.parse(Path(core.__file__ or "").read_text(encoding="utf-8"))
     docs = {id(n.body[0].value) for n in ast.walk(tree)  # docstrings are commentary, not the old data
             if isinstance(n, (ast.Module, ast.FunctionDef, ast.ClassDef)) and n.body
@@ -127,7 +130,8 @@ def test_the_new_texts_are_revision_2s_table() -> None:
     assert ph.NEW_DO[1] == core.RULE1_DO
     assert (core.NO_RUNNER_UNKNOWN, core.NO_RUNNER_NO_REPORT, core.NO_RUNNER_SUFFIX) == (
         ph.NEW_UNKNOWN, ph.NEW_NO_REPORT, ph.NEW_SUFFIX)  # fmt: skip
-    assert RUNNER is None and core.RUNNER is None  # decision (k) until 032c
+    assert RUNNER is core.RUNNER is JOBS_RUNNER  # 032c: the real runner replaced decision (k)'s None
+    assert ph.PORTED_JOBS == PORTED and ph.NEW_NOT_PORTED == NOT_PORTED  # the parity restates them
 
 
 # ------------------------------------------------------------------ the goldens
@@ -157,6 +161,42 @@ def test_with_a_runner_the_old_texts_and_groups_come_back_exactly() -> None:
     assert body["status"] == _old("jobs_unrun")["status"]
     old_issues = [i for i in _old("jobs_unrun")["issues"] if ph.rule_of(i) != 1]
     assert [i for i in body["issues"] if ph.rule_of(i) != 1] == old_issues
+
+
+def test_the_real_runner_restores_the_old_texts_only_for_the_ported_jobs() -> None:
+    """032c decision (c): the per-job switch, against the goldens and on the jobs_unrun world."""
+    assert ph.compare_goldens(GOLDEN, real=True) == []
+    body = system_view(_inputs("jobs_unrun"), NOW, JOBS_RUNNER)
+    labels = {j["id"]: j["label"] for j in catalog.JOBS}
+    unported = {j["id"] for j in core.active_jobs()} - PORTED
+    assert len(unported) == 6
+    for j in body["jobs"]:  # (b): the six unported jobs are never overdue and say so
+        assert (j.get("availability") == NOT_PORTED) == (j["id"] in unported)
+        assert not (j["overdue"] and j["id"] in unported)
+    assert body["overdue"] == sum(1 for j in body["jobs"] if j["overdue"]) == 4
+    for i in body["issues"]:
+        named = {jid for jid in labels if labels[jid] in i["what"]}
+        if ph.rule_of(i) in (6, 7, 8, 9, 10, 11) and named <= PORTED:  # the old guidance, old level and group
+            assert i["do"] not in core.NO_RUNNER_DO.values(), i
+        elif ph.rule_of(i) in (3, 4, 6, 7, 8, 9, 10, 11):  # revision 2's wording for the others (rules 3 / 4 too)
+            assert named <= unported and (i["level"], i["group"]) == ("info", "info"), i
+            assert i["do"] in core.NO_RUNNER_DO.values() and not [p for p in PROMISES if p in i["do"]], i
+        if ph.rule_of(i) == 1:
+            assert i["do"] == core.RULE1_DO  # rule 1 never regains the repair research job
+    assert body["job_runner"]["lock"] == {"held": False}  # the runner's lock exists with the runner
+    assert {j["id"]: j["state"] for j in body["jobs"]}["validation_snapshot"] == "interrupted"  # no live claim
+
+
+def test_a_running_record_is_alive_only_under_the_lock_holders_generation() -> None:
+    docs = ph.unrun_world(False)
+    docs["schedule/jobs.json"] = {**docs["schedule/jobs.json"],
+                                  "event_scan": {"state": "running", "pid": 7, "generation": 5, "started": "2026-11-13T08:59:00"}}  # fmt: skip
+    inputs = inputs_from_docs(docs, NOW.date(), NOW)
+    held = {j["id"]: j for j in core.plan(inputs, NOW, JOBS_RUNNER.holding(5))}
+    assert held["event_scan"]["state"] == "running" and not held["event_scan"]["overdue"]
+    for runner in (JOBS_RUNNER.holding(6), JOBS_RUNNER):  # a larger generation took over / nobody holds the lock
+        row = {j["id"]: j for j in core.plan(inputs, NOW, runner)}["event_scan"]
+        assert row["state"] == "interrupted" and row["overdue"]
 
 
 def test_the_goldens_cover_the_planned_cases() -> None:
@@ -204,18 +244,18 @@ def test_the_goldens_cover_the_planned_cases() -> None:
 
 
 def test_the_revision_2_worlds() -> None:
-    unrun = system_view(_inputs("jobs_unrun"), NOW)
+    unrun = system_view(_inputs("jobs_unrun"), NOW, None)
     assert unrun["status"]["label"] == "Action required"
     assert unrun["status"]["sentence"].startswith("1 item needs you")  # only the failing source counts
     assert unrun["status"]["groups"]["need"] == 1 and unrun["status"]["groups"]["auto"] == 0
     assert {j["id"]: j["state"] for j in unrun["jobs"]}["validation_snapshot"] == "interrupted"  # (e)
-    only = system_view(_inputs("jobs_only"), NOW)
+    only = system_view(_inputs("jobs_only"), NOW, None)
     assert only["status"]["key"] == "unknown" and only["status"]["label"] == "Status unknown"
     assert only["status"]["sentence"] == core.NO_RUNNER_UNKNOWN.format(at="2026-11-10 22:00")
-    empty = system_view(_inputs("empty"), NOW)
+    empty = system_view(_inputs("empty"), NOW, None)
     assert empty["status"]["key"] == "unknown" and empty["status"]["sentence"] == core.NO_RUNNER_NO_REPORT
     assert empty["status"]["last_job_report"] == "" and "20" not in empty["status"]["sentence"]  # no timestamp
-    for body in (unrun, only, empty, system_view(_inputs("main"), NOW)):
+    for body in (unrun, only, empty, system_view(_inputs("main"), NOW, None)):
         texts = [body["status"]["sentence"], *(i["what"] + " " + i["do"] for i in body["issues"])]
         assert not [t for t in texts for p in PROMISES if p in t], texts
         assert all(i["group"] in ("need", "ext", "info") for i in body["issues"])  # nothing counts as automatic
@@ -234,7 +274,7 @@ def test_reads_never_write_and_never_mutate_their_inputs() -> None:
 
 
 def test_the_payload_key_order_and_the_deferred_subsystems() -> None:
-    body, ov = system_view(_inputs("main"), NOW), overview_view(_inputs("main"), NOW)
+    body, ov = system_view(_inputs("main"), NOW, None), overview_view(_inputs("main"), NOW)
     assert list(body) == SYSTEM_KEYS and list(ov) == OVERVIEW_KEYS
     assert list(ov["pipeline"]) == ["inbox", "routing", "conviction", "manager_sent"]  # no ``intake`` (c)
     for value in (body["build"], body["selfcheck"], body["source_discovery"], body["job_runner"]["lock"],
@@ -250,7 +290,7 @@ def test_an_imported_running_job_is_interrupted_without_a_runner() -> None:
     recent = {"state": "running", "started": "2026-11-13T08:30:00", "note": ""}  # no pid, 30 min old
     docs["schedule/jobs.json"] = {**docs["schedule/jobs.json"], "case_refresh": recent}
     inputs = inputs_from_docs(docs, NOW.date(), NOW)
-    plan = {j["id"]: j for j in core.plan(inputs, NOW)}
+    plan = {j["id"]: j for j in core.plan(inputs, NOW, None)}
     assert plan["case_refresh"]["state"] == "interrupted" and plan["case_refresh"]["overdue"]  # (e)
     with_runner = {j["id"]: j for j in core.plan(inputs, NOW, ph.StubRunner())}
     assert with_runner["case_refresh"]["state"] == "running" and not with_runner["case_refresh"]["overdue"]  # 2 h rule

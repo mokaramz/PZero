@@ -4,10 +4,14 @@
  * answers key for key, with these changes:
  * - (c) retired and removed: the overview's `search_bridge`, `scout00` and `native`, `pipeline.intake`, and
  *   `sources[].repair.bridge_job`;
- * - (d) sent as `{"deferred": "<reason>"}` (./deferred): `selfcheck`, `job_runner.lock`, `build`, `source_discovery`,
- *   `watch.failing_checks`; in the overview `backups`, `integrity` and `releases`;
- * - (e) `jobs`, `job_runner.runners` and the overview `jobs` are the imported snapshot (no runner until 032c);
- * - (k) the issue texts and the status sentence come from the server, already reworded.
+ * - (d) sent as `{"deferred": "<reason>"}` (./deferred): `selfcheck`, `build`, `source_discovery`,
+ *   `watch.failing_checks`; in the overview `backups`, `integrity` and `releases`. `job_runner.lock` too, until the
+ *   server runs the 032c runner: then it is the real lock again;
+ * - (e) without the runner, `jobs`, `job_runner.runners` and the overview `jobs` are the imported snapshot. With it
+ *   (032c), `job_runner.runners` is the per-source overlay of the imported and the new records, and a job the runner
+ *   cannot run yet carries `"ported": false` (with its imported history and timestamps);
+ * - (k) the issue texts and the status sentence come from the server: reworded without the runner, the old ones for the
+ *   ported jobs with it (032c c).
  */
 import type { Maybe } from "./deferred";
 
@@ -57,11 +61,17 @@ export type Job = {
   seconds?: number | null;
   fails_in_row?: number;
   error?: string;
+  /** 032c: `false` for a job the runner cannot run yet (it never runs, and "Run overdue now" never sends it) */
+  ported?: boolean;
+  /** 032c: the server's note on an unported job ("not ported yet") */
+  note?: string;
+  /** 032c, the same mark in another spelling: `"not ported yet"` on a job the runner cannot run */
+  availability?: string;
 };
 export type Runner = { at?: string; finished?: string | null; outcome?: string; note?: string; ran?: number; failed?: number; seconds?: number };
-export type Lock = { held: boolean; alive?: boolean; source?: string; pid?: number; since?: string; age_h?: number | null; suspect?: boolean };
+export type Lock = { held: boolean; alive?: boolean; source?: string; pid?: number | null; since?: string; age_h?: number | null; suspect?: boolean };
 export type JobRunner = {
-  /** a pid lock file in the old app: deferred (d) */
+  /** the runner lock (032c); deferred (d) while the server has no runner */
   lock: Maybe<Lock>;
   runners: Record<string, Runner>;
   outcomes?: Record<string, string>;

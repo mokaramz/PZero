@@ -2,6 +2,10 @@
 
 from __future__ import annotations
 
+import threading
+from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
@@ -19,6 +23,7 @@ from projectzero.api.routers import (
     founder_radar,
     home,
     intake,
+    jobs,
     map,
     network,
     news,
@@ -32,7 +37,18 @@ from projectzero.core.config import Settings
 
 
 def create_app(settings: Settings | None = None) -> FastAPI:
-    app = FastAPI(title="Project Zero", docs_url=None, redoc_url=None, openapi_url=None)
+    @asynccontextmanager
+    async def lifespan(app: FastAPI) -> AsyncIterator[None]:
+        # review 032c: the in-app catch-up at start (the old recovery + ``start_catch_up``, its 4-second delay), in a
+        # thread so startup never waits on the database; off under tests (``PZ_CATCHUP=0``, tests/conftest.py)
+        from projectzero.jobs import runner
+
+        if runner.env_enabled():
+            s = app.state.settings
+            threading.Thread(target=runner.app_start, args=(s.db_url, s.schema), daemon=True, name="pz-start").start()
+        yield
+
+    app = FastAPI(title="Project Zero", docs_url=None, redoc_url=None, openapi_url=None, lifespan=lifespan)
     app.state.settings = settings or Settings.from_env()
     app.middleware("http")(security_middleware)
     app.include_router(intake.router)
@@ -54,6 +70,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.include_router(home.router)
     app.include_router(system_health.router)
     app.include_router(associate.router)
+    app.include_router(jobs.router)
 
     @app.exception_handler(RequestValidationError)
     async def invalid_request(_: Request, exc: RequestValidationError) -> JSONResponse:

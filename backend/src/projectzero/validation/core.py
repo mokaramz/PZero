@@ -815,7 +815,14 @@ def snapshot_series(
     rows = read_jsonl(snapshots_log)
     if rows and rows[-1].get("date") == today.isoformat():
         return rows
-    line = json.dumps(
+    line = snapshot_line(head, cal, today, now)
+    return read_jsonl(snapshots_log + line.replace("\n", " ") + "\n")
+
+
+def snapshot_line(head: dict[str, Any], cal: dict[str, Any], today: date, now: datetime) -> str:
+    """The old ``_snapshot`` line (``json.dumps(..., sort_keys=True)``): what ``snapshot_series`` appends in memory and
+    what the background job ``validation_snapshot`` stores (review 032c)."""
+    return json.dumps(
         {
             "date": today.isoformat(),
             "at": ts(now),
@@ -825,7 +832,6 @@ def snapshot_series(
         },
         sort_keys=True,
     )
-    return read_jsonl(snapshots_log + line.replace("\n", " ") + "\n")
 
 
 def _routing(ents: dict[str, dict[str, Any]], inputs: ValidationInputs) -> dict[str, Any] | None:

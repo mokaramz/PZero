@@ -3,6 +3,7 @@ import { Disclosure } from "@/components/focus";
 import { Badge, Callout, Stat, type Tone } from "@/components/ui";
 import { plainSourceProblem, plainText } from "@/lib/activity";
 import { JOBS_SNAPSHOT, ported, reasonOf } from "../model/deferred";
+import { isPortedJob, JOB_NOT_PORTED, JOBS_LIVE, JOBS_UNPORTED, runnerLive, unportedJobs } from "../model/jobs";
 import type { Health } from "../model/types";
 import { Reason } from "./bits";
 import { Hardening } from "./Hardening";
@@ -20,8 +21,10 @@ function plainSourceProblemLine(line: string): string {
 /**
  * Level 3: every diagnostic the System Health page has always offered — one section open at a time (ported from the
  * old `Diagnostics.tsx`, review 032a). What changed:
- * - Background jobs: the old catch-up line ("… these catch up when the app opens …") is the snapshot line while no
- *   runner exists (decision e); the runner lock is deferred, so its reason replaces "busy / idle" (d);
+ * - Background jobs (032c, read from the payload): while the server sends the runner lock deferred, the old catch-up
+ *   line ("… these catch up when the app opens …") is the snapshot line (decision e) and the lock's reason replaces
+ *   "busy / idle" (d). With the real lock, the line says where the jobs run in the new app and the lock is the old
+ *   "busy / idle" again. A job with `ported: false` says "not ported yet" in place of "overdue" or its next run;
  * - Build and self-check: deferred, each shows its reason (d); WATCH's failing page checks too (d);
  * - News: no "catch-up" promise when there is no refresh yet (revision 2);
  * - Sources → New sources and Data integrity & backups: the 032b panels, with no request (./NewSources, ./Hardening).
@@ -29,6 +32,8 @@ function plainSourceProblemLine(line: string): string {
 export function Diagnostics({ d }: { d: Health }) {
   const lock = d.job_runner ? d.job_runner.lock : undefined;
   const held = ported(lock);
+  const live = runnerLive(d);
+  const unported = unportedJobs(d.jobs);
   const build = ported(d.build);
   const selfcheck = ported(d.selfcheck);
   const failingChecks = ported(d.watch.failing_checks);
@@ -92,8 +97,13 @@ export function Diagnostics({ d }: { d: Health }) {
         )}
         <Disclosure title="Background jobs" icon="clock" hint={d.overdue ? `${d.overdue} overdue` : "on schedule"} testId="health-jobs">
           <p className="small faint" data-testid="health-jobs-note">
-            {JOBS_SNAPSHOT}
+            {live ? JOBS_LIVE : JOBS_SNAPSHOT}
           </p>
+          {live && unported.length > 0 && (
+            <p className="small faint" data-testid="health-jobs-unported-note">
+              {JOBS_UNPORTED}
+            </p>
+          )}
           {d.job_runner && (
             <p className="small" data-testid="health-job-runner">
               Job runner:{" "}
@@ -122,9 +132,18 @@ export function Diagnostics({ d }: { d: Health }) {
           )}
           <ul className="small">
             {d.jobs.map((j) => (
-              <li key={j.id} data-testid="health-job">
+              <li key={j.id} data-testid="health-job" data-job-id={j.id} data-ported={isPortedJob(j) ? undefined : "false"}>
                 <b>{j.label}</b> every {j.interval_h >= 48 ? `${Math.round(j.interval_h / 24)} days` : `${j.interval_h} h`} · last ok {j.last_ok || "never"} ·{" "}
-                {j.overdue ? <Badge tone="amber">overdue</Badge> : `next ${j.next_due}`} {j.state !== "ok" && j.state !== "never_run" && <Badge tone="red">{j.state}</Badge>}
+                {!isPortedJob(j) ? (
+                  <Badge tone="neutral" data-testid="health-job-not-ported">
+                    {JOB_NOT_PORTED}
+                  </Badge>
+                ) : j.overdue ? (
+                  <Badge tone="amber">overdue</Badge>
+                ) : (
+                  `next ${j.next_due}`
+                )}{" "}
+                {j.state !== "ok" && j.state !== "never_run" && <Badge tone="red">{j.state}</Badge>}
                 {j.outcome_label && j.state === "ok" && (
                   <Badge tone={j.outcome === "budget_blocked" || j.outcome === "partial" || j.outcome === "waiting_external" ? "amber" : "neutral"}>{j.outcome_label}</Badge>
                 )}

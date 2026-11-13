@@ -39,7 +39,14 @@ Declared differences, ALL applied by ``normalise`` (old payload -> the expected 
   every old answer first), with the two job-report sentences reworded.
 
 ``runner_check`` also compares ``system_view(..., runner=<a stub runner>)`` with the old payload normalised WITHOUT
-(k): the old texts and groups come back exactly (032c's switch).
+(k): the old texts and groups come back exactly (032c's switch); the runner's lock is then the old answer too.
+
+* **032c (c), the real runner (``real``):** the runner can run only ``PORTED_JOBS`` (restated here). Its plan rows
+  for the six other jobs are never overdue and carry ``availability: "not ported yet"`` (b); rules 3 and 4 keep
+  revision 2's advice (no scan, no triage retry); rules 6-11 are split per job: the runnable jobs keep the old item
+  (text, level, group), the others get revision 2's item (``NEW_DO``, level ``info``) over their own labels, right
+  after it (rule 6: an unported job is not overdue, so it is not listed). The items are rebuilt from the old jobs
+  rows, each rebuild checked first against the old item; then the verdict and the status are re-derived.
 
 The worlds hold INVENTED names only (see ``WORLDS``). Exit 1 on any difference.
 """
@@ -62,6 +69,7 @@ from projectzero.core.paths import REPO_ROOT
 from projectzero.dealflow.ranking.names import norm_company
 from projectzero.health import UNREADABLE, inputs_from_docs, overview_view, system_view
 from projectzero.health import core as health_core
+from projectzero.jobs.ported import RUNNER as JOBS_RUNNER
 from projectzero.ops.parity_ranking import GOLDEN_DIR, OLD_REPO, diff, js
 
 ORACLE = REPO_ROOT / "scripts" / "oracle" / "health_oracle.py"
@@ -651,8 +659,54 @@ def expected_status(verdict: str, issues: list[dict[str, str]], old: dict[str, A
     }
 
 
-def normalise_system(body: dict[str, Any], *, runner: bool = False) -> dict[str, Any]:
-    """The old ``system()`` payload -> the expected new one (declared c, d, e, f, k; g needs nothing here)."""
+# 032c: the jobs the real runner can run (restated from the plan's table, checked against ``jobs.ported``)
+PORTED_JOBS = frozenset(
+    {"event_scan", "validation_snapshot", "news_refresh", "news_weekly_review", "news_source_review"}
+)
+NEW_NOT_PORTED = "not ported yet"
+JOB_RULES: dict[int, tuple[str, str, Callable[[dict[str, Any]], str]]] = {  # rule -> (prefix, separator, item)
+    6: ("", ", ", lambda p: p["label"].split(" (")[0]),
+    7: ("background job keeps failing: ", "; ",
+        lambda p: f"{p['label']} ({p['fails_in_row']} runs in a row — {str(p['error'] or p['last_note'])[:120]})"),
+    8: ("background job(s) failed or were interrupted: ", ", ", lambda p: p["label"]),
+    9: ("background job blocked by a budget limit: ", ", ", lambda p: p["label"]),
+    10: ("background job(s) only partially completed: ", ", ", lambda p: p["label"]),
+    11: ("waiting for an external dependency: ", ", ", lambda p: f"{p['label']} ({str(p['last_note'])[:60]})"),
+}  # fmt: skip
+JOB_PICK: dict[int, Callable[[dict[str, Any]], bool]] = {  # rule -> the old jobs rows behind its item
+    6: lambda p: bool(p["overdue"]),
+    7: lambda p: p["fails_in_row"] >= 2,
+    8: lambda p: p["state"] in ("failed", "interrupted") and p["fails_in_row"] < 2,
+    9: lambda p: p.get("outcome") == "budget_blocked",
+    10: lambda p: p.get("outcome") == "partial",
+    11: lambda p: p.get("outcome") == "waiting_external",
+}
+
+
+def rule_what(rule: int, rows: list[dict[str, Any]]) -> str:
+    prefix, sep, item = JOB_RULES[rule]
+    if rule == 6:
+        return f"{len(rows)} background job(s) overdue: " + sep.join(item(p) for p in rows[:4])
+    return prefix + sep.join(item(p) for p in rows)
+
+
+def per_job_issues(i: dict[str, str], rule: int, jobs: list[dict[str, Any]], ported: frozenset[str]) -> list[Any]:
+    """032c (c): one old job item -> the runnable jobs' old item, then the others' revision 2 item (rule 6: none)."""
+    rows = [p for p in jobs if JOB_PICK[rule](p)]
+    assert rule_what(rule, rows) == i["what"], (rule, i["what"])  # the rebuild reproduces the old item
+    mine = [p for p in rows if p["id"] in ported]
+    others = [p for p in rows if p["id"] not in ported]
+    out: list[Any] = [{**i, "what": rule_what(rule, mine)}] if mine else []
+    if others and rule != 6:  # (b): an unported job is never overdue
+        out.append({"level": "info", "what": rule_what(rule, others), "do": NEW_DO[rule], "group": "info"})
+    return out
+
+
+def normalise_system(
+    body: dict[str, Any], *, runner: bool = False, ported: frozenset[str] | None = None
+) -> dict[str, Any]:
+    """The old ``system()`` payload -> the expected new one (declared c, d, e, f, k; g needs nothing here).
+    ``ported`` (with ``runner``): 032c's per-job switch of the real runner."""
     old = copy.deepcopy(body)
     for i in old["issues"]:
         if any(x in i["what"] for x in OMITTED):
@@ -676,6 +730,12 @@ def normalise_system(body: dict[str, Any], *, runner: bool = False) -> dict[str,
             i = {**i, "do": health_core.PAID_OFF_DO}
         elif rule is not None and not runner:  # (k)
             i = {"level": "info", "what": i["what"], "do": NEW_DO[rule], "group": "info"}
+        elif rule in (3, 4) and ported is not None:  # 032c (c): neither the scan nor the triage retry is ported
+            assert {3: "deal_flow_scan", 4: "triage_retry"}[rule] not in ported
+            i = {"level": "info", "what": i["what"], "do": NEW_DO[rule], "group": "info"}
+        elif rule is not None and rule >= 6 and ported is not None:  # 032c (c): split per job
+            issues += per_job_issues(i, rule, old["jobs"], ported)
+            continue
         issues.append(i)
     verdict = expected_verdict(issues)
     out: dict[str, Any] = {}
@@ -692,8 +752,12 @@ def normalise_system(body: dict[str, Any], *, runner: bool = False) -> dict[str,
                     row["repair"].pop("bridge_job", None)
         elif k == "watch":  # (d)
             v = {**v, "failing_checks": health_core.deferred(health_core.WATCH_CHECKS_DEFERRED)}
-        elif k == "job_runner":  # (d)
+        elif k == "job_runner" and not runner:  # (d); with a runner its lock is the old answer
             v = {**v, "lock": health_core.deferred(health_core.LOCK_DEFERRED)}
+        elif k == "jobs" and ported is not None:  # 032c (b)
+            v = [p if p["id"] in ported else {**p, "overdue": False, "availability": NEW_NOT_PORTED} for p in v]
+        elif k == "overdue" and ported is not None:
+            v = sum(1 for p in old["jobs"] if p["overdue"] and p["id"] in ported)
         elif k == "providers":  # (f) / 029a decision h
             v = [p for p in v if p["role"] != "RESEARCH"]
         elif k == "build":
@@ -724,10 +788,16 @@ def normalise_overview(body: dict[str, Any]) -> dict[str, Any]:
     return out
 
 
-def normalise(expected: dict[str, Any], *, runner: bool = False) -> dict[str, Any]:
-    """The ONE place the declared differences are applied: the old answers of a world -> the expected new ones."""
+def normalise(expected: dict[str, Any], *, runner: bool = False, real: bool = False) -> dict[str, Any]:
+    """The ONE place the declared differences are applied: the old answers of a world -> the expected new ones.
+    ``real``: the expected answer of the REAL runner (032c's per-job switch; implies ``runner``)."""
     out: dict[str, Any] = {}
-    for route, fn in (("system", lambda b: normalise_system(b, runner=runner)), ("overview", normalise_overview)):
+    ported = PORTED_JOBS if real else None
+
+    def system(b: dict[str, Any]) -> dict[str, Any]:
+        return normalise_system(b, runner=runner or real, ported=ported)
+
+    for route, fn in (("system", system), ("overview", normalise_overview)):
         old = expected[route]
         out[route] = {"ok": fn(old["ok"])} if "ok" in old else {"raises": old["raises"].split(":")[0]}
     return out
@@ -735,9 +805,13 @@ def normalise(expected: dict[str, Any], *, runner: bool = False) -> dict[str, An
 
 # ------------------------------------------------------------------ the new side
 class StubRunner:
-    """A runner whose recorded processes are all gone (the oracle's ``pid_alive``): 032c's switch, for the check."""
+    """A runner that can run every job and whose recorded runs are all gone (the oracle's ``pid_alive``): the old
+    texts exactly (032a's runner check)."""
 
-    def pid_alive(self, pid: Any) -> bool:
+    def ported(self, job_id: str) -> bool:
+        return True
+
+    def alive(self, record: dict[str, Any]) -> bool:
         return False
 
 
@@ -778,17 +852,18 @@ def _text(v: Any) -> str:
     return json.dumps(v, ensure_ascii=False)
 
 
-def compare_world(name: str, w: dict[str, Any], *, runner: bool = False) -> list[str]:
+def compare_world(name: str, w: dict[str, Any], *, runner: bool = False, real: bool = False) -> list[str]:
     expected = w["expected"]
     problems: list[str] = []
     for k in ("changed", "blocked"):
         if expected.get(k):
             problems.append(f"/{name}/{k}: the OLD read wrote {expected[k]}")
     try:
-        want = js(normalise(expected, runner=runner))
+        want = js(normalise(expected, runner=runner, real=real))
     except (ValueError, AssertionError) as exc:
         return [*problems, f"/{name}: {exc}"]
-    got, invariants = new_side(w["docs"], w["clock"], w["paid"], w["key"], StubRunner() if runner else None)
+    who = JOBS_RUNNER if real else StubRunner() if runner else None
+    got, invariants = new_side(w["docs"], w["clock"], w["paid"], w["key"], who)
     problems += [f"/{name}{p}" for p in invariants]
     for route in ("system", "overview"):
         problems += [f"/{name}/{route}{p}" for p in diff(want[route], got[route])]
@@ -797,10 +872,10 @@ def compare_world(name: str, w: dict[str, Any], *, runner: bool = False) -> list
     return problems
 
 
-def compare_goldens(golden: dict[str, Any], *, runner: bool = False) -> list[str]:
+def compare_goldens(golden: dict[str, Any], *, runner: bool = False, real: bool = False) -> list[str]:
     problems: list[str] = []
     for name, w in golden["worlds"].items():
-        problems += compare_world(name, w, runner=runner)
+        problems += compare_world(name, w, runner=runner, real=real)
     return problems
 
 
@@ -853,6 +928,7 @@ def write_goldens() -> int:
 def report_(golden: dict[str, Any], label: str) -> int:
     problems = compare_goldens(golden)
     with_runner = compare_goldens(golden, runner=True)
+    per_job = compare_goldens(golden, real=True)
     print(json.dumps({"golden": str(GOLDEN), "bytes": GOLDEN.stat().st_size, "old": golden["provenance"],
                       "summary": summary(golden)}, indent=1, ensure_ascii=False))  # fmt: skip
     for p in problems[:60]:
@@ -864,8 +940,15 @@ def report_(golden: dict[str, Any], label: str) -> int:
         if not with_runner
         else f"{label} RUNNER SWITCH DIFFER ({len(with_runner)})"
     )
+    for p in per_job[:60]:
+        print("  DIFF (per job)", p)
+    print(
+        f"{label} PER-JOB RUNNER SWITCH MATCH (0 differences)"
+        if not per_job
+        else f"{label} PER-JOB RUNNER SWITCH DIFFER ({len(per_job)})"
+    )
     print(f"{label} MATCH (0 differences)" if not problems else f"{label} DIFFER ({len(problems)})")
-    return 1 if problems or with_runner else 0
+    return 1 if problems or with_runner or per_job else 0
 
 
 def real() -> int:  # pragma: no cover - for the main session: needs the hosted database, the reader and the routes
@@ -925,7 +1008,7 @@ def real() -> int:  # pragma: no cover - for the main session: needs the hosted 
         with transaction(settings.db_url) as c:
             after = _fingerprint(c, schema)
         try:
-            want = js(normalise(old))
+            want = js(normalise(old, real=True))  # 032c: the routes serve the real runner
             # declared (l), Codex H-309: the "You: review" counts are the Deal Flow inbox's (its own route, same data):
             # the merged candidates, absorbed records once, the Scout-only candidates the merge brought in
             old_inbox = want["overview"]["ok"]["pipeline"]["inbox"]

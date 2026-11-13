@@ -19,6 +19,8 @@ try {
     Step "backend: pytest" { & $py -m pytest }
 } finally { Pop-Location }
 
+Step "scripts: deploy-release tests" { powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $root "scripts\background\tests\deploy-release.tests.ps1") }
+
 Step "contracts: ECMA pattern parity" { node --test (Join-Path $root "contracts\tests\patterns.test.mjs") }
 
 Push-Location (Join-Path $root "supabase\tests")

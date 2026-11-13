@@ -98,7 +98,7 @@ def test_an_imported_world_answers_what_the_old_reads_answered_and_writes_nothin
         after = _fingerprint(conn, schema)
         q = sql.SQL("select event_id from {}.news_events").format(sql.Identifier(schema))
         stored = [r[0] for r in conn.execute(q).fetchall()]
-    want = js(normalise(w["expected"]))
+    want = js(normalise(w["expected"], real=True))  # 032c: the route serves the real runner (per-job switch, its lock)
     # the News import seeds the old app's shipped curated case(s) (review 028), which the old app wrote at its first
     # News read: a fresh world without them counts them on the new side only. The real snapshot already holds them.
     world_events = ((w["docs"].get("news/events.json") or {}).get("events")) or {}
@@ -106,10 +106,23 @@ def test_an_imported_world_answers_what_the_old_reads_answered_and_writes_nothin
     assert all(e.startswith("nw-case-") for e in seeded), seeded
     if isinstance(want["system"].get("ok", {}).get("news"), dict) and "events" in want["system"]["ok"]["news"]:
         want["system"]["ok"]["news"]["events"] += len(seeded)
+    # declared (l), Codex H-309: the overview's inbox counts are the Deal Flow inbox's (its own route, same data): a
+    # world whose import absorbs records counts each survivor once, where the old inbox.json counted every record
+    want["overview"]["ok"]["pipeline"]["inbox"] = _deal_flow_counts(settings, schema, w["clock"])
     for route, _path in ROUTES:
         assert diff(want[route], got[route]) == [], route
         assert json.dumps(want[route], ensure_ascii=False) == json.dumps(got[route], ensure_ascii=False), route
     assert sorted(t for t in before if before[t] != after.get(t)) == []
+
+
+def _deal_flow_counts(settings: Settings, schema: str, clock: str) -> dict[str, int]:
+    from collections import Counter
+
+    app = create_app(Settings(db_url=settings.db_url, schema=schema))
+    app.state.clock = lambda: utc_instant(clock)
+    with TestClient(app, base_url="http://127.0.0.1:8177") as client:
+        inbox = client.get("/api/deal-flow/inbox").json()
+    return dict(Counter(str(c.get("decision") or "") for c in inbox["candidates"]))
 
 
 def test_the_imported_jobs_and_runs_read_back_exactly(

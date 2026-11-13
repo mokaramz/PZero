@@ -5,6 +5,7 @@ import { GROUPS, STATE_LABEL, activeSources, ago, groupOf, stateTone, usd } from
 import { JOBS_SNAPSHOT, NOT_PORTED } from "../model/deferred";
 import type { Detail } from "../model/detail";
 import { ERR_KIND, fmt } from "../model/format";
+import { isPortedJob, JOB_NOT_PORTED, JOB_TEXT, runnerLive } from "../model/jobs";
 import type { Health } from "../model/types";
 import { KV, St } from "./bits";
 import styles from "../Health.module.css";
@@ -12,7 +13,8 @@ import styles from "../Health.module.css";
 /**
  * The detail drawer's body (ported from the old `HealthPage.tsx`). What changed: a background job's "Retry" and
  * "Downstream effect" no longer promise a run while no runner exists (revision 2) and the drawer shows the snapshot
- * line (decision e); a source no longer offers "Prepare repair research (Scout Bridge)" — that action is retired
+ * line (decision e). With the live runner (032c, read from the payload), a ported job has the old texts again and an
+ * unported one (`ported: false`) says it is not ported and that its history is the imported snapshot; a source no longer offers "Prepare repair research (Scout Bridge)" — that action is retired
  * (decision c), the diagnosis stays.
  */
 export function DetailBody({ detail: x, d, now }: { detail: NonNullable<Detail>; d: Health; now: Date }) {
@@ -36,20 +38,25 @@ export function DetailBody({ detail: x, d, now }: { detail: NonNullable<Detail>;
     );
   if (x.kind === "runs") {
     const j = d.jobs.find((y) => y.id === x.jobId);
+    const unported = !!j && !isPortedJob(j);
+    const live = runnerLive(d) && !unported; // the old texts: the runner runs this job
+    const snapshot = unported ? (runnerLive(d) ? JOB_TEXT.snapshotUnported : JOBS_SNAPSHOT) : live ? null : JOBS_SNAPSHOT;
     return (
       <div data-testid="health-detail">
         <div className={styles.dLab}>Background job</div>
         <KV
           rows={[
             ["Interval", j ? `${j.interval_h} h` : "—"],
-            ["Next run", j?.overdue ? "overdue" : fmt(j?.next_due)],
+            ["Next run", unported ? JOB_NOT_PORTED : j?.overdue ? "overdue" : fmt(j?.next_due)],
             ["Failures in a row", String(j?.fails_in_row ?? 0)],
-            ["Retry", (j?.fails_in_row ?? 0) > 0 ? NOT_PORTED.runner : "not needed"],
+            ["Retry", (j?.fails_in_row ?? 0) > 0 ? (live ? JOB_TEXT.retryLive : unported && runnerLive(d) ? JOB_TEXT.retryUnported : NOT_PORTED.runner) : "not needed"],
           ]}
         />
-        <p className={styles.note} data-testid="health-runs-snapshot">
-          {JOBS_SNAPSHOT}
-        </p>
+        {snapshot && (
+          <p className={styles.note} data-testid="health-runs-snapshot">
+            {snapshot}
+          </p>
+        )}
         <div className={styles.dSec}>
           <h4>Runs in this period ({x.runs.length})</h4>
           {x.runs.map((r) => (
@@ -69,8 +76,11 @@ export function DetailBody({ detail: x, d, now }: { detail: NonNullable<Detail>;
           <div className={styles.dSec}>
             <h4>Downstream effect</h4>
             <p className={styles.note}>
-              Work that did not complete is not run again until the background-job runner is ported; nothing already stored was changed. Spending caps are never
-              overridden.
+              {live
+                ? JOB_TEXT.downstreamLive
+                : unported && runnerLive(d)
+                  ? JOB_TEXT.downstreamUnported
+                  : "Work that did not complete is not run again until the background-job runner is ported; nothing already stored was changed. Spending caps are never overridden."}
             </p>
           </div>
         )}

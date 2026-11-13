@@ -26,6 +26,7 @@ from projectzero.dealflow.sources.store import SourcesStore
 from projectzero.dealflow.triage import view as triage_view
 from projectzero.ecosystems.store import EcosystemsStore
 from projectzero.health.inputs_model import HealthInputs
+from projectzero.jobs import store as jobs_store
 from projectzero.network.store import load_people
 from projectzero.network.view import berlin_now
 from projectzero.validation import inputs as validation_inputs
@@ -99,7 +100,7 @@ def load(conn: psycopg.Connection[Any], schema: str, now: datetime) -> HealthInp
         config=operator.config,
         event_health=_document(conn, s, "event_health.json", {}),
         runs=[r["detail"] for r in _rows(conn, s, "select detail from {s}.job_runs order by id")],
-        runners=_archived_first(conn, s, "schedule/runner.json", "schedule/runner.json", {}),
+        runners=jobs_store.runner_records(conn, schema),  # 032c: the archive overlaid by source (the ONE reader)
         ledger=[ledger_line(r) for r in _rows(conn, s, "select * from {s}.model_ledger order by id")],
         inference_config=icfg.load(),
         paid=icfg.paid_enabled(os.environ),
@@ -110,4 +111,5 @@ def load(conn: psycopg.Connection[Any], schema: str, now: datetime) -> HealthInp
         queue_routing=_archived_first(conn, s, "queue_routing.json", "queue_routing.json#rest", {}),
         signals=[record_of(r) for r in ConvictionStore(conn, schema).entry_rows()],
         inbox_decisions=[str(ranking_input(r)[0].get("decision") or "") for r in candidate_rows(conn, schema)],
+        lock=jobs_store.lock_status(conn, schema, now),
     )
