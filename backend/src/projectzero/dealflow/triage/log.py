@@ -22,6 +22,12 @@ from projectzero.core.db import schema_ident
 
 _ROWS = "select entry::text from {}.triage_decisions order by seq"
 _INSERT = "insert into {}.triage_decisions (candidate_id, recorded_at, entry) values (%s, %s, %s::json) returning seq"
+# review 035d: many lines in ONE statement, ``seq`` in the given order (the old sequential appends)
+_INSERT_MANY = (
+    "insert into {}.triage_decisions (candidate_id, recorded_at, entry) "
+    "select t.cid, %s, t.line::json from unnest(%s::text[], %s::text[]) with ordinality as t(cid, line, ord) "
+    "order by t.ord"
+)
 
 
 def line(entry: Mapping[str, Any]) -> str:
@@ -55,3 +61,19 @@ def append(
     ).fetchone()
     assert row is not None
     return int(row[0])
+
+
+def append_many(
+    conn: psycopg.Connection[Any],
+    schema: str,
+    entries: list[tuple[str, Mapping[str, Any]]],
+    recorded_at: datetime,
+) -> None:
+    """``(candidate_id, entry)`` pairs as rows in ONE statement, in the given order (the batch confirm, review 035d):
+    each row is the one ``append`` writes, and their ``seq`` follow the list."""
+    if not entries:
+        return
+    conn.execute(
+        sql.SQL(_INSERT_MANY).format(schema_ident(schema)),
+        (recorded_at, [cid for cid, _ in entries], [line(e) for _, e in entries]),
+    )

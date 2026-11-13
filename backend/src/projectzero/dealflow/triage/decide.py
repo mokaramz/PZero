@@ -262,11 +262,15 @@ def batch_reject(conn: psycopg.Connection[Any], schema: str, body: Mapping[str, 
     eligible, skipped = classify_batch(ids, resolved, j.summaries, j.records, j.latest)
     if not confirm:
         return {"ok": True, "preview": True, "eligible": len(eligible), "skipped": skipped}
-    ts = now_ts(now)
-    for sid in eligible:
-        store.decide(
-            sid, "rejected", reason="machine triage: batch_accept", expected_status="new", feedback_answer=False
-        )
-        entry = log_entry(j.records[sid], j.inputs.proposals[sid], "REJECT", "batch_accept", "rejected", "", ts)
-        log.append(conn, schema, sid, entry, now)
+    ts = now_ts(now)  # review 035d: set-based, a fixed number of statements, in the request order of ``eligible``
+    store.reject_new_batch(eligible, reason="machine triage: batch_accept")
+    log.append_many(
+        conn,
+        schema,
+        [
+            (sid, log_entry(j.records[sid], j.inputs.proposals[sid], "REJECT", "batch_accept", "rejected", "", ts))
+            for sid in eligible
+        ],
+        now,
+    )
     return {"ok": True, "applied": len(eligible), "skipped": skipped}

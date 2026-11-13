@@ -281,19 +281,13 @@ def test_a_failure_on_the_third_line_rolls_the_whole_batch_back(
     cands = [ptd._c(f"at-{i}", n, f"{n} is a regional trade business.") for i, n in enumerate(names)]
     schema = world(docs_of(cands))
     before = fingerprint(settings, schema)
-    real = triage_log.append
-    calls: list[str] = []
-
-    def third_fails(conn: Any, s: str, cid: str, entry: Any, at: Any) -> int:
-        calls.append(cid)
-        if len(calls) == 3:
-            raise RuntimeError("forced: the third log insert fails")
-        return real(conn, s, cid, entry, at)
-
-    monkeypatch.setattr(triage_log, "append", third_fails)
+    needle = "t.line::json"  # review 035d: the lines are ONE insert; a real database error on its third row
+    assert triage_log._INSERT_MANY.count(needle) == 1
+    monkeypatch.setattr(triage_log, "_INSERT_MANY", triage_log._INSERT_MANY.replace(
+        needle, "(case when t.ord = 3 then (1 / 0)::text else t.line end)::json"))  # fmt: skip
     with client_of(settings, schema, raise_server_exceptions=False) as client:
         r = client.post("/api/deal-flow/triage/batch_reject", json={"ids": [c["id"] for c in cands], "confirm": True})
-    assert r.status_code == 500 and len(calls) == 3
+    assert r.status_code == 500
     assert fingerprint(settings, schema) == before  # all five statuses unchanged, no line
 
 
