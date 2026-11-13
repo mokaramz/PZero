@@ -1,0 +1,23 @@
+{
+  "role": "CHEAP",
+  "max_steps": 4,
+  "model": {
+    "ready": false,
+    "problem": "no API key is set for the CHEAP role"
+  },
+  "kill_switch": "paid AI calls are off (PZ_AI_PAID)",
+  "docs_indexed": 64,
+  "docs_missing": [],
+  "tools": [
+    { "name": "search_docs", "category": "READ", "purpose": "Search the Project Zero documentation." },
+    { "name": "today_missions", "category": "READ", "purpose": "Today's missions and Manager decisions." },
+    { "name": "conviction_companies", "category": "READ", "purpose": "The Conviction companies by segment." },
+    { "name": "manager_decisions", "category": "READ", "purpose": "Companies waiting on a Manager decision." },
+    { "name": "company_detail", "category": "READ", "purpose": "One Conviction company: case, verification, gates." },
+    { "name": "deal_flow_candidates", "category": "READ", "purpose": "Deal Flow candidates by view." },
+    { "name": "candidate_detail", "category": "READ", "purpose": "One Deal Flow candidate." },
+    { "name": "radar", "category": "READ", "purpose": "The Radar Top 10." },
+    { "name": "upcoming_events", "category": "READ", "purpose": "The next scored events." },
+    { "name": "find_records", "category": "READ", "purpose": "Find companies and candidates by name." }
+  ]
+}

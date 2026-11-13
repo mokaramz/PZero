@@ -1,0 +1,19 @@
+{
+  "profile": {
+    "interests": "Climate software and industrial AI across the Nordics and Iberia",
+    "sourcing_priorities": "",
+    "quality_standards": "Two independent sources for every traction claim",
+    "routines": "",
+    "output_preferences": "Short bullet lists, the decision first",
+    "boundaries": "",
+    "updated": "2026-11-11T09:00:00Z"
+  },
+  "fields": [
+    { "key": "interests", "label": "Investment interests" },
+    { "key": "sourcing_priorities", "label": "Sourcing priorities" },
+    { "key": "quality_standards", "label": "Quality standards" },
+    { "key": "routines", "label": "Working routines" },
+    { "key": "output_preferences", "label": "Preferred output formats" },
+    { "key": "boundaries", "label": "Decision boundaries" }
+  ]
+}

@@ -7,6 +7,7 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 
 from projectzero.api.routers import (
+    associate,
     content,
     conviction,
     dealflow,
@@ -52,6 +53,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.include_router(today.router)
     app.include_router(home.router)
     app.include_router(system_health.router)
+    app.include_router(associate.router)
 
     @app.exception_handler(RequestValidationError)
     async def invalid_request(_: Request, exc: RequestValidationError) -> JSONResponse:

@@ -39,7 +39,7 @@ export function Topbar({ focus, onToggleFocus, dark, onToggleTheme, onToggleNav,
       </button>
       <ThemeSwitch dark={dark} onToggle={onToggleTheme} />
       <span className={styles.who}>
-        <span className={styles.release}>v2</span> · Taste Map v2.2 · data stays local
+        <span className={styles.release}>v2</span> · Taste Map v2.2 · data in your Project Zero database
       </span>
       <span className={styles.operator} title={`${ROLE.operator} — the final human decision owner`} aria-label={ROLE.operator}>
         SO

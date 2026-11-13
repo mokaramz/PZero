@@ -1,0 +1,19 @@
+{
+  "conversation": {
+    "id": "c-5e6f7a8b9c0d",
+    "title": "How does Deal Flow find and triage new candidates?"
+  },
+  "message": {
+    "role": "assistant",
+    "at": "2026-11-13T08:31:00Z",
+    "tools": [],
+    "usd": 0.0,
+    "model": "",
+    "text": "**The model is not available right now** (paid AI is switched off). Nothing was changed. From the PZ documentation:\n\n**Deal Flow triage**\n\nEvery candidate the scan finds is triaged before it reaches your queue: Reject, Research or Keep.\n\n**Your queue**\n\nOnly the candidates you keep reach Conviction.",
+    "docs": ["PZ_DEAL_FLOW.md › Deal Flow triage", "PZ_DEAL_FLOW.md › Your queue"],
+    "sources": [],
+    "actions": [],
+    "focus": [],
+    "mode": "offline"
+  }
+}

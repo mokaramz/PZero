@@ -1,0 +1,20 @@
+{
+  "drafts": [
+    {
+      "id": "d-0a1b2c3d4e",
+      "title": "Manager questions for Lumenfold",
+      "body": "1. Who leads the seed round?\n2. Which pilot customer signed first?",
+      "ref": { "kind": "company", "id": "lumenfold", "label": "Lumenfold", "link": "/conviction?company=lumenfold" },
+      "conversation_id": "c-0a1b2c3d4e5f",
+      "created": "2026-11-12T16:00:00Z"
+    },
+    {
+      "id": "d-9f8e7d6c5b",
+      "title": "Intro note to Orvella",
+      "body": "A short note asking the Orvella founders for a call next week.",
+      "ref": null,
+      "conversation_id": null,
+      "created": "2026-11-09T10:15:00Z"
+    }
+  ]
+}

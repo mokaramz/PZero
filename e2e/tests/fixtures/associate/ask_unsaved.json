@@ -1,0 +1,21 @@
+{
+  "conversation": {
+    "id": "c-0a1b2c3d4e5f",
+    "title": "Which Conviction companies are waiting on a Manager"
+  },
+  "message": {
+    "role": "assistant",
+    "at": "2026-11-13T08:40:00Z",
+    "tools": [],
+    "usd": 0.0,
+    "model": "",
+    "text": "**The model is not available right now** (paid AI is switched off). Nothing was changed. From the PZ documentation:\n\n**Radar**\n\nA company reaches Radar only once every claim on its case is verified.",
+    "docs": ["PZ_RADAR.md › Radar"],
+    "sources": [],
+    "actions": [],
+    "focus": [],
+    "mode": "offline"
+  },
+  "saved": false,
+  "notice": "This conversation was deleted while the answer was being prepared; the answer was not saved."
+}

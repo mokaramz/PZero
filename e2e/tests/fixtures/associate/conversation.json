@@ -1,0 +1,38 @@
+{
+  "id": "c-0a1b2c3d4e5f",
+  "title": "Which Conviction companies are waiting on a Manager",
+  "created": "2026-11-12T15:19:30Z",
+  "updated": "2026-11-12T15:20:00Z",
+  "messages": [
+    {
+      "role": "user",
+      "text": "Which Conviction companies are waiting on a Manager decision?",
+      "at": "2026-11-12T15:19:30Z",
+      "context": null
+    },
+    {
+      "role": "assistant",
+      "at": "2026-11-12T15:20:00Z",
+      "tools": [
+        { "tool": "manager_decisions", "args": {}, "ok": true },
+        { "tool": "company_detail", "args": { "slug": "lumenfold" }, "ok": true },
+        { "tool": "candidate_detail", "args": { "id": "cand-nimbra" }, "ok": false }
+      ],
+      "usd": 0.00041,
+      "model": "inventa/brisk-flash-1",
+      "text": "**Lumenfold** is the one company waiting on a Manager decision.\n\n- Seed round led from Lisbon\n- Founder call logged on 4 November\n\nSee [the case](/conviction?company=lumenfold) or [their site](https://lumenfold.example).",
+      "docs": ["PZ_OPERATING_MODEL.md › Manager gates"],
+      "sources": [
+        { "kind": "company", "id": "lumenfold", "label": "Lumenfold", "link": "/conviction?company=lumenfold" },
+        { "kind": "candidate", "id": "cand-nimbra", "label": "Nimbra Labs" }
+      ],
+      "actions": [
+        { "kind": "open", "label": "Open Lumenfold", "link": "/conviction?company=lumenfold" },
+        { "kind": "save_draft", "label": "Save as draft", "title": "Manager questions for Lumenfold" }
+      ],
+      "focus": [{ "kind": "company", "id": "lumenfold", "label": "Lumenfold", "link": "/conviction?company=lumenfold" }],
+      "mode": "model",
+      "notes": ["1 uncited reference(s) removed", "kept with you: sending a message to the Manager"]
+    }
+  ]
+}

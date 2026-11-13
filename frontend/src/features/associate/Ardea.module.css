@@ -1,0 +1,160 @@
+/* ARDEA — the PZ Associate heron. Palette from the PZ tokens: slate plumage, ivory neck, navy eye stripe, sand beak,
+   forest reed, steel water. Light and dark mode via the theme attribute; no glow, no gradients. */
+.svg {
+  --ardea-body: #5b6577;
+  --ardea-wing: #464f5c;
+  --ardea-breast: #6f7a8c;
+  --ardea-feather: #8994a5;
+  --ardea-ivory: #f4f0e7;
+  --ardea-neck-back: #dfe1e4;
+  --ardea-ink: var(--navy);
+  --ardea-beak: #c39a5f;
+  --ardea-beak-line: #86664f;
+  --ardea-legs: #3a3731;
+  display: block;
+  overflow: visible;
+}
+:global(:root[data-theme="dark"]) .svg {
+  --ardea-body: #8a95a6;
+  --ardea-wing: #6b7586;
+  --ardea-breast: #a1abba;
+  --ardea-feather: #b9c1cd;
+  --ardea-neck-back: #c9ced6;
+  --ardea-legs: #8f897e;
+  --ardea-ink: var(--bg); /* the theme's near-black: the eye stripe stays dark on the ivory head */
+}
+.body {
+  fill: var(--ardea-body);
+}
+.breast {
+  fill: var(--ardea-breast);
+}
+.wing {
+  fill: var(--ardea-wing);
+}
+.feathers {
+  fill: none;
+  stroke: var(--ardea-feather);
+  stroke-width: 1.1;
+  stroke-linecap: round;
+}
+.ivory {
+  fill: var(--ardea-ivory);
+}
+.neckBack {
+  fill: var(--ardea-neck-back);
+}
+.streaks {
+  stroke: var(--ardea-ink);
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  opacity: 0.7;
+}
+.ink {
+  fill: var(--ardea-ink);
+}
+.glint {
+  fill: var(--ardea-ivory);
+}
+.beak {
+  fill: var(--ardea-beak);
+}
+.beakLine {
+  stroke: var(--ardea-beak-line);
+  stroke-width: 1;
+}
+.legs {
+  fill: none;
+  stroke: var(--ardea-legs);
+  stroke-width: 2.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.water {
+  fill: none;
+  stroke: var(--blue-line);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+}
+.reed {
+  fill: none;
+  stroke: var(--green);
+  stroke-width: 2.2;
+  stroke-linecap: round;
+}
+.cattail {
+  fill: var(--amber);
+}
+/* the head eases into a new pose once when the state changes — never loops */
+.head,
+.headWrap {
+  transform-box: view-box;
+  transform-origin: 168px 92px;
+}
+.head {
+  transition: transform 420ms var(--ease-out);
+}
+.plume {
+  transition: transform var(--dur-slow) var(--ease-out);
+  transform-box: view-box;
+  transform-origin: 158px 58px;
+}
+.plume[data-raised] {
+  transform: rotate(-9deg);
+}
+
+/* avatar: the heron against a calm steel-water roundel, hairline navy ring */
+.roundel {
+  fill: var(--blue-line);
+}
+.ring {
+  fill: none;
+  stroke: var(--navy);
+  stroke-width: 1.6;
+  opacity: 0.8;
+}
+
+/* one-colour mark */
+.mark {
+  display: inline-block;
+  flex: none;
+  fill: currentColor;
+}
+.markEye {
+  fill: var(--paper);
+}
+
+/* one-shot entrance for the welcome illustration: the heron settles in (rise + fade), then stays still */
+.enter {
+  animation: ardea-settle 620ms var(--ease-out) both;
+}
+.enter .headWrap {
+  animation: ardea-look 900ms var(--ease-out) 220ms both;
+}
+@keyframes ardea-settle {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes ardea-look {
+  from {
+    transform: rotate(10deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .enter,
+  .enter .headWrap,
+  .head,
+  .plume {
+    animation: none;
+    transition: none;
+  }
+}
