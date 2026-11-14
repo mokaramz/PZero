@@ -13,8 +13,8 @@ the request clock; the expressions between are the old ones, in the old order): 
 verdict), ``source_health``, ``_coverage_summary``, ``_providers``, ``last_job_report``; the scheduler's ``plan``,
 ``_interval``, ``failing_jobs`` and the three ``last`` readers (``_last_scan``, ``_last_event_scan``, ``_last_news``);
 ``budget.summary``'s spend (``ledger.spend``); ``job_history``, ``models``, ``pipeline``; ``news.health`` and
-``news_sources.health``; and of ``watch.view()`` only the two counts the payload shows (``companies``,
-``open_triggers``).
+``news_sources.health``; and of ``watch.view()`` only the three counts the payload shows (``companies``,
+``open_triggers`` and, since review 037b, ``failing_checks``: rule 5 is back).
 
 The ported NEW helpers reused (each the old function, checked in ``tests/health``):
 
@@ -29,7 +29,7 @@ The ported NEW helpers reused (each the old function, checked in ``tests/health`
 Declared differences, all in ``ops/parity_health.normalise``: (c) the retired Scout parts are gone (the
 ``bridge_job`` repair research, rules 16 / 17, the four Scout jobs, the overview's ``search_bridge`` / ``scout00`` /
 ``native`` / ``pipeline.intake``); (d) every absent subsystem is ``{"deferred": reason}`` and the rules reading only
-them (5, 12, 19, 20, 21, 22) are omitted; (e) the jobs are the imported snapshot and an imported ``running`` is
+them (12, 19, 20, 21, 22) are omitted (rule 5, the WATCH page checks, returned with review 037b); (e) the jobs are the imported snapshot and an imported ``running`` is
 ``interrupted`` (no runner is alive); (f) the paid switch's NEW semantics; (k) without a runner (``RUNNER = None``
 until 032c) no issue and no headline promises a mechanism the app does not have: rules 3, 4 and 6-11 and the
 job-report sentences are reworded (revision 2's table); with a runner the old texts are restored exactly.
@@ -95,7 +95,6 @@ SELFCHECK_DEFERRED = "The self-check is not ported yet: it was a state inside th
 LOCK_DEFERRED = "The background-job runner is not ported yet, so there is no job-runner lock."
 BUILD_DEFERRED = "The release and stale-interface check is not ported yet."
 SOURCE_DISCOVERY_DEFERRED = "The source network is not ported yet (review 032b)."
-WATCH_CHECKS_DEFERRED = "The WATCH page checks are not ported yet."
 BACKUPS_DEFERRED = "Backups are not ported yet (review 032b)."
 INTEGRITY_DEFERRED = "The data-integrity check is not ported yet (review 032b)."
 RELEASES_DEFERRED = "Releases are not ported yet (review 032b)."
@@ -303,17 +302,20 @@ def providers(inputs: HealthInputs) -> list[dict[str, Any]]:
 
 
 # ---------------------------------------------------------------------------------------------------- watch + news
-def watch_counts(inputs: HealthInputs) -> tuple[int, int]:
-    """Of the old ``watch.view()``: ``len(companies)`` and the open triggers of the watched companies (``watched()``:
-    the candidates on WATCH plus the active manual targets; ``triggers()`` with their current status), through the
+def watch_counts(inputs: HealthInputs) -> tuple[int, int, int]:
+    """Of the old ``watch.view()``: ``len(companies)``, the open triggers of the watched companies (``watched()``:
+    the candidates on WATCH plus the active manual targets; ``triggers()`` with their current status) and the failing
+    page checks (``failures_in_row >= 2`` over the watched companies' check records, review 037b), through the
     Watchlist's own functions (review 037a, revision 2: ``watch.targets.watched`` over the same candidates and
-    effective targets). The page checks' failures are the watch sensors' (not ported, decision d)."""
+    effective targets)."""
     targets = watch_targets.targets_of(copy.deepcopy(inputs.watch_targets))
     cands = inputs.candidates if inputs.watch_candidates is None else inputs.watch_candidates
     watched = watch_targets.watched(copy.deepcopy(cands), targets)
     trig = watch_triggers(copy.deepcopy(inputs.watch_events))
     opened = [sum(1 for x in trig if x["entity_key"] == key and x["status"] == "new") for key in watched]
-    return len(watched), sum(opened)
+    checks = [(targets.get(key) or {}).get("checks") or {} for key in watched]
+    watch_fail = sum(1 for co in checks for chk in co.values() if int(chk.get("failures_in_row") or 0) >= 2)
+    return len(watched), sum(opened), watch_fail
 
 
 def news_sources_health(news: NewsInputs) -> dict[str, Any]:
@@ -555,7 +557,9 @@ def system_view(inputs: HealthInputs, now: datetime, runner: Runner | None = RUN
             issue("info", what, NO_RUNNER_DO[4], "info")
     rq = copy.deepcopy(inputs.research_questions) or {}
     research_open = Counter(q.get("status") for q in rq.values())
-    companies, open_triggers = watch_counts(inputs)  # rule 5 (the page checks) is the watch sensors' (decision d)
+    companies, open_triggers, watch_fail = watch_counts(inputs)
+    if watch_fail:  # rule 5 (review 037b)
+        issue("warn", f"{watch_fail} WATCH page check(s) keep failing", "Fix or remove the page URL on the Watchlist.")
     # 032c (c): rules 6-11 per job: the old text and group for the jobs the runner can run, revision 2's for the
     # others (each subset its own item, the runnable first; without a runner every job takes revision 2's text)
     jobs = plan(inputs, now, runner)
@@ -694,7 +698,7 @@ def system_view(inputs: HealthInputs, now: datetime, runner: Runner | None = RUN
         "watch": {
             "companies": companies,
             "open_triggers": open_triggers,
-            "failing_checks": deferred(WATCH_CHECKS_DEFERRED),
+            "failing_checks": watch_fail,
         },
         "jobs": jobs,
         "overdue": len(overdue),

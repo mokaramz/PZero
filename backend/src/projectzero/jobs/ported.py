@@ -2,8 +2,9 @@
 
 Pure, with no import of the runner (``health.core`` imports this module; the runner imports ``health``).
 
-* ``PORTED``: the jobs with a NEW equivalent (``deal_flow_scan`` since review 034a, ``triage_retry`` since 035b).
-  The other four active jobs (``watch_checks``, ``source_network``, ``triage_compression``, ``case_refresh``) stay
+* ``PORTED``: the jobs with a NEW equivalent (``deal_flow_scan`` since review 034a, ``triage_retry`` since 035b,
+  ``watch_checks`` since 037b). The other three active jobs (``source_network``, ``triage_compression``,
+  ``case_refresh``) stay
   in ``JOBS`` with their imported history but never run (b); their plan rows say ``NOT_PORTED`` in place of overdue.
 * ``JobsRunner``: the ``health.core.Runner`` the views take. ``ported(job_id)`` drives the per-job texts (c);
   ``alive(record)`` replaces the old ``pid == os.getpid() or pid_alive(pid)``: a record marked ``running`` is still
@@ -26,6 +27,7 @@ PORTED: frozenset[str] = frozenset(
         "news_weekly_review",
         "news_source_review",
         "triage_retry",
+        "watch_checks",
     }
 )
 NOT_PORTED = "not ported yet"

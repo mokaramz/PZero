@@ -1,12 +1,13 @@
 /** The WATCH panel's pure rules (the old `WatchedCompanies` / `TriggerList` / `WatchSection`, review 037a). */
 import type { Tone } from "@/components/ui";
-import type { PageCheck, Trigger, WatchPayload, WatchedCompany } from "./types";
+import type { PageCheck, Trigger, WatchCheckAnswer, WatchPayload, WatchedCompany } from "./types";
 
 /**
- * Why "Check now" is visible but does nothing yet: the two sensors (scan re-hits and official-page diffs) arrive in
- * review 037b. ONE wording, on the Watchlist and on the Deal Flow WATCH section.
+ * "Check now"'s toast (review 037b): the old "{fired} new trigger(s)[ · {failures} page(s) failed]", plus
+ * " · {skipped} page(s) left for the next run" only when the budget left pages unchecked.
  */
-export const PAGE_CHECKS_DEFERRED = "Page checks arrive with the WATCH sensors port";
+export const checkToast = (r: Pick<WatchCheckAnswer, "fired" | "failures" | "skipped">): string =>
+  `${r.fired} new trigger(s)` + (r.failures ? ` · ${r.failures} page(s) failed` : "") + ((r.skipped ?? 0) > 0 ? ` · ${r.skipped} page(s) left for the next run` : "");
 
 /** The textarea's pages, split on any whitespace (the old rule; the server keeps the first 6 and checks each). */
 export const splitUrls = (text: string): string[] => text.split(/\s+/).filter(Boolean);

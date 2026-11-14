@@ -37,7 +37,9 @@ def test_the_goldens_match_the_pure_parts_and_were_made_by_the_clean_old_revisio
 
 
 def test_only_the_ported_jobs_are_runnable_and_their_rows_are_the_old_ones() -> None:
-    assert set(REAL) == PORTED and len(PORTED) == 7  # review 034a: deal_flow_scan; 035b: triage_retry
+    assert (
+        set(REAL) == PORTED and len(PORTED) == 8
+    )  # review 034a: deal_flow_scan; 035b: triage_retry; 037b: watch_checks
     rows = {r["id"]: r for r in JOBS}
     for jid, job in REAL.items():
         assert (job.label, job.interval_h, job.last) == (
@@ -47,7 +49,7 @@ def test_only_the_ported_jobs_are_runnable_and_their_rows_are_the_old_ones() -> 
         )
     cat = runner.catalog()
     assert [r["id"] for r in cat.rows] == [j["id"] for j in health_core.active_jobs()]
-    assert len(set(cat.rows[i]["id"] for i in range(len(cat.rows))) - set(cat.runnable)) == 4
+    assert len(set(cat.rows[i]["id"] for i in range(len(cat.rows))) - set(cat.runnable)) == 3  # 037b: watch_checks runs
     assert health_core.RUNNER is RUNNER
 
 

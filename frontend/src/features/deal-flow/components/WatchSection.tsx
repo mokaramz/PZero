@@ -2,12 +2,13 @@ import { Link } from "react-router-dom";
 
 import { useWatch } from "@/features/watchlist/api";
 import { TriggerList } from "@/features/watchlist/components/TriggerList";
-import { companyOf, PAGE_CHECKS_DEFERRED, pagesLine } from "@/features/watchlist/model/watch";
+import { companyOf, pagesLine } from "@/features/watchlist/model/watch";
 import styles from "../DealFlow.module.css";
 
 /**
  * Candidate detail: what the WATCH sensors found for this company (the old `WatchSection`, review 037a) — its pages,
- * a link to manage them on the Watchlist, and its triggers with Reviewed / Dismiss. The page checks are 037b.
+ * a link to manage them on the Watchlist, and its triggers with Reviewed / Dismiss. No "Check now" here, as in the old
+ * app: it lives on the Watchlist.
  */
 export function WatchSection({ candidateId }: { candidateId: string }) {
   const q = useWatch();
@@ -19,9 +20,6 @@ export function WatchSection({ candidateId }: { candidateId: string }) {
         <>
           <div className="small faint">
             {pagesLine(w)} · <Link to="/watchlist">manage on Watchlist</Link>
-          </div>
-          <div className="small faint" data-testid="watch-checks-deferred">
-            {PAGE_CHECKS_DEFERRED}.
           </div>
           <TriggerList triggers={w.triggers} />
         </>

@@ -112,7 +112,7 @@ def test_the_port_carries_the_old_literals_unchanged() -> None:
         old |= _literals(OLD / f)
     allowed = {*core.NO_RUNNER_DO.values(), core.RULE1_DO, core.NO_RUNNER_UNKNOWN, core.NO_RUNNER_NO_REPORT,
                core.NO_RUNNER_SUFFIX, core.SELFCHECK_DEFERRED, core.LOCK_DEFERRED, core.BUILD_DEFERRED,
-               core.SOURCE_DISCOVERY_DEFERRED, core.WATCH_CHECKS_DEFERRED, core.BACKUPS_DEFERRED,
+               core.SOURCE_DISCOVERY_DEFERRED, core.BACKUPS_DEFERRED,
                core.INTEGRITY_DEFERRED, core.RELEASES_DEFERRED, core.PAID_OFF_DO, *core.LAST, "deferred", "%Y-%m-%d %H:%M",
                "the Deal Flow registry could not be read",
                "availability", "deal_flow_scan", "triage_retry"}  # fmt: skip  # 032c (b) / (c)
@@ -169,11 +169,11 @@ def test_the_real_runner_restores_the_old_texts_only_for_the_ported_jobs() -> No
     body = system_view(_inputs("jobs_unrun"), NOW, JOBS_RUNNER)
     labels = {j["id"]: j["label"] for j in catalog.JOBS}
     unported = {j["id"] for j in core.active_jobs()} - PORTED
-    assert len(unported) == 4  # review 034a: the Deal Flow scan is ported; 035b: the triage retry
-    for j in body["jobs"]:  # (b): the four unported jobs are never overdue and say so
+    assert len(unported) == 3  # review 034a: the Deal Flow scan is ported; 035b: the triage retry; 037b: WATCH
+    for j in body["jobs"]:  # (b): the three unported jobs are never overdue and say so
         assert (j.get("availability") == NOT_PORTED) == (j["id"] in unported)
         assert not (j["overdue"] and j["id"] in unported)
-    assert body["overdue"] == sum(1 for j in body["jobs"] if j["overdue"]) == 5  # 035b: triage_retry too
+    assert body["overdue"] == sum(1 for j in body["jobs"] if j["overdue"]) == 6  # 035b: triage_retry; 037b: WATCH
     for i in body["issues"]:
         named = {jid for jid in labels if labels[jid] in i["what"]}
         if ph.rule_of(i) in (6, 7, 8, 9, 10, 11) and named <= PORTED:  # the old guidance, old level and group
@@ -282,7 +282,7 @@ def test_the_payload_key_order_and_the_deferred_subsystems() -> None:
     assert list(body) == SYSTEM_KEYS and list(ov) == OVERVIEW_KEYS
     assert list(ov["pipeline"]) == ["inbox", "routing", "conviction", "manager_sent"]  # no ``intake`` (c)
     for value in (body["build"], body["selfcheck"], body["source_discovery"], body["job_runner"]["lock"],
-                  body["watch"]["failing_checks"], ov["backups"], ov["integrity"], ov["releases"]):  # fmt: skip
+                  ov["backups"], ov["integrity"], ov["releases"]):  # fmt: skip
         assert list(value) == ["deferred"] and isinstance(value["deferred"], str) and value["deferred"]
     assert all("bridge_job" not in r.get("repair", {}) for r in body["sources"]["sources"])
     assert [p["role"] for p in body["providers"]] == ["CHEAP", "STANDARD", "ESCALATION"]  # no RESEARCH (029a h)

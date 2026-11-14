@@ -1558,3 +1558,51 @@ describe("migration 0027 — WATCH: one target row per company key, an append-on
     assert.ok(!/advisory|set_config|current_setting/i.test(sql));
   });
 });
+
+describe("migration 0028 — WATCH checks: page baselines by the old snapshot id, one resume-point row", () => {
+  let db;
+
+  before(async () => {
+    db = await freshDb();
+  });
+
+  test("a page baseline is keyed by the old wt-<id> stem, holds a line array and is saved again in place", async () => {
+    await db.query(
+      `insert into pz.watch_page_snapshots (id, entity_key, url, lines) values ('wt-0123456789ab', 'invented robotics', 'https://invented.example/news', '["Line A"]')`,
+    );
+    await db.query(
+      `insert into pz.watch_page_snapshots (id, entity_key, url, lines) values ('wt-0123456789ab', 'invented robotics', 'https://invented.example/news', '["Line A", "Line B"]')
+       on conflict (id) do update set lines = excluded.lines, updated_at = now()`,
+    );
+    assert.deepEqual((await db.query(`select lines from pz.watch_page_snapshots`)).rows[0].lines, ["Line A", "Line B"]);
+    await rejects(db.query(`insert into pz.watch_page_snapshots (id, entity_key, url, lines) values ('0123456789ab', 'k', 'https://x.example/', '[]')`), /check/);
+    await rejects(db.query(`insert into pz.watch_page_snapshots (id, entity_key, url, lines) values ('wt-0123456789ac', 'k', 'https://x.example/', '{}')`), /check/);
+    await rejects(db.query(`insert into pz.watch_page_snapshots (id, entity_key, url, lines) values ('wt-0123456789ad', '', 'https://x.example/', '[]')`), /check/);
+  });
+
+  test("the resume point is ONE row: both parts or neither, never deleted; job runs only count up", async () => {
+    await db.query(`insert into pz.watch_check_state (id, resume_key, resume_url) values (true, 'invented robotics', 'https://invented.example/news')`);
+    await rejects(db.query(`insert into pz.watch_check_state (id) values (false)`), /check/);
+    await rejects(db.query(`insert into pz.watch_check_state (id) values (true)`), /unique|duplicate/);
+    await rejects(db.query(`update pz.watch_check_state set resume_url = null`), /resume_check|check/);
+    await rejects(db.query(`update pz.watch_check_state set job_runs = -1`), /check/);
+    await db.query(`update pz.watch_check_state set resume_key = null, resume_url = null, job_runs = job_runs + 1`);
+    assert.deepEqual((await db.query(`select resume_key, resume_url, job_runs::int as n from pz.watch_check_state`)).rows, [
+      { resume_key: null, resume_url: null, n: 1 },
+    ]);
+    await rejects(db.query(`delete from pz.watch_check_state`), /append-only/);
+  });
+
+  test("both new tables have row level security and no API grants; no lock or setting names the schema", async () => {
+    const names = ["watch_page_snapshots", "watch_check_state"];
+    const rls = await db.query(`select relname, relrowsecurity from pg_class where relname = any($1) and relkind = 'r' order by relname`, [names]);
+    assert.deepEqual(rls.rows, [{ relname: "watch_check_state", relrowsecurity: true }, { relname: "watch_page_snapshots", relrowsecurity: true }]);
+    const grants = await db.query(
+      `select table_name from information_schema.role_table_grants where table_name = any($1) and grantee in ('anon', 'authenticated', 'PUBLIC')`,
+      [names],
+    );
+    assert.deepEqual(grants.rows, []);
+    const sql = readFileSync(join(MIGRATIONS, "20261113000028_watch_checks.sql"), "utf8");
+    assert.ok(!/advisory|set_config|current_setting/i.test(sql));
+  });
+});

@@ -12,8 +12,10 @@ network is used:
 3. **write** (ONE transaction bounded by the same budget, ``events.scan.bounded_transaction``: the connect, the lock
    wait, every statement and the commit; the deadline is checked again before commit): the News write lock,
    ``ensure_seeded``, then the CURRENT stored inputs are read again and ``refresh.apply`` matches, derives and
-   evaluates against them (Codex H-257: a backcast committed during the fetch is kept), and its rows are written. A
-   write the deadline cuts off is a 503 and saves nothing.
+   evaluates against them (Codex H-257: a backcast committed during the fetch is kept), and its rows are written. The
+   watch bridge (review 037b) fires its WATCH triggers in this same transaction (``watch.run.news_bridge``: a savepoint
+   under the watch lock, after the News lock), so they commit or roll back with the run. A write the deadline cuts
+   off is a 503 and saves nothing.
 
 One run at a time: a SESSION advisory lock (``news.store.RUN_LOCK``) taken with ``pg_try_advisory_lock`` on a dedicated
 connection and released on every exit path; the refresh and the standalone evaluation share it (a second one is the
@@ -46,6 +48,7 @@ from projectzero.news.inputs_model import base_from_docs, packaged_cases
 from projectzero.validation.inputs import load_docs
 from projectzero.validation.inputs_model import ValidationInputs
 from projectzero.validation.inputs_model import inputs_from_docs as validation_inputs
+from projectzero.watch import run as watch_run
 
 logger = logging.getLogger(__name__)
 RUN_DEADLINE_S = 180.0  # the whole run: 10 feeds at up to 20 s each, plus the write
@@ -147,7 +150,13 @@ def refresh_run(
             news_store.lock(conn, schema)
             news_store.ensure_seeded(conn, schema, packaged_cases(), wall)
             out = refresh.apply(
-                _current(conn, schema, now), results, today=today, now=wall, run_id=p.run_id, clock=clock
+                _current(conn, schema, now),
+                results,
+                today=today,
+                now=wall,
+                run_id=p.run_id,
+                clock=clock,
+                watch=watch_run.news_bridge(conn, schema, wall),  # review 037b: in THIS transaction
             )
             for change in (*out.new_events, *out.changed_events):  # each pass's own state (Codex H-261)
                 states = list(change.states) or [(name, change.record) for name in change.passes or ("ingest",)]

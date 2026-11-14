@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-11T18:57:51.376647+00:00",
+  "generated_at": "2026-11-14T00:08:00.366202+00:00",
   "reconciliation": {
     "real_data.json signals": {
       "in": 10,
@@ -9,23 +9,23 @@
       "in": 1366
     },
     "scout_intake.json": {
-      "cycles": 7,
-      "items": 39,
-      "events": 40,
+      "cycles": 8,
+      "items": 41,
+      "events": 41,
       "events_home": "documents (scout_intake.json#rest; event_id without the '|merged:' suffix)",
       "event_id_merge_suffixes_stripped": 9
     },
     "native_scout.json signals": {
-      "in": 150,
-      "planner_leads_as_candidates": 19,
+      "in": 151,
+      "planner_leads_as_candidates": 20,
       "theme_hypotheses_kept_as_documents": 131
     },
     "unresolved_candidates": {
       "unresolved_name": 39
     },
     "candidates": {
-      "legacy_records": 1424,
-      "inserted": 1420,
+      "legacy_records": 1427,
+      "inserted": 1423,
       "merged_into_survivor": 4
     },
     "triage_proposals.json": {
@@ -84,7 +84,7 @@
       },
       "unparseable": {},
       "end_before_start": 0,
-      "dates_clock": "2026-11-11",
+      "dates_clock": "2026-11-14",
       "created_at_from": {
         "created": 10,
         "retrieved_at": 664,
@@ -128,17 +128,37 @@
       },
       "created_at_from_import_time": 0
     },
+    "content.json": {
+      "items": 0
+    },
+    "founder_calls.json": {
+      "companies": 3,
+      "founders": 3,
+      "calls": 3
+    },
+    "evaluations.json": {
+      "sessions": 2
+    },
+    "sources/network.json": {
+      "candidates_usable": 8
+    },
+    "radar_companies.json": {
+      "companies": 19
+    },
+    "radar_research.json": {
+      "domains": 1
+    },
     "bridge_jobs.json": {
       "jobs": 4,
       "rows": 4
     },
     "inference_ledger.jsonl": {
-      "lines": 2293,
-      "rows": 2293
+      "lines": 2374,
+      "rows": 2374
     },
     "schedule": {
       "jobs": 15,
-      "runs": 268
+      "runs": 382
     }
   },
   "notes": [
@@ -173,19 +193,19 @@
       "present": true,
       "parseable": true,
       "collection": "sources",
-      "records": 46
+      "records": 47
     },
     "scout_intake.json": {
       "present": true,
       "parseable": true,
       "collection": "items",
-      "records": 39
+      "records": 41
     },
     "native_scout.json": {
       "present": true,
       "parseable": true,
       "collection": "signals",
-      "records": 150
+      "records": 151
     },
     "triage_proposals.json": {
       "present": true,
@@ -221,21 +241,21 @@
       "present": true,
       "parseable": true,
       "collection": null,
-      "records": 2293
+      "records": 2374
     },
     "schedule/runs.jsonl": {
       "present": true,
       "parseable": true,
       "collection": null,
-      "records": 268
+      "records": 382
     }
   },
   "snapshot": {
-    "files": 2200,
+    "files": 2247,
     "capture_attempts": 1
   },
   "identity": {
-    "companies": 1390,
+    "companies": 1393,
     "merge_suggestions": 2,
     "merge_suggested_events": 4,
     "strong_key_conflicts": [],
@@ -329,16 +349,16 @@
     ]
   },
   "counts": {
-    "sources": 46,
-    "companies": 1390,
-    "company_identifiers": 1648,
+    "sources": 47,
+    "companies": 1393,
+    "company_identifiers": 1651,
     "people": 247,
     "person_identifiers": 663,
-    "intake_submissions": 7,
-    "candidates": 1420,
-    "candidate_aliases": 1479,
-    "observations": 1474,
-    "candidate_events": 1428,
+    "intake_submissions": 8,
+    "candidates": 1423,
+    "candidate_aliases": 1485,
+    "observations": 1477,
+    "candidate_events": 1431,
     "triage_proposals": 1005,
     "candidate_routing": 470,
     "committee_reviews": 215,
@@ -346,35 +366,35 @@
     "events": 674,
     "event_leads": 22,
     "research_jobs": 4,
-    "model_ledger": 2293,
+    "model_ledger": 2374,
     "job_state": 15,
-    "job_runs": 268,
-    "documents": 76,
-    "legacy_documents": 2200
+    "job_runs": 382,
+    "documents": 77,
+    "legacy_documents": 2247
   },
-  "archive_bytes": 20909034,
+  "archive_bytes": 23410629,
   "blockers": [],
   "secrets_found": [],
   "rehearsal": {
-    "schema": "pz_rehearse_28ce9fbf",
+    "schema": "pz_rehearse_ba876da2",
     "first_apply": {
       "applied": true,
-      "fingerprint": "84e46ecd0fc84b032441c7721c38674d5d8d52e65bfea09b169593b4437843c4"
+      "fingerprint": "8cc5297c82f7d75d9d4a88ce6182113cacc300941c8abf25aac61833aae51899"
     },
     "counts": {
       "all_match": true,
       "mismatches": {},
       "actual": {
-        "sources": 46,
-        "companies": 1390,
-        "company_identifiers": 1648,
+        "sources": 47,
+        "companies": 1393,
+        "company_identifiers": 1651,
         "people": 247,
         "person_identifiers": 663,
-        "intake_submissions": 7,
-        "candidates": 1420,
-        "candidate_aliases": 1479,
-        "observations": 1474,
-        "candidate_events": 1428,
+        "intake_submissions": 8,
+        "candidates": 1423,
+        "candidate_aliases": 1485,
+        "observations": 1477,
+        "candidate_events": 1431,
         "triage_proposals": 1005,
         "candidate_routing": 470,
         "committee_reviews": 215,
@@ -382,21 +402,21 @@
         "events": 674,
         "event_leads": 22,
         "research_jobs": 4,
-        "model_ledger": 2293,
+        "model_ledger": 2374,
         "job_state": 15,
-        "job_runs": 268,
-        "documents": 77,
-        "legacy_documents": 2200
+        "job_runs": 382,
+        "documents": 78,
+        "legacy_documents": 2247
       }
     },
     "archive": {
-      "files": 2200,
-      "restored_bytes": 20909034,
+      "files": 2247,
+      "restored_bytes": 23410629,
       "mismatched": [],
       "all_match": true
     },
     "aliases": {
-      "checked": 1479,
+      "checked": 1485,
       "unresolved": [],
       "all_resolve": true
     },
@@ -405,16 +425,16 @@
       "all_match": true,
       "mismatches": {},
       "actual": {
-        "sources": 46,
-        "companies": 1390,
-        "company_identifiers": 1648,
+        "sources": 47,
+        "companies": 1393,
+        "company_identifiers": 1651,
         "people": 247,
         "person_identifiers": 663,
-        "intake_submissions": 7,
-        "candidates": 1420,
-        "candidate_aliases": 1479,
-        "observations": 1474,
-        "candidate_events": 1428,
+        "intake_submissions": 8,
+        "candidates": 1423,
+        "candidate_aliases": 1485,
+        "observations": 1477,
+        "candidate_events": 1431,
         "triage_proposals": 1005,
         "candidate_routing": 470,
         "committee_reviews": 215,
@@ -422,16 +442,16 @@
         "events": 674,
         "event_leads": 22,
         "research_jobs": 4,
-        "model_ledger": 2293,
+        "model_ledger": 2374,
         "job_state": 15,
-        "job_runs": 268,
-        "documents": 77,
-        "legacy_documents": 2200
+        "job_runs": 382,
+        "documents": 78,
+        "legacy_documents": 2247
       }
     },
     "scratch_schema_dropped": true,
     "conflict_existing_row": {
-      "schema": "pz_conflict_45a86fbc",
+      "schema": "pz_conflict_681649ad",
       "kind": "row",
       "preexisting": "candidates.id = 4225c719f2f2",
       "outcome": "aborted: unique violation on candidates_pkey",
@@ -445,7 +465,7 @@
       "scratch_schema_dropped": true
     },
     "conflict_existing_archive_path": {
-      "schema": "pz_conflict_e8d6877d",
+      "schema": "pz_conflict_84a99fa2",
       "kind": "archive",
       "preexisting": "legacy_documents.path = .browser_opened",
       "outcome": "aborted: unique violation on legacy_documents_pkey",

@@ -21,9 +21,9 @@ Declared differences, ALL applied by ``normalise`` (old payload -> the expected 
   ``scout00``, ``native`` and ``pipeline.intake`` dropped. Rules 16 / 17 never fire (the oracle's Scout services
   answer no notice; ``normalise`` refuses an old answer that holds one), and the four Scout jobs are removed from
   the old ``JOBS`` in the oracle (they are never planned on either side).
-* **(d) absent subsystems:** ``selfcheck``, ``build``, ``source_discovery``, ``job_runner.lock``,
-  ``watch.failing_checks`` and the overview's ``backups``, ``integrity`` and ``releases`` become
-  ``{"deferred": reason}``. Rules 5, 12, 19, 20, 21 and 22 are omitted: the worlds never trigger them, and
+* **(d) absent subsystems:** ``selfcheck``, ``build``, ``source_discovery``, ``job_runner.lock`` and the overview's
+  ``backups``, ``integrity`` and ``releases`` become ``{"deferred": reason}`` (``watch.failing_checks`` and rule 5
+  returned with review 037b: compared as the old values). Rules 12, 19, 20, 21 and 22 are omitted: the worlds never trigger them, and
   ``normalise`` refuses an old answer that holds one.
 * **(e) the jobs are the imported snapshot:** no runner is alive, so an imported ``running`` is ``interrupted``
   (the oracle's ``pid_alive`` answers ``False``: the old plan says the same); ``normalise`` refuses an old job still
@@ -555,8 +555,7 @@ def oracle_over(worlds: dict[str, tuple[dict[str, bytes], str, bool, bool]]) -> 
 
 # ------------------------------------------------------------------ the declared differences
 RETIRED_RULES = ("the search bridge", "Scout 00")  # rules 16 / 17 would carry the stubs' notice; they answer none
-OMITTED = (  # rules 5, 12, 19, 20, 21, 22: their texts' fixed parts
-    "WATCH page check(s) keep failing",
+OMITTED = (  # rules 12, 19, 20, 21, 22: their texts' fixed parts (rule 5 returned with review 037b)
     "the job runner has been busy for ",
     " new source(s) degraded",
     "The interface is older than the code",
@@ -674,8 +673,9 @@ PORTED_JOBS = frozenset(
         "news_weekly_review",
         "news_source_review",
         "triage_retry",
+        "watch_checks",
     }
-)  # review 034a: the Deal Flow scan is ported; review 035b: the machine-triage retry
+)  # review 034a: the Deal Flow scan is ported; review 035b: the machine-triage retry; review 037b: the WATCH checks
 NEW_NOT_PORTED = "not ported yet"
 JOB_RULES: dict[int, tuple[str, str, Callable[[dict[str, Any]], str]]] = {  # rule -> (prefix, separator, item)
     6: ("", ", ", lambda p: p["label"].split(" (")[0]),
@@ -763,8 +763,6 @@ def normalise_system(
             for row in v["sources"]:
                 if "repair" in row:
                     row["repair"].pop("bridge_job", None)
-        elif k == "watch":  # (d)
-            v = {**v, "failing_checks": health_core.deferred(health_core.WATCH_CHECKS_DEFERRED)}
         elif k == "job_runner" and not runner:  # (d); with a runner its lock is the old answer
             v = {**v, "lock": health_core.deferred(health_core.LOCK_DEFERRED)}
         elif k == "jobs" and ported is not None:  # 032c (b)

@@ -1,8 +1,8 @@
 /**
  * The Deal Flow candidate detail's "On WATCH — sensors" section (review 037a, the old `WatchSection`): a WATCH
  * candidate's pages line (with pages, and without), the "manage on Watchlist" link, its triggers with Reviewed /
- * Dismiss (the same TriggerList and invalidations as the Watchlist), the loading text, "Check now"'s one deferral
- * wording, and no read at all for a candidate that is not on WATCH. Invented names only (`watchlist/test/*.json`).
+ * Dismiss (the same TriggerList and invalidations as the Watchlist), the loading text, no "Check now" and no deferral
+ * line (the old section had neither; review 037b), and no read at all for a candidate that is not on WATCH. Invented names only (`watchlist/test/*.json`).
  */
 import { fireEvent, screen, waitFor, within } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -24,7 +24,7 @@ beforeEach(() => localStorage.clear());
 afterEach(() => vi.unstubAllGlobals());
 
 describe("Deal Flow — the WATCH section", () => {
-  it("a WATCH candidate with pages: the heading, the pages line, the Watchlist link, the deferral and its triggers", async () => {
+  it("a WATCH candidate with pages: the heading, the pages line, the Watchlist link and its triggers", async () => {
     const server = serve();
     renderPage("/deal-flow?candidate=c-wt-01");
     await waitFor(() => expect(detailName()).toBe("Halvard Optics"));
@@ -32,7 +32,8 @@ describe("Deal Flow — the WATCH section", () => {
     expect(within(section()).getByRole("heading", { level: 4 })).toHaveTextContent("On WATCH — sensors");
     expect(section()).toHaveTextContent("2 official page(s) watched · manage on Watchlist");
     expect(within(section()).getByRole("link", { name: "manage on Watchlist" })).toHaveAttribute("href", "/watchlist");
-    expect(within(section()).getByTestId("watch-checks-deferred")).toHaveTextContent(/^Page checks arrive with the WATCH sensors port\.$/);
+    expect(within(section()).queryByTestId("watch-checks-deferred")).toBeNull();
+    expect(section()).not.toHaveTextContent("Page checks arrive");
     expect(section()).not.toHaveTextContent("Loading watch state…");
     expect(triggers().map((t) => t.getAttribute("data-status"))).toEqual(["new", "new", "dismissed", "reviewed"]);
     expect(triggers()[0]).toHaveTextContent("· page check · first seen 2026-11-12 · dated 2026-11-10");

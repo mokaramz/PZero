@@ -402,7 +402,8 @@ def deps() -> JobDeps:
     hexes = count(100)
     return JobDeps(events_fetcher=RecordedFetcher({LD["url"]: {"text": page}}), news_transport=FixtureTransport(FEEDS),
                    news_resolver=fixture_resolver, new_hex=lambda: f"{next(hexes):016x}",
-                   dealflow_transport=ScanTransport({}), dealflow_resolver=fixture_resolver)  # fmt: skip
+                   dealflow_transport=ScanTransport({}), dealflow_resolver=fixture_resolver,
+                   watch_transport=ScanTransport({}), watch_resolver=fixture_resolver)  # fmt: skip
 
 
 def test_every_ported_job_runs_once_through_the_runner_and_the_unported_never_run(
@@ -413,12 +414,14 @@ def test_every_ported_job_runs_once_through_the_runner_and_the_unported_never_ru
         conn.execute(f"insert into {schema}.documents (key, body) values ('event_sources.json', %s)".encode(),
                      (Jsonb({"sources": [LD], "offered_defaults": NEW_DEFAULTS}),))  # fmt: skip
     unported = sorted({j["id"] for j in health_core.active_jobs()} - PORTED)
-    assert len(unported) == 4 and not set(unported) & set(REAL)  # 034a: the Deal Flow scan; 035b: the triage retry
+    assert len(unported) == 3 and not set(unported) & set(REAL)  # 034a: the Deal Flow scan; 035b: the triage retry
+    # 037b: the WATCH checks
     assert runner.run_due(settings.db_url, schema, source="cli", now=NOW, only=unported, deps=deps()) == []  # (b)
     rows = runner.run_due(settings.db_url, schema, source="cli", now=NOW, deps=deps())
     print("\n[ported jobs] " + " | ".join(f"{r['job']}: [{r['outcome']}] {r['note']}" for r in rows))
-    assert [r["job"] for r in rows] == ["deal_flow_scan", "event_scan", "validation_snapshot", "news_refresh",
-                                        "triage_retry", "news_weekly_review", "news_source_review"]  # fmt: skip
+    assert [r["job"] for r in rows] == ["watch_checks", "deal_flow_scan", "event_scan", "validation_snapshot",
+                                        "news_refresh", "triage_retry", "news_weekly_review", "news_source_review"]  # fmt: skip
+    assert {r["job"]: r["note"] for r in rows}["watch_checks"] == "0 new trigger(s) · 0 page(s) checked · 0 failure(s)"
     assert {r["job"]: r["note"] for r in rows}["triage_retry"] == "nothing is waiting for a retry"  # review 035b
     assert q(settings, schema, "select count(*) from {s}.scan_runs") == [(1,)]  # an empty registry: one empty run
     assert all(r["ok"] for r in rows), rows
@@ -439,7 +442,7 @@ def test_every_ported_job_runs_once_through_the_runner_and_the_unported_never_ru
     assert {p["id"] for p in plan if p.get("availability") == NOT_PORTED} == set(unported)
     assert not [p for p in plan if p["id"] in unported and p["overdue"]]
     h = q(settings, schema, "select job, started_at <= finished_at from {s}.job_runs order by id")
-    assert [r[1] for r in h] == [True] * 7  # the real start and finish of every new history row (035b: 7 jobs)
+    assert [r[1] for r in h] == [True] * 8  # the real start and finish of every new history row (037b: 8 jobs)
 
 
 # ------------------------------------------------------------------ (a) the live refusal

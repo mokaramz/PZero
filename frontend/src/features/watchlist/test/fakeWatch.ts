@@ -1,9 +1,11 @@
 /**
  * A fake WATCH backend (review 037a) for the Watchlist and Deal Flow page tests: it answers `GET /api/watch` from an
  * invented world and applies `POST /api/watch_target` / `POST /api/watch_ack` with the old rules (first 6 URLs, the old
- * URL regex, "no such trigger", the last status wins), so the refetch shows what a write did.
+ * URL regex, "no such trigger", the last status wins), so the refetch shows what a write did. `POST /api/watch_check`
+ * (review 037b) records an "unchanged" check on each of the named company's pages and answers
+ * `{fired: 0, pages: [one "unchanged" entry per page], failures: 0, skipped: 0}`, unless a test's `check` answers (and changes the world) itself.
  */
-import type { WatchAckBody, WatchPayload, WatchTargetBody } from "../model/types";
+import type { WatchAckBody, WatchCheckBody, WatchPayload, WatchTargetBody } from "../model/types";
 import inboxJson from "./inbox.json";
 import watchJson from "./watch.json";
 
@@ -14,6 +16,8 @@ export type WatchRoutes = {
   payload?: WatchPayload;
   target?: (body: WatchTargetBody) => Answer | undefined;
   ack?: (body: WatchAckBody) => Answer | undefined;
+  /** Check now: may change `db` (a new trigger, a failed check) so the refetch shows it */
+  check?: (body: WatchCheckBody, db: WatchPayload) => Answer | undefined;
 };
 
 /** A fresh copy of the invented world: Halvard Optics (2 open, pages, every trigger kind), Brisa Hydrogen (manual, no
@@ -23,6 +27,7 @@ export const watchWorld = (): WatchPayload => structuredClone(watchJson) as Watc
 export const watchInbox = () => structuredClone(inboxJson);
 
 export const ACK_AT = "2026-11-13T10:00:00";
+export const CHECK_AT = "2026-11-13T10:05:00";
 const PUBLIC_URL = /^https?:\/\/[^\s/]+\.[^\s]+/;
 
 function saveTarget(db: WatchPayload, body: WatchTargetBody): Answer {
@@ -53,6 +58,14 @@ function acknowledge(db: WatchPayload, body: WatchAckBody): Answer {
   return { status: 200, body: { ok: true, kind: "status", trigger_id: body.id, status: body.status, at: ACK_AT, note: "" } };
 }
 
+function checkNow(db: WatchPayload, body: WatchCheckBody): Answer {
+  const c = db.companies.find((x) => x.name === body.name);
+  const urls = c ? c.urls : [];
+  for (const u of urls) c!.checks[u] = { last_checked: CHECK_AT, last_state: "unchanged", last_ok: CHECK_AT, failures_in_row: 0, last_error: "" };
+  const pages = urls.map((url) => ({ entity: c!.name, url, state: "unchanged", fired: [], new_lines: 0, error: "" }));
+  return { status: 200, body: { fired: 0, pages, failures: 0, skipped: 0 } };
+}
+
 /** The WATCH routes over one world; `handle` answers a request or returns undefined when it is not a WATCH route. */
 export function fakeWatch(routes: WatchRoutes = {}) {
   const db = routes.payload ? structuredClone(routes.payload) : watchWorld();
@@ -60,6 +73,7 @@ export function fakeWatch(routes: WatchRoutes = {}) {
     if (method === "GET" && path === "/api/watch") return { status: 200, body: structuredClone(db) };
     if (method === "POST" && path === "/api/watch_target") return routes.target?.(body as WatchTargetBody) ?? saveTarget(db, body as WatchTargetBody);
     if (method === "POST" && path === "/api/watch_ack") return routes.ack?.(body as WatchAckBody) ?? acknowledge(db, body as WatchAckBody);
+    if (method === "POST" && path === "/api/watch_check") return routes.check?.(body as WatchCheckBody, db) ?? checkNow(db, body as WatchCheckBody);
     return undefined;
   };
   return { db, handle };

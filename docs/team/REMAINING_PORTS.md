@@ -9,7 +9,7 @@ cutover if it is missing, then what only completes a view.
 |---|---|---|---|
 | 1 | ~~**Deal Flow scan**~~ (done, 034a) (`scan`, `scanReport`, `scanHistory`) | Finding new candidates: the weekly `deal_flow_scan` job, Find New Candidates, the per-source report | Network only; the core of sourcing. The runner job becomes ported. |
 | 2 | **Machine triage** (`triage`: accept / override, `triage_retry`, `triage_compression`) | Triage proposals on new candidates, the retry after a provider outage, the attention compression | Paid model calls, through the gateway (off until Mohamed turns paid calls on). Split in three (H-349): 035a accept / override / batch reject and the decision log (no model calls); 035b the cascade, post-scan auto-triage, `triage_retry` and Retry now; 035c the compression run, after items 4 and 5. |
-| 3 | **Watch sensors** (`watch`, the `watch_checks` job) | The WATCH page checks and their triggers | Network. |
+| 3 | ~~**Watch sensors**~~ (done, 037a + 037b) (`watch`, the `watch_checks` job) | The WATCH page checks and their triggers | Network. |
 | 4 | **Case preparation** (`case_refresh`) | Fresh prepared cases (they expire 2026-11-15 in the imported snapshot) | Paid model calls. |
 | 5 | **Analysis** (`analysis`, `reviewQueue`, `redTeam`) | The Agent Review Queue, machine analysis, the red team | Paid model calls; lifts the desk's (d). |
 | 6 | **Claim Index / verification** (030b) | One-click verification proposals | Lifts Today's (e) and Conviction's Verification deferral. |
@@ -18,6 +18,8 @@ cutover if it is missing, then what only completes a view.
 | 9 | **Identity** (`founders`) | Founder identities in Deal Flow | |
 
 **Small follow-ups** (each a small review of its own):
+- Today's WATCH section: harden it against an archived trigger line with neither `url` nor `source` (it raises
+  `KeyError: 'source'`, as the old code did; 0 such lines exist today) — a declared difference (037b H-391).
 - ~~**Before the cutover:** a set-based triage batch confirm~~ (done, 035d: 500 in 2.65-3.00 s, from 207 s; the 2 s
   end-to-end target is missed by the connect and the eligibility re-read, accepted in H-367).
 - Conviction's request clock: its naive `datetime.now` fallback, read and write timestamps together (032a H-301).

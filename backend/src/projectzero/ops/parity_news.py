@@ -91,8 +91,11 @@ document, the fetched URLs (each sent with the News User-Agent to the checked ad
 views (sha-256 digests per section). Declared differences, normalised in ``compare_refresh`` only
 (``REFRESH_DECLARED``): (a) the TLS feed (the parity run serves it as the old fallback did; the strict run, the
 production policy, fails it with its reason and changes nothing else, checked by ``check_strict``); (d) the
-nominations (a ``nomination_deferred`` line per old ``nominate`` call) and the watch bridge (no trigger,
-``watch_triggers`` 0); (e) no run-state start marker; 028a's (e) / (s) inside the metric cache.
+nominations (a ``nomination_deferred`` line per old ``nominate`` call); (e) no run-state start marker; 028a's (e) / (s)
+inside the metric cache. The watch bridge is compared like any other write since review 037b lifted its deferral:
+the new side passes ``apply`` the pure bridge (``pure_bridge``: ``watch.run.bridge_lines`` over the world's WATCH
+candidates, targets, proposals and trigger log), whose ``watch/triggers.jsonl`` lines and ``watch_triggers`` count
+must equal the old run's (its high-value case refresh is deferred, 037b decision f: nothing to compare).
 
 The model cards (review 028d, ``cards-goldens`` / ``cards-check``, ``golden_v1/oracle_news_cards.json``): the oracle
 (``scripts/oracle/news_cards_oracle.py``) runs the old ``_make_cards`` through the old gateway with the old
@@ -979,7 +982,7 @@ REFRESH_ORACLE = REPO_ROOT / "scripts" / "oracle" / "news_refresh_oracle.py"
 REFRESH_GOLDEN = GOLDEN_DIR / "oracle_news_refresh.json"
 REFRESH_CLOCKS = ("2026-11-12T10:00:00", "2026-11-12T10:25:00")  # run 2: the 10:20 cooldown is over, the 429's is not
 FIXTURE_IP = "93.184.216.34"  # every fixture host resolves here (a public address; nothing is ever sent to it)
-WATCH_LOG = "watch/triggers.jsonl"  # the old watch bridge's log (decision d: deferred)
+WATCH_LOG = "watch/triggers.jsonl"  # the watch bridge's log (review 037b: compared)
 TLS_FEED = "Maddyness"  # decision (a): the old insecure fallback fetched it; the new fetch fails it
 TLS_ERROR = "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1032)"
 LOG_PATHS = {"runs": "news/runs.jsonl", "disagreements": "news/disagreements.jsonl",
@@ -1212,8 +1215,9 @@ def new_refresh(golden_in: dict[str, Any], *, strict: bool) -> tuple[dict[str, A
             p, FeedFetch(transport=transport, resolver=fixture_resolver, clock=lambda: 0.0)
         )
         current = validation_inputs(docs, today)  # phase 3 re-reads the CURRENT inputs
+        bridged: list[str] = []
         out = news_refresh.apply(news_refresh.RunInputs(current.news_inputs, current), results, today=today, now=now,
-                                 run_id=run_id, clock=lambda: 0.0)  # fmt: skip
+                                 run_id=run_id, clock=lambda: 0.0, watch=pure_bridge(docs, now, bridged))  # fmt: skip
         if v != before or current != before:
             problems.append(f"/run {run_id}: the run changed its inputs")
         stored = load(current.news_inputs.events)["events"]
@@ -1224,11 +1228,14 @@ def new_refresh(golden_in: dict[str, Any], *, strict: bool) -> tuple[dict[str, A
             if c.event_id not in stored or _text(stored[c.event_id]) == _text(c.record) or not c.passes:
                 problems.append(f"/run {run_id}/changed_events/{c.event_id}: not a changed stored event")
         docs = applied_docs(docs, out)
+        if bridged:  # the store appends them in the run's transaction
+            docs[WATCH_LOG] = text_of(docs.get(WATCH_LOG)) + "".join(x + "\n" for x in bridged)
         runs.append(
             {
                 "answer": {"code": 200, "body": js(out.answer)},
                 "events": js(out.events_doc),
-                "appended": [[LOG_PATHS[log], line + "\n"] for log, line in out.appends],
+                "appended": [[WATCH_LOG, x + "\n"] for x in bridged]
+                + [[LOG_PATHS[log], line + "\n"] for log, line in out.appends],
                 "documents": js(out.documents),
                 "deferred_nominations": js(list(out.evaluation.deferred_nominations)) if out.evaluation else [],
                 "requests": [dict(q) for q in transport.requests],
@@ -1237,6 +1244,29 @@ def new_refresh(golden_in: dict[str, Any], *, strict: bool) -> tuple[dict[str, A
             }
         )
     return {"seed": seed, "runs": runs}, problems
+
+
+def pure_bridge(docs: dict[str, Any], now: datetime, out: list[str]) -> Any:
+    """The news bridge over the world's old-format documents (review 037b): the WATCH candidates of ``inbox.json``,
+    ``watch/targets.json``, the current proposals and the ``watch/triggers.jsonl`` dedupe keys; its lines go to
+    ``out`` (the store would append them in the run's transaction)."""
+    from projectzero.watch import log as watch_log
+    from projectzero.watch import run as watch_run
+    from projectzero.watch import targets as watch_targets
+    from projectzero.watch import writes as watch_writes
+
+    def bridge(events: dict[str, Any]) -> int:
+        inbox = docs.get("inbox.json") or {}
+        targets = watch_targets.targets_of(docs.get("watch/targets.json"))
+        watched = watch_targets.watched(copy.deepcopy(inbox.get("candidates") or []), targets)
+        proposals = (docs.get("triage_proposals.json") or {}).get("proposals") or {}
+        fired = watch_writes.keys_of(watch_log.parse_text(text_of(docs.get(WATCH_LOG))))
+        n, lines = watch_run.bridge_lines(events, watched, fired=fired, proposals=proposals, ts=watch_run.ts_of(now),
+                                          today=now.date())  # fmt: skip
+        out.extend(lines)
+        return n
+
+    return bridge
 
 
 def _norm_metrics(doc: Any, problems: list[str], side: str, at: str) -> Any:
@@ -1257,14 +1287,11 @@ def _norm_metrics(doc: Any, problems: list[str], side: str, at: str) -> Any:
 
 
 def _denominate(rec: Any) -> Any:
-    """Declared (d) in a run record: the old ``source_eval.nominated`` held the source-network candidate ids, and the
-    old ``watch_triggers`` counted the watch triggers it fired (the bridge is deferred: 0)."""
+    """Declared (d) in a run record: the old ``source_eval.nominated`` held the source-network candidate ids."""
     if isinstance(rec, dict):
         rec = copy.deepcopy(rec)
         if isinstance(rec.get("source_eval"), dict):
             rec["source_eval"]["nominated"] = []
-        if "watch_triggers" in rec:
-            rec["watch_triggers"] = 0
     return rec
 
 
@@ -1278,9 +1305,8 @@ def _old_appended(
     watched = 0
     for path, text in lines:
         row = json.loads(text) if text.strip().startswith("{") else None
-        if path == WATCH_LOG:  # declared (d): the deferred watch bridge fires nothing
+        if path == WATCH_LOG:  # compared (review 037b): counted against the run line's watch_triggers
             watched += 1
-            continue
         if path == LOG_PATHS["runs"] and isinstance(row, dict) and row.get("watch_triggers") != watched:
             problems.append(
                 f"{at}: the old run counted {row.get('watch_triggers')} watch triggers, {watched} were written"
@@ -1409,8 +1435,6 @@ REFRESH_DECLARED = (
     "(the production policy) fails it with its certificate reason, nothing else changing",
     "(d) the nominations: one nomination_deferred source-log line per old nominate call instead of the old nominated "
     "line; nominated is [] / 0 in the run record, the evaluated line and the answer",
-    "(d) the watch bridge: the old run fired one watch trigger per watched company's story (watch/triggers.jsonl); the "
-    "new run fires none (watch_triggers 0, RunOutcome.deferred names the reason)",
     "(e) the run completes inside the request: no run-state START marker is written (only the final {running: false})",
     "028a (e) / (s) inside the metric cache: the Swiss technical row's reason, the unique.by_scope key order",
 )

@@ -119,7 +119,9 @@ test.describe("Network — new app, preview database", () => {
     await page.goto("/watchlist");
     const row = page.locator(`[data-testid="watched-company"][data-key="${first.key}"]`);
     await expect(row).toBeVisible({ timeout: 60_000 });
-    await expect(row.getByTestId("watch-check")).toHaveAttribute("aria-disabled", "true"); // Check now: 037b
+    // Check now is live (037b): enabled, not deferred; this spec never clicks it (it would write on the preview database)
+    await expect(row.getByTestId("watch-check")).toBeEnabled();
+    await expect(row.getByTestId("watch-check")).not.toHaveAttribute("aria-disabled", "true");
     await row.getByText(/Official pages to watch/).click();
     const url = "https://news.invented.example/e2e-watch";
     await row.getByRole("textbox", { name: `Pages to watch for ${first.name}` }).fill(url);
@@ -127,6 +129,13 @@ test.describe("Network — new app, preview database", () => {
     await expect(page.getByText("Pages saved — first check records a baseline")).toBeVisible();
     const after = await page.request.get("/api/watch").then((r) => r.json());
     expect(after.companies.find((c: { key: string }) => c.key === first.key)?.urls).toEqual([url]);
+    // put the preview back (037b): an attached page would make a later Check now try to reach the invented address
+    const origin = new URL(page.url()).origin;
+    const clear = await page.request.post("/api/watch_target", {
+      data: { name: first.name, urls: [], candidate_id: first.candidate_id },
+      headers: { Origin: origin },
+    });
+    expect(clear.ok()).toBe(true);
     w.expectClean();
   });
 

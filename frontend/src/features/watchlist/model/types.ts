@@ -47,3 +47,22 @@ export type WatchTargetAnswer = { ok: boolean; target: Record<string, unknown> }
 export type AckStatus = Exclude<TriggerStatus, "new">;
 export type WatchAckBody = { id: string; status: AckStatus };
 export type WatchAckAnswer = { ok: boolean; kind: "status"; trigger_id: string; status: AckStatus; at: string; note: string };
+
+/**
+ * `POST watch_check {name?}` (review 037b) — the old `{fired, pages, failures}` plus `skipped`: the pages left for the
+ * next run when the 120-second budget ran out (no failure counted). A second check while one runs is a 409 "A WATCH
+ * check is already running."; before the legacy import, a 409 too.
+ */
+export type WatchCheckBody = { name?: string };
+/** One page CHECKED (a page skipped at the deadline is not listed): its state, the triggers it fired, its error. */
+export type WatchCheckedPage = {
+  entity: string;
+  url: string;
+  state: "baseline" | "unchanged" | "changed" | "failed";
+  fired: Trigger[];
+  /** only for "unchanged" / "changed" */
+  new_lines?: number;
+  /** "Type: msg[:120]" when failed, else "" */
+  error: string;
+};
+export type WatchCheckAnswer = { fired: number; pages: WatchCheckedPage[]; failures: number; skipped: number };

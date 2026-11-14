@@ -281,7 +281,8 @@ def test_the_answer_is_the_old_shape_after_a_completed_run() -> None:
     assert a["last"] == json.loads(out.run_line) and out.run_line == json.dumps(
         out.record, ensure_ascii=False, sort_keys=True
     )
-    assert out.appends[-1] == ("runs", out.run_line) and out.deferred == (refresh.WATCH_REASON,)
+    assert out.appends[-1] == ("runs", out.run_line) and out.deferred == ()  # review 037b: the parity passes its bridge
+    assert out.record["watch_triggers"] == 1  # the world's one watched company in the news
     assert out.documents["news/run_state.json"] == {"running": False}
 
 

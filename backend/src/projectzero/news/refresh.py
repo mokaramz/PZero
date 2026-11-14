@@ -26,8 +26,12 @@ Mechanical changes only, besides the declared decisions:
   certificate error is a failed feed with its reason; the project User-Agent);
 * (b) no model: ``_make_cards`` selects as before and writes ``_deterministic_card`` for each (the old answer when
   the gateway refused): ``cards`` counts them, ``usd`` is 0.0;
-* (d) the watch bridge is deferred (``WATCH_REASON``): ``watch_triggers`` is 0 (no watch targets in the data) and the
-  reason is in ``RunOutcome.deferred``; the nominations are deferred inside the evaluation;
+* (d) the watch bridge (review 037b lifted its deferral): ``apply(..., watch=...)`` hands the events after the ingest
+  and the in-run seeding to the caller's bridge at the old point (stage "watch", before the cards), which fires the old
+  ``_watch_bridge``'s triggers in the news run's own write transaction (``watch.run.news_bridge``) and answers how
+  many it fired: ``watch_triggers`` counts them again (a failing bridge counts 0, the old ``log.exception``). Without
+  a bridge (a pure caller) ``watch_triggers`` is 0 and ``WATCH_REASON`` is in ``RunOutcome.deferred``; the
+  nominations are deferred inside the evaluation;
 * (e) the run completes inside the request: the answer is the old ``{started: true, run_id, **refresh_status()}``
   computed AFTER the run (``job.running`` false, ``stage`` "done");
 * (h) one Berlin clock: ``_pubdate`` reads a feed time in Europe/Berlin (the old code used the machine's zone);
@@ -94,9 +98,10 @@ MAX_CARDS_PER_RUN = 12
 MAX_ITEMS_PER_FEED = 40
 COOLDOWN_NOTE = "asked us to slow down — paused politely, checked again later"
 ALREADY_RUNNING = "A news refresh is already running."  # the old 409 answer's reason
-WATCH_REASON = "watch triggers arrive with the Watch port"  # decision (d)
+WATCH_REASON = "watch triggers arrive with the Watch port"  # decision (d): only a caller with no bridge
 
 Clock = Callable[[], float]
+WatchBridge = Callable[[dict[str, Any]], int]  # the events (``{id: record}``) after the ingest -> triggers fired
 
 
 # ------------------------------------------------------------------------------------------------ parsing helpers
@@ -677,9 +682,11 @@ def apply(
     now: datetime,
     run_id: str,
     clock: Clock = time.monotonic,
+    watch: WatchBridge | None = None,
 ) -> RunOutcome:
     """Phase 3, pure: the old ``_run_locked`` from the fetched results on, against the CURRENT inputs. Returns every
-    write (module docstring); ``inputs_current`` is never modified."""
+    write (module docstring); ``inputs_current`` is never modified. ``watch``: the news bridge (decision d, review
+    037b), handed a COPY of the events at the old point; ``None``: no bridge (``watch_triggers`` 0, deferred)."""
     p = results.plan
     if run_id != p.run_id:
         raise ValueError("the run id is not the plan's")
@@ -771,7 +778,13 @@ def apply(
     rec["events_total"] = len(d["events"])
     rec["timings"]["ingest_s"] = round(clock() - t1, 2)
     job.update(stage="watch", ingested=True, new=rec["new"], merged=rec["merged"])
-    rec["watch_triggers"] = 0  # decision (d): the watch bridge is deferred (WATCH_REASON)
+    if watch is None:
+        rec["watch_triggers"] = 0  # decision (d): no bridge (WATCH_REASON)
+    else:
+        try:
+            rec["watch_triggers"] = watch(copy.deepcopy(d["events"]))
+        except Exception:  # the old ``log.exception("news → WATCH failed")``: the run goes on
+            rec["watch_triggers"] = 0
     job["stage"] = "cards"
     t2 = clock()
     snap = {eid: _text(e) for eid, e in d["events"].items()}
@@ -829,6 +842,7 @@ def apply(
         appends=tuple(appends),
         evaluation=evaluation,
         answer=_roundtrip(answer),
+        deferred=(WATCH_REASON,) if watch is None else (),
     )
 
 

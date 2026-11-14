@@ -4,14 +4,16 @@
  * answers key for key, with these changes:
  * - (c) retired and removed: the overview's `search_bridge`, `scout00` and `native`, `pipeline.intake`, and
  *   `sources[].repair.bridge_job`;
- * - (d) sent as `{"deferred": "<reason>"}` (./deferred): `selfcheck`, `build`, `source_discovery`,
- *   `watch.failing_checks`; in the overview `backups`, `integrity` and `releases`. `job_runner.lock` too, until the
+ * - (d) sent as `{"deferred": "<reason>"}` (./deferred): `selfcheck`, `build`, `source_discovery`; in the overview `backups`, `integrity` and `releases`. `job_runner.lock` too, until the
  *   server runs the 032c runner: then it is the real lock again;
  * - (e) without the runner, `jobs`, `job_runner.runners` and the overview `jobs` are the imported snapshot. With it
  *   (032c), `job_runner.runners` is the per-source overlay of the imported and the new records, and a job the runner
  *   cannot run yet carries `"ported": false` (with its imported history and timestamps);
  * - (k) the issue texts and the status sentence come from the server: reworded without the runner, the old ones for the
- *   ported jobs with it (032c c).
+ *   ported jobs with it (032c c);
+ * - `watch.failing_checks` was deferred until the WATCH sensors (review 037b); with them it is the old count again (page
+ *   checks failing twice or more in a row), and rule 5's issue ("N WATCH page check(s) keep failing") returns. The
+ *   page draws whichever the payload holds.
  */
 import type { Maybe } from "./deferred";
 
@@ -92,7 +94,7 @@ export type Health = {
   };
   triage_pending: number;
   research: Record<string, number>;
-  /** the watch sensors are not ported: `failing_checks` is deferred (d) */
+  /** `failing_checks`: the count once the sensors are ported (037b), its deferred reason (d) before */
   watch: { companies: number; open_triggers: number; failing_checks: Maybe<number> };
   jobs: Job[];
   overdue: number;
