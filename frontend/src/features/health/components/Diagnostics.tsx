@@ -25,7 +25,8 @@ function plainSourceProblemLine(line: string): string {
  *   line ("… these catch up when the app opens …") is the snapshot line (decision e) and the lock's reason replaces
  *   "busy / idle" (d). With the real lock, the line says where the jobs run in the new app and the lock is the old
  *   "busy / idle" again. A job with `ported: false` says "not ported yet" in place of "overdue" or its next run;
- * - Build and self-check: deferred, each shows its reason (d); WATCH's failing page checks too (d);
+ * - Build and self-check: deferred, each shows its reason (d). WATCH's failing page checks: the old
+ *   "N failing page check(s)." when the payload has the count (the sensors, 037b), its reason while deferred;
  * - News: no "catch-up" promise when there is no refresh yet (revision 2);
  * - Sources → New sources and Data integrity & backups: the 032b panels, with no request (./NewSources, ./Hardening).
  */

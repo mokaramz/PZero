@@ -540,6 +540,39 @@ describe("System health — diagnostics", () => {
     for (const b of runOverdue()) expect(b).not.toHaveAttribute("aria-disabled");
   });
 
+  it("WATCH's failing page checks (037b): the old count line, 0 included, and rule 5's issue as the server sends it", async () => {
+    const RULE5 = { level: "warn" as const, what: "2 WATCH page check(s) keep failing", do: "Fix or remove the page URL on the Watchlist.", group: "need" as const };
+    await settled({
+      health: (): Health => {
+        const h = health();
+        h.watch.failing_checks = 2;
+        h.issues = [...h.issues, RULE5];
+        return h;
+      },
+    });
+    const need = within(screen.getByTestId("issues-need")).getAllByTestId("health-issue");
+    expect(need.map((i) => i.textContent)).toEqual(expect.arrayContaining([expect.stringContaining("2 WATCH page check(s) keep failing")]));
+    const b = await expand("health-build-d");
+    expect(within(b).getByTestId("health-validation-data")).toHaveTextContent(
+      /^Validation data: 12 daily snapshot\(s\), last 2026-11-09, 2 data warning\(s\)\. WATCH: 3 company\(ies\), 2 failing page check\(s\)\.$/,
+    );
+    expect(within(b).getByTestId("health-validation-data")).not.toHaveTextContent("not ported");
+    expect(within(b).getByTestId("health-validation-data").querySelector("[data-reason]")).toBeNull();
+  });
+
+  it("WATCH's failing page checks: a count of 0 is drawn as a number, not as a missing value", async () => {
+    await settled({
+      health: (): Health => {
+        const h = health();
+        h.watch.failing_checks = 0;
+        return h;
+      },
+    });
+    const b = await expand("health-build-d");
+    expect(within(b).getByTestId("health-validation-data")).toHaveTextContent(/WATCH: 3 company\(ies\), 0 failing page check\(s\)\.$/);
+    expect(screen.queryByText(/WATCH page check\(s\) keep failing/)).toBeNull();
+  });
+
   it("data integrity & backups: the three 032b panels show their reason; Back up now and Test latest backup are deferred", async () => {
     const { server } = await settled();
     const h = await expand("health-hardening");

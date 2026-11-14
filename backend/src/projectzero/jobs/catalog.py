@@ -11,11 +11,13 @@ runner's ``still_due`` check (plan revision 3).
 | news_weekly_review | ``writers.record_weekly`` + ``news.runs.evaluation`` | the newest ``weekly`` News log line |
 | news_source_review | ``news.runs.evaluation(record_history=True)`` | the newest monthly-review mark (``run_notes``) |
 | triage_retry | ``dealflow.triage.auto.run_retry`` (the triage run lock, review 035b) | the newest retry run |
+| watch_checks | ``watch.run.run_checks(scheduled=True)`` (its check lock, 037b) | ``watch_check_state.job_runs`` |
 
 The scan job runs machine triage of what it found right after the scan committed, synchronously, inside the job's
 900 seconds (review 035b, decision e); a triage failure never fails the scan, and the note gains the old "machine
-triage PARTIAL: ..." when the run was not done. The other four active jobs are not ported (decision b): ``REAL``
-holds no entry for them, so they never run.
+triage PARTIAL: ..." when the run was not done. The WATCH checks (review 037b) run with the 600-second budget; their
+note is the old one plus " · N page(s) left for the next run" when the budget left pages. The other three active jobs
+are not ported (decision b): ``REAL`` holds no entry for them, so they never run.
 """
 
 from __future__ import annotations
@@ -40,6 +42,7 @@ from projectzero.jobs import store, writers
 from projectzero.jobs.ported import PORTED
 from projectzero.network.view import berlin_today
 from projectzero.news import refresh, runs
+from projectzero.watch import run as watch_run
 
 Guard = Callable[[psycopg.Connection[Any], str], None]
 logger = logging.getLogger(__name__)
@@ -61,6 +64,9 @@ class JobDeps:
     news_resolver: Any = None
     new_hex: Callable[[], str] | None = None
     card_gateway: Mapping[str, Any] | None = None
+    watch_transport: Any = None  # review 037b: the WATCH page checks' fixtures
+    watch_resolver: Any = None
+    watch_budget_s: float = watch_run.JOB_BUDGET_S
     triage: Any = None  # review 035b: the machine-triage ``auto.Deps`` (gateway injectables, hooks); None: production
     extra: Mapping[str, Any] = field(default_factory=dict)  # test seams for fake jobs
 
@@ -224,6 +230,23 @@ def _run_news_sources_monthly(ctx: JobContext) -> str:
     )
 
 
+def watch_checks_occurrence(conn: psycopg.Connection[Any], schema: str) -> Any:
+    return watch_run.job_runs(conn, schema)
+
+
+def _run_watch(ctx: JobContext) -> str:
+    """The old ``_run_watch``: every watched company's checks, and the old note (review 037b; the busy note while
+    another check runs)."""
+    d = ctx.deps
+    try:
+        out = watch_run.run_checks(ctx.db_url, ctx.schema, clock=lambda: ctx.now, transport=d.watch_transport,
+                                   resolver=d.watch_resolver, budget=d.watch_budget_s, scheduled=True,
+                                   still_due=ctx.still_due)  # fmt: skip
+    except watch_run.CheckBusy:
+        return watch_run.JOB_BUSY_NOTE
+    return watch_run.note(out)
+
+
 _ENTRY: dict[str, tuple[Callable[[JobContext], str], Callable[[psycopg.Connection[Any], str], Any]]] = {
     "deal_flow_scan": (_run_scan, deal_flow_scan_occurrence),
     "event_scan": (_run_events, event_scan_occurrence),
@@ -232,6 +255,7 @@ _ENTRY: dict[str, tuple[Callable[[JobContext], str], Callable[[psycopg.Connectio
     "news_weekly_review": (_run_news_weekly, news_log_occurrence("weekly")),
     "news_source_review": (_run_news_sources_monthly, source_review_occurrence),
     "triage_retry": (_run_triage_retry, triage_retry_occurrence),
+    "watch_checks": (_run_watch, watch_checks_occurrence),
 }
 assert set(_ENTRY) == PORTED
 

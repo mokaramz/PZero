@@ -138,7 +138,6 @@ test.describe("System health — preview database", () => {
       selfcheck: h.selfcheck,
       build: h.build,
       source_discovery: h.source_discovery,
-      "watch.failing_checks": h.watch.failing_checks,
       ...(live ? {} : { "job_runner.lock": h.job_runner?.lock }),
     }))
       expect(deferredReason(v), k).toBeTruthy();
@@ -152,7 +151,12 @@ test.describe("System health — preview database", () => {
     await expand(page, "health-build-d");
     await expect(page.getByTestId("health-build")).toHaveText(`Running build: ${deferredReason(h.build)}`);
     await expect(page.getByTestId("health-selfcheck")).toHaveText(`Startup self-check: ${deferredReason(h.selfcheck)}`);
-    await expect(page.getByTestId("health-validation-data")).toContainText(deferredReason(h.watch.failing_checks)!);
+    // the WATCH failing page checks: a count once the sensors are ported (037b), its reason before
+    if (typeof h.watch.failing_checks === "number") await expect(page.getByTestId("health-validation-data")).toContainText(`${h.watch.failing_checks} failing page check(s).`);
+    else {
+      expect(deferredReason(h.watch.failing_checks), "watch.failing_checks").toBeTruthy();
+      await expect(page.getByTestId("health-validation-data")).toContainText(deferredReason(h.watch.failing_checks)!);
+    }
     await expand(page, "health-jobs");
     if (live) {
       await expect(page.getByTestId("health-job-runner")).toContainText(/^Job runner: (idle|busy — )/);

@@ -145,7 +145,7 @@ def test_a_run_commits_and_every_reader_shows_it_over_older_archives(settings: S
     assert metrics_at != "2026-11-01T07:00:00"  # the run's evaluation, not the archived cache
     with transaction(settings.db_url) as conn:
         notes = conn.execute(f"select line from {schema}.news_logs where log = 'run_notes'".encode()).fetchall()
-    assert json.loads(notes[0][0])["deferred"]  # what the run deferred is recorded per run
+    assert json.loads(notes[0][0])["deferred"] == []  # recorded per run; review 037b: the watch bridge runs
 
 
 def test_a_backcast_committed_during_the_fetch_is_kept(settings: Settings, make: Any) -> None:

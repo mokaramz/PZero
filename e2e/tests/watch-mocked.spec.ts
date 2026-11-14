@@ -1,14 +1,16 @@
 /**
- * WATCH on the Watchlist and in the Deal Flow candidate detail (review 037a) — the watched companies panel (rows,
- * badges, the trigger list, the official pages with Save pages, Reviewed / Dismiss) and the "On WATCH — sensors"
+ * WATCH on the Watchlist and in the Deal Flow candidate detail (reviews 037a and 037b) — the watched companies panel
+ * (rows, badges, the trigger list, the official pages with Save pages, Check now, Reviewed / Dismiss) and the "On WATCH — sensors"
  * section — with the API MOCKED by route interception, so no backend is needed: only the frontend (`npm run dev` in
  * frontend/, or PZ_BASE_URL). Every company in fixtures/watch/ is invented (byte-identical copies of
  * `frontend/src/features/watchlist/test/*.json`).
  *
  * Covered: nothing is posted before a click; Save pages posts the pages split on any whitespace and toasts; a refused
  * page is the error toast; Reviewed / Dismiss post `{id, status}`, toast and the refetch shows the status; "Check now"
- * is deferred with the one wording and sends nothing; the Deal Flow section with pages and without; no horizontal
- * overflow at 1366, 1920, 390 and 150 %.
+ * (037b) posts `{name}` and toasts "{fired} new trigger(s)" with " · {failures} page(s) failed" and " · {skipped}
+ * page(s) left for the next run" only when non-zero, the refetch shows what fired, and the busy 409 is the error toast;
+ * no deferral line anywhere; the Deal Flow section (no Check now, as before) with pages and without; no horizontal
+ * overflow at 1366, 1920, 390 and 150 %, after a Check now toast too.
  *
  *   cd e2e && PZ_BASE_URL=http://localhost:5173 npx playwright test watch-mocked
  */
@@ -27,7 +29,9 @@ const load = (dir: string, n: string): J => JSON.parse(readFileSync(resolve(dir,
 
 const TARGET = "/api/watch_target";
 const ACK = "/api/watch_ack";
-const CHECK_REASON = "Page checks arrive with the WATCH sensors port";
+const CHECK = "/api/watch_check";
+const CHECK_AT = "2026-11-13T10:05:00";
+const BUSY = "A WATCH check is already running.";
 const CATCHUP = { running: false, queue: [], current: null, done: [], enabled: true };
 /** Two invented people for the Watchlist's people table. */
 const PEOPLE = [
@@ -36,11 +40,22 @@ const PEOPLE = [
 ];
 const PUBLIC_URL = /^https?:\/\/[^\s/]+\.[^\s]+/;
 
+/** A Check now answer: `{status, json}`; it may change the world first (a new trigger, a failed check). */
+type CheckRoute = (body: J, db: J) => { status?: number; json: J };
+
+/** The default Check now: each of the named company's pages checked "unchanged", nothing fired. */
+const unchanged: CheckRoute = (body, db) => {
+  const c = db.companies.find((x: J) => x.name === body.name);
+  const urls: string[] = c ? c.urls : [];
+  for (const u of urls) c.checks[u] = { last_checked: CHECK_AT, last_state: "unchanged", last_ok: CHECK_AT, failures_in_row: 0, last_error: "" };
+  return { json: { fired: 0, pages: urls.map((url) => ({ entity: c.name, url, state: "unchanged", fired: [], new_lines: 0, error: "" })), failures: 0, skipped: 0 } };
+};
+
 /**
- * Mock the Watchlist's and Deal Flow's reads and the two WATCH writes, over one world that keeps what a write applied
+ * Mock the Watchlist's and Deal Flow's reads and the three WATCH writes, over one world that keeps what a write applied
  * (so the refetch shows it). Anything else under /api is a 404.
  */
-async function mockApi(page: Page) {
+async function mockApi(page: Page, check: CheckRoute = unchanged) {
   const requested: Array<{ method: string; path: string; body: J }> = [];
   page.on("request", (r) => {
     if (!r.url().includes("/api/")) return;
@@ -77,6 +92,10 @@ async function mockApi(page: Page) {
     c.open = c.triggers.filter((x: J) => x.status === "new").length;
     return route.fulfill({ json: { ok: true, kind: "status", trigger_id: body.id, status: body.status, at: "2026-11-13T10:00:00", note: "" } });
   });
+  await page.route(/\/api\/watch_check$/, (route) => {
+    const a = check(route.request().postDataJSON(), db);
+    return route.fulfill({ status: a.status ?? 200, json: a.json });
+  });
   return { requested, posts: () => requested.filter((r) => r.method === "POST") };
 }
 
@@ -96,7 +115,8 @@ test.describe("WATCH — mocked API", () => {
     await openWatchlist(page);
     const panel = page.getByTestId("watched-companies");
     await expect(panel).toContainText("Watched companies — WATCH is active, not a graveyard");
-    await expect(panel.getByTestId("watch-checks-deferred")).toHaveText(`${CHECK_REASON}.`);
+    await expect(panel.getByTestId("watch-checks-deferred")).toHaveCount(0);
+    await expect(panel).not.toContainText("Page checks arrive");
     const halvard = company(page, "Halvard Optics");
     await expect(halvard.getByRole("link", { name: "Halvard Optics" })).toHaveAttribute("href", "/deal-flow?candidate=c-wt-01");
     await expect(halvard.getByText("2 new")).toBeVisible();
@@ -172,23 +192,93 @@ test.describe("WATCH — mocked API", () => {
     w.expectClean();
   });
 
-  test("Check now is deferred with the one wording and sends nothing", async ({ page }) => {
+  test("Check now on every row: a company with no pages answers '0 new trigger(s)'; nothing is posted before a click", async ({ page }) => {
     const w = watch(page);
     const api = await mockApi(page);
     await openWatchlist(page);
     const checks = page.getByTestId("watch-check");
     await expect(checks).toHaveCount(3);
     for (const b of await checks.all()) {
-      await expect(b).toHaveAttribute("aria-disabled", "true");
-      await expect(b).toHaveAttribute("title", CHECK_REASON);
-      await b.click({ force: true });
+      await expect(b).toBeEnabled();
+      await expect(b).not.toHaveAttribute("aria-disabled", "true");
+      await expect(b).not.toHaveAttribute("title");
     }
-    await checks.first().focus();
-    await page.keyboard.press("Enter");
-    await page.keyboard.press("Space");
-    await page.waitForTimeout(500);
+    await page.waitForTimeout(300);
     expect(api.posts()).toEqual([]);
-    expect(api.requested.some((r) => r.path.includes("watch_check"))).toBe(false);
+    await company(page, "Brisa Hydrogen").getByRole("button", { name: "Check now" }).click();
+    await expect(page.getByText("0 new trigger(s)", { exact: true })).toBeVisible();
+    expect(api.posts()).toEqual([{ method: "POST", path: CHECK, body: { name: "Brisa Hydrogen" } }]);
+    w.expectClean();
+  });
+
+  test("Check now fired: the toast counts it and the refetch shows the new trigger and the page's check", async ({ page }) => {
+    const w = watch(page);
+    const news = "https://halvard-optics.example/news";
+    const api = await mockApi(page, (body, db) => {
+      const c = db.companies.find((x: J) => x.name === body.name);
+      const t = {
+        ...c.triggers[0],
+        id: "wt-c9d8e7f6a5b4",
+        predicate: "customer",
+        label: "Customer",
+        high_value: false,
+        source_date: "2026-11-13",
+        first_observed: CHECK_AT,
+        evidence: "Halvard Optics signs an invented regional rail operator as its first inspection-camera customer.",
+        status: "new",
+      };
+      c.triggers.unshift(t);
+      c.open += 1;
+      c.checks[news] = { last_checked: CHECK_AT, last_state: "changed", last_ok: CHECK_AT, failures_in_row: 0 };
+      return { json: { fired: 1, pages: [{ entity: c.name, url: news, state: "changed", fired: [t], new_lines: 1, error: "" }], failures: 0, skipped: 0 } };
+    });
+    await openWatchlist(page);
+    const halvard = company(page, "Halvard Optics");
+    const reads = api.requested.filter((r) => r.path === "/api/watch").length;
+    await halvard.getByRole("button", { name: "Check now" }).click();
+    await expect(page.getByText("1 new trigger(s)", { exact: true })).toBeVisible();
+    expect(api.posts()).toEqual([{ method: "POST", path: CHECK, body: { name: "Halvard Optics" } }]);
+    await expect(halvard.getByText("3 new")).toBeVisible();
+    await expect(halvard.getByTestId("watch-trigger").filter({ hasText: "first inspection-camera customer" })).toContainText("· page check · first seen 2026-11-13 · dated 2026-11-13");
+    expect(api.requested.filter((r) => r.path === "/api/watch").length).toBeGreaterThan(reads);
+    await halvard.getByText("Official pages to watch (2)").click();
+    await expect(halvard.getByTestId("watch-page-check").first()).toHaveText(`${news}: changed · ${CHECK_AT}`);
+    w.expectClean();
+  });
+
+  test("Check now with failures and with pages left at the deadline: the two suffixes, and the failure streak", async ({ page }) => {
+    const w = watch(page);
+    const careers = "https://halvard-optics.example/careers";
+    let skipped = 0;
+    await mockApi(page, (body, db) => {
+      const c = db.companies.find((x: J) => x.name === body.name);
+      c.checks[careers] = { last_checked: CHECK_AT, last_state: "failed", failures_in_row: 3, last_error: "HTTP 503" };
+      return { json: { fired: 0, pages: [{ entity: c.name, url: careers, state: "failed", fired: [], error: "HTTPError: HTTP 503" }], failures: 1, skipped: skipped++ } };
+    });
+    await openWatchlist(page);
+    const halvard = company(page, "Halvard Optics");
+    await halvard.getByRole("button", { name: "Check now" }).click();
+    await expect(page.getByText("0 new trigger(s) · 1 page(s) failed", { exact: true })).toBeVisible();
+    await expect(page.getByText(/left for the next run/)).toHaveCount(0);
+    await halvard.getByText("Official pages to watch (2)").click();
+    await expect(halvard.getByTestId("watch-page-check").nth(1)).toHaveText(`${careers}: failed · ${CHECK_AT} · 3 failure(s) in a row: HTTP 503`);
+    await expect(halvard.getByRole("button", { name: "Check now" })).toBeEnabled();
+    await halvard.getByRole("button", { name: "Check now" }).click();
+    await expect(page.getByText("0 new trigger(s) · 1 page(s) failed · 1 page(s) left for the next run", { exact: true })).toBeVisible();
+    w.expectClean();
+  });
+
+  test("Check now while a check runs: the busy 409 is the error toast and nothing changes", async ({ page }) => {
+    const w = watch(page, { expected: [409] });
+    const api = await mockApi(page, () => ({ status: 409, json: { ok: false, error: BUSY } }));
+    await openWatchlist(page);
+    const halvard = company(page, "Halvard Optics");
+    await halvard.getByRole("button", { name: "Check now" }).click();
+    await expect(page.getByText(`✕ Checking watched pages failed — ${BUSY}`)).toBeVisible();
+    expect(api.posts()).toEqual([{ method: "POST", path: CHECK, body: { name: "Halvard Optics" } }]);
+    await expect(page.getByText(/new trigger\(s\)/)).toHaveCount(0);
+    await expect(halvard.getByText("2 new")).toBeVisible();
+    await expect(halvard.getByRole("button", { name: "Check now" })).toBeEnabled();
     w.expectClean();
   });
 
@@ -202,7 +292,8 @@ test.describe("WATCH — mocked API", () => {
     await expect(section).toContainText("On WATCH — sensors");
     await expect(section).toContainText("2 official page(s) watched · manage on Watchlist");
     await expect(section.getByRole("link", { name: "manage on Watchlist" })).toHaveAttribute("href", "/watchlist");
-    await expect(section.getByTestId("watch-checks-deferred")).toHaveText(`${CHECK_REASON}.`);
+    await expect(section.getByTestId("watch-checks-deferred")).toHaveCount(0);
+    await expect(section).not.toContainText("Page checks arrive");
     await expect(section.getByTestId("watch-trigger")).toHaveCount(4);
     await expect(section.getByRole("button", { name: "Check now" })).toHaveCount(0);
     await section.getByTestId("watch-trigger").first().getByRole("button", { name: "Reviewed" }).click();
@@ -224,14 +315,18 @@ test.describe("WATCH — mocked API", () => {
     ["390 (phone)", { width: 390, height: 844 }],
     ["150 % zoom", null],
   ] as const) {
-    test(`no horizontal overflow at ${name}: the panel with its pages open, and the Deal Flow section`, async ({ page }) => {
+    test(`no horizontal overflow at ${name}: the panel with its pages open, after a Check now toast, and the Deal Flow section`, async ({ page }) => {
       const w = watch(page);
-      await mockApi(page);
+      await mockApi(page, () => ({ json: { fired: 12, pages: [], failures: 3, skipped: 4 } }));
       if (size) await page.setViewportSize(size);
       else await zoom150(page);
       await openWatchlist(page);
       await company(page, "Halvard Optics").getByText("Official pages to watch (2)").click();
       await expect(company(page, "Halvard Optics").getByTestId("watch-page-check")).toHaveCount(2);
+      await expectNoHorizontalOverflow(page);
+      await company(page, "Halvard Optics").getByRole("button", { name: "Check now" }).click();
+      await expect(page.getByText("12 new trigger(s) · 3 page(s) failed · 4 page(s) left for the next run")).toBeVisible();
+      await expect(company(page, "Halvard Optics").getByRole("button", { name: "Check now" })).toBeVisible();
       await expectNoHorizontalOverflow(page);
       await page.goto("/deal-flow?candidate=c-wt-01");
       await expect(page.getByTestId("watch-section").getByTestId("watch-trigger")).toHaveCount(4, { timeout: 60_000 });

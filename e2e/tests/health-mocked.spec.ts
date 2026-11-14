@@ -16,6 +16,9 @@
  * (fixtures/jobs/health_runner.json): "Run overdue now" enabled, the snapshot line gone, the real lock. Its clicks, the
  * banner and the unported jobs are jobs-mocked.spec.ts.
  *
+ * Review 037b: with the WATCH sensors the payload's `watch.failing_checks` is a count again: the old "N failing page
+ * check(s)." line and rule 5's issue, as the server sends it.
+ *
  *   cd e2e && PZ_BASE_URL=http://localhost:5173 npx playwright test health-mocked
  */
 import { expect, test, type Locator, type Page } from "@playwright/test";
@@ -203,6 +206,23 @@ test.describe("System health — mocked API", () => {
     await expect(page.getByTestId("health-build")).toHaveText("Running build: The build and stale-interface check is not ported yet.");
     await expect(page.getByTestId("health-selfcheck")).toHaveText("Startup self-check: The startup self-check is not ported yet.");
     await expect(page.getByTestId("health-validation-data")).toContainText("WATCH: 3 company(ies), The watch sensors are not ported yet.");
+    w.expectClean();
+  });
+
+  test("with the WATCH sensors (037b): the failing page checks count and rule 5's issue", async ({ page }) => {
+    const w = watch(page);
+    const h = load("health_jobs_unrun.json");
+    h.watch.failing_checks = 2;
+    h.issues.push({ level: "warn", what: "2 WATCH page check(s) keep failing", do: "Fix or remove the page URL on the Watchlist.", group: "need" });
+    await mockApi(page, { health: h });
+    await open(page);
+    await expect(page.getByTestId("issues-need").getByTestId("health-issue").filter({ hasText: "2 WATCH page check(s) keep failing" })).toHaveCount(1);
+    await expand(page, "health-build-d");
+    const line = page.getByTestId("health-validation-data");
+    await expect(line).toContainText("WATCH: 3 company(ies), 2 failing page check(s).");
+    await expect(line).not.toContainText("not ported");
+    await expect(line.locator("[data-reason]")).toHaveCount(0);
+    await expectNoHorizontalOverflow(page);
     w.expectClean();
   });
 

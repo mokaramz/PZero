@@ -14,11 +14,17 @@ advisory lock ``<schema>.watch`` (the key derived from the schema name at run ti
   the overlaid log ("no such trigger"); one status line is appended. No state check, as before: acknowledging twice
   appends twice, and the last status line wins.
 
+Review 037b adds the trigger writer every sensor shares (``fire``: the page checks, the scan re-hits and the news
+bridge), under the same lock (``begin``: the write boundary, then the lock): the lines the cut sensors made, each
+dropped when an ARCHIVED line holds its dedupe key, and kept unique among the rows by the index
+(``on conflict do nothing``).
+
 The timestamps are the old ``ledger.now_ts()``: naive Berlin wall time ``%Y-%m-%dT%H:%M:%S`` of the request clock.
 """
 
 from __future__ import annotations
 
+import json
 import re
 from collections.abc import Mapping
 from dataclasses import dataclass
@@ -26,7 +32,9 @@ from datetime import datetime
 from typing import Any
 
 import psycopg
+from psycopg import sql
 
+from projectzero.core.db import schema_ident
 from projectzero.dealflow.intake.postgres import ensure_intake_open
 from projectzero.dealflow.ranking.names import norm_company
 from projectzero.network.view import berlin_now
@@ -62,6 +70,65 @@ def now_ts(now: datetime) -> str:
 
 def lock(conn: psycopg.Connection[Any], schema: str) -> None:
     conn.execute("select pg_advisory_xact_lock(hashtext(%s))", (LOCK.format(schema=schema),))
+
+
+def guard(conn: psycopg.Connection[Any], schema: str) -> None:
+    """The write boundary alone (review 037b: the checks' read before any fetch, and their resume point)."""
+    ensure_intake_open(conn, schema)
+
+
+def begin(conn: psycopg.Connection[Any], schema: str) -> None:
+    """Every WATCH write's start (review 037b: the checks' and the news bridge's too): the write boundary, then the
+    one watch lock, in the caller's transaction."""
+    ensure_intake_open(conn, schema)
+    lock(conn, schema)
+
+
+# ------------------------------------------------------------------ triggers (review 037b)
+_ROW_KEYS = "select dedupe_key from {}.watch_events where kind = 'trigger'"
+_FIRE = (
+    "insert into {}.watch_events (kind, trigger_id, dedupe_key, line) values ('trigger', %s, %s, %s::json) "
+    "on conflict (dedupe_key) where kind = 'trigger' do nothing returning seq"
+)
+
+
+def keys_of(events: list[dict[str, Any]]) -> set[str]:
+    """The old ``_fired_keys()`` over the log's dict lines: every truthy ``dedupe_key`` (a status line's included)."""
+    out: set[str] = set()
+    for e in events:
+        k = e.get("dedupe_key")
+        if k and isinstance(k, str):
+            out.add(k)
+    return out
+
+
+def archived_keys(conn: psycopg.Connection[Any], schema: str) -> set[str]:
+    """The archived lines' dedupe keys (037a's note: the unique index only sees the rows)."""
+    return keys_of(watch_log.parse_text(watch_log.archive(conn, schema)))
+
+
+def fired_keys(conn: psycopg.Connection[Any], schema: str, archived: set[str] | None = None) -> set[str]:
+    """Every dedupe key ever written: the archive's, then the rows'."""
+    base = archived_keys(conn, schema) if archived is None else archived
+    rows = conn.execute(sql.SQL(_ROW_KEYS).format(schema_ident(schema))).fetchall()
+    return set(base) | {str(r[0]) for r in rows}
+
+
+def fire(conn: psycopg.Connection[Any], schema: str, lines: list[str], archived: set[str] | None = None) -> list[str]:
+    """Append the trigger lines the sensors made (each the old ``json.dumps(row, sort_keys=True)``), in order, under
+    the caller's watch lock: a line whose ``dedupe_key`` an ARCHIVED line holds is dropped, and a row key is enforced
+    by the unique index (``on conflict do nothing``). Returns the lines actually appended."""
+    old = archived_keys(conn, schema) if archived is None else archived
+    out: list[str] = []
+    for text in lines:
+        row = json.loads(text)
+        key = str(row["dedupe_key"])
+        if key in old:
+            continue
+        found = conn.execute(sql.SQL(_FIRE).format(schema_ident(schema)), (str(row["id"]), key, text)).fetchone()
+        if found is not None:
+            out.append(text)
+    return out
 
 
 # ------------------------------------------------------------------ pure

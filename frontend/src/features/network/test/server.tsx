@@ -93,7 +93,7 @@ export function fakeServer(routes: Routes = {}) {
     watch: watch.db,
     calls,
     posts: (path?: string) => calls.filter((c) => c.method === "POST" && (!path || c.path === `/api/network/${path}`)),
-    /** the WATCH writes (`watch_target`, `watch_ack`) */
+    /** the WATCH writes (`watch_target`, `watch_ack`, `watch_check`) */
     watchPosts: (path?: string) => calls.filter((c) => c.method === "POST" && (path ? c.path === `/api/${path}` : /^\/api\/watch_/.test(c.path))),
     reads: (path: string) => calls.filter((c) => c.method === "GET" && c.path === path).length,
   };

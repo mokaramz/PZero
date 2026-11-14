@@ -1,22 +1,22 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
-import { DeferredButton } from "@/components/Deferred";
 import { Badge, Button } from "@/components/ui";
-import { useSavePages } from "../api";
+import { useCheckNow, useSavePages } from "../api";
 import type { WatchedCompany } from "../model/types";
-import { checkLine, PAGE_CHECKS_DEFERRED, splitUrls } from "../model/watch";
+import { checkLine, splitUrls } from "../model/watch";
 import { TriggerList } from "./TriggerList";
 import styles from "../Watchlist.module.css";
 
 /**
  * One watched company (the old `CompanyRow`): its name (to its Deal Flow candidate), the open-trigger and stale-triage
- * badges, its triggers, and the official pages to watch with Save pages. "Check now" keeps its place, deferred until
- * the sensors (review 037b).
+ * badges, "Check now" (review 037b: this company's pages and the scan re-hits, toasted with what fired), its triggers,
+ * and the official pages to watch with Save pages.
  */
 export function CompanyRow({ c }: { c: WatchedCompany }) {
   const [urls, setUrls] = useState(c.urls.join("\n"));
   const save = useSavePages();
+  const check = useCheckNow();
   return (
     <div className={styles.company} data-testid="watched-company" data-key={c.key}>
       <div className="row">
@@ -28,9 +28,9 @@ export function CompanyRow({ c }: { c: WatchedCompany }) {
           </Badge>
         )}
         <span className="grow" />
-        <DeferredButton size="sm" reason={PAGE_CHECKS_DEFERRED} data-testid="watch-check">
+        <Button size="sm" busy={check.isPending} onClick={() => check.mutate({ name: c.name })} data-testid="watch-check">
           Check now
-        </DeferredButton>
+        </Button>
       </div>
       <TriggerList triggers={c.triggers} />
       <details className={styles.pages}>
